@@ -11,6 +11,7 @@
 - [ ] Retrieve invoice from ksef
 - [ ] Invoicees DB  
 - [ ] Ultra simple frontend  
+- [ ] Transparency disclaimer / no Ai  
 - [ ] WhatsApp bot  
 - [ ] Post invoice  
 - [ ] UI theming  

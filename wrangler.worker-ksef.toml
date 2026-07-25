@@ -14,8 +14,8 @@ enabled = true
 
 # Deploy some of the static assets for the /docs
 [assets]
-binding = "favicon"
-directory = "./public/assets/favicon"
+binding = "assets"
+directory = "./dist"
 
 [[kv_namespaces]]
 binding="KSeF"
