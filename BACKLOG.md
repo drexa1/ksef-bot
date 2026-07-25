@@ -4,6 +4,7 @@
 - [ ] Retrieve invoice from ksef  
 - [ ] CI  
 - [ ] Deployment to CF  
+- [ ] Google Analytics  
 - [ ] CF arrangements
 - [ ] API keys  
 - [ ] Review security architecture  
@@ -12,3 +13,5 @@
 - [ ] Ultra simple frontend  
 - [ ] WhatsApp bot  
 - [ ] Post invoice  
+- [ ] UI theming  
+- [ ] Marketing outreach  
