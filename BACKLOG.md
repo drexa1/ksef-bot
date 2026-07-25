@@ -1,11 +1,11 @@
 # Backlog
 
-- [ ] Project scaffolding  
-- [ ] Retrieve invoice from ksef  
-- [ ] CI  
+- [x] Project scaffolding  
+- [x] CI  
 - [ ] Deployment to CF  
+- [ ] CF arrangements  
 - [ ] Google Analytics  
-- [ ] CF arrangements
+- [ ] Retrieve invoice from ksef  
 - [ ] API keys  
 - [ ] Review security architecture  
 - [ ] SSO/Enrolment  
