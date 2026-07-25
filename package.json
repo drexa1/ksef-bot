@@ -1,0 +1,36 @@
+{
+    "name": "ksef-bot",
+    "version": "1.0.0",
+    "description": "Invoicing automation for KSeF",
+    "keywords": ["KSeF", "Invoicing", "Automation", "Poland"],
+    "homepage": "https://github.com/drexa1/ksef-bot#readme",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/drexa1/ksef-bot.git"
+    },
+    "author": "drexa1",
+    "scripts": {
+        "client:build": "vite build",
+        "client:dev": "npm run client:build && vite --port 3000",
+        "client:test": "vitest",
+
+        "worker-ksef:dev": "npm run client:build && wrangler dev --config wrangler.worker-ksef.toml --port 3001",
+        "worker-ksef:deploy": "npm run client:build && wrangler deploy --config wrangler.worker-mfcc.toml",
+        "worker-ksef:logs": "wrangler tail ksef-bot"
+    },
+    "dependencies": {
+        "@sentry/cli": "latest",
+        "jose": "latest",
+        "vite": "latest",
+        "wrangler": "latest"
+    },
+    "devDependencies": {
+        "@cloudflare/workers-types": "latest",
+        "@sentry/cloudflare": "latest",
+        "@sentry/tracing": "latest",
+        "@types/bootstrap": "latest",
+        "typescript": "latest",
+        "vitest": "latest",
+        "wasm-pack": "latest"
+    }
+}

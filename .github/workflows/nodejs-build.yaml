@@ -1,0 +1,45 @@
+name: Node.js build
+run-name: Node.js build
+
+on:
+  push:
+    branches: [ main ]
+    paths-ignore:
+      - ".github/**"
+      - "BACKLOG.md"
+      - "wrangler.worker-ksef.toml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  nodejs-build:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: "npm"
+      - name: Dependencies cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: npm-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            npm-${{ runner.os }}-
+      - name: Install dependencies
+        run: npm ci --include=dev
+      - name: npm build
+        env:
+          SENTRY_RELEASE: ${{ github.sha }}
+        run: npm run build
+      - name: Deploy
+        if: false  # Disabled. Deployment at Cloudflare
+        run: |
+          git remote set-url origin https://git:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
+          npm run deploy -- -u "github-actions-bot <support+actions@github.com>"

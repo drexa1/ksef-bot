@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "target": "es2020",
+    "lib": ["es2020", "dom"],
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "rootDir": ".",
+    "outDir": "dist",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "types": ["@cloudflare/workers-types", "bootstrap"],
+    "paths": { "@wasm/*": ["./wasm/*"] }
+  },
+    "include": [
+      "src/**/*",
+      "tests/**/*",
+      "worker/**/*"
+    ],
+  "exclude": ["node_modules"]
+}

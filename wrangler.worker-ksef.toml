@@ -1,0 +1,23 @@
+name = "ksef-bot"
+main = "worker-ksef/ksef.worker.ts"
+compatibility_date = "2026-01-01"
+
+[vars]
+ENVIRONMENT = "cloudflare"
+# ...Rest of required env coming from Cloudflare secrets
+
+[observability.logs]
+enabled = true
+invocation_logs = true
+[observability.traces]
+enabled = true
+
+# Deploy some of the static assets for the /docs
+[assets]
+binding = "favicon"
+directory = "./public/assets/favicon"
+
+[[kv_namespaces]]
+binding="KSeF"
+id="9bce8bc3d7dd434db28df0cb0d9181f8"
+remote = true

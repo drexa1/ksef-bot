@@ -4,8 +4,9 @@
 - [ ] Retrieve invoice from ksef  
 - [ ] CI  
 - [ ] Deployment to CF  
-- [ ] CF arrangements  
+- [ ] CF arrangements
 - [ ] API keys  
+- [ ] Review security architecture  
 - [ ] SSO/Enrolment  
 - [ ] Invoicees DB  
 - [ ] Ultra simple frontend  
