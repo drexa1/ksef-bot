@@ -2,13 +2,13 @@
 
 - [x] Project scaffolding  
 - [x] CI  
-- [ ] Deployment to CF  
-- [ ] CF arrangements  
-- [ ] Google Analytics  
-- [ ] Retrieve invoice from ksef  
+- [x] Deployment to CF  
+- [ ] CF zero trust  
 - [ ] API keys  
-- [ ] Review security architecture  
 - [ ] SSO/Enrolment  
+- [ ] Review security architecture  
+- [ ] Google Analytics  
+- [ ] Retrieve invoice from ksef
 - [ ] Invoicees DB  
 - [ ] Ultra simple frontend  
 - [ ] WhatsApp bot  

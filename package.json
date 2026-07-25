@@ -15,7 +15,7 @@
         "client:test": "vitest",
 
         "worker-ksef:dev": "npm run client:build && wrangler dev --config wrangler.worker-ksef.toml --port 3001",
-        "worker-ksef:deploy": "npm run client:build && wrangler deploy --config wrangler.worker-mfcc.toml",
+        "worker-ksef:deploy": "npm run client:build && wrangler deploy --config wrangler.worker-ksef.toml",
         "worker-ksef:logs": "wrangler tail ksef-bot"
     },
     "dependencies": {

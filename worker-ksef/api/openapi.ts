@@ -1,7 +1,7 @@
 export const openApiSpec = {
     openapi: "3.0.0",
     info: {
-        title: "vectors-api",
+        title: "ksef-bot-api",
         version: "1.0.0"
     },
     components: {
