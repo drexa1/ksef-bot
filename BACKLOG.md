@@ -7,4 +7,7 @@
 - [ ] CF arrangements  
 - [ ] API keys  
 - [ ] SSO/Enrolment  
+- [ ] Invoicees DB  
+- [ ] Ultra simple frontend  
+- [ ] WhatsApp bot  
 - [ ] Post invoice  
