@@ -1,0 +1,7 @@
+.idea
+.wrangler
+build
+dist
+node_modules
+target
+API_KEY
