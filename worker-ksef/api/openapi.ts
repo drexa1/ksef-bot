@@ -172,17 +172,11 @@ export const swaggerHtml = `
 	<html lang="en">
 		<head>
 			<title>API docs</title>
-			<link
-				rel="stylesheet"
-				href="https://unpkg.com/swagger-ui-dist/swagger-ui.css"
-			/>
+			<link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist/swagger-ui.css"/>
 		</head>
-
 		<body>
 			<div id="swagger-ui"></div>
-
 			<script src="https://unpkg.com/swagger-ui-dist/swagger-ui-bundle.js"></script>
-
 			<script>
 				// noinspection JSUnresolvedVariable
 				SwaggerUIBundle({
