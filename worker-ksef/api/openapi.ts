@@ -72,7 +72,7 @@ export const openApiSpec = {
             },
             post: {
                 summary: "Submit new invoice to KSeF",
-                tags: ["Invoices"],
+                tags: ["KSeF"],
                 requestBody: {
                     required: true,
                     content: {
