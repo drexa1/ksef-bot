@@ -17,7 +17,8 @@ enabled = true
 binding = "assets"
 directory = "./dist"
 
-[[kv_namespaces]]
-binding="KSeF"
-id="9bce8bc3d7dd434db28df0cb0d9181f8"
+[[d1_databases]]
+binding = "D1"
+database_name = "ksef-bot"
+database_id = "d54f4ce1-28fb-4d99-bbb4-e11387753fc7"
 remote = true
