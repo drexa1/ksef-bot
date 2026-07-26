@@ -17,7 +17,7 @@ export const openApiSpec = {
     tags: [
         {name: "Health"},
         {name: "Auth"},
-        {name: "Invoices"},
+        {name: "KSeF"},
         {name: "DB"}
     ],
     paths: {
@@ -30,6 +30,7 @@ export const openApiSpec = {
                 }
             }
         },
+
         "/whoami": {
             get: {
                 summary: "Get current authenticated user",
@@ -46,8 +47,8 @@ export const openApiSpec = {
                                         user: {
                                             type: "object",
                                             properties: {
-                                                name: { type: "string" },
-                                                email: { type: "string" }
+                                                name: {type: "string"},
+                                                email: {type: "string"}
                                             }
                                         }
                                     }
@@ -55,41 +56,22 @@ export const openApiSpec = {
                             }
                         }
                     },
-                    "401": { description: "Unauthorized" },
-                    "500": { description: "Failed to decode JWT" }
+                    "401": {description: "Unauthorized"},
+                    "500": {description: "Failed to decode JWT"}
                 }
             }
         },
-        "/invoices": {
+        "/ksef": {
             get: {
-                summary: "Get invoice by ID",
-                tags: ["Invoices"],
-                parameters: [
-                    {
-                        name: "invoiceId",
-                        in: "query",
-                        required: true,
-                        schema: {type: "string"}
-                    }
-                ],
+                summary: "List invoices from KSeF",
+                tags: ["KSeF"],
                 responses: {
-                    "200": {
-                        description: "Invoice found",
-                        content: {
-                            "application/json": {
-                                schema: {
-                                    type: "array",
-                                    items: {type: "object"}
-                                }
-                            }
-                        }
-                    },
-                    "401": {description: "Unauthorized"},
-                    "404": {description: "Invoice not found"}
+                    "200": {description: "Invoices found"},
+                    "401": {description: "Unauthorized"}
                 }
             },
             post: {
-                summary: "Submit new invoice",
+                summary: "Submit new invoice to KSeF",
                 tags: ["Invoices"],
                 requestBody: {
                     required: true,
@@ -99,10 +81,9 @@ export const openApiSpec = {
                                 type: "object",
                                 required: ["invoice"],
                                 properties: {
-                                    mfcc: {
+                                    invoice: {
                                         type: "object",
-                                        additionalProperties: {type: "string"},
-                                        description: "XML with the invoice"
+                                        description: "Invoice payload"
                                     }
                                 }
                             }
@@ -116,99 +97,72 @@ export const openApiSpec = {
                 }
             }
         },
-        "/db": {
+        "/db/invoices": {
             get: {
-                summary: "Get KV value by invoiceId or list keys",
+                summary: "Get invoices from database",
                 tags: ["DB"],
                 parameters: [
                     {
                         name: "invoiceId",
                         in: "query",
                         required: false,
-                        schema: {type: "string"},
-                        description: "The key/invoiceId to look up in KV storage"
+                        schema: {
+                            type: "string"
+                        }
                     }
                 ],
                 responses: {
-                    "200": {
-                        description: "KV stringified data or list results returned",
-                        content: {
-                            "application/json": {
-                                schema: {
-                                    type: "object"
-                                }
-                            }
-                        }
-                    },
+                    "200": {description: "Invoice records"},
                     "401": {description: "Unauthorized"},
                     "404": {description: "Invoice not found"}
                 }
             },
-            put: {
-                summary: "Upsert metadata into KV namespace",
+            post: {
+                summary: "Create invoice database record",
                 tags: ["DB"],
-                requestBody: {
-                    required: true,
-                    content: {
-                        "application/json": {
-                            schema: {
-                                type: "object",
-                                required: ["id"],
-                                properties: {
-                                    id: {type: "string"},
-                                    values: {
-                                        type: "object",
-                                        additionalProperties: {type: "number"}
-                                    },
-                                    metadata: {
-                                        type: "object",
-                                        additionalProperties: true
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
                 responses: {
-                    "200": {description: "KV put operation acknowledged"},
+                    "200": {description: "Invoice stored"},
                     "401": {description: "Unauthorized"}
                 }
-            },
-            delete: {
-                summary: "Delete KV value by invoiceId",
+            }
+        },
+        "/db/customers": {
+            get: {
+                summary: "Get customers",
                 tags: ["DB"],
-                parameters: [
-                    {
-                        name: "invoiceId",
-                        in: "query",
-                        required: false,
-                        schema: {type: "string"}
-                    }
-                ],
                 responses: {
-                    "200": {description: "KV delete operation acknowledged"},
+                    "200": {description: "Customer records"},
                     "401": {description: "Unauthorized"},
-                    "404": {description: "Invoice not found"}
+                    "404": {description: "Customer not found"}
+                }
+            },
+            post: {
+                summary: "Create customer",
+                tags: ["DB"],
+                responses: {
+                    "200": {description: "Customer created"},
+                    "401": {description: "Unauthorized"}
+                }
+            }
+        },
+        "/db/taxes": {
+            get: {
+                summary: "Get tax definitions",
+                tags: ["DB"],
+                responses: {
+                    "200": {description: "Tax records"},
+                    "401": {description: "Unauthorized"},
+                    "404": {description: "Tax record not found"}
+                }
+            },
+            post: {
+                summary: "Create tax record",
+                tags: ["DB"],
+                responses: {
+                    "200": {description: "Tax record created"},
+                    "401": {description: "Unauthorized"}
                 }
             }
         }
     }
 };
-
-export const swaggerHtml = `
-    <!DOCTYPE html>
-    <html lang="en">
-        <head>
-            <title>API docs</title>
-            <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist/swagger-ui.css" />
-        </head>
-        <body>
-            <div id="swagger-ui"></div>
-            <script src="https://unpkg.com/swagger-ui-dist/swagger-ui-bundle.js"></script>
-            <script>
-                // noinspection JSUnresolvedVariable
-                SwaggerUIBundle({ url: "/openapi.json", dom_id: "#swagger-ui" });
-            </script>
-        </body>
-    </html>
-`;
