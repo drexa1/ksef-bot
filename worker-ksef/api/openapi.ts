@@ -143,6 +143,59 @@ export const openApiSpec = {
                     "200": {description: "Customer created"},
                     "401": {description: "Unauthorized"}
                 }
+            },
+            put: {
+                summary: "Update customer",
+                tags: ["DB"],
+                parameters: [
+                    {
+                        name: "customerId",
+                        in: "path",
+                        required: true,
+                        schema: {
+                            type: "string"
+                        }
+                    }
+                ],
+                requestBody: {
+                    required: true,
+                    content: {
+                        "application/json": {
+                            schema: {
+                                type: "object",
+                                properties: {
+                                    name: {type: "string"},
+                                    nip: {type: "string"},
+                                    email: {type: "string"}
+                                }
+                            }
+                        }
+                    }
+                },
+                responses: {
+                    "200": {description: "Customer updated"},
+                    "401": {description: "Unauthorized"},
+                    "404": {description: "Customer not found"}
+                }
+            },
+            delete: {
+                summary: "Delete customer",
+                tags: ["DB"],
+                parameters: [
+                    {
+                        name: "customerId",
+                        in: "path",
+                        required: true,
+                        schema: {
+                            type: "string"
+                        }
+                    }
+                ],
+                responses: {
+                    "200": {description: "Customer deleted"},
+                    "401": {description: "Unauthorized"},
+                    "404": {description: "Customer not found"}
+                }
             }
         },
         "/db/taxes": {
