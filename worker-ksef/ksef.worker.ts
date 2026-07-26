@@ -1,10 +1,10 @@
+import {D1Database} from "@cloudflare/workers-types"
 import {Method, routes} from "./routes";
 import {corsHeaders, auth, withCors} from "./auth";
 
 export interface Env {
     ENVIRONMENT: "dev" | "cloudflare";
-    // WHO_SPEAKS: KVNamespace;
-    // VECTORIZE: VectorizeIndex;
+    D1: D1Database;
     API_KEY: string;
 }
 
