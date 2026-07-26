@@ -18,7 +18,7 @@ export const openApiSpec = {
         {name: "Health"},
         {name: "Auth"},
         {name: "Invoices"},
-        {name: "KV"}
+        {name: "DB"}
     ],
     paths: {
         "/health": {
@@ -116,10 +116,10 @@ export const openApiSpec = {
                 }
             }
         },
-        "/kv": {
+        "/db": {
             get: {
                 summary: "Get KV value by invoiceId or list keys",
-                tags: ["KV"],
+                tags: ["DB"],
                 parameters: [
                     {
                         name: "invoiceId",
@@ -146,7 +146,7 @@ export const openApiSpec = {
             },
             put: {
                 summary: "Upsert metadata into KV namespace",
-                tags: ["KV"],
+                tags: ["DB"],
                 requestBody: {
                     required: true,
                     content: {
@@ -176,7 +176,7 @@ export const openApiSpec = {
             },
             delete: {
                 summary: "Delete KV value by invoiceId",
-                tags: ["KV"],
+                tags: ["DB"],
                 parameters: [
                     {
                         name: "invoiceId",
