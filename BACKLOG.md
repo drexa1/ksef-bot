@@ -3,7 +3,7 @@
 - [x] Project scaffolding  
 - [x] CI  
 - [x] Deployment to CF  
-- [ ] CF zero trust  
+- [x] CF zero trust  
 - [ ] API keys  
 - [ ] SSO/Enrolment  
 - [ ] Review security architecture  

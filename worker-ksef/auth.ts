@@ -30,7 +30,7 @@ export async function auth(req: Request, env: Env): Promise<boolean> {
         case "/whoami":
         case "/invoices":
         case "/kv":
-            // Client worker made it through Zero Trust, anything else demand API key
+            // Potential client worker made it through Zero Trust, anything else demand API key
             return req.headers.get("Cf-KSeF-Bot-Jwt") ? true : req.headers.get("X-API-Key") === env.API_KEY;
         // Default
         default:

@@ -10,7 +10,7 @@ export type Method = "GET" | "POST" | "PUT" | "DELETE" | "OPTIONS";
 export type Route = (req: Request, env: Env) => Promise<Response>;
 
 export const routes: Record<string, Routes> =  {
-    "/":             { GET: async (req: Request) => Response.redirect(new URL("/swagger", req.url).toString(), 302) },
+    // Don't use redirection at root, in this case we serve the static assets
     "/openapi.json": { GET: async () => Response.json(openApiSpec) },
     "/swagger":      { GET: async () => new Response(swaggerHtml, { headers: { "Content-Type": "text/html" }}) },
     "/docs":         { GET: async () => new Response(scalarHtml, { headers: { "Content-Type": "text/html" }}) },
