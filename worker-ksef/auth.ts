@@ -28,8 +28,8 @@ export async function auth(req: Request, env: Env): Promise<boolean> {
             return true;
         // Protected routes
         case "/whoami":
-        case "/invoices":
-        case "/kv":
+        case "/ksef":
+        case "/db":
             // Potential client worker made it through Zero Trust, anything else demand API key
             return req.headers.get("Cf-KSeF-Bot-Jwt") ? true : req.headers.get("X-API-Key") === env.API_KEY;
         // Default
