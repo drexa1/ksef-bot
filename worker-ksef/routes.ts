@@ -3,7 +3,7 @@ import {openApiSpec, swaggerHtml} from "./api/openapi";
 import {scalarHtml} from "./api/scalar";
 import {get as healthGET} from "./routes/health";
 import {whoami as whoamiGET} from "./auth";
-import {get as invoicesGET, post as invoicesPOST} from "./routes/ksef";
+import {get as invoicesGET, post as invoicesPOST} from "./routes/invoices";
 
 export type Routes = Partial<Record<Method, Route>>;
 export type Method = "GET" | "POST" | "PUT" | "DELETE" | "OPTIONS";
