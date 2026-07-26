@@ -4,8 +4,8 @@ import {corsHeaders, auth, withCors} from "./auth";
 
 export interface Env {
     ENVIRONMENT: "dev" | "cloudflare";
-    D1: D1Database;
     API_KEY: string;
+    D1: D1Database;
 }
 
 // noinspection JSUnusedGlobalSymbols

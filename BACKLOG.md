@@ -4,15 +4,18 @@
 - [x] CI  
 - [x] Deployment to CF  
 - [x] CF zero trust  
-- [ ] API keys  
+- [x] API keys  
+- [ ] DB backend  
+- [ ] DB schemas  
 - [ ] SSO/Enrolment  
 - [ ] Review security architecture  
-- [ ] Google Analytics  
-- [ ] Retrieve invoice from ksef
+- [ ] Retrieve invoice from ksef  
 - [ ] Invoicees DB  
 - [ ] Ultra simple frontend  
 - [ ] Transparency disclaimer / no Ai  
 - [ ] WhatsApp bot  
 - [ ] Post invoice  
 - [ ] UI theming  
+- [ ] Go public  
+- [ ] Google Analytics  
 - [ ] Marketing outreach  
