@@ -16,7 +16,10 @@
 
         "worker-ksef:dev": "npm run client:build && wrangler dev --config wrangler.worker-ksef.toml --port 3001",
         "worker-ksef:deploy": "npm run client:build && wrangler deploy --config wrangler.worker-ksef.toml",
-        "worker-ksef:logs": "wrangler tail ksef-bot"
+        "worker-ksef:logs": "wrangler tail ksef-bot",
+
+        "db:remote:teardown": "wrangler d1 execute ksef-bot --file=db/teardown.sql --remote",
+        "db:remote:create": "wrangler d1 execute ksef-bot --file=db/schema.sql --remote"
     },
     "dependencies": {
         "@sentry/cli": "latest",

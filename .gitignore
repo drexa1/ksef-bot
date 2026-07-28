@@ -1,6 +1,7 @@
 .idea
 .wrangler
 build
+data
 dist
 node_modules
 target

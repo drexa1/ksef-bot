@@ -1,0 +1,454 @@
+{
+  "type": "record",
+  "name": "Faktura",
+  "namespace": "pl.ksef.fa3",
+  "doc": "Polish KSeF FA(3) invoice document.",
+  "fields": [
+    {
+      "name": "Naglowek",
+      "aliases": ["Header"],
+      "type": {
+        "type": "record",
+        "name": "Naglowek",
+        "doc": "Invoice XML header information.",
+        "fields": [
+          {
+            "name": "KodFormularza",
+            "aliases": ["FormCode"],
+            "type": {
+              "type": "record",
+              "name": "KodFormularza",
+              "doc": "Invoice form identifier and schema information.",
+              "fields": [
+                {
+                  "name": "value",
+                  "aliases": ["value"],
+                  "type": "string",
+                  "doc": "Form code value, e.g. FA."
+                },
+                {
+                  "name": "kodSystemowy",
+                  "aliases": ["systemCode"],
+                  "type": "string",
+                  "doc": "System identifier of the form, e.g. FA (3)."
+                },
+                {
+                  "name": "wersjaSchemy",
+                  "aliases": ["schemaVersion"],
+                  "type": "string",
+                  "doc": "Schema version used to generate the invoice."
+                }
+              ]
+            }
+          },
+          {
+            "name": "WariantFormularza",
+            "aliases": ["FormVariant"],
+            "type": "int",
+            "doc": "Invoice form variant number."
+          },
+          {
+            "name": "DataWytworzeniaFa",
+            "aliases": ["InvoiceCreationDate"],
+            "type": "string",
+            "doc": "Timestamp when the invoice file was created."
+          },
+          {
+            "name": "SystemInfo",
+            "aliases": ["SystemInfo"],
+            "type": "string",
+            "doc": "Application or system that generated the invoice."
+          }
+        ]
+      }
+    },
+    {
+      "name": "Podmiot1",
+      "aliases": ["Seller"],
+      "type": {
+        "type": "record",
+        "name": "Podmiot1",
+        "doc": "Seller information.",
+        "fields": [
+          {
+            "name": "DaneIdentyfikacyjne",
+            "aliases": ["IdentificationData"],
+            "type": {
+              "type": "record",
+              "name": "SellerIdentification",
+              "fields": [
+                {
+                  "name": "NIP",
+                  "aliases": ["NIP"],
+                  "type": "string",
+                  "doc": "Seller Polish tax identification number."
+                },
+                {
+                  "name": "Nazwa",
+                  "aliases": ["Name"],
+                  "type": "string",
+                  "doc": "Seller name."
+                }
+              ]
+            }
+          },
+          {
+            "name": "Adres",
+            "aliases": ["Address"],
+            "type": {
+              "type": "record",
+              "name": "SellerAddress",
+              "fields": [
+                {
+                  "name": "KodKraju",
+                  "aliases": ["CountryCode"],
+                  "type": "string",
+                  "doc": "Seller country code."
+                },
+                {
+                  "name": "AdresL1",
+                  "aliases": ["AddressLine1"],
+                  "type": "string",
+                  "doc": "Seller address formatted as a single line."
+                }
+              ]
+            }
+          },
+          {
+            "name": "DaneKontaktowe",
+            "aliases": ["ContactData"],
+            "type": [
+              "null",
+              {
+                "type": "record",
+                "name": "SellerContact",
+                "fields": []
+              }
+            ],
+            "default": null,
+            "doc": "Seller contact information."
+          }
+        ]
+      }
+    },
+    {
+      "name": "Podmiot2",
+      "aliases": ["Buyer"],
+      "type": {
+        "type": "record",
+        "name": "Podmiot2",
+        "doc": "Buyer information.",
+        "fields": [
+          {
+            "name": "DaneIdentyfikacyjne",
+            "aliases": ["IdentificationData"],
+            "type": {
+              "type": "record",
+              "name": "BuyerIdentification",
+              "fields": [
+                {
+                  "name": "NIP",
+                  "aliases": ["NIP"],
+                  "type": "string",
+                  "doc": "Buyer Polish tax identification number."
+                },
+                {
+                  "name": "Nazwa",
+                  "aliases": ["Name"],
+                  "type": "string",
+                  "doc": "Buyer name."
+                }
+              ]
+            }
+          },
+          {
+            "name": "Adres",
+            "aliases": ["Address"],
+            "type": {
+              "type": "record",
+              "name": "BuyerAddress",
+              "fields": [
+                {
+                  "name": "KodKraju",
+                  "aliases": ["CountryCode"],
+                  "type": "string",
+                  "doc": "Buyer country code."
+                },
+                {
+                  "name": "AdresL1",
+                  "aliases": ["AddressLine1"],
+                  "type": "string",
+                  "doc": "Buyer address formatted as a single line."
+                }
+              ]
+            }
+          },
+          {
+            "name": "JST",
+            "aliases": ["LocalGovernmentEntity"],
+            "type": ["null", "int"],
+            "default": null,
+            "doc": "Indicator identifying local government entity status."
+          },
+          {
+            "name": "GV",
+            "aliases": ["GovernmentUnit"],
+            "type": ["null", "int"],
+            "default": null,
+            "doc": "Indicator identifying government unit status."
+          }
+        ]
+      }
+    },
+    {
+      "name": "Fa",
+      "aliases": ["InvoiceBody"],
+      "type": {
+        "type": "record",
+        "name": "Fa",
+        "doc": "Invoice body.",
+        "fields": [
+          {
+            "name": "KodWaluty",
+            "aliases": ["CurrencyCode"],
+            "type": "string",
+            "doc": "Invoice currency code."
+          },
+          {
+            "name": "P_1",
+            "aliases": ["IssueDate"],
+            "type": "string",
+            "doc": "Invoice issue date."
+          },
+          {
+            "name": "P_1M",
+            "aliases": ["IssueLocation"],
+            "type": "string",
+            "doc": "Invoice issue location."
+          },
+          {
+            "name": "P_2",
+            "aliases": ["InvoiceNumber"],
+            "type": "string",
+            "doc": "Invoice number."
+          },
+          {
+            "name": "P_6",
+            "aliases": ["ServiceDate"],
+            "type": "string",
+            "doc": "Date of sale or service completion."
+          },
+          {
+            "name": "P_13_1",
+            "aliases": ["TotalNetAmount"],
+            "type": "double",
+            "doc": "Total net amount."
+          },
+          {
+            "name": "P_14_1",
+            "aliases": ["TotalVatAmount"],
+            "type": "double",
+            "doc": "Total VAT amount."
+          },
+          {
+            "name": "P_15",
+            "aliases": ["TotalGrossAmount"],
+            "type": "double",
+            "doc": "Total gross invoice amount."
+          },
+          {
+            "name": "Adnotacje",
+            "aliases": ["Annotations"],
+            "type": {
+              "type": "record",
+              "name": "Adnotacje",
+              "doc": "Invoice tax annotations and special conditions.",
+              "fields": [
+                {
+                  "name": "P_16",
+                  "aliases": ["CashAccounting"],
+                  "type": "int",
+                  "doc": "Cash accounting indicator."
+                },
+                {
+                  "name": "P_17",
+                  "aliases": ["SelfBilling"],
+                  "type": "int",
+                  "doc": "Self-billing indicator."
+                },
+                {
+                  "name": "P_18",
+                  "aliases": ["ReverseCharge"],
+                  "type": "int",
+                  "doc": "Reverse charge indicator."
+                },
+                {
+                  "name": "P_18A",
+                  "aliases": ["SplitPayment"],
+                  "type": "int",
+                  "doc": "Split payment indicator."
+                },
+                {
+                  "name": "Zwolnienie",
+                  "aliases": ["Exemption"],
+                  "type": {
+                    "type": "record",
+                    "name": "Zwolnienie",
+                    "fields": [
+                      {
+                        "name": "P_19N",
+                        "aliases": ["VatExemption"],
+                        "type": "int",
+                        "doc": "VAT exemption indicator."
+                      }
+                    ]
+                  }
+                },
+                {
+                  "name": "NoweSrodkiTransportu",
+                  "aliases": ["NewMeansOfTransport"],
+                  "type": {
+                    "type": "record",
+                    "name": "NoweSrodkiTransportu",
+                    "fields": [
+                      {
+                        "name": "P_22N",
+                        "aliases": ["NewTransport"],
+                        "type": "int",
+                        "doc": "New means of transport indicator."
+                      }
+                    ]
+                  }
+                },
+                {
+                  "name": "P_23",
+                  "aliases": ["SpecialVatTransaction"],
+                  "type": "int",
+                  "doc": "Special VAT transaction indicator."
+                },
+                {
+                  "name": "PMarzy",
+                  "aliases": ["MarginScheme"],
+                  "type": {
+                    "type": "record",
+                    "name": "PMarzy",
+                    "fields": [
+                      {
+                        "name": "P_PMarzyN",
+                        "aliases": ["MarginSchemeIndicator"],
+                        "type": "int",
+                        "doc": "Margin scheme indicator."
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "name": "RodzajFaktury",
+            "aliases": ["InvoiceType"],
+            "type": "string",
+            "doc": "Invoice type, for example VAT."
+          },
+          {
+            "name": "FaWiersz",
+            "aliases": ["InvoiceLines"],
+            "type": {
+              "type": "array",
+              "items": {
+                "type": "record",
+                "name": "FaWiersz",
+                "doc": "Single invoice line item.",
+                "fields": [
+                  {
+                    "name": "NrWierszaFa",
+                    "aliases": ["LineNumber"],
+                    "type": "int",
+                    "doc": "Invoice line number."
+                  },
+                  {
+                    "name": "P_7",
+                    "aliases": ["ItemDescription"],
+                    "type": "string",
+                    "doc": "Name or description of goods or services."
+                  },
+                  {
+                    "name": "P_8A",
+                    "aliases": ["UnitOfMeasure"],
+                    "type": "string",
+                    "doc": "Unit of measure."
+                  },
+                  {
+                    "name": "P_8B",
+                    "aliases": ["Quantity"],
+                    "type": "double",
+                    "doc": "Quantity."
+                  },
+                  {
+                    "name": "P_9A",
+                    "aliases": ["UnitPriceNet"],
+                    "type": "double",
+                    "doc": "Net unit price."
+                  },
+                  {
+                    "name": "P_11",
+                    "aliases": ["LineNetValue"],
+                    "type": "double",
+                    "doc": "Net line value."
+                  },
+                  {
+                    "name": "P_11Vat",
+                    "aliases": ["LineVatAmount"],
+                    "type": "double",
+                    "doc": "VAT amount for the line."
+                  },
+                  {
+                    "name": "P_12",
+                    "aliases": ["VatRate"],
+                    "type": "double",
+                    "doc": "VAT rate percentage."
+                  }
+                ]
+              }
+            },
+            "doc": "Invoice line items."
+          },
+          {
+            "name": "Platnosc",
+            "aliases": ["Payment"],
+            "type": {
+              "type": "record",
+              "name": "Platnosc",
+              "doc": "Invoice payment information.",
+              "fields": [
+                {
+                  "name": "TerminPlatnosci",
+                  "aliases": ["PaymentDueDate"],
+                  "type": {
+                    "type": "record",
+                    "name": "TerminPlatnosci",
+                    "fields": [
+                      {
+                        "name": "Termin",
+                        "aliases": ["DueDate"],
+                        "type": "string",
+                        "doc": "Payment due date."
+                      }
+                    ]
+                  }
+                },
+                {
+                  "name": "FormaPlatnosci",
+                  "aliases": ["PaymentMethod"],
+                  "type": "int",
+                  "doc": "Payment method code."
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

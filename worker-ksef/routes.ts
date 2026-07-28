@@ -17,5 +17,6 @@ export const routes: Record<string, Routes> =  {
     "/health":       { GET: healthGET },
     // Requiring authentication
     "/whoami":       { GET: whoamiGET },
-    "/invoices":     { GET: invoicesGET, POST: invoicesPOST }
+    "/ksef":         { GET: invoicesGET, POST: invoicesPOST },
+    "/db":            {  }
 };

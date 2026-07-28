@@ -5,12 +5,11 @@
 - [x] Deployment to CF  
 - [x] CF zero trust  
 - [x] API keys  
+- [x] DB schemas  
 - [ ] DB backend  
-- [ ] DB schemas  
 - [ ] SSO/Enrolment  
 - [ ] Review security architecture  
-- [ ] Retrieve invoice from ksef  
-- [ ] Invoicees DB  
+- [ ] Retrieve invoice from ksef
 - [ ] Ultra simple frontend  
 - [ ] Transparency disclaimer / no Ai  
 - [ ] WhatsApp bot  
