@@ -21,8 +21,8 @@ export const openApiSpec = {
                     email: { type: "string" },
                     name: { type: "string" },
                     api_key: { type: "string" },
-                    created_at: { type: "string" },
-                    updated_at: { type: "string" }
+                    created_at: { type: "string", format: "date-time" },
+                    updated_at: { type: "string", format: "date-time" }
                 }
             },
             Invoice: {
@@ -36,8 +36,8 @@ export const openApiSpec = {
                     country_code: { type: "string" },
                     raw_xml: { type: "string" },
                     json_data: { type: "string" },
-                    created_at: { type: "string" },
-                    updated_at: { type: "string" }
+                    created_at: { type: "string", format: "date-time" },
+                    updated_at: { type: "string", format: "date-time" }
                 }
             },
             Counterparty: {
@@ -50,13 +50,17 @@ export const openApiSpec = {
                     pesel: { type: "string" },
                     regon: { type: "string" },
                     internal_identifier: { type: "string" },
-                    country_code: { type: "string" },
-                    address: { type: "string" },
+                    country_code: {
+                        type: "string",
+                        default: "PL"
+                    },
+                    address_l1: { type: "string" },
+                    address_l2: { type: "string" },
                     local_government_unit: { type: "integer" },
                     vat_group: { type: "integer" },
                     notes: { type: "string" },
-                    created_at: { type: "string" },
-                    updated_at: { type: "string" }
+                    created_at: { type: "string", format: "date-time" },
+                    updated_at: { type: "string", format: "date-time" }
                 }
             }
         }

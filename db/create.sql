@@ -18,7 +18,8 @@ CREATE TABLE IF NOT EXISTS counterparties (
     internal_identifier TEXT,
     -- Address
     country_code TEXT DEFAULT 'PL',
-    address TEXT NOT NULL,
+    address_l1 TEXT NOT NULL,
+    address_l2 TEXT,
     -- Counterparty metadata
     local_government_unit INTEGER NOT NULL,
     vat_group INTEGER NOT NULL,

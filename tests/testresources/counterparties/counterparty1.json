@@ -1,10 +1,9 @@
 {
-  "id": "counterparty-from-invoice",
+  "id": "5426459",
   "name": "Virtus Lab sp. z o.o.",
-  "nip": "5170312965",
-  "country_code": "PL",
-  "address": "15/32, 30-638 Kraków",
-  "local_government_unit": 0,
-  "vat_group": 0,
-  "notes": "test notes"
+  "NIP": "5170312965",
+  "address_l1": "Kraków, 31-153, Szlak 49",
+  "local_government_unit": 2,
+  "vat_group": 2,
+  "notes": "test"
 }
