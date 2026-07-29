@@ -1,0 +1,16 @@
+#@no-redirect
+@baseUrl = http://localhost:3001
+@apiKey = test
+
+### Create counterparty for the first time
+POST {{baseUrl}}/db/counterparties
+Content-Type: application/json
+X-API-Key: {{apiKey}}
+<< ./../../testresources/counterparties/invoice-1.json
+
+### Second create attempt whould trigger PK violation error
+POST {{baseUrl}}/db/counterparties
+Content-Type: application/json
+X-API-Key: {{apiKey}}
+<< ./../../testresources/counterparties/invoice-1.json
+

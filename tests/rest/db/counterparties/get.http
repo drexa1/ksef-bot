@@ -1,0 +1,19 @@
+#@no-redirect
+@baseUrl = http://localhost:3002
+@apiKey = test
+@counterpartyId = counterparty-from-invoice
+
+### List all
+GET {{baseUrl}}/db/counterparties
+Content-Type: application/json
+X-API-Key: {{apiKey}}
+
+### List by Id
+GET {{baseUrl}}/db/counterparties?id={{counterpartyId}}
+Content-Type: application/json
+X-API-Key: {{apiKey}}
+
+### List by wrong Id
+GET {{baseUrl}}/db/counterparties?id=error
+Content-Type: application/json
+X-API-Key: {{apiKey}}
