@@ -16,9 +16,10 @@ CREATE TABLE IF NOT EXISTS counterparties (
     pesel TEXT,
     regon TEXT,
     internal_identifier TEXT,
-    -- Address details
+    -- Address
     country_code TEXT DEFAULT 'PL',
     address TEXT NOT NULL,
+    -- Counterparty metadata
     local_government_unit INTEGER NOT NULL,
     vat_group INTEGER NOT NULL,
     notes TEXT,
