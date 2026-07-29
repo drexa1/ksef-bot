@@ -176,7 +176,7 @@ export const openApiSpec = {
                     }
                 },
                 responses: {
-                    "200": { description: "User stored" },
+                    "200": { description: "User created" },
                     "401": { description: "Unauthorized" }
                 }
             },
@@ -231,7 +231,7 @@ export const openApiSpec = {
                     }
                 },
                 responses: {
-                    "200": { description: "Invoice stored" },
+                    "200": { description: "Invoice created" },
                     "401": { description: "Unauthorized" }
                 }
             },
