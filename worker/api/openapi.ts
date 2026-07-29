@@ -75,10 +75,7 @@ export const openApiSpec = {
         { name: "Health" },
         { name: "Auth" },
         { name: "KSeF" },
-        { name: "DB" },
-        { name: "Users" },
-        { name: "Invoices" },
-        { name: "Counterparties" }
+        { name: "DB" }
     ],
     paths: {
         "/health": {
@@ -156,19 +153,10 @@ export const openApiSpec = {
                 }
             }
         },
-        "/db": {
-            get: {
-                summary: "List available database entities",
-                tags: ["DB"],
-                responses: {
-                    "200": { description: "Available database entities" }
-                }
-            }
-        },
         "/db/users": {
             get: {
                 summary: "List users",
-                tags: ["Users"],
+                tags: ["DB"],
                 parameters: [{ name: "id", in: "query", required: false, schema: { type: "string" } }],
                 responses: {
                     "200": { description: "User records" },
@@ -178,7 +166,7 @@ export const openApiSpec = {
             },
             post: {
                 summary: "Create or upsert a user",
-                tags: ["Users"],
+                tags: ["DB"],
                 requestBody: {
                     required: true,
                     content: {
@@ -194,7 +182,7 @@ export const openApiSpec = {
             },
             put: {
                 summary: "Update a user",
-                tags: ["Users"],
+                tags: ["DB"],
                 requestBody: {
                     required: true,
                     content: {
@@ -211,7 +199,7 @@ export const openApiSpec = {
             },
             delete: {
                 summary: "Delete a user",
-                tags: ["Users"],
+                tags: ["DB"],
                 parameters: [{ name: "id", in: "query", required: true, schema: { type: "string" } }],
                 responses: {
                     "200": { description: "User deleted" },
@@ -223,7 +211,7 @@ export const openApiSpec = {
         "/db/invoices": {
             get: {
                 summary: "List invoices",
-                tags: ["Invoices"],
+                tags: ["DB"],
                 parameters: [{ name: "id", in: "query", required: false, schema: { type: "string" } }],
                 responses: {
                     "200": { description: "Invoice records" },
@@ -233,7 +221,7 @@ export const openApiSpec = {
             },
             post: {
                 summary: "Create or upsert an invoice",
-                tags: ["Invoices"],
+                tags: ["DB"],
                 requestBody: {
                     required: true,
                     content: {
@@ -249,7 +237,7 @@ export const openApiSpec = {
             },
             put: {
                 summary: "Update an invoice",
-                tags: ["Invoices"],
+                tags: ["DB"],
                 requestBody: {
                     required: true,
                     content: {
@@ -266,7 +254,7 @@ export const openApiSpec = {
             },
             delete: {
                 summary: "Delete an invoice",
-                tags: ["Invoices"],
+                tags: ["DB"],
                 parameters: [{ name: "id", in: "query", required: true, schema: { type: "string" } }],
                 responses: {
                     "200": { description: "Invoice deleted" },
@@ -278,7 +266,7 @@ export const openApiSpec = {
         "/db/counterparties": {
             get: {
                 summary: "List counterparties",
-                tags: ["Counterparties"],
+                tags: ["DB"],
                 parameters: [{ name: "id", in: "query", required: false, schema: { type: "string" } }],
                 responses: {
                     "200": { description: "Counterparty records" },
@@ -288,7 +276,7 @@ export const openApiSpec = {
             },
             post: {
                 summary: "Create or upsert a counterparty",
-                tags: ["Counterparties"],
+                tags: ["DB"],
                 requestBody: {
                     required: true,
                     content: {
@@ -304,7 +292,7 @@ export const openApiSpec = {
             },
             put: {
                 summary: "Update a counterparty",
-                tags: ["Counterparties"],
+                tags: ["DB"],
                 requestBody: {
                     required: true,
                     content: {
@@ -321,7 +309,7 @@ export const openApiSpec = {
             },
             delete: {
                 summary: "Delete a counterparty",
-                tags: ["Counterparties"],
+                tags: ["DB"],
                 parameters: [{ name: "id", in: "query", required: true, schema: { type: "string" } }],
                 responses: {
                     "200": { description: "Counterparty deleted" },
