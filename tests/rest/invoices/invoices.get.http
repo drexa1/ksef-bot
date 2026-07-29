@@ -1,4 +1,0 @@
-# @no-redirect
-GET http://localhost:3002/vectors?vectorId=24e42359-52d6-45f0-b2e3-dda14f687b5d
-Content-Type: application/json
-X-API-Key: test

@@ -1,4 +1,0 @@
-# @no-redirect
-DELETE http://localhost:3002/kv
-Content-Type: application/json
-X-API-Key: test

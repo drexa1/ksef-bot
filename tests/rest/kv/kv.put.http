@@ -1,6 +1,0 @@
-# @no-redirect
-PUT http://localhost:3002/vectors
-Content-Type: application/json
-X-API-Key: test
-
-< ../../testresources/speaker1/kv/sample1.json
