@@ -7,6 +7,7 @@
 - [x] API keys  
 - [x] DB schemas  
 - [ ] DB backend  
+- [ ] DB REST tests  
 - [ ] SSO/Enrolment  
 - [ ] Review security architecture  
 - [ ] Retrieve invoice from ksef
