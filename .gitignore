@@ -4,4 +4,5 @@ build
 dist
 node_modules
 target
+tests/testresources/invoices
 API_KEY
