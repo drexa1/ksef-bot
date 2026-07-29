@@ -1,4 +1,4 @@
-import {Env} from "./ksef.worker";
+import {Env} from "./worker";
 
 export type AuthUser = { name?: string; email?: string };
 

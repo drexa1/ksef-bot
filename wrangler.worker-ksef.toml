@@ -1,5 +1,5 @@
 name = "ksef-bot"
-main = "worker-ksef/ksef.worker.ts"
+main = "worker-ksef/worker.ts"
 compatibility_date = "2026-01-01"
 
 [vars]

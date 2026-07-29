@@ -1,4 +1,4 @@
-import {Env} from "../ksef.worker";
+import {Env} from "../worker";
 import {isOwner} from "../auth";
 
 export async function get(req: Request, env: Env): Promise<Response> {
