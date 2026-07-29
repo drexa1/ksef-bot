@@ -29,7 +29,9 @@ export async function auth(req: Request, env: Env): Promise<boolean> {
         // Protected routes
         case "/whoami":
         case "/ksef":
-        case "/db":
+        case "/db/users":
+        case "/db/invoices":
+        case "/db/counterparties":
             // Potential client worker made it through Zero Trust, anything else demand API key
             return req.headers.get("Cf-KSeF-Bot-Jwt") ? true : req.headers.get("X-API-Key") === env.API_KEY;
         // Default

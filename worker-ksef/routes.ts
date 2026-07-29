@@ -4,6 +4,20 @@ import {scalarHtml} from "./api/scalar";
 import {get as healthGET} from "./routes/health";
 import {whoami as whoamiGET} from "./auth";
 import {get as invoicesGET, post as invoicesPOST} from "./routes/ksef";
+import {
+    usersGET,
+    usersPOST,
+    usersPUT,
+    usersDELETE,
+    invoicesGET as dbInvoicesGET,
+    invoicesPOST as dbInvoicesPOST,
+    invoicesPUT as dbInvoicesPUT,
+    invoicesDELETE as dbInvoicesDELETE,
+    counterpartiesGET,
+    counterpartiesPOST,
+    counterpartiesPUT,
+    counterpartiesDELETE
+} from "./routes/db";
 
 export type Routes = Partial<Record<Method, Route>>;
 export type Method = "GET" | "POST" | "PUT" | "DELETE" | "OPTIONS";
@@ -18,5 +32,10 @@ export const routes: Record<string, Routes> =  {
     // Requiring authentication
     "/whoami":       { GET: whoamiGET },
     "/ksef":         { GET: invoicesGET, POST: invoicesPOST },
-    "/db":            {  }
+    "/db/users":     { GET: usersGET, POST: usersPOST, PUT: usersPUT, DELETE: usersDELETE },
+    "/db/invoices":  { GET: dbInvoicesGET, POST: dbInvoicesPOST, PUT: dbInvoicesPUT, DELETE: dbInvoicesDELETE },
+    "/db/counterparties": { GET: counterpartiesGET, POST: counterpartiesPOST, PUT: counterpartiesPUT, DELETE: counterpartiesDELETE }
 };
+
+
+

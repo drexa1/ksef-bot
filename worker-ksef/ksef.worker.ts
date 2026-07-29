@@ -15,7 +15,7 @@ export default {
         const url = new URL(req.url);
         if (!await auth(req, env)) return new Response("Unauthorized", { status: 401, headers: corsHeaders });
         const routePath = routes[url.pathname];
-        if (!routePath) return new Response("Not Found", { status: 404, headers: corsHeaders });
+        if (!routePath)return new Response("Not Found", { status: 404, headers: corsHeaders });
         const route = routePath[req.method as Method]!;
         const response = await route(req, env);
         return withCors(response);

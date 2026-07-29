@@ -11,14 +11,74 @@ export const openApiSpec = {
                 in: "header",
                 name: "X-API-Key"
             }
+        },
+        schemas: {
+            User: {
+                type: "object",
+                additionalProperties: false,
+                properties: {
+                    id: { type: "string" },
+                    email: { type: "string" },
+                    name: { type: "string" },
+                    api_key: { type: "string" },
+                    created_at: { type: "string" },
+                    updated_at: { type: "string" }
+                }
+            },
+            Invoice: {
+                type: "object",
+                additionalProperties: false,
+                properties: {
+                    id: { type: "string" },
+                    user_id: { type: "string" },
+                    seller_id: { type: "string" },
+                    buyer_id: { type: "string" },
+                    country_code: { type: "string" },
+                    raw_xml: { type: "string" },
+                    json_data: { type: "string" },
+                    created_at: { type: "string" },
+                    updated_at: { type: "string" }
+                }
+            },
+            Counterparty: {
+                type: "object",
+                additionalProperties: false,
+                properties: {
+                    id: { type: "string" },
+                    name: { type: "string" },
+                    nip: { type: "string" },
+                    pesel: { type: "string" },
+                    regon: { type: "string" },
+                    internal_identifier: { type: "string" },
+                    country: { type: "string" },
+                    voivodeship: { type: "string" },
+                    county: { type: "string" },
+                    municipality: { type: "string" },
+                    town: { type: "string" },
+                    zip_code: { type: "string" },
+                    mail: { type: "string" },
+                    street: { type: "string" },
+                    building_number: { type: "string" },
+                    number_of_premises: { type: "integer" },
+                    phone_number: { type: "string" },
+                    email_address: { type: "string" },
+                    bank_account_number: { type: "string" },
+                    notes: { type: "string" },
+                    created_at: { type: "string" },
+                    updated_at: { type: "string" }
+                }
+            }
         }
     },
     security: [{ ApiKeyAuth: [] }],
     tags: [
-        {name: "Health"},
-        {name: "Auth"},
-        {name: "KSeF"},
-        {name: "DB"}
+        { name: "Health" },
+        { name: "Auth" },
+        { name: "KSeF" },
+        { name: "DB" },
+        { name: "Users" },
+        { name: "Invoices" },
+        { name: "Counterparties" }
     ],
     paths: {
         "/health": {
@@ -26,11 +86,10 @@ export const openApiSpec = {
                 summary: "Health check",
                 tags: ["Health"],
                 responses: {
-                    "200": {description: "OK"}
+                    "200": { description: "OK" }
                 }
             }
         },
-
         "/whoami": {
             get: {
                 summary: "Get current authenticated user",
@@ -47,8 +106,8 @@ export const openApiSpec = {
                                         user: {
                                             type: "object",
                                             properties: {
-                                                name: {type: "string"},
-                                                email: {type: "string"}
+                                                name: { type: "string" },
+                                                email: { type: "string" }
                                             }
                                         }
                                     }
@@ -56,8 +115,8 @@ export const openApiSpec = {
                             }
                         }
                     },
-                    "401": {description: "Unauthorized"},
-                    "500": {description: "Failed to decode JWT"}
+                    "401": { description: "Unauthorized" },
+                    "500": { description: "Failed to decode JWT" }
                 }
             }
         },
@@ -66,8 +125,8 @@ export const openApiSpec = {
                 summary: "List invoices from KSeF",
                 tags: ["KSeF"],
                 responses: {
-                    "200": {description: "Invoices found"},
-                    "401": {description: "Unauthorized"}
+                    "200": { description: "Invoices found" },
+                    "401": { description: "Unauthorized" }
                 }
             },
             post: {
@@ -91,129 +150,183 @@ export const openApiSpec = {
                     }
                 },
                 responses: {
-                    "200": {description: "Invoice submitted"},
-                    "400": {description: "Invalid invoice"},
-                    "401": {description: "Unauthorized"}
+                    "200": { description: "Invoice submitted" },
+                    "400": { description: "Invalid invoice" },
+                    "401": { description: "Unauthorized" }
+                }
+            }
+        },
+        "/db": {
+            get: {
+                summary: "List available database entities",
+                tags: ["DB"],
+                responses: {
+                    "200": { description: "Available database entities" }
+                }
+            }
+        },
+        "/db/users": {
+            get: {
+                summary: "List users",
+                tags: ["Users"],
+                parameters: [{ name: "id", in: "query", required: false, schema: { type: "string" } }],
+                responses: {
+                    "200": { description: "User records" },
+                    "401": { description: "Unauthorized" },
+                    "404": { description: "User not found" }
+                }
+            },
+            post: {
+                summary: "Create or upsert a user",
+                tags: ["Users"],
+                requestBody: {
+                    required: true,
+                    content: {
+                        "application/json": {
+                            schema: { $ref: "#/components/schemas/User" }
+                        }
+                    }
+                },
+                responses: {
+                    "200": { description: "User stored" },
+                    "401": { description: "Unauthorized" }
+                }
+            },
+            put: {
+                summary: "Update a user",
+                tags: ["Users"],
+                requestBody: {
+                    required: true,
+                    content: {
+                        "application/json": {
+                            schema: { $ref: "#/components/schemas/User" }
+                        }
+                    }
+                },
+                responses: {
+                    "200": { description: "User updated" },
+                    "400": { description: "Bad request" },
+                    "401": { description: "Unauthorized" }
+                }
+            },
+            delete: {
+                summary: "Delete a user",
+                tags: ["Users"],
+                parameters: [{ name: "id", in: "query", required: true, schema: { type: "string" } }],
+                responses: {
+                    "200": { description: "User deleted" },
+                    "401": { description: "Unauthorized" },
+                    "404": { description: "User not found" }
                 }
             }
         },
         "/db/invoices": {
             get: {
-                summary: "Get invoices from database",
-                tags: ["DB"],
-                parameters: [
-                    {
-                        name: "invoiceId",
-                        in: "query",
-                        required: false,
-                        schema: {
-                            type: "string"
-                        }
-                    }
-                ],
+                summary: "List invoices",
+                tags: ["Invoices"],
+                parameters: [{ name: "id", in: "query", required: false, schema: { type: "string" } }],
                 responses: {
-                    "200": {description: "Invoice records"},
-                    "401": {description: "Unauthorized"},
-                    "404": {description: "Invoice not found"}
+                    "200": { description: "Invoice records" },
+                    "401": { description: "Unauthorized" },
+                    "404": { description: "Invoice not found" }
                 }
             },
             post: {
-                summary: "Create invoice database record",
-                tags: ["DB"],
-                responses: {
-                    "200": {description: "Invoice stored"},
-                    "401": {description: "Unauthorized"}
-                }
-            }
-        },
-        "/db/customers": {
-            get: {
-                summary: "Get customers",
-                tags: ["DB"],
-                responses: {
-                    "200": {description: "Customer records"},
-                    "401": {description: "Unauthorized"},
-                    "404": {description: "Customer not found"}
-                }
-            },
-            post: {
-                summary: "Create customer",
-                tags: ["DB"],
-                responses: {
-                    "200": {description: "Customer created"},
-                    "401": {description: "Unauthorized"}
-                }
-            },
-            put: {
-                summary: "Update customer",
-                tags: ["DB"],
-                parameters: [
-                    {
-                        name: "customerId",
-                        in: "path",
-                        required: true,
-                        schema: {
-                            type: "string"
-                        }
-                    }
-                ],
+                summary: "Create or upsert an invoice",
+                tags: ["Invoices"],
                 requestBody: {
                     required: true,
                     content: {
                         "application/json": {
-                            schema: {
-                                type: "object",
-                                properties: {
-                                    name: {type: "string"},
-                                    nip: {type: "string"},
-                                    email: {type: "string"}
-                                }
-                            }
+                            schema: { $ref: "#/components/schemas/Invoice" }
                         }
                     }
                 },
                 responses: {
-                    "200": {description: "Customer updated"},
-                    "401": {description: "Unauthorized"},
-                    "404": {description: "Customer not found"}
+                    "200": { description: "Invoice stored" },
+                    "401": { description: "Unauthorized" }
+                }
+            },
+            put: {
+                summary: "Update an invoice",
+                tags: ["Invoices"],
+                requestBody: {
+                    required: true,
+                    content: {
+                        "application/json": {
+                            schema: { $ref: "#/components/schemas/Invoice" }
+                        }
+                    }
+                },
+                responses: {
+                    "200": { description: "Invoice updated" },
+                    "400": { description: "Bad request" },
+                    "401": { description: "Unauthorized" }
                 }
             },
             delete: {
-                summary: "Delete customer",
-                tags: ["DB"],
-                parameters: [
-                    {
-                        name: "customerId",
-                        in: "path",
-                        required: true,
-                        schema: {
-                            type: "string"
-                        }
-                    }
-                ],
+                summary: "Delete an invoice",
+                tags: ["Invoices"],
+                parameters: [{ name: "id", in: "query", required: true, schema: { type: "string" } }],
                 responses: {
-                    "200": {description: "Customer deleted"},
-                    "401": {description: "Unauthorized"},
-                    "404": {description: "Customer not found"}
+                    "200": { description: "Invoice deleted" },
+                    "401": { description: "Unauthorized" },
+                    "404": { description: "Invoice not found" }
                 }
             }
         },
-        "/db/taxes": {
+        "/db/counterparties": {
             get: {
-                summary: "Get tax definitions",
-                tags: ["DB"],
+                summary: "List counterparties",
+                tags: ["Counterparties"],
+                parameters: [{ name: "id", in: "query", required: false, schema: { type: "string" } }],
                 responses: {
-                    "200": {description: "Tax records"},
-                    "401": {description: "Unauthorized"},
-                    "404": {description: "Tax record not found"}
+                    "200": { description: "Counterparty records" },
+                    "401": { description: "Unauthorized" },
+                    "404": { description: "Counterparty not found" }
                 }
             },
             post: {
-                summary: "Create tax record",
-                tags: ["DB"],
+                summary: "Create or upsert a counterparty",
+                tags: ["Counterparties"],
+                requestBody: {
+                    required: true,
+                    content: {
+                        "application/json": {
+                            schema: { $ref: "#/components/schemas/Counterparty" }
+                        }
+                    }
+                },
                 responses: {
-                    "200": {description: "Tax record created"},
-                    "401": {description: "Unauthorized"}
+                    "200": { description: "Counterparty stored" },
+                    "401": { description: "Unauthorized" }
+                }
+            },
+            put: {
+                summary: "Update a counterparty",
+                tags: ["Counterparties"],
+                requestBody: {
+                    required: true,
+                    content: {
+                        "application/json": {
+                            schema: { $ref: "#/components/schemas/Counterparty" }
+                        }
+                    }
+                },
+                responses: {
+                    "200": { description: "Counterparty updated" },
+                    "400": { description: "Bad request" },
+                    "401": { description: "Unauthorized" }
+                }
+            },
+            delete: {
+                summary: "Delete a counterparty",
+                tags: ["Counterparties"],
+                parameters: [{ name: "id", in: "query", required: true, schema: { type: "string" } }],
+                responses: {
+                    "200": { description: "Counterparty deleted" },
+                    "401": { description: "Unauthorized" },
+                    "404": { description: "Counterparty not found" }
                 }
             }
         }
