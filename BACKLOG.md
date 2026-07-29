@@ -7,11 +7,11 @@
 - [x] API keys  
 - [x] DB schemas  
 - [ ] DB backend  
-- [ ] DB REST tests  
-- [ ] SSO/Enrolment  
+- [ ] DB REST tests
 - [ ] Review security architecture  
-- [ ] Retrieve invoice from ksef
+- [ ] Retrieve invoice from KSeF  
 - [ ] Ultra simple frontend  
+- [ ] SSO/Enrolment  
 - [ ] Transparency disclaimer / no Ai  
 - [ ] WhatsApp bot  
 - [ ] Post invoice  
