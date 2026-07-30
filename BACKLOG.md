@@ -6,8 +6,8 @@
 - [x] CF zero trust  
 - [x] API keys  
 - [x] DB schemas  
-- [ ] DB REST tests  
-- [ ] DB backend
+- [x] DB backend  
+- [ ] DB REST tests
 - [ ] Review security architecture  
 - [ ] Retrieve invoice from KSeF  
 - [ ] Ultra simple frontend  

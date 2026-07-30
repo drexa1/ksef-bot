@@ -52,7 +52,6 @@ export class Repository {
         if (entries.length === 0) {
             return { success: false, changes: 0 };
         }
-
         const assignments = entries.map(([key]) => `"${key}" = ?`).join(", ");
         const values = entries.map(([_, value]) => value instanceof Date ? value.toISOString() : value);
         const sql = `UPDATE ${table} SET ${assignments} WHERE id = ?`;
@@ -68,13 +67,11 @@ export class Repository {
         const columns = entries.map(([k]) => `"${k}"`).join(", ");
         const placeholders = entries.map(() => "?").join(", ");
         const values = entries.map(([_, v]) => v instanceof Date ? v.toISOString() : v);
-
         const conflict = keys.map(k => `"${k}"`).join(", ");
         const updates = entries
             .filter(([k]) => !keys.includes(k))
             .map(([k]) => `"${k}" = excluded."${k}"`)
             .join(", ");
-
         const sql = `INSERT INTO ${table} (${columns}) VALUES (${placeholders}) ON CONFLICT(${conflict}) DO UPDATE SET ${updates}`;
         return { sql, values };
     }

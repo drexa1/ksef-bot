@@ -10,8 +10,10 @@ CREATE TABLE IF NOT EXISTS users (
 
 CREATE TABLE IF NOT EXISTS counterparties (
     id TEXT PRIMARY KEY,
-    name TEXT NOT NULL,
+    -- Owner
+    user_id TEXT NOT NULL REFERENCES users(id),
     -- Counterparty data
+    name TEXT NOT NULL,
     nip TEXT,
     pesel TEXT,
     regon TEXT,

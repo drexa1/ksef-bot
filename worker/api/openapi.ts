@@ -25,26 +25,12 @@ export const openApiSpec = {
                     updated_at: { type: "string", format: "date-time" }
                 }
             },
-            Invoice: {
-                type: "object",
-                additionalProperties: false,
-                properties: {
-                    id: { type: "string" },
-                    user_id: { type: "string" },
-                    seller_id: { type: "string" },
-                    buyer_id: { type: "string" },
-                    country_code: { type: "string" },
-                    raw_xml: { type: "string" },
-                    json_data: { type: "string" },
-                    created_at: { type: "string", format: "date-time" },
-                    updated_at: { type: "string", format: "date-time" }
-                }
-            },
             Counterparty: {
                 type: "object",
                 additionalProperties: false,
                 properties: {
                     id: { type: "string" },
+                    user_id: { type: "string" },
                     name: { type: "string" },
                     nip: { type: "string" },
                     pesel: { type: "string" },
@@ -59,6 +45,21 @@ export const openApiSpec = {
                     local_government_unit: { type: "integer" },
                     vat_group: { type: "integer" },
                     notes: { type: "string" },
+                    created_at: { type: "string", format: "date-time" },
+                    updated_at: { type: "string", format: "date-time" }
+                }
+            },
+            Invoice: {
+                type: "object",
+                additionalProperties: false,
+                properties: {
+                    id: { type: "string" },
+                    user_id: { type: "string" },
+                    seller_id: { type: "string" },
+                    buyer_id: { type: "string" },
+                    country_code: { type: "string" },
+                    raw_xml: { type: "string" },
+                    json_data: { type: "string" },
                     created_at: { type: "string", format: "date-time" },
                     updated_at: { type: "string", format: "date-time" }
                 }
@@ -203,61 +204,6 @@ export const openApiSpec = {
                 }
             }
         },
-        "/db/invoices": {
-            get: {
-                summary: "List invoices",
-                tags: ["DB"],
-                parameters: [{ name: "id", in: "query", required: false, schema: { type: "string" } }],
-                responses: {
-                    "200": { description: "Invoice records" },
-                    "401": { description: "Unauthorized" },
-                    "404": { description: "Invoice not found" }
-                }
-            },
-            post: {
-                summary: "Create or upsert an invoice",
-                tags: ["DB"],
-                requestBody: {
-                    required: true,
-                    content: {
-                        "application/json": {
-                            schema: { $ref: "#/components/schemas/Invoice" }
-                        }
-                    }
-                },
-                responses: {
-                    "200": { description: "Invoice created" },
-                    "401": { description: "Unauthorized" }
-                }
-            },
-            put: {
-                summary: "Update an invoice",
-                tags: ["DB"],
-                requestBody: {
-                    required: true,
-                    content: {
-                        "application/json": {
-                            schema: { $ref: "#/components/schemas/Invoice" }
-                        }
-                    }
-                },
-                responses: {
-                    "200": { description: "Invoice updated" },
-                    "400": { description: "Bad request" },
-                    "401": { description: "Unauthorized" }
-                }
-            },
-            delete: {
-                summary: "Delete an invoice",
-                tags: ["DB"],
-                parameters: [{ name: "id", in: "query", required: true, schema: { type: "string" } }],
-                responses: {
-                    "200": { description: "Invoice deleted" },
-                    "401": { description: "Unauthorized" },
-                    "404": { description: "Invoice not found" }
-                }
-            }
-        },
         "/db/counterparties": {
             get: {
                 summary: "List counterparties",
@@ -310,6 +256,61 @@ export const openApiSpec = {
                     "200": { description: "Counterparty deleted" },
                     "401": { description: "Unauthorized" },
                     "404": { description: "Counterparty not found" }
+                }
+            }
+        },
+        "/db/invoices": {
+            get: {
+                summary: "List invoices",
+                tags: ["DB"],
+                parameters: [{ name: "id", in: "query", required: false, schema: { type: "string" } }],
+                responses: {
+                    "200": { description: "Invoice records" },
+                    "401": { description: "Unauthorized" },
+                    "404": { description: "Invoice not found" }
+                }
+            },
+            post: {
+                summary: "Create or upsert an invoice",
+                tags: ["DB"],
+                requestBody: {
+                    required: true,
+                    content: {
+                        "application/json": {
+                            schema: { $ref: "#/components/schemas/Invoice" }
+                        }
+                    }
+                },
+                responses: {
+                    "200": { description: "Invoice created" },
+                    "401": { description: "Unauthorized" }
+                }
+            },
+            put: {
+                summary: "Update an invoice",
+                tags: ["DB"],
+                requestBody: {
+                    required: true,
+                    content: {
+                        "application/json": {
+                            schema: { $ref: "#/components/schemas/Invoice" }
+                        }
+                    }
+                },
+                responses: {
+                    "200": { description: "Invoice updated" },
+                    "400": { description: "Bad request" },
+                    "401": { description: "Unauthorized" }
+                }
+            },
+            delete: {
+                summary: "Delete an invoice",
+                tags: ["DB"],
+                parameters: [{ name: "id", in: "query", required: true, schema: { type: "string" } }],
+                responses: {
+                    "200": { description: "Invoice deleted" },
+                    "401": { description: "Unauthorized" },
+                    "404": { description: "Invoice not found" }
                 }
             }
         }
