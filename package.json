@@ -21,8 +21,8 @@
         "db:local:teardown": "wrangler d1 execute ksef-bot --config wrangler.worker.toml --local --file=db/teardown.sql",
         "db:local:create":   "wrangler d1 execute ksef-bot --config wrangler.worker.toml --local --file=db/schema.sql",
 
-        "db:remote:teardown": "wrangler d1 execute ksef-bot --remote --file=db/teardown.sql",
-        "db:remote:create":   "wrangler d1 execute ksef-bot  --remote --file=db/schema.sql"
+        "⚠ db:remote:teardown": "wrangler d1 execute ksef-bot --remote --file=db/teardown.sql",
+        "⚠ db:remote:create":   "wrangler d1 execute ksef-bot  --remote --file=db/schema.sql"
     },
     "dependencies": {
         "@sentry/cli": "latest",

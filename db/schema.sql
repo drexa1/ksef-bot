@@ -23,8 +23,8 @@ CREATE TABLE IF NOT EXISTS counterparties (
     address_l1 TEXT NOT NULL,
     address_l2 TEXT,
     -- Counterparty metadata
-    local_government_unit INTEGER NOT NULL,
-    vat_group INTEGER NOT NULL,
+    local_government_unit INTEGER,
+    vat_group INTEGER,
     notes TEXT,
     -- DBA
     created_at TEXT DEFAULT CURRENT_TIMESTAMP,
