@@ -1,0 +1,17 @@
+#@no-redirect
+@baseUrl = http://localhost:3001
+@apiKey = test
+
+### Create user for the first time
+POST {{baseUrl}}/db/users
+Content-Type: application/json
+X-API-Key: {{apiKey}}
+
+< ../../../testresources/users/user-1.json
+
+### Second create attempt whould trigger PK violation error
+POST {{baseUrl}}/db/users
+Content-Type: application/json
+X-API-Key: {{apiKey}}
+
+< ../../../testresources/users/user-1.json

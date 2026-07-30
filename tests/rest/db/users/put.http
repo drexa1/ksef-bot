@@ -1,20 +1,20 @@
 #@no-redirect
 @baseUrl = http://localhost:3001
 @apiKey = test
-@counterpartyId = 5426459
+@userId = 38cd09f7-1e69-4b0b-ba67-c3a0b89db466
 
-### Update existing counterparty
-PUT {{baseUrl}}/db/counterparties
+### Update existing user
+PUT {{baseUrl}}/db/users
 Content-Type: application/json
 X-API-Key: {{apiKey}}
 
 {
-    "id": "{{counterpartyId}}",
+    "id": "{{userId}}",
     "name": "edited"
 }
 
-### Update a missing counterparty
-PUT {{baseUrl}}/db/counterparties
+### Update a missing user
+PUT {{baseUrl}}/db/users
 Content-Type: application/json
 X-API-Key: {{apiKey}}
 
