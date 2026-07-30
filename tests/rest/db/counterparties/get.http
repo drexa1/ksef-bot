@@ -7,3 +7,13 @@
 GET {{baseUrl}}/db/counterparties
 Content-Type: application/json
 X-API-Key: {{apiKey}}
+
+### List by Id
+GET {{baseUrl}}/db/counterparties?id={{counterpartyId}}
+Content-Type: application/json
+X-API-Key: {{apiKey}}
+
+### List by wrong Id
+GET {{baseUrl}}/db/counterparties?id=missing
+Content-Type: application/json
+X-API-Key: {{apiKey}}
