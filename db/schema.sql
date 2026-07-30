@@ -42,6 +42,7 @@ CREATE TABLE IF NOT EXISTS invoices (
     country_code TEXT DEFAULT 'PL',
     raw_xml  TEXT NOT NULL,
     json_data TEXT NOT NULL CHECK (json_valid(json_data)),
+    notes TEXT,
     -- DBA
     created_at TEXT DEFAULT CURRENT_TIMESTAMP,
     updated_at TEXT

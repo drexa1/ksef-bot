@@ -16,6 +16,10 @@ export const openApiSpec = {
             User: {
                 type: "object",
                 additionalProperties: false,
+                required: [
+                    "id",
+                    "email"
+                ],
                 properties: {
                     id: { type: "string" },
                     email: { type: "string" },
@@ -28,6 +32,12 @@ export const openApiSpec = {
             Counterparty: {
                 type: "object",
                 additionalProperties: false,
+                required: [
+                    "id",
+                    "user_id",
+                    "name",
+                    "address_l1"
+                ],
                 properties: {
                     id: { type: "string" },
                     user_id: { type: "string" },
@@ -52,6 +62,13 @@ export const openApiSpec = {
             Invoice: {
                 type: "object",
                 additionalProperties: false,
+                required: [
+                    "id",
+                    "user_id",
+                    "seller_id",
+                    "buyer_id",
+                    "raw_xml"
+                ],
                 properties: {
                     id: { type: "string" },
                     user_id: { type: "string" },
@@ -60,6 +77,7 @@ export const openApiSpec = {
                     country_code: { type: "string" },
                     raw_xml: { type: "string" },
                     json_data: { type: "string" },
+                    notes: { type: "string" },
                     created_at: { type: "string", format: "date-time" },
                     updated_at: { type: "string", format: "date-time" }
                 }

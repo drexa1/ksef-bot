@@ -43,8 +43,12 @@ export async function auth(req: Request, env: Env): Promise<boolean> {
 export async function isOwner(req: Request, env: Env, resource: any) {
     const authResponse = await whoami(req, env);
     const currentUser = (await authResponse.json()) as AuthUser;
-    console.info("[Auth] user", currentUser, "requesting access to:", resource.metadata);
-    if (deserializeOwner(resource.metadata?.owner) !== deserializeOwner(currentUser))
+
+    // FIXME
+
+
+    console.info("[Auth] user", currentUser, "requesting access to:", resource["owner_id"]);
+    if (deserializeOwner(resource["owner_id"]) !== deserializeOwner(currentUser))
         throw new Response("Unauthorized", { status: 401 });
     console.info("[Auth] access granted");
 }
