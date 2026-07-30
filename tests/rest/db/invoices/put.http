@@ -10,7 +10,7 @@ X-API-Key: {{apiKey}}
 
 {
     "id": "missing",
-    "name": "nevermind"
+    "notes": "nevermind"
 }
 
 ### Update existing invoice
@@ -20,5 +20,5 @@ X-API-Key: {{apiKey}}
 
 {
     "id": "{{invoiceId}}",
-    "name": "edited"
+    "notes": "edited"
 }
