@@ -1,14 +1,14 @@
 #@no-redirect
 @baseUrl = http://localhost:3001
 @apiKey = test
-@counterpartyId = counterparty-from-invoice
+@counterpartyId = 5426459
 
 ### Delete existing counterparty
 DELETE {{baseUrl}}/db/counterparties?id={{counterpartyId}}
 Content-Type: application/json
 X-API-Key: {{apiKey}}
 
-### Delete nonexisting counterparty
+### Delete non-existing counterparty
 DELETE {{baseUrl}}/db/counterparties?id=missing
 Content-Type: application/json
 X-API-Key: {{apiKey}}
