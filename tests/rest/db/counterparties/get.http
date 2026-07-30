@@ -8,12 +8,12 @@ GET {{baseUrl}}/db/counterparties
 Content-Type: application/json
 X-API-Key: {{apiKey}}
 
-### List existing counterparty
-GET {{baseUrl}}/db/counterparties?id={{counterpartyId}}
+### List non-existing counterparty
+GET {{baseUrl}}/db/counterparties?id=missing
 Content-Type: application/json
 X-API-Key: {{apiKey}}
 
-### List non-existing counterparty
-GET {{baseUrl}}/db/counterparties?id=missing
+### List existing counterparty
+GET {{baseUrl}}/db/counterparties?id={{counterpartyId}}
 Content-Type: application/json
 X-API-Key: {{apiKey}}

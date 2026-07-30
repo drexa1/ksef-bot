@@ -8,12 +8,12 @@ GET {{baseUrl}}/db/users
 Content-Type: application/json
 X-API-Key: {{apiKey}}
 
-### List existing user
-GET {{baseUrl}}/db/users?id={{userId}}
+### List non-existing user
+GET {{baseUrl}}/db/users?id=missing
 Content-Type: application/json
 X-API-Key: {{apiKey}}
 
-### List non-existing user
-GET {{baseUrl}}/db/users?id=missing
+### List existing user
+GET {{baseUrl}}/db/users?id={{userId}}
 Content-Type: application/json
 X-API-Key: {{apiKey}}

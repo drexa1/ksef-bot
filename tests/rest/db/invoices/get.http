@@ -8,12 +8,12 @@ GET {{baseUrl}}/db/invoices
 Content-Type: application/json
 X-API-Key: {{apiKey}}
 
-### List existing invoice
-GET {{baseUrl}}/db/invoices?id={{invoiceId}}
+### List non-existing invoice
+GET {{baseUrl}}/db/invoices?id=missing
 Content-Type: application/json
 X-API-Key: {{apiKey}}
 
-### List non-existing invoice
-GET {{baseUrl}}/db/invoices?id=missing
+### List existing invoice
+GET {{baseUrl}}/db/invoices?id={{invoiceId}}
 Content-Type: application/json
 X-API-Key: {{apiKey}}
