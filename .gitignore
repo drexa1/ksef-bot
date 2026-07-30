@@ -3,6 +3,7 @@
 build
 dist
 node_modules
+out
 target
 tests/testresources/ksef
 API_KEY
