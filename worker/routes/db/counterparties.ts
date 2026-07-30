@@ -38,5 +38,7 @@ export async function del(req: Request, env: Env): Promise<Response> {
     const url = new URL(req.url);
     const id = url.searchParams.get("id")!;
     const result = await getRepo(env).delete("counterparties", id);
+    if (result.changes === 0)
+        return Response.json({ success: false, id, error: "Counterparty not found" }, { status: 404 });
     return Response.json({ success: result.success, entity: "counterparties", id }, { status: result.success ? 200 : 404 });
 }
