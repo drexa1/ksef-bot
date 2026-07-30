@@ -32,6 +32,8 @@ export async function put(req: Request, env: Env): Promise<Response> {
     const payload = await req.json() as Record<string, unknown>
     const id = payload.id as string;
     const result = await getRepo(env).update("users", { ...payload, updated_at: new Date().toISOString() }, id);
+    if (result.changes === 0)
+        return Response.json({ success: false, id: id, error: "User not found" }, { status: 404 });
     return Response.json({ success: true, id: id }, { status: result.success ? 200 : 400 });
 }
 
