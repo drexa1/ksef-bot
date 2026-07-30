@@ -2,14 +2,14 @@
 @baseUrl = http://localhost:3001
 @apiKey = test
 
-### Create counterparty for the first time
+### Create counterparty #1 for the first time
 POST {{baseUrl}}/db/counterparties
 Content-Type: application/json
 X-API-Key: {{apiKey}}
 
 < ../../../testresources/counterparties/counterparty-1.json
 
-### Create counterparty for the first time
+### Create counterparty #2 for the first time
 POST {{baseUrl}}/db/counterparties
 Content-Type: application/json
 X-API-Key: {{apiKey}}
