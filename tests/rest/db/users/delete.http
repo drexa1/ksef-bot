@@ -3,12 +3,12 @@
 @apiKey = test
 @userId = 38cd09f7-1e69-4b0b-ba67-c3a0b89db466
 
-### Delete existing user
-DELETE {{baseUrl}}/db/users?id={{userId}}
+### Delete non-existing user
+DELETE {{baseUrl}}/db/users?id=missing
 Content-Type: application/json
 X-API-Key: {{apiKey}}
 
-### Delete non-existing user
-DELETE {{baseUrl}}/db/users?id=missing
+### Delete existing user
+DELETE {{baseUrl}}/db/users?id={{userId}}
 Content-Type: application/json
 X-API-Key: {{apiKey}}
