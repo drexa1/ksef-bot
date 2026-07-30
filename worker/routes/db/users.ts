@@ -15,10 +15,16 @@ export async function get(req: Request, env: Env): Promise<Response> {
 }
 
 export async function post(req: Request, env: Env): Promise<Response> {
-    const payload = await req.json() as Record<string, unknown>
+    const payload = await req.json() as Record<string, unknown>;
     const record = { ...payload, id: (payload.id as string) ?? crypto.randomUUID(), updated_at: new Date().toISOString() };
-    await getRepo(env).save("users", record, ["id"]);
-    return Response.json({ success: true, entity: "users", id: record.id }, { status: 200 });
+    try {
+        await getRepo(env).save("users", record);
+        return Response.json({ success: true, entity: "users", id: record.id }, { status: 200 });
+    } catch (error) {
+        if (String(error).includes("UNIQUE constraint failed"))
+            return Response.json({ success: false, error: "User already exists", id: record.id }, { status: 409 });
+        throw error;
+    }
 }
 
 export async function put(req: Request, env: Env): Promise<Response> {

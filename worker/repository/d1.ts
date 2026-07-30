@@ -3,7 +3,7 @@ import { D1Database } from "@cloudflare/workers-types";
 export interface DBDriver {
     save(sql: string, values: any[]): Promise<SaveResult>;
     get(sql: string, values: any[]): Promise<any>;
-    getAll(sql: string, cols?: string[]): Promise<any[]>;
+    getAll(sql: string): Promise<any[]>;
 }
 
 export type SaveResult = {
@@ -19,7 +19,7 @@ export class D1Driver implements DBDriver {
         return await this.db.prepare(sql).bind(...values).first();
     }
 
-    async getAll(sql: string, cols?: string[]) {
+    async getAll(sql: string) {
         const { results } = await this.db.prepare(sql).all();
         return results;
     }
@@ -42,8 +42,8 @@ export class Repository {
         return await this.driver.getAll(`SELECT ${select} FROM ${table}`);
     }
 
-    async save<T>(table: string, data: T, keys: string[]): Promise<SaveResult> {
-        const { sql, values } = this.buildInsert(table, data, keys);
+    async save<T>(table: string, data: T): Promise<SaveResult> {
+        const { sql, values } = this.buildInsert(table, data);
         return this.driver.save(sql, values);
     }
 
@@ -62,17 +62,12 @@ export class Repository {
         return this.driver.save(`DELETE FROM ${table} WHERE id = ?`, [id]);
     }
 
-    private buildInsert<T>(table: string, data: T, keys: string[]) {
+    private buildInsert<T>(table: string, data: T) {
         const entries = Object.entries(data as any);
         const columns = entries.map(([k]) => `"${k}"`).join(", ");
         const placeholders = entries.map(() => "?").join(", ");
         const values = entries.map(([_, v]) => v instanceof Date ? v.toISOString() : v);
-        const conflict = keys.map(k => `"${k}"`).join(", ");
-        const updates = entries
-            .filter(([k]) => !keys.includes(k))
-            .map(([k]) => `"${k}" = excluded."${k}"`)
-            .join(", ");
-        const sql = `INSERT INTO ${table} (${columns}) VALUES (${placeholders}) ON CONFLICT(${conflict}) DO UPDATE SET ${updates}`;
+        const sql = `INSERT INTO ${table} (${columns}) VALUES (${placeholders})`;
         return { sql, values };
     }
 }
