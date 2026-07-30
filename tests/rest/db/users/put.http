@@ -3,16 +3,6 @@
 @apiKey = test
 @userId = 38cd09f7-1e69-4b0b-ba67-c3a0b89db466
 
-### Update existing user
-PUT {{baseUrl}}/db/users
-Content-Type: application/json
-X-API-Key: {{apiKey}}
-
-{
-    "id": "{{userId}}",
-    "name": "edited"
-}
-
 ### Update a missing user
 PUT {{baseUrl}}/db/users
 Content-Type: application/json
@@ -21,4 +11,14 @@ X-API-Key: {{apiKey}}
 {
     "id": "missing",
     "name": "nevermind"
+}
+
+### Update existing user
+PUT {{baseUrl}}/db/users
+Content-Type: application/json
+X-API-Key: {{apiKey}}
+
+{
+    "id": "{{userId}}",
+    "name": "edited"
 }
