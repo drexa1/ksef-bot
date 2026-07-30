@@ -1,0 +1,4 @@
+#@no-redirect
+@baseUrl = http://localhost:3001
+@apiKey = test
+@counterpartyId = counterparty-from-invoice
