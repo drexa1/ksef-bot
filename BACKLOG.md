@@ -7,8 +7,9 @@
 - [x] API keys  
 - [x] DB schemas  
 - [x] DB backend  
-- [ ] DB REST tests  
-- [ ] Rework auth and create REST tests
+- [x] DB REST tests  
+- [ ] Rework auth and create REST tests  
+- [ ] Review auth to users  
 - [ ] Review security architecture  
 - [ ] Retrieve invoice from KSeF  
 - [ ] Ultra simple frontend  

@@ -1,6 +1,8 @@
 CREATE TABLE IF NOT EXISTS users (
     id TEXT PRIMARY KEY,
-    email TEXT NOT NULL,
+    -- Owner
+    owner_id TEXT NOT NULL REFERENCES users(id),
+    email TEXT NOT NULL UNIQUE,
     name TEXT,
     api_key TEXT,
     -- DBA
@@ -11,7 +13,7 @@ CREATE TABLE IF NOT EXISTS users (
 CREATE TABLE IF NOT EXISTS counterparties (
     id TEXT PRIMARY KEY,
     -- Owner
-    user_id TEXT NOT NULL REFERENCES users(id),
+    owner_id TEXT NOT NULL REFERENCES users(id),
     -- Counterparty data
     name TEXT NOT NULL,
     nip TEXT,
@@ -34,7 +36,7 @@ CREATE TABLE IF NOT EXISTS counterparties (
 CREATE TABLE IF NOT EXISTS invoices (
     id TEXT PRIMARY KEY,
     -- Owner
-    user_id TEXT NOT NULL REFERENCES users(id),
+    owner_id TEXT NOT NULL REFERENCES users(id),
     -- Parties
     seller_id TEXT NOT NULL REFERENCES counterparties(id),
     buyer_id  TEXT NOT NULL REFERENCES counterparties(id),

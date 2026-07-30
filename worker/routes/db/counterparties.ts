@@ -1,7 +1,7 @@
 import {Env} from "../../worker";
 import {D1Driver, Repository} from "../../repository/d1";
 
-let repo: Repository | undefined;
+let repo: Repository;
 function getRepo(env: Env): Repository {
     return repo ??= new Repository(new D1Driver(env.D1));
 }

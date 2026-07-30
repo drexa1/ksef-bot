@@ -1,7 +1,9 @@
 import {Env} from "../../worker";
 import {D1Driver, Repository} from "../../repository/d1";
 
-let repo: Repository | undefined;
+export type AppUser = { id: string, email: string, name?: string, api_key?: string };
+
+let repo: Repository;
 function getRepo(env: Env): Repository {
     return repo ??= new Repository(new D1Driver(env.D1));
 }

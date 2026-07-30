@@ -1,6 +1,13 @@
 import {Env} from "./worker";
+import {D1Driver, Repository} from "./repository/d1";
+import {AppUser} from "./routes/db/users";
 
-export type AuthUser = { name?: string; email?: string };
+export type AuthUser = { name?: string, email?: string };
+
+let repo: Repository;
+function getRepo(env: Env): Repository {
+    return repo ??= new Repository(new D1Driver(env.D1));
+}
 
 export const corsHeaders = {
     "Access-Control-Allow-Origin": "*",
@@ -40,19 +47,6 @@ export async function auth(req: Request, env: Env): Promise<boolean> {
     }
 }
 
-export async function isOwner(req: Request, env: Env, resource: any) {
-    const authResponse = await whoami(req, env);
-    const currentUser = (await authResponse.json()) as AuthUser;
-
-    // FIXME
-
-
-    console.info("[Auth] user", currentUser, "requesting access to:", resource["owner_id"]);
-    if (deserializeOwner(resource["owner_id"]) !== deserializeOwner(currentUser))
-        throw new Response("Unauthorized", { status: 401 });
-    console.info("[Auth] access granted");
-}
-
 export async function whoami(req: Request, _env: Env): Promise<Response> {
     // Who has passed Zero Trust for this worker
     const jwt = req.headers.get("Cf-Access-Jwt-Assertion");
@@ -62,13 +56,17 @@ export async function whoami(req: Request, _env: Env): Promise<Response> {
     return Response.json(user);
 }
 
-export function decodeJWT(jwt: string): AuthUser {
+function decodeJWT(jwt: string): AuthUser {
     const payloadBase64 = jwt.split(".")[1];
     const payloadJson = atob(payloadBase64.replace(/-/g, "+").replace(/_/g, "/"));
     const payload = JSON.parse(payloadJson);
     return { name: payload.name, email: payload.email };
 }
 
-function deserializeOwner(owner: any) {
-    return JSON.stringify(owner, Object.keys(owner).sort());
+export async function getAuthUser(req: Request, env: Env): Promise<AppUser> {
+    const whoamiResponse = await whoami(req, env);
+    const authUser = (await whoamiResponse.json()) as AuthUser;
+    const dbUser = await getRepo(env).getBy("users", "email", authUser.email) as AppUser;
+    if (!dbUser) throw new Response("User not found", { status: 401 });
+    return dbUser;
 }

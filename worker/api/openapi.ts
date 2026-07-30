@@ -34,13 +34,11 @@ export const openApiSpec = {
                 additionalProperties: false,
                 required: [
                     "id",
-                    "user_id",
                     "name",
                     "address_l1"
                 ],
                 properties: {
                     id: { type: "string" },
-                    user_id: { type: "string" },
                     name: { type: "string" },
                     nip: { type: "string" },
                     pesel: { type: "string" },
@@ -64,14 +62,12 @@ export const openApiSpec = {
                 additionalProperties: false,
                 required: [
                     "id",
-                    "user_id",
                     "seller_id",
                     "buyer_id",
                     "raw_xml"
                 ],
                 properties: {
                     id: { type: "string" },
-                    user_id: { type: "string" },
                     seller_id: { type: "string" },
                     buyer_id: { type: "string" },
                     country_code: { type: "string" },
