@@ -8,7 +8,7 @@ DELETE {{baseUrl}}/db/users?id={{userId}}
 Content-Type: application/json
 X-API-Key: {{apiKey}}
 
-### Delete nonexisting user
+### Delete non-existing user
 DELETE {{baseUrl}}/db/users?id=missing
 Content-Type: application/json
 X-API-Key: {{apiKey}}

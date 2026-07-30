@@ -1,0 +1,24 @@
+#@no-redirect
+@baseUrl = http://localhost:3001
+@apiKey = test
+@invoiceId = 6751577878-20260629-514966000000-3F
+
+### Update existing invoice
+PUT {{baseUrl}}/db/invoices
+Content-Type: application/json
+X-API-Key: {{apiKey}}
+
+{
+    "id": "{{invoiceId}}",
+    "name": "edited"
+}
+
+### Update a missing invoice
+PUT {{baseUrl}}/db/invoices
+Content-Type: application/json
+X-API-Key: {{apiKey}}
+
+{
+    "id": "missing",
+    "name": "nevermind"
+}
