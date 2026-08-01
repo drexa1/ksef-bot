@@ -59,3 +59,25 @@ CREATE TABLE IF NOT EXISTS invoices (
     created_at TEXT DEFAULT CURRENT_TIMESTAMP,
     updated_at TEXT
 ) WITHOUT ROWID;
+
+CREATE TABLE IF NOT EXISTS taxes (
+  id TEXT PRIMARY KEY,
+  -- Owner
+  owner_id TEXT NOT NULL REFERENCES users(id),
+  -- Tax line
+  period TEXT,
+  brut_income INTEGER NOT NULL,
+  vat_percentage INTEGER NOT NULL,
+  vat INTEGER NOT NULL,
+  -- Net income before obligations
+  net_before_obligations INTEGER NOT NULL,
+  zus_contribution INTEGER,
+  -- Map of purchases/deducts
+  expenses TEXT CHECK (json_valid(expenses)),
+  -- Total after obligations
+  total_clean_revenue INTEGER NOT NULL,
+  notes TEXT,
+    -- DBA
+  created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+  updated_at TEXT
+) WITHOUT ROWID;

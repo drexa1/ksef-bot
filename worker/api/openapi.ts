@@ -65,6 +65,27 @@ export const openApiSpec = {
                     json_data: { type: "string" },
                     notes: { type: "string" }
                 }
+            },
+            Taxes: {
+                type: "object",
+                additionalProperties: false,
+                required: [
+                    "seller_id",
+                    "buyer_id",
+                    "raw_xml"
+                ],
+                properties: {
+                    period: { type: "string" },
+                    brut_income: { type: "integer" },
+                    vat_percentage: { type: "integer" },
+                    vat: { type: "integer" },
+                    net_before_obligations: { type: "integer" },
+                    income_tax: { type: "integer" },
+                    zus_contribution: { type: "integer" },
+                    expenses: { type: "string" },
+                    total_clean_revenue: { type: "string" },
+                    notes: { type: "string" }
+                }
             }
         }
     },
