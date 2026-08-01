@@ -196,7 +196,7 @@ export const openApiSpec = {
         },
         "/app/users": {
             get: {
-                summary: "List users - Only allowed for admin users.",
+                summary: "List users - Allowed only for admin users.",
                 tags: ["App"],
                 parameters: [{ name: "id", in: "query", required: false, schema: { type: "string" } }],
                 responses: {
@@ -206,7 +206,7 @@ export const openApiSpec = {
                 }
             },
             post: {
-                summary: "Create a user - Only allowed for admin users.",
+                summary: "Create a user - Allowed only for admin users.",
                 tags: ["App"],
                 requestBody: {
                     required: true,
@@ -222,7 +222,7 @@ export const openApiSpec = {
                 }
             },
             put: {
-                summary: "Update a user - Only allowed for admin users.",
+                summary: "Update a user - Allowed only for admin users.",
                 tags: ["App"],
                 requestBody: {
                     required: true,
@@ -239,7 +239,7 @@ export const openApiSpec = {
                 }
             },
             delete: {
-                summary: "Delete a user - Only allowed for admin users.",
+                summary: "Delete a user - Allowed only for admin users.",
                 tags: ["App"],
                 parameters: [{ name: "id", in: "query", required: true, schema: { type: "string" } }],
                 responses: {
