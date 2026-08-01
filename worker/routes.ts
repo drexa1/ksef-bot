@@ -3,7 +3,8 @@ import {openApiSpec, swaggerHtml} from "./api/openapi";
 import {scalarHtml} from "./api/scalar";
 import {get as healthGET} from "./routes/health";
 import {whoami as whoamiGET} from "./auth";
-import {get as ksefGET, post as ksefPOST} from "./routes/ksef";
+import {get as salesGET, post as salesPOST} from "./routes/ksef.sales";
+import {get as purchasesGET} from "./routes/ksef.purchases";
 import {get as usersGET, post as usersPOST, put as usersPUT, del as usersDELETE} from "./routes/db/users";
 import {get as counterpartiesGET, post as counterpartiesPOST, put as counterpartiesPUT, del as counterpartiesDELETE} from "./routes/db/counterparties";
 import {get as invoicesGET, post as invoicesPOST, put as invoicesPUT, del as invoicesDELETE} from "./routes/db/invoices";
@@ -21,7 +22,8 @@ export const routes: Record<string, Routes> =  {
     "/health":            { GET: healthGET },
     // Requiring authentication
     "/whoami":            { GET: whoamiGET },
-    "/ksef":              { GET: ksefGET, POST: ksefPOST },
+    "/ksef/sales":        { GET: salesGET, POST: salesPOST },
+    "/ksef/purchases":    { GET: purchasesGET },
     "/db/users":          { GET: usersGET, POST: usersPOST, PUT: usersPUT, DELETE: usersDELETE },
     "/db/counterparties": { GET: counterpartiesGET, POST: counterpartiesPOST, PUT: counterpartiesPUT, DELETE: counterpartiesDELETE },
     "/db/invoices":       { GET: invoicesGET, POST: invoicesPOST, PUT: invoicesPUT, DELETE: invoicesDELETE },

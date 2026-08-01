@@ -132,9 +132,9 @@ export const openApiSpec = {
                 }
             }
         },
-        "/ksef": {
+        "/ksef/sales": {
             get: {
-                summary: "List invoices at KSeF - Restricted to resources owned by the authenticated user.",
+                summary: "List sales invoices at KSeF - Restricted to resources owned by the authenticated user.",
                 tags: ["KSeF"],
                 responses: {
                     "200": { description: "Invoices found" },
@@ -142,7 +142,7 @@ export const openApiSpec = {
                 }
             },
             post: {
-                summary: "Submit new invoice to KSeF - Restricted to resources owned by the authenticated user.",
+                summary: "Submit new sales invoice to KSeF - Restricted to resources owned by the authenticated user.",
                 tags: ["KSeF"],
                 requestBody: {
                     required: true,
@@ -167,6 +167,16 @@ export const openApiSpec = {
                     "401": { description: "Unauthorized" }
                 }
             }
+        },
+        "/ksef/purchases": {
+            get: {
+                summary: "List purchases invoices at KSeF - Restricted to resources owned by the authenticated user.",
+                tags: ["KSeF"],
+                responses: {
+                    "200": { description: "Invoices found" },
+                    "401": { description: "Unauthorized" }
+                }
+            },
         },
         "/db/users": {
             get: {
