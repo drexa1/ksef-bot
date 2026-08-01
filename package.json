@@ -21,7 +21,7 @@
 
         "db:local:teardown": "wrangler d1 execute ksef-bot --config wrangler.worker.toml --local --file=db/teardown.sql",
         "db:local:create": "wrangler d1 execute ksef-bot --config wrangler.worker.toml --local --file=db/schema.sql",
-        "worker:dev": "npm run client:build && wrangler dev --config wrangler.worker.toml --local --port 3001 --inspect",
+        "worker:dev": "npm run client:build && wrangler dev --config wrangler.worker.toml --local --port 3001 --inspector-port=9229",
 
         "⚠ db:remote:teardown": "wrangler d1 execute ksef-bot --remote --file=db/teardown.sql",
         "⚠ db:remote:create": "wrangler d1 execute ksef-bot  --remote --file=db/schema.sql",

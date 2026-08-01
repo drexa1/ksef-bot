@@ -3,6 +3,13 @@ import {KsefClient} from "./ksef.client";
 import pRetry, {AbortError} from "p-retry";
 import {getAuthUser} from "../../auth";
 import {AppUser} from "../db/users";
+import {D1Driver, Repository} from "../../repository/d1";
+import {AppCounterparty} from "../db/counterparties";
+
+let repo: Repository;
+function getRepo(env: Env): Repository {
+    return repo ??= new Repository(new D1Driver(env.D1));
+}
 
 export async function get(req: Request, env: Env): Promise<Response> {
     const url = new URL(req.url);
@@ -18,7 +25,7 @@ export async function get(req: Request, env: Env): Promise<Response> {
 
 async function queryReceivedInvoices(req: Request, env: Env, range: { from: Date; to: Date }) {
     const authUser = await getAuthUser(req, env) as AppUser;
-    const userCounterparty = {};
+    const userCounterparty = await getRepo(env).get("counterparties", authUser.id) as AppCounterparty;
     const client = new KsefClient(env, userCounterparty);
     // Authenticate
     await client.authenticate();
