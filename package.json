@@ -19,8 +19,6 @@
         "client:dev": "npm run client:build && vite --port 3000",
         "client:test": "vitest",
 
-        "avro:generate": "avro-ts resources/schemas/KSeFInvoice.avsc --output-dir worker/types",
-
         "db:local:teardown": "wrangler d1 execute ksef-bot --config wrangler.worker.toml --local --file=db/teardown.sql",
         "db:local:create": "wrangler d1 execute ksef-bot --config wrangler.worker.toml --local --file=db/schema.sql",
         "worker:dev": "npm run client:build && wrangler dev --config wrangler.worker.toml --local --port 3001",
@@ -38,7 +36,6 @@
     },
     "devDependencies": {
         "@cloudflare/workers-types": "latest",
-        "@ovotech/avro-ts-cli": "latest",
         "@sentry/cloudflare": "latest",
         "@sentry/tracing": "latest",
         "@types/bootstrap": "latest",
