@@ -19,18 +19,18 @@ export async function get(req: Request, env: Env): Promise<Response> {
     const to = new Date(toParam);
     if (isNaN(from.getTime()) || isNaN(to.getTime()))
         return Response.json({ error: "Invalid date parameters" }, { status: 400 });
-    const invoices = await queryReceivedInvoices(req, env, { from, to });
+    const invoices = await queryPurchaseInvoices(req, env, from, to);
     return Response.json(invoices);
 }
 
-async function queryReceivedInvoices(req: Request, env: Env, range: { from: Date; to: Date }) {
+async function queryPurchaseInvoices(req: Request, env: Env, from: Date, to: Date) {
     const authUser = await getAuthUser(req, env) as AppUser;
     const userCounterparty = await getRepo(env).get("counterparties", authUser.id) as AppCounterparty;
     const client = new KsefClient(env, userCounterparty);
     // Authenticate
     await client.authenticate();
     // Start invoice search
-    const query = await client.createInvoiceQuery(range.from, range.to);
+    const query = await client.createInvoiceQuery(from, to);
     // Poll until completed
     await pRetry(
         async () => {
