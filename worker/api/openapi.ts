@@ -70,6 +70,7 @@ export const openApiSpec = {
                 type: "object",
                 additionalProperties: false,
                 required: [
+                    "period",
                     "brut_income"
                 ],
                 properties: {
