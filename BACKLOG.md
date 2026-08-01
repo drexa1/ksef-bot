@@ -9,7 +9,7 @@
 - [x] DB backend  
 - [x] DB REST tests  
 - [x] Rework auth  
-- [ ] Auth REST tests
+- [ ] Auth REST tests  
 - [ ] Review security architecture  
 - [ ] Post db invoice should be XML upload  
 - [ ] Retrieve invoice from KSeF  
