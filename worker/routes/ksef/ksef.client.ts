@@ -109,12 +109,7 @@ export class KsefClient {
                     default:
                         throw new Error(`KSeF authentication not completed: ${status.status}`);
                 }
-            }, {
-                retries: 60,
-                minTimeout: 1000,
-                maxTimeout: 1000,
-                factor: 1
-            }
+            }, { retries: 3, minTimeout: env.KSEF_MIN_TIMEOUT, maxTimeout: env.KSEF_MAX_TIMEOUT, factor: 1 }
         );
     }
 
