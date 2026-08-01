@@ -3,6 +3,8 @@ import pRetry, {AbortError} from "p-retry";
 
 type KsefContextIdentifier = { type: "Nip" | "Pesel" | "Regon", identifier: string };
 
+type KsefAuthenticationStatus = { status: "Pending" | "InProgress" | "Completed" | "Failed", message?: string };
+
 type KsefQueryStatus = { status: "queued" | "processing" | "completed" | "failed", message?: string };
 
 type KsefSubject = { nip?: string, pesel?: string, regon?: string };
@@ -98,12 +100,7 @@ export class KsefClient {
                     headers: { Authorization: `Bearer ${authenticationToken}` }});
                 if (!response.ok)
                     throw new Error(`KSeF authentication status failed: ${response.status}`);
-
-                const status = await response.json() as {
-                    status: "Pending" | "InProgress" | "Completed" | "Failed",
-                    message?: string
-                };
-
+                const status = await response.json() as KsefAuthenticationStatus;
                 switch (status.status) {
                     case "Completed":
                         return;
@@ -145,11 +142,7 @@ export class KsefClient {
     private authHeaders() {
         if (!this.token)
             throw new Error("KSeF client is not authenticated");
-
-        return {
-            "Authorization": `Bearer ${this.token}`,
-            "Content-Type": "application/json"
-        };
+        return { "Authorization": `Bearer ${this.token}`, "Content-Type": "application/json" };
     }
 
     async createInvoiceQuery(from: Date, to: Date): Promise<{ queryReferenceNumber: string }> {
@@ -168,28 +161,6 @@ export class KsefClient {
         if (!response.ok)
             throw new Error(`Query creation failed ${response.status}`);
         return await response.json() as { queryReferenceNumber: string };
-    }
-
-    async waitForInvoiceQuery(referenceNumber: string): Promise<void> {
-        await pRetry(
-            async () => {
-                const status = await this.getQueryStatus(referenceNumber);
-
-                switch (status.status) {
-                    case "completed":
-                        return;
-                    case "failed":
-                        throw new AbortError(status.message ?? "Invoice query failed");
-                    default:
-                        throw new Error(`Invoice query not completed: ${status.status}`);
-                }
-            }, {
-                retries: 60,
-                minTimeout: 1000,
-                maxTimeout: 1000,
-                factor: 1
-            }
-        );
     }
 
     async getQueryStatus(referenceNumber: string): Promise<KsefQueryStatus> {
