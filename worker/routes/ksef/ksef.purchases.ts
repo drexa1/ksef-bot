@@ -27,7 +27,7 @@ async function queryPurchaseInvoices(req: Request, env: Env, from: Date, to: Dat
     const authUser = await getAuthUser(req, env) as AppUser;
     const userCounterparty = await getRepo(env).get("counterparties", authUser.id) as AppCounterparty;
     if (!userCounterparty)
-        return Response.json({ error: "KsefSubject not found. Should you have a", id: authUser.id }, { status: 404 });
+        return Response.json({ error: "Counterparty not found. Have you created a counterparty record?", id: authUser.id }, { status: 404 });
     const client = new KsefClient(env, userCounterparty);
     // Authenticate
     await client.authenticate();
