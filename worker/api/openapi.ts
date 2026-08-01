@@ -17,28 +17,22 @@ export const openApiSpec = {
                 type: "object",
                 additionalProperties: false,
                 required: [
-                    "id",
                     "email"
                 ],
                 properties: {
-                    id: { type: "string" },
                     email: { type: "string" },
                     name: { type: "string" },
-                    api_key: { type: "string" },
-                    created_at: { type: "string", format: "date-time" },
-                    updated_at: { type: "string", format: "date-time" }
+                    api_key: { type: "string" }
                 }
             },
             Counterparty: {
                 type: "object",
                 additionalProperties: false,
                 required: [
-                    "id",
                     "name",
                     "address_l1"
                 ],
                 properties: {
-                    id: { type: "string" },
                     name: { type: "string" },
                     nip: { type: "string" },
                     pesel: { type: "string" },
@@ -52,30 +46,24 @@ export const openApiSpec = {
                     address_l2: { type: "string" },
                     local_government_unit: { type: "integer" },
                     vat_group: { type: "integer" },
-                    notes: { type: "string" },
-                    created_at: { type: "string", format: "date-time" },
-                    updated_at: { type: "string", format: "date-time" }
+                    notes: { type: "string" }
                 }
             },
             Invoice: {
                 type: "object",
                 additionalProperties: false,
                 required: [
-                    "id",
                     "seller_id",
                     "buyer_id",
                     "raw_xml"
                 ],
                 properties: {
-                    id: { type: "string" },
                     seller_id: { type: "string" },
                     buyer_id: { type: "string" },
                     country_code: { type: "string" },
                     raw_xml: { type: "string" },
                     json_data: { type: "string" },
-                    notes: { type: "string" },
-                    created_at: { type: "string", format: "date-time" },
-                    updated_at: { type: "string", format: "date-time" }
+                    notes: { type: "string" }
                 }
             }
         }
@@ -129,7 +117,7 @@ export const openApiSpec = {
         },
         "/ksef": {
             get: {
-                summary: "List invoices from KSeF",
+                summary: "List invoices from KSeF - Restricted to resources owned by the authenticated user.",
                 tags: ["KSeF"],
                 responses: {
                     "200": { description: "Invoices found" },
@@ -137,7 +125,7 @@ export const openApiSpec = {
                 }
             },
             post: {
-                summary: "Submit new invoice to KSeF",
+                summary: "Submit new invoice to KSeF - Restricted to resources owned by the authenticated user.",
                 tags: ["KSeF"],
                 requestBody: {
                     required: true,
@@ -165,7 +153,7 @@ export const openApiSpec = {
         },
         "/db/users": {
             get: {
-                summary: "List users",
+                summary: "List users - Only allowed for admin users.",
                 tags: ["DB"],
                 parameters: [{ name: "id", in: "query", required: false, schema: { type: "string" } }],
                 responses: {
@@ -175,7 +163,7 @@ export const openApiSpec = {
                 }
             },
             post: {
-                summary: "Create or upsert a user",
+                summary: "Create or upsert a user - Only allowed for admin users.",
                 tags: ["DB"],
                 requestBody: {
                     required: true,
@@ -191,7 +179,7 @@ export const openApiSpec = {
                 }
             },
             put: {
-                summary: "Update a user",
+                summary: "Update a user - Only allowed for admin users.",
                 tags: ["DB"],
                 requestBody: {
                     required: true,
@@ -208,7 +196,7 @@ export const openApiSpec = {
                 }
             },
             delete: {
-                summary: "Delete a user",
+                summary: "Delete a user - Only allowed for admin users.",
                 tags: ["DB"],
                 parameters: [{ name: "id", in: "query", required: true, schema: { type: "string" } }],
                 responses: {
@@ -220,7 +208,7 @@ export const openApiSpec = {
         },
         "/db/counterparties": {
             get: {
-                summary: "List counterparties",
+                summary: "List counterparties - Restricted to resources owned by the authenticated user.",
                 tags: ["DB"],
                 parameters: [{ name: "id", in: "query", required: false, schema: { type: "string" } }],
                 responses: {
@@ -230,7 +218,7 @@ export const openApiSpec = {
                 }
             },
             post: {
-                summary: "Create or upsert a counterparty",
+                summary: "Create or upsert a counterparty - Restricted to resources owned by the authenticated user.",
                 tags: ["DB"],
                 requestBody: {
                     required: true,
@@ -246,7 +234,7 @@ export const openApiSpec = {
                 }
             },
             put: {
-                summary: "Update a counterparty",
+                summary: "Update a counterparty - Restricted to resources owned by the authenticated user.",
                 tags: ["DB"],
                 requestBody: {
                     required: true,
@@ -263,7 +251,7 @@ export const openApiSpec = {
                 }
             },
             delete: {
-                summary: "Delete a counterparty",
+                summary: "Delete a counterparty - Restricted to resources owned by the authenticated user.",
                 tags: ["DB"],
                 parameters: [{ name: "id", in: "query", required: true, schema: { type: "string" } }],
                 responses: {
@@ -275,7 +263,7 @@ export const openApiSpec = {
         },
         "/db/invoices": {
             get: {
-                summary: "List invoices",
+                summary: "List invoices - Restricted to resources owned by the authenticated user.",
                 tags: ["DB"],
                 parameters: [{ name: "id", in: "query", required: false, schema: { type: "string" } }],
                 responses: {
@@ -285,7 +273,7 @@ export const openApiSpec = {
                 }
             },
             post: {
-                summary: "Create or upsert an invoice",
+                summary: "Create or upsert an invoice - Restricted to resources owned by the authenticated user.",
                 tags: ["DB"],
                 requestBody: {
                     required: true,
@@ -301,7 +289,7 @@ export const openApiSpec = {
                 }
             },
             put: {
-                summary: "Update an invoice",
+                summary: "Update an invoice - Restricted to resources owned by the authenticated user.",
                 tags: ["DB"],
                 requestBody: {
                     required: true,
@@ -318,7 +306,7 @@ export const openApiSpec = {
                 }
             },
             delete: {
-                summary: "Delete an invoice",
+                summary: "Delete an invoice - Restricted to resources owned by the authenticated user.",
                 tags: ["DB"],
                 parameters: [{ name: "id", in: "query", required: true, schema: { type: "string" } }],
                 responses: {
