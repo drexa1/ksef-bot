@@ -1,0 +1,14 @@
+#@no-redirect
+@baseUrl = http://localhost:3001
+@apiKey = test
+@taxRecordId = 9de76eee-87fe-44b7-adbe-c9c596113aa9
+
+### Delete non-existing tax record
+DELETE {{baseUrl}}/db/taxes?id=missing
+Content-Type: application/json
+X-API-Key: {{apiKey}}
+
+### Delete existing invoice
+DELETE {{baseUrl}}/db/taxes?id={{taxRecordId}}
+Content-Type: application/json
+X-API-Key: {{apiKey}}

@@ -46,9 +46,14 @@ export async function get(req: Request, env: Env): Promise<Response> {
 export async function post(req: Request, env: Env): Promise<Response> {
     const authUser = await getAuthUser(req, env) as AppUser;
     const payload = await req.json() as AppCounterparty & { owner_id?: string };
-    // Never allow client to control id, ownership, or creation/update timestamps
+    // Never allow client to control id (except for local testing), ownership, or creation/update timestamps
     const { id, owner_id, created_at, updated_at, ...payloadData } = payload;
-    const record = { ...payloadData, id: crypto.randomUUID(), owner_id: authUser.id, updated_at: new Date().toISOString() };
+    const record = {
+        ...payloadData,
+        id: env.ENVIRONMENT === "dev" ? payload.id ?? crypto.randomUUID() : crypto.randomUUID(),
+        owner_id: authUser.id,
+        updated_at: new Date().toISOString()
+    };
     try {
         await getRepo(env).save("counterparties", record);
         return Response.json({ success: true, id: record.id }, { status: 200 });

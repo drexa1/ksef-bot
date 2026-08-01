@@ -70,20 +70,16 @@ export const openApiSpec = {
                 type: "object",
                 additionalProperties: false,
                 required: [
-                    "brut_income",
-                    "vat_percentage",
-                    "zus_contribution"
+                    "brut_income"
                 ],
                 properties: {
                     period: { type: "string" },
-                    brut_income: { type: "integer" },
-                    net_before_obligations: { type: "integer" },
-                    vat_percentage: { type: "integer" },
-                    vat: { type: "integer" },
-                    income_tax: { type: "integer" },
-                    zus_contribution: { type: "integer" },
-                    expenses: { type: "string" },
-                    total_clean_revenue: { type: "string" },
+                    brut_income: { type: "number" },
+                    vat_percentage: { type: "number" },
+                    income_tax: { type: "number" },
+                    health_insurance_base: { type: "number" },
+                    health_insurance_rate: { type: "number" },
+                    total_clean_revenue: { type: "number" },
                     notes: { type: "string" }
                 }
             }

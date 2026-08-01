@@ -66,17 +66,17 @@ CREATE TABLE IF NOT EXISTS taxes (
   owner_id TEXT NOT NULL REFERENCES users(id),
   -- Tax record
   period TEXT,
-  brut_income INTEGER NOT NULL,
-  net_before_obligations INTEGER NOT NULL,
+  brut_income REAL NOT NULL,
+  net_before_obligations REAL NOT NULL,
   -- Obligations
-  vat_percentage INTEGER NOT NULL,
-  vat INTEGER NOT NULL,
-  income_tax INTEGER NOT NULL,
-  zus_contribution INTEGER NOT NULL,
-  -- Map of purchases/deducts
-  expenses TEXT CHECK (json_valid(expenses)),
+  vat_percentage REAL DEFAULT 12,
+  vat_amount REAL NOT NULL,
+  income_tax REAL NOT NULL,
+  health_insurance_base REAL DEFAULT 5537.18,
+  health_insurance_rate REAL DEFAULT 0.09,
+  health_tax REAL NOT NULL,
   -- Total after obligations
-  total_clean_revenue INTEGER NOT NULL,
+  total_clean_revenue REAL NOT NULL,
   notes TEXT,
     -- DBA
   created_at TEXT DEFAULT CURRENT_TIMESTAMP,

@@ -37,11 +37,15 @@ export async function post(req: Request, env: Env): Promise<Response> {
     // Allow to create users only to superadmin
     if (authUser.tier !== 0)
         return new Response("Unauthorized", { status: 401, headers: corsHeaders });
-    // Never allow client to control id, ownership, or creation/update timestamps
+    // Never allow client to control id (except for local testing), ownership, or creation/update timestamps
     const payload = await req.json() as AppUser;
     const { id, created_at, updated_at, ...payloadData } = payload;
-    const record = { ...payloadData, id: crypto.randomUUID(), tier: 1, updated_at: new Date().toISOString() };
-
+    const record = {
+        ...payloadData,
+        id: env.ENVIRONMENT === "dev" ? payload.id ?? crypto.randomUUID() : crypto.randomUUID(),
+        tier: 1,
+        updated_at: new Date().toISOString()
+    };
     try {
         await getRepo(env).save("users", record);
         return Response.json({ success: true, id: record.id }, { status: 200 });
