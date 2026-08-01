@@ -66,20 +66,20 @@ export const openApiSpec = {
                     notes: { type: "string" }
                 }
             },
-            Taxes: {
+            TaxRecord: {
                 type: "object",
                 additionalProperties: false,
                 required: [
-                    "seller_id",
-                    "buyer_id",
-                    "raw_xml"
+                    "brut_income",
+                    "vat_percentage",
+                    "zus_contribution"
                 ],
                 properties: {
                     period: { type: "string" },
                     brut_income: { type: "integer" },
+                    net_before_obligations: { type: "integer" },
                     vat_percentage: { type: "integer" },
                     vat: { type: "integer" },
-                    net_before_obligations: { type: "integer" },
                     income_tax: { type: "integer" },
                     zus_contribution: { type: "integer" },
                     expenses: { type: "string" },
@@ -138,7 +138,7 @@ export const openApiSpec = {
         },
         "/ksef": {
             get: {
-                summary: "List invoices from KSeF - Restricted to resources owned by the authenticated user.",
+                summary: "List invoices at KSeF - Restricted to resources owned by the authenticated user.",
                 tags: ["KSeF"],
                 responses: {
                     "200": { description: "Invoices found" },
@@ -184,7 +184,7 @@ export const openApiSpec = {
                 }
             },
             post: {
-                summary: "Create or upsert a user - Only allowed for admin users.",
+                summary: "Create a user - Only allowed for admin users.",
                 tags: ["DB"],
                 requestBody: {
                     required: true,
@@ -239,7 +239,7 @@ export const openApiSpec = {
                 }
             },
             post: {
-                summary: "Create or upsert a counterparty - Restricted to resources owned by the authenticated user.",
+                summary: "Create a counterparty - Restricted to resources owned by the authenticated user.",
                 tags: ["DB"],
                 requestBody: {
                     required: true,
@@ -294,7 +294,7 @@ export const openApiSpec = {
                 }
             },
             post: {
-                summary: "Create or upsert an invoice - Restricted to resources owned by the authenticated user.",
+                summary: "Create an invoice - Restricted to resources owned by the authenticated user.",
                 tags: ["DB"],
                 requestBody: {
                     required: true,
@@ -334,6 +334,61 @@ export const openApiSpec = {
                     "200": { description: "Invoice deleted" },
                     "401": { description: "Unauthorized" },
                     "404": { description: "Invoice not found" }
+                }
+            }
+        },
+        "/db/taxes": {
+            get: {
+                summary: "List taxes records - Restricted to resources owned by the authenticated user.",
+                tags: ["DB"],
+                parameters: [{ name: "id", in: "query", required: false, schema: { type: "string" } }],
+                responses: {
+                    "200": { description: "Tax records" },
+                    "401": { description: "Unauthorized" },
+                    "404": { description: "Taxes record not found" }
+                }
+            },
+            post: {
+                summary: "Create a taxes record - Restricted to resources owned by the authenticated user.",
+                tags: ["DB"],
+                requestBody: {
+                    required: true,
+                    content: {
+                        "application/json": {
+                            schema: { $ref: "#/components/schemas/TaxRecord" }
+                        }
+                    }
+                },
+                responses: {
+                    "200": { description: "Taxes record created" },
+                    "401": { description: "Unauthorized" }
+                }
+            },
+            put: {
+                summary: "Update a taxes record - Restricted to resources owned by the authenticated user.",
+                tags: ["DB"],
+                requestBody: {
+                    required: true,
+                    content: {
+                        "application/json": {
+                            schema: { $ref: "#/components/schemas/TaxRecord" }
+                        }
+                    }
+                },
+                responses: {
+                    "200": { description: "Tax record updated" },
+                    "400": { description: "Bad request" },
+                    "401": { description: "Unauthorized" }
+                }
+            },
+            delete: {
+                summary: "Delete a taxes record - Restricted to resources owned by the authenticated user.",
+                tags: ["DB"],
+                parameters: [{ name: "id", in: "query", required: true, schema: { type: "string" } }],
+                responses: {
+                    "200": { description: "Taxes record deleted" },
+                    "401": { description: "Unauthorized" },
+                    "404": { description: "Taxes record not found" }
                 }
             }
         }

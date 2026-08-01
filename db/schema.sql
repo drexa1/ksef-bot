@@ -64,14 +64,15 @@ CREATE TABLE IF NOT EXISTS taxes (
   id TEXT PRIMARY KEY,
   -- Owner
   owner_id TEXT NOT NULL REFERENCES users(id),
-  -- Tax line
+  -- Tax record
   period TEXT,
   brut_income INTEGER NOT NULL,
+  net_before_obligations INTEGER NOT NULL,
+  -- Obligations
   vat_percentage INTEGER NOT NULL,
   vat INTEGER NOT NULL,
-  -- Net income before obligations
-  net_before_obligations INTEGER NOT NULL,
-  zus_contribution INTEGER,
+  income_tax INTEGER NOT NULL,
+  zus_contribution INTEGER NOT NULL,
   -- Map of purchases/deducts
   expenses TEXT CHECK (json_valid(expenses)),
   -- Total after obligations

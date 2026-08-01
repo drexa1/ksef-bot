@@ -39,6 +39,7 @@ export async function auth(req: Request, env: Env): Promise<boolean> {
         case "/db/users":
         case "/db/invoices":
         case "/db/counterparties":
+        case "/db/taxes":
             // Potential client worker made it through Zero Trust, anything else demand API key
             return req.headers.get("Cf-KSeF-Bot-Jwt") ? true : req.headers.get("X-API-Key") === env.API_KEY;
         // Default
