@@ -1,7 +1,7 @@
 {
   "type": "record",
-  "name": "Faktura",
-  "namespace": "pl.ksef.fa3",
+  "name": "KSeFInvoice",
+  "namespace": "pl_ksef_fa3",
   "doc": "Polish KSeF FA(3) invoice document.",
   "fields": [
     {
