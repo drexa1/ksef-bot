@@ -8,7 +8,7 @@
 - [x] DB schemas  
 - [x] DB backend  
 - [x] DB REST tests  
-- [ ] Rework auth  
+- [x] Rework auth  
 - [ ] Auth REST tests  
 - [ ] Review security architecture  
 - [ ] Retrieve invoice from KSeF  

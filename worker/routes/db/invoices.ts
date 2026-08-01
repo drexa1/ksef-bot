@@ -1,16 +1,20 @@
 import {Env} from "../../worker";
 import {D1Driver, Repository} from "../../repository/d1";
 import {getAuthUser} from "../../auth";
+import {AppUser} from "./users";
 
-export type AppInvoice = {
+type AppInvoice = {
     id?: string
+    // Parties
     seller_id: string
     buyer_id: string
+    // Raw data
     country_code: string
     raw_xml: string
     json_data: string
     notes?: string
-    created_at?: string
+    // DBA
+    created_at: string
     updated_at?: string
 };
 
@@ -20,29 +24,25 @@ function getRepo(env: Env): Repository {
 }
 
 export async function get(req: Request, env: Env): Promise<Response> {
-    const authUser = await getAuthUser(req, env);
+    const authUser = await getAuthUser(req, env) as AppUser;
     const url = new URL(req.url);
     const id = url.searchParams.get("id");
-    // Filter only owned records
+    // Allow to fetch only owned invoices (except for superadmin)
+    const filters = authUser.tier === 0 ? {} : { owner_id: authUser.id };
     const rows = id
-        ? await getRepo(env).get("invoices", id, { owner_id: authUser.id })
-        : await getRepo(env).getAll("invoices", { owner_id: authUser.id });
+        ? await getRepo(env).get("invoices", id, filters)
+        : await getRepo(env).getAll("invoices", filters);
     if (rows === null)
         return Response.json({ error: "Invoice not found", id: id }, { status: 404 });
     return Response.json(rows, { status: 200 });
 }
 
 export async function post(req: Request, env: Env): Promise<Response> {
-    const authUser = await getAuthUser(req, env);
+    const authUser = await getAuthUser(req, env) as AppUser;
     const payload = await req.json() as AppInvoice & { owner_id?: string };
-    // Never allow client to control ownership or creation/update timestamps
-    const { created_at, updated_at, owner_id, ...payloadData } = payload;
-    const record = {
-        ...payloadData,
-        id: payload.id ?? crypto.randomUUID(),
-        owner_id: authUser.id,
-        updated_at: new Date().toISOString()
-    };
+    // Never allow client to control id, ownership, or creation/update timestamps
+    const { id, owner_id, created_at, updated_at, ...payloadData } = payload;
+    const record = { ...payloadData, id: crypto.randomUUID(), owner_id: authUser.id, updated_at: new Date().toISOString() };
     try {
         await getRepo(env).save("invoices", record);
         return Response.json({ success: true, id: record.id }, { status: 200 });
@@ -54,7 +54,7 @@ export async function post(req: Request, env: Env): Promise<Response> {
 }
 
 export async function put(req: Request, env: Env): Promise<Response> {
-    const authUser = await getAuthUser(req, env);
+    const authUser = await getAuthUser(req, env) as AppUser;
     const payload = await req.json() as AppInvoice & { owner_id?: string };
     // Never allow client to change id, ownership, or creation timestamp
     const { id, created_at, updated_at, owner_id, ...updatePayload } = payload;
@@ -68,10 +68,12 @@ export async function put(req: Request, env: Env): Promise<Response> {
 }
 
 export async function del(req: Request, env: Env): Promise<Response> {
-    const authUser = await getAuthUser(req, env);
+    const authUser = await getAuthUser(req, env) as AppUser;
     const url = new URL(req.url);
     const id = url.searchParams.get("id")!;
-    const result = await getRepo(env).delete("invoices", id, { owner_id: authUser.id });
+    // Allow to delete only owned invoices (except for superadmin)
+    const filters = authUser.tier === 0 ? {} : { owner_id: authUser.id };
+    const result = await getRepo(env).delete("invoices", id, filters);
     if (result.changes === 0)
         return Response.json({ success: false, id: id, error: "Invoice not found" }, { status: 404 });
     return Response.json({ success: result.success, id: id }, { status: result.success ? 200 : 400 });

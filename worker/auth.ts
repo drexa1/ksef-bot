@@ -47,8 +47,19 @@ export async function auth(req: Request, env: Env): Promise<boolean> {
     }
 }
 
+export async function getAuthUser(req: Request, env: Env): Promise<AppUser> {
+    const whoamiResponse = await whoami(req, env);
+    const authUser = (await whoamiResponse.json()) as AuthUser;
+    // TODO: Could come via Cloudflare session or could come by other means (ie: application SSO)
+    const dbUser = await getRepo(env).getBy("users", "email", authUser.email) as AppUser;
+    if (!dbUser) throw new Response("User not found", { status: 401 });
+    return dbUser;
+}
+
+/**
+ * Get the Cloudflare zero trust user
+ */
 export async function whoami(req: Request, _env: Env): Promise<Response> {
-    // Who has passed Zero Trust for this worker
     const jwt = req.headers.get("Cf-Access-Jwt-Assertion");
     if (!jwt) throw new Response("Unknown user", { status: 401 });
     const user = decodeJWT(jwt);
@@ -61,12 +72,4 @@ function decodeJWT(jwt: string): AuthUser {
     const payloadJson = atob(payloadBase64.replace(/-/g, "+").replace(/_/g, "/"));
     const payload = JSON.parse(payloadJson);
     return { name: payload.name, email: payload.email };
-}
-
-export async function getAuthUser(req: Request, env: Env): Promise<AppUser> {
-    const whoamiResponse = await whoami(req, env);
-    const authUser = (await whoamiResponse.json()) as AuthUser;
-    const dbUser = await getRepo(env).getBy("users", "email", authUser.email) as AppUser;
-    if (!dbUser) throw new Response("User not found", { status: 401 });
-    return dbUser;
 }
