@@ -30,7 +30,6 @@
     },
     "dependencies": {
         "@sentry/cli": "latest",
-        "jose": "latest",
         "vite": "latest",
         "wrangler": "latest"
     },
