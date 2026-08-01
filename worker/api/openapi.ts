@@ -90,7 +90,7 @@ export const openApiSpec = {
         { name: "Health" },
         { name: "Auth" },
         { name: "KSeF" },
-        { name: "DB" }
+        { name: "App" }
     ],
     paths: {
         "/health": {
@@ -194,10 +194,10 @@ export const openApiSpec = {
                 }
             }
         },
-        "/db/users": {
+        "/app/users": {
             get: {
                 summary: "List users - Only allowed for admin users.",
-                tags: ["DB"],
+                tags: ["App"],
                 parameters: [{ name: "id", in: "query", required: false, schema: { type: "string" } }],
                 responses: {
                     "200": { description: "User records" },
@@ -207,7 +207,7 @@ export const openApiSpec = {
             },
             post: {
                 summary: "Create a user - Only allowed for admin users.",
-                tags: ["DB"],
+                tags: ["App"],
                 requestBody: {
                     required: true,
                     content: {
@@ -223,7 +223,7 @@ export const openApiSpec = {
             },
             put: {
                 summary: "Update a user - Only allowed for admin users.",
-                tags: ["DB"],
+                tags: ["App"],
                 requestBody: {
                     required: true,
                     content: {
@@ -240,7 +240,7 @@ export const openApiSpec = {
             },
             delete: {
                 summary: "Delete a user - Only allowed for admin users.",
-                tags: ["DB"],
+                tags: ["App"],
                 parameters: [{ name: "id", in: "query", required: true, schema: { type: "string" } }],
                 responses: {
                     "200": { description: "User deleted" },
@@ -249,10 +249,10 @@ export const openApiSpec = {
                 }
             }
         },
-        "/db/counterparties": {
+        "/app/counterparties": {
             get: {
                 summary: "List counterparties - Restricted to resources owned by the authenticated user.",
-                tags: ["DB"],
+                tags: ["App"],
                 parameters: [{ name: "id", in: "query", required: false, schema: { type: "string" } }],
                 responses: {
                     "200": { description: "Counterparty records" },
@@ -262,7 +262,7 @@ export const openApiSpec = {
             },
             post: {
                 summary: "Create a counterparty - Restricted to resources owned by the authenticated user.",
-                tags: ["DB"],
+                tags: ["App"],
                 requestBody: {
                     required: true,
                     content: {
@@ -278,7 +278,7 @@ export const openApiSpec = {
             },
             put: {
                 summary: "Update a counterparty - Restricted to resources owned by the authenticated user.",
-                tags: ["DB"],
+                tags: ["App"],
                 requestBody: {
                     required: true,
                     content: {
@@ -295,7 +295,7 @@ export const openApiSpec = {
             },
             delete: {
                 summary: "Delete a counterparty - Restricted to resources owned by the authenticated user.",
-                tags: ["DB"],
+                tags: ["App"],
                 parameters: [{ name: "id", in: "query", required: true, schema: { type: "string" } }],
                 responses: {
                     "200": { description: "Counterparty deleted" },
@@ -304,10 +304,10 @@ export const openApiSpec = {
                 }
             }
         },
-        "/db/invoices": {
+        "/app/invoices": {
             get: {
                 summary: "List invoices - Restricted to resources owned by the authenticated user.",
-                tags: ["DB"],
+                tags: ["App"],
                 parameters: [{ name: "id", in: "query", required: false, schema: { type: "string" } }],
                 responses: {
                     "200": { description: "Invoice records" },
@@ -317,7 +317,7 @@ export const openApiSpec = {
             },
             post: {
                 summary: "Create an invoice - Restricted to resources owned by the authenticated user.",
-                tags: ["DB"],
+                tags: ["App"],
                 requestBody: {
                     required: true,
                     content: {
@@ -333,7 +333,7 @@ export const openApiSpec = {
             },
             put: {
                 summary: "Update an invoice - Restricted to resources owned by the authenticated user.",
-                tags: ["DB"],
+                tags: ["App"],
                 requestBody: {
                     required: true,
                     content: {
@@ -350,7 +350,7 @@ export const openApiSpec = {
             },
             delete: {
                 summary: "Delete an invoice - Restricted to resources owned by the authenticated user.",
-                tags: ["DB"],
+                tags: ["App"],
                 parameters: [{ name: "id", in: "query", required: true, schema: { type: "string" } }],
                 responses: {
                     "200": { description: "Invoice deleted" },
@@ -359,10 +359,10 @@ export const openApiSpec = {
                 }
             }
         },
-        "/db/taxes": {
+        "/app/taxes": {
             get: {
                 summary: "List taxes records - Restricted to resources owned by the authenticated user.",
-                tags: ["DB"],
+                tags: ["App"],
                 parameters: [{ name: "id", in: "query", required: false, schema: { type: "string" } }],
                 responses: {
                     "200": { description: "Tax records" },
@@ -372,7 +372,7 @@ export const openApiSpec = {
             },
             post: {
                 summary: "Create a taxes record - Restricted to resources owned by the authenticated user.",
-                tags: ["DB"],
+                tags: ["App"],
                 requestBody: {
                     required: true,
                     content: {
@@ -388,7 +388,7 @@ export const openApiSpec = {
             },
             put: {
                 summary: "Update a taxes record - Restricted to resources owned by the authenticated user.",
-                tags: ["DB"],
+                tags: ["App"],
                 requestBody: {
                     required: true,
                     content: {
@@ -405,7 +405,7 @@ export const openApiSpec = {
             },
             delete: {
                 summary: "Delete a taxes record - Restricted to resources owned by the authenticated user.",
-                tags: ["DB"],
+                tags: ["App"],
                 parameters: [{ name: "id", in: "query", required: true, schema: { type: "string" } }],
                 responses: {
                     "200": { description: "Taxes record deleted" },
