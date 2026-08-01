@@ -17,8 +17,9 @@ export class D1Driver implements DBDriver {
         return await this.db.prepare(sql).bind(...values).first();
     }
 
-    async getAll(sql: string) {
-        const { results } = await this.db.prepare(sql).all();
+    async getAll(sql: string, values: any[] = []) {
+        const stmt = this.db.prepare(sql);
+        const { results } = values ? await stmt.bind(...values).all() : await stmt.all();
         return results;
     }
 

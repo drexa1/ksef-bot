@@ -16,7 +16,7 @@ INSERT INTO users VALUES (
   'Diego Ruiz',
   NULL,
   0,
-  NULL,
+  CURRENT_TIMESTAMP,
   CURRENT_TIMESTAMP
 );
 
