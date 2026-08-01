@@ -35,7 +35,8 @@ export async function auth(req: Request, env: Env): Promise<boolean> {
             return true;
         // Protected routes
         case "/whoami":
-        case "/ksef":
+        case "/ksef/sales":
+        case "/ksef/purchases":
         case "/db/users":
         case "/db/invoices":
         case "/db/counterparties":
