@@ -50,6 +50,10 @@ export async function auth(req: Request, env: Env): Promise<boolean> {
 }
 
 export async function getAuthUser(req: Request, env: Env): Promise<AppUser> {
+    if (env.ENVIRONMENT === "dev") {
+        const adminUser =  await getRepo(env).getAll("users", { tier: 0 });
+        return adminUser[0] as AppUser;
+    }
     const whoamiResponse = await whoami(req, env);
     const authUser = (await whoamiResponse.json()) as AuthUser;
     // TODO: Could come via Cloudflare session or could come by other means (ie: application SSO)
@@ -63,8 +67,8 @@ export async function getAuthUser(req: Request, env: Env): Promise<AppUser> {
  */
 export async function whoami(req: Request, env: Env): Promise<Response> {
     if (env.ENVIRONMENT === "dev") {
-        const adminUser =  (await getRepo(env).getAll("users", { tier: 0 }))[0];
-        return Response.json(adminUser);
+        const adminUser =  await getRepo(env).getAll("users", { tier: 0 });
+        return Response.json(adminUser[0] as AppUser);
     }
     const jwt = req.headers.get("Cf-Access-Jwt-Assertion");
     console.info("hi2!",jwt);
