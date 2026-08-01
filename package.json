@@ -19,7 +19,7 @@
         "client:dev": "npm run client:build && vite --port 3000",
         "client:test": "vitest",
 
-        "avro:generate": "avro-ts resources/schemas/invoice.avsc --output-dir worker/types",
+        "avro:generate": "avro-ts resources/schemas/KSeFInvoice.avsc --output-dir worker/types",
 
         "db:local:teardown": "wrangler d1 execute ksef-bot --config wrangler.worker.toml --local --file=db/teardown.sql",
         "db:local:create": "wrangler d1 execute ksef-bot --config wrangler.worker.toml --local --file=db/schema.sql",
