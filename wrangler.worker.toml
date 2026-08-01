@@ -4,6 +4,7 @@ compatibility_date = "2026-01-01"
 
 [vars]
 ENVIRONMENT = "cloudflare"
+KSEF_URL = "https://api.ksef.mf.gov.pl/v2"
 # ...Rest of required env coming from Cloudflare secrets
 
 [observability.logs]

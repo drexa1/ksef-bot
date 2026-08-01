@@ -3,7 +3,7 @@ import {D1Driver, Repository} from "../../repository/d1";
 import {getAuthUser} from "../../auth";
 import {AppUser} from "./users";
 
-type AppCounterparty = {
+export type AppCounterparty = {
     id?: string
     // Counterparty data
     name: string

@@ -4,6 +4,8 @@ import {corsHeaders, auth, withCors} from "./auth";
 
 export interface Env {
     ENVIRONMENT: "dev" | "cloudflare"
+    KSEF_URL: string
+    KSEF_TOKEN: string
     API_KEY: string
     D1: D1Database
 }
