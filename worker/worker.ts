@@ -3,9 +3,9 @@ import {Method, routes} from "./routes";
 import {corsHeaders, auth, withCors} from "./auth";
 
 export interface Env {
-    ENVIRONMENT: "dev" | "cloudflare";
-    API_KEY: string;
-    D1: D1Database;
+    ENVIRONMENT: "dev" | "cloudflare"
+    API_KEY: string
+    D1: D1Database
 }
 
 // noinspection JSUnusedGlobalSymbols

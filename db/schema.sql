@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS users (
     created_at TEXT DEFAULT CURRENT_TIMESTAMP,
     updated_at TEXT
 )  WITHOUT ROWID;
--- Create superadmin user
+-- Create admin user
 INSERT INTO users VALUES (
   '38cd09f7-1e69-4b0b-ba67-c3a0b89db466',
   'drexa1@hotmail.com',

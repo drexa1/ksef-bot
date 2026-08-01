@@ -59,8 +59,13 @@ export async function getAuthUser(req: Request, env: Env): Promise<AppUser> {
 /**
  * Get the Cloudflare zero trust user
  */
-export async function whoami(req: Request, _env: Env): Promise<Response> {
+export async function whoami(req: Request, env: Env): Promise<Response> {
+    if (env.ENVIRONMENT === "dev") {
+        const adminUser =  (await getRepo(env).getAll("users", { tier: 0 }))[0];
+        return Response.json(adminUser);
+    }
     const jwt = req.headers.get("Cf-Access-Jwt-Assertion");
+    console.info("hi2!",jwt);
     if (!jwt) throw new Response("Unknown user", { status: 401 });
     const user = decodeJWT(jwt);
     console.info("[Whoami] requester:", user);
