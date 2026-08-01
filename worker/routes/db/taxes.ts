@@ -11,10 +11,11 @@ type AppTaxRecord = {
     net_before_obligations: number
     // Obligations
     vat_percentage: number
-    vat: number
+    vat_amount: number
     income_tax: number
-    zus_rate: number
-    zus_contribution: number
+    health_insurance_base: number
+    health_insurance_rate: number
+    health_contribution: number
     // Total after obligations
     total_clean_revenue: number
     notes: string
@@ -51,6 +52,7 @@ export async function post(req: Request, env: Env): Promise<Response> {
         ...payloadData,
         id: env.ENVIRONMENT === "dev" ? payload.id ?? crypto.randomUUID() : crypto.randomUUID(),
         owner_id: authUser.id,
+        // TODO: compute all taxes...
         updated_at: new Date().toISOString()
     };
     try {

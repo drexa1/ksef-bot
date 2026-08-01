@@ -74,7 +74,7 @@ CREATE TABLE IF NOT EXISTS taxes (
   income_tax REAL NOT NULL,
   health_insurance_base REAL DEFAULT 5537.18,
   health_insurance_rate REAL DEFAULT 0.09,
-  health_tax REAL NOT NULL,
+  health_contribution REAL NOT NULL,
   -- Total after obligations
   total_clean_revenue REAL NOT NULL,
   notes TEXT,
