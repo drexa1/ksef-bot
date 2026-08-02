@@ -417,7 +417,7 @@ export const openApiSpec = {
                 tags: ["App"],
                 security: [{ ApiKeyAuth: [] }],
                 requestBody: {
-                    required: true,
+                    required: ["file"],
                     content: {
                         "multipart/form-data": {
                             schema: {
