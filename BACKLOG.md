@@ -13,6 +13,7 @@
 - [x] Auth tests
 - [x] Post db invoice should be XML upload  
 - [x] Schema not loading as avro  
+- [ ] Review all REST tests after refactor  
 - [ ] Retrieve invoice from KSeF  
 - [ ] Compute taxes  
 - [ ] Review security architecture  
