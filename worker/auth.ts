@@ -37,10 +37,10 @@ export async function auth(req: Request, env: Env): Promise<boolean> {
         case "/whoami":
         case "/ksef/sales":
         case "/ksef/purchases":
-        case "/db/users":
-        case "/db/invoices":
-        case "/db/counterparties":
-        case "/db/taxes":
+        case "/app/users":
+        case "/app/invoices":
+        case "/app/counterparties":
+        case "/app/taxes":
             // Potential client worker made it through Zero Trust, anything else demand API key
             return req.headers.get("Cf-KSeF-Bot-Jwt") ? true : req.headers.get("X-API-Key") === env.API_KEY;
         // Default
@@ -71,7 +71,6 @@ export async function whoami(req: Request, env: Env): Promise<Response> {
         return Response.json(adminUser[0] as AppUser);
     }
     const jwt = req.headers.get("Cf-Access-Jwt-Assertion");
-    console.info("hi2!",jwt);
     if (!jwt) throw new Response("Unknown user", { status: 401 });
     const user = decodeJWT(jwt);
     console.info("[Whoami] requester:", user);
