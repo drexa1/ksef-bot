@@ -171,7 +171,6 @@ export const openApiSpec = {
             }
         }
     },
-    security: [{ ApiKeyAuth: [] }],
     tags: [
         { name: "Health" },
         { name: "Auth" },
@@ -222,6 +221,7 @@ export const openApiSpec = {
             get: {
                 summary: "List sales invoices at KSeF - Restricted to resources owned by the authenticated user.",
                 tags: ["KSeF"],
+                security: [{ ApiKeyAuth: [] }],
                 responses: {
                     "200": { description: "Invoices found" },
                     "401": { description: "Unauthorized" }
@@ -230,6 +230,7 @@ export const openApiSpec = {
             post: {
                 summary: "Submit new sales invoice to KSeF - Restricted to resources owned by the authenticated user.",
                 tags: ["KSeF"],
+                security: [{ ApiKeyAuth: [] }],
                 requestBody: {
                     required: true,
                     content: {
@@ -258,6 +259,7 @@ export const openApiSpec = {
             get: {
                 summary: "List purchases invoices at KSeF - Restricted to resources owned by the authenticated user.",
                 tags: ["KSeF"],
+                security: [{ ApiKeyAuth: [] }],
                 parameters: [
                     {
                         name: "from",
@@ -284,6 +286,7 @@ export const openApiSpec = {
             get: {
                 summary: "List users - Allowed only for admin users.",
                 tags: ["App"],
+                security: [{ ApiKeyAuth: [] }],
                 parameters: [{ name: "id", in: "query", required: false, schema: { type: "string" } }],
                 responses: {
                     "200": { description: "User records" },
@@ -294,6 +297,7 @@ export const openApiSpec = {
             post: {
                 summary: "Create a user - Allowed only for admin users.",
                 tags: ["App"],
+                security: [{ ApiKeyAuth: [] }],
                 requestBody: {
                     required: true,
                     content: {
@@ -310,6 +314,7 @@ export const openApiSpec = {
             put: {
                 summary: "Update a user - Allowed only for admin users.",
                 tags: ["App"],
+                security: [{ ApiKeyAuth: [] }],
                 requestBody: {
                     required: true,
                     content: {
@@ -327,6 +332,7 @@ export const openApiSpec = {
             delete: {
                 summary: "Delete a user - Allowed only for admin users.",
                 tags: ["App"],
+                security: [{ ApiKeyAuth: [] }],
                 parameters: [{ name: "id", in: "query", required: true, schema: { type: "string" } }],
                 responses: {
                     "200": { description: "User deleted" },
@@ -339,6 +345,7 @@ export const openApiSpec = {
             get: {
                 summary: "List counterparties - Restricted to resources owned by the authenticated user.",
                 tags: ["App"],
+                security: [{ ApiKeyAuth: [] }],
                 parameters: [{ name: "id", in: "query", required: false, schema: { type: "string" } }],
                 responses: {
                     "200": { description: "Counterparty records" },
@@ -349,6 +356,7 @@ export const openApiSpec = {
             post: {
                 summary: "Create a counterparty - Restricted to resources owned by the authenticated user.",
                 tags: ["App"],
+                security: [{ ApiKeyAuth: [] }],
                 requestBody: {
                     required: true,
                     content: {
@@ -365,6 +373,7 @@ export const openApiSpec = {
             put: {
                 summary: "Update a counterparty - Restricted to resources owned by the authenticated user.",
                 tags: ["App"],
+                security: [{ ApiKeyAuth: [] }],
                 requestBody: {
                     required: true,
                     content: {
@@ -382,6 +391,7 @@ export const openApiSpec = {
             delete: {
                 summary: "Delete a counterparty - Restricted to resources owned by the authenticated user.",
                 tags: ["App"],
+                security: [{ ApiKeyAuth: [] }],
                 parameters: [{ name: "id", in: "query", required: true, schema: { type: "string" } }],
                 responses: {
                     "200": { description: "Counterparty deleted" },
@@ -394,6 +404,7 @@ export const openApiSpec = {
             get: {
                 summary: "List invoices - Restricted to resources owned by the authenticated user.",
                 tags: ["App"],
+                security: [{ ApiKeyAuth: [] }],
                 parameters: [{ name: "id", in: "query", required: false, schema: { type: "string" } }],
                 responses: {
                     "200": { description: "Invoice records" },
@@ -404,6 +415,7 @@ export const openApiSpec = {
             post: {
                 summary: "Create an invoice - Restricted to resources owned by the authenticated user.",
                 tags: ["App"],
+                security: [{ ApiKeyAuth: [] }],
                 requestBody: {
                     required: true,
                     content: {
@@ -420,6 +432,7 @@ export const openApiSpec = {
             put: {
                 summary: "Update an invoice - Restricted to resources owned by the authenticated user.",
                 tags: ["App"],
+                security: [{ ApiKeyAuth: [] }],
                 requestBody: {
                     required: true,
                     content: {
@@ -437,6 +450,7 @@ export const openApiSpec = {
             delete: {
                 summary: "Delete an invoice - Restricted to resources owned by the authenticated user.",
                 tags: ["App"],
+                security: [{ ApiKeyAuth: [] }],
                 parameters: [{ name: "id", in: "query", required: true, schema: { type: "string" } }],
                 responses: {
                     "200": { description: "Invoice deleted" },
@@ -449,6 +463,7 @@ export const openApiSpec = {
             get: {
                 summary: "List taxes records - Restricted to resources owned by the authenticated user.",
                 tags: ["App"],
+                security: [{ ApiKeyAuth: [] }],
                 parameters: [{ name: "id", in: "query", required: false, schema: { type: "string" } }],
                 responses: {
                     "200": { description: "Tax records" },
@@ -459,6 +474,7 @@ export const openApiSpec = {
             post: {
                 summary: "Create a taxes record - Restricted to resources owned by the authenticated user.",
                 tags: ["App"],
+                security: [{ ApiKeyAuth: [] }],
                 requestBody: {
                     required: true,
                     content: {
@@ -475,6 +491,7 @@ export const openApiSpec = {
             put: {
                 summary: "Update a taxes record - Restricted to resources owned by the authenticated user.",
                 tags: ["App"],
+                security: [{ ApiKeyAuth: [] }],
                 requestBody: {
                     required: true,
                     content: {
@@ -492,6 +509,7 @@ export const openApiSpec = {
             delete: {
                 summary: "Delete a taxes record - Restricted to resources owned by the authenticated user.",
                 tags: ["App"],
+                security: [{ ApiKeyAuth: [] }],
                 parameters: [{ name: "id", in: "query", required: true, schema: { type: "string" } }],
                 responses: {
                     "200": { description: "Taxes record deleted" },
