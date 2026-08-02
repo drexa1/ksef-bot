@@ -1,16 +1,8 @@
 import {Env} from "./worker";
 import {D1Driver, Repository} from "./repository/d1";
-import {AppUser} from "./routes/db/users";
 import {Method, Routes} from "./routes";
-
-export type AuthUser = { name?: string, email?: string };
-
-class AuthError extends Error {
-    constructor(message: string, public status = 404, public details?: unknown) {
-        super(message);
-        this.name = "AuthError";
-    }
-}
+import {AppUser} from "./types/db";
+import {AuthError, AuthUser} from "./types/auth";
 
 let repo: Repository;
 function getRepo(env: Env): Repository {

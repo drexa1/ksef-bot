@@ -1,28 +1,7 @@
 import {Env} from "../../worker";
 import {D1Driver, Repository} from "../../repository/d1";
+import {AppCounterparty, AppUser} from "../../types/db";
 import {getAuthUser} from "../../auth";
-import {AppUser} from "./users";
-
-export type AppCounterparty = {
-    id?: string
-    // Counterparty data
-    name: string
-    nip?: string
-    pesel?: string
-    regon?: string
-    internal_identifier?: string
-    // Address
-    country_code: string
-    address_l1: string
-    address_l2?: string
-    // Counterparty metadata
-    local_government_unit?: number
-    vat_group?: number
-    notes?: string
-    // DBA
-    created_at: string
-    updated_at?: string
-};
 
 let repo: Repository;
 function getRepo(env: Env): Repository {
@@ -46,14 +25,9 @@ export async function get(req: Request, env: Env): Promise<Response> {
 export async function post(req: Request, env: Env): Promise<Response> {
     const authUser = await getAuthUser(req, env) as AppUser;
     const payload = await req.json() as AppCounterparty & { owner_id?: string };
-    // Never allow client to control id (except for local testing), ownership, or creation/update timestamps
+    // Never allow client to control id, ownership, or creation/update timestamps
     const { id, owner_id, created_at, updated_at, ...payloadData } = payload;
-    const record = {
-        ...payloadData,
-        id: env.ENVIRONMENT === "dev" ? payload.id ?? crypto.randomUUID() : crypto.randomUUID(),
-        owner_id: authUser.id,
-        updated_at: new Date().toISOString()
-    };
+    const record = { ...payloadData, id: crypto.randomUUID(), owner_id: authUser.id, updated_at: new Date().toISOString() };
     try {
         await getRepo(env).save("counterparties", record);
         return Response.json({ success: true, id: record.id }, { status: 200 });

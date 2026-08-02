@@ -1,10 +1,9 @@
 import {Env} from "../../worker";
 import {KsefClient} from "./ksef.client";
+import {D1Driver, Repository} from "../../repository/d1";
+import {AppCounterparty, AppUser} from "../../types/db";
 import pRetry, {AbortError} from "p-retry";
 import {getAuthUser} from "../../auth";
-import {AppUser} from "../db/users";
-import {D1Driver, Repository} from "../../repository/d1";
-import {AppCounterparty} from "../db/counterparties";
 
 let repo: Repository;
 function getRepo(env: Env): Repository {

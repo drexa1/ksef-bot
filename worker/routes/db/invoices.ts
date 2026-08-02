@@ -1,22 +1,11 @@
 import {Env} from "../../worker";
 import {D1Driver, Repository} from "../../repository/d1";
+import {XMLParser} from "fast-xml-parser";
+import {AppCounterparty, AppUser} from "../../types/db";
+import {KsefSubject} from "../../types/ksef";
 import {getAuthUser} from "../../auth";
-import {AppUser} from "./users";
-
-type AppInvoice = {
-    id?: string
-    // Parties
-    seller_id: string
-    buyer_id: string
-    // Raw data
-    country_code: string
-    raw_xml: string
-    json_data: string
-    notes?: string
-    // DBA
-    created_at: string
-    updated_at?: string
-};
+import ksefSchema from "../../../resources/schemas/KSeFInvoice.avsc";
+import {mapAliases} from "../../avro/invoices";
 
 let repo: Repository;
 function getRepo(env: Env): Repository {
@@ -39,13 +28,38 @@ export async function get(req: Request, env: Env): Promise<Response> {
 
 export async function post(req: Request, env: Env): Promise<Response> {
     const authUser = await getAuthUser(req, env) as AppUser;
-    const payload = await req.json() as AppInvoice & { owner_id?: string };
-    // Never allow client to control id (except for local testing), ownership, or creation/update timestamps
-    const { id, owner_id, created_at, updated_at, ...payloadData } = payload;
+    const form = await req.formData();
+    const file = form.get("file");
+    const notes = form.get("notes")?.toString();
+    if (!(file instanceof File)) return Response.json({ error: "Missing XML file" }, { status: 400 });
+    const rawXml = await file.text();
+    // Parse XML
+    const parser = new XMLParser({ ignoreAttributes: false, attributeNamePrefix: "@_", removeNSPrefix: true });
+    const invoiceXml = parser.parse(rawXml).Faktura;
+    const invoice = mapAliases(invoiceXml, ksefSchema);
+    // Find or create counterparties
+    const sellerId = await getOrCreateCounterparty(env, {
+        name: invoice.Seller.IdentificationData.Name,
+        nip: invoice.Seller.IdentificationData.NIP,
+        country_code: invoice.Seller.Address.CountryCode,
+        address_l1: invoice.Seller.Address.AddressLine1
+    });
+    const buyerId = await getOrCreateCounterparty(env, {
+        name: invoice.Buyer.IdentificationData.Name,
+        nip: invoice.Buyer.IdentificationData.NIP,
+        country_code: invoice.Buyer.Address.CountryCode,
+        address_l1: invoice.Buyer.Address.AddressLine1
+    });
+    // Never allow client to control id, ownership, or creation/update timestamps
     const record = {
-        ...payloadData,
-        id: env.ENVIRONMENT === "dev" ? payload.id ?? crypto.randomUUID() : crypto.randomUUID(),
+        id: crypto.randomUUID(),
         owner_id: authUser.id,
+        seller_id: sellerId,
+        buyer_id: buyerId,
+        country_code: invoice.country_code,
+        raw_xml: rawXml,
+        json_data: JSON.stringify(invoice),
+        notes,
         updated_at: new Date().toISOString()
     };
     try {
@@ -72,4 +86,42 @@ export async function del(req: Request, env: Env): Promise<Response> {
     if (result.changes === 0)
         return Response.json({ success: false, id: id, error: "Invoice not found" }, { status: 404 });
     return Response.json({ success: result.success, id: id }, { status: result.success ? 200 : 400 });
+}
+
+// ---------------------------------------------------------------------------------------------------------------------
+// Counterparty helpers during invoice creation
+// ---------------------------------------------------------------------------------------------------------------------
+async function getOrCreateCounterparty(env: Env, subject: {
+   name: string;
+   nip?: string;
+   pesel?: string;
+   regon?: string;
+   country_code?: string;
+   address_l1?: string;
+}): Promise<string> {
+    const id = getCounterpartyIdentifier(subject);
+    const existing = await getRepo(env).getBy("counterparties", id.field, id.value) as AppCounterparty;
+    if (existing) return existing.id!;
+    const counterparty: AppCounterparty = {
+        id: crypto.randomUUID(),
+        name: subject.name,
+        nip: subject.nip,
+        pesel: subject.pesel,
+        regon: subject.regon,
+        country_code: subject.country_code ?? "PL",
+        address_l1: subject.address_l1 ?? "",
+        created_at: new Date().toISOString()
+    };
+    await getRepo(env).save("counterparties", counterparty);
+    return counterparty.id!;
+}
+
+function getCounterpartyIdentifier(subject: KsefSubject): { field: "nip" | "pesel" | "regon", value: string } {
+    if (subject.nip)
+        return { field: "nip", value: subject.nip };
+    if (subject.pesel)
+        return { field: "pesel", value: subject.pesel };
+    if (subject.regon)
+        return { field: "regon", value: subject.regon };
+    throw new Error("Counterparty has no supported fiscal identifier");
 }

@@ -1,21 +1,12 @@
-import { Env } from "../../worker";
+import {Env} from "../../worker";
 import pRetry, {AbortError} from "p-retry";
-
-type KsefContextIdentifier = { type: "Nip" | "Pesel" | "Regon", identifier: string };
-
-type KsefAuthenticationStatus = { status: "Pending" | "InProgress" | "Completed" | "Failed", message?: string };
-
-type KsefQueryStatus = { status: "queued" | "processing" | "completed" | "failed", message?: string };
-
-type KsefSubject = { nip?: string, pesel?: string, regon?: string };
-
-export type KsefInvoiceMetadata = {
-    ksefNumber: string
-    invoiceNumber?: string
-    sellerNip?: string
-    issueDate?: string
-    grossAmount?: number
-};
+import {
+    KsefAuthenticationStatus,
+    KsefContextIdentifier,
+    KsefInvoiceMetadata,
+    KsefQueryStatus,
+    KsefSubject
+} from "../../types/ksef";
 
 export class KsefClient {
     token?: string;

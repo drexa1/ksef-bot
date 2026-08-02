@@ -1,29 +1,7 @@
 import {Env} from "../../worker";
 import {D1Driver, Repository} from "../../repository/d1";
+import {AppTaxRecord, AppUser} from "../../types/db";
 import {getAuthUser} from "../../auth";
-import {AppUser} from "./users";
-
-type AppTaxRecord = {
-    id?: string
-    // Tax record
-    period: string
-    brut_income: number
-    vat_percentage: number
-    vat_amount: number
-    net_before_obligations: number
-    // Obligations
-    tax_rate: number,
-    income_tax: number
-    health_insurance_base: number
-    health_insurance_rate: number
-    health_contribution: number
-    // Total after obligations
-    total_clean_revenue: number
-    notes: string
-    // DBA
-    created_at: string
-    updated_at?: string
-};
 
 let repo: Repository;
 function getRepo(env: Env): Repository {
@@ -47,11 +25,11 @@ export async function get(req: Request, env: Env): Promise<Response> {
 export async function post(req: Request, env: Env): Promise<Response> {
     const authUser = await getAuthUser(req, env) as AppUser;
     const payload = await req.json() as AppTaxRecord & { owner_id?: string };
-    // Never allow client to control id (except for local testing), ownership, or creation/update timestamps
+    // Never allow client to control id, ownership, or creation/update timestamps
     const { id, owner_id, created_at, updated_at, ...payloadData } = payload;
     const record = {
         ...payloadData,
-        id: env.ENVIRONMENT === "dev" ? payload.id ?? crypto.randomUUID() : crypto.randomUUID(),
+        id: crypto.randomUUID(),
         owner_id: authUser.id,
         // TODO: compute all taxes...
         updated_at: new Date().toISOString()

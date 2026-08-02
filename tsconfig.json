@@ -10,6 +10,7 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "sourceMap": true,
+    "resolveJsonModule": true,
     "types": ["@cloudflare/workers-types", "bootstrap"],
     "paths": { "@wasm/*": ["./wasm/*"] }
   },

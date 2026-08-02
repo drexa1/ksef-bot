@@ -224,7 +224,7 @@ export const openApiSpec = {
                 security: [{ ApiKeyAuth: [] }],
                 responses: {
                     "200": { description: "Invoices found" },
-                    "401": { description: "Unauthorized" }
+                    "401": { description: "Unauthorized" },
                 }
             },
             post: {
@@ -413,14 +413,28 @@ export const openApiSpec = {
                 }
             },
             post: {
-                summary: "Create an invoice - Restricted to resources owned by the authenticated user.",
+                summary: "Upload an invoice XML - Restricted to resources owned by the authenticated user.",
                 tags: ["App"],
                 security: [{ ApiKeyAuth: [] }],
                 requestBody: {
                     required: true,
                     content: {
-                        "application/json": {
-                            schema: { $ref: "#/components/schemas/Invoice" }
+                        "multipart/form-data": {
+                            schema: {
+                                type: "object",
+                                required: ["file"],
+                                properties: {
+                                    file: {
+                                        type: "string",
+                                        format: "binary",
+                                        description: "Invoice XML file"
+                                    },
+                                    notes: {
+                                        type: "string",
+                                        description: "Optional notes"
+                                    }
+                                }
+                            }
                         }
                     }
                 },
