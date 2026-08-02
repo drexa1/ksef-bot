@@ -5,7 +5,7 @@ import {AppCounterparty, AppUser} from "../../types/db";
 import {KsefSubject} from "../../types/ksef";
 import {getAuthUser} from "../../auth";
 import ksefSchema from "../../../resources/schemas/KSeFInvoice.avsc";
-import {mapAliases} from "../../avro/invoices";
+import {mapAliases} from "../../avro/invoice";
 
 let repo: Repository;
 function getRepo(env: Env): Repository {
