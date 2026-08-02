@@ -9,7 +9,7 @@
 - [x] DB backend  
 - [x] DB REST tests  
 - [x] Rework auth  
-- [ ] Document OpenAPI schemas  
+- [x] Document OpenAPI schemas  
 - [ ] Auth REST tests  
 - [ ] Review security architecture  
 - [ ] Post db invoice should be XML upload  
