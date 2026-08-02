@@ -443,6 +443,21 @@
                   "aliases": ["PaymentMethod"],
                   "type": "int",
                   "doc": "Payment method code."
+                },
+                {
+                  "name": "RachunekBankowy",
+                  "aliases": ["BankAccount"],
+                  "type": {
+                    "type": "record",
+                    "name": "RachunekBankowy",
+                    "fields": [
+                      {
+                        "name": "NrRB",
+                        "aliases": ["AccountNumber"],
+                        "type": "string"
+                      }
+                    ]
+                  }
                 }
               ]
             }

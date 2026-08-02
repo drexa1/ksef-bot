@@ -5,6 +5,7 @@ compatibility_date = "2026-01-01"
 [vars]
 ENVIRONMENT = "cloudflare"
 KSEF_URL = "https://api.ksef.mf.gov.pl/v2"
+KSEF_INVOICE_SCHEMA = "/assets/schemas/KSeFInvoice.avsc"
 KSEF_MIN_TIMEOUT = 100
 KSEF_MAX_TIMEOUT = 3000
 # ...Rest of required env coming from Cloudflare secrets

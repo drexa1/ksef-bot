@@ -33,24 +33,24 @@ export async function post(req: Request, env: Env): Promise<Response> {
     if (!(file instanceof File)) return Response.json({ error: "Missing XML file" }, { status: 400 });
     const rawXml = await file.text();
     // Parse XML
-    const parser = new XMLParser({ ignoreAttributes: false, attributeNamePrefix: "@_", removeNSPrefix: true });
+    const parser = new XMLParser({ ignoreAttributes: false, parseTagValue: false, attributeNamePrefix: "", textNodeName: "value" });
     const invoiceXml = parser.parse(rawXml).Faktura;
-    const asset = new URL("/schemas/KSeFInvoice.avsc", req.url)
-    const schemaText = await env.assets.fetch(asset).then((res) => res.text());
-    const ksefAvroSchema = JSON.parse(schemaText);
-    const invoice = dtoFromAliases(invoiceXml, ksefAvroSchema);
+    const ksefInvoiceAvroSchema = await env.assets
+        .fetch(new URL(env.KSEF_INVOICE_SCHEMA, req.url))
+        .then((res) => res.json());
+    const ksefInvoice = dtoFromAliases(invoiceXml, ksefInvoiceAvroSchema);
     // Find or create counterparties
     const sellerId = await getOrCreateCounterparty(env, {
-        name: invoice.Seller.IdentificationData.Name,
-        nip: invoice.Seller.IdentificationData.NIP,
-        country_code: invoice.Seller.Address.CountryCode,
-        address_l1: invoice.Seller.Address.AddressLine1
+        name: ksefInvoice.Seller.IdentificationData.Name,
+        nip: ksefInvoice.Seller.IdentificationData.NIP,
+        country_code: ksefInvoice.Seller.Address.CountryCode,
+        address_l1: ksefInvoice.Seller.Address.AddressLine1
     });
     const buyerId = await getOrCreateCounterparty(env, {
-        name: invoice.Buyer.IdentificationData.Name,
-        nip: invoice.Buyer.IdentificationData.NIP,
-        country_code: invoice.Buyer.Address.CountryCode,
-        address_l1: invoice.Buyer.Address.AddressLine1
+        name: ksefInvoice.Buyer.IdentificationData.Name,
+        nip: ksefInvoice.Buyer.IdentificationData.NIP,
+        country_code: ksefInvoice.Buyer.Address.CountryCode,
+        address_l1: ksefInvoice.Buyer.Address.AddressLine1
     });
     // Never allow client to control id, ownership, or creation/update timestamps
     const record = {
@@ -58,9 +58,9 @@ export async function post(req: Request, env: Env): Promise<Response> {
         owner_id: authUser.id,
         seller_id: sellerId,
         buyer_id: buyerId,
-        country_code: invoice.country_code,
+        country_code: ksefInvoice.country_code,
         raw_xml: rawXml,
-        json_data: JSON.stringify(invoice),
+        json_data: JSON.stringify(ksefInvoice),
         notes,
         updated_at: new Date().toISOString()
     };

@@ -5,6 +5,7 @@ import {corsHeaders, auth, withCors} from "./auth";
 export interface Env {
     ENVIRONMENT: "dev" | "cloudflare"
     KSEF_URL: string
+    KSEF_INVOICE_SCHEMA: string
     KSEF_MIN_TIMEOUT: number
     KSEF_MAX_TIMEOUT: number
     KSEF_TOKEN: string
