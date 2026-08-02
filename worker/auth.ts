@@ -1,8 +1,16 @@
 import {Env} from "./worker";
 import {D1Driver, Repository} from "./repository/d1";
 import {AppUser} from "./routes/db/users";
+import {Method, Routes} from "./routes";
 
 export type AuthUser = { name?: string, email?: string };
+
+class AuthError extends Error {
+    constructor(message: string, public status = 404, public details?: unknown) {
+        super(message);
+        this.name = "AuthError";
+    }
+}
 
 let repo: Repository;
 function getRepo(env: Env): Repository {
@@ -21,6 +29,23 @@ export const withCors = ( res: Response) => {
         headers.set(k, v);
     }
     return new Response(res.body, { status: res.status, statusText: res.statusText, headers });
+};
+
+export const withAuthHandling = (routes: Routes): Routes => {
+    const routesWithAuth: Routes = {};
+    for (const [method, route] of Object.entries(routes)) {
+        routesWithAuth[method as Method] = async (req: Request, env: Env) => {
+            try {
+                return await route(req, env);
+            } catch (error: unknown) {
+                console.error(error);
+                if (error instanceof AuthError)
+                    return Response.json({ error: error.message, details: error.details }, { status: error.status, headers: corsHeaders });
+                return Response.json({ error: "Internal server error" }, { status: 500, headers: corsHeaders });
+            }
+        };
+    }
+    return routesWithAuth;
 };
 
 export async function auth(req: Request, env: Env): Promise<boolean> {
@@ -49,17 +74,22 @@ export async function auth(req: Request, env: Env): Promise<boolean> {
     }
 }
 
+/**
+ * Can return the application user for the authenticated user, or error HTTP response
+ */
 export async function getAuthUser(req: Request, env: Env): Promise<AppUser> {
+    // For local development, just return the admin user
     if (env.ENVIRONMENT === "dev") {
         const adminUser =  await getRepo(env).getAll("users", { tier: 0 });
         return adminUser[0] as AppUser;
     }
+    // TODO: Could come via Cloudflare session or could come by other means (ie: application SSO)
     const whoamiResponse = await whoami(req, env);
     const authUser = (await whoamiResponse.json()) as AuthUser;
-    // TODO: Could come via Cloudflare session or could come by other means (ie: application SSO)
-    const dbUser = await getRepo(env).getBy("users", "email", authUser.email) as AppUser;
-    if (!dbUser) throw new Response("User not found", { status: 401 });
-    return dbUser;
+    const appUser = await getRepo(env).getBy("users", "email", authUser.email) as AppUser;
+    // This should not happen, we have to enrol users for those who we give access to Cloudflare
+    if (!appUser) throw new AuthError("Authenticated user not found in app", 404, { appUser });
+    return appUser;
 }
 
 /**
@@ -71,7 +101,7 @@ export async function whoami(req: Request, env: Env): Promise<Response> {
         return Response.json(adminUser[0] as AppUser);
     }
     const jwt = req.headers.get("Cf-Access-Jwt-Assertion");
-    if (!jwt) throw new Response("Unknown user", { status: 401 });
+    if (!jwt) throw new Response("Unknown user");
     const user = decodeJWT(jwt);
     console.info("[Whoami] requester:", user);
     return Response.json(user);
