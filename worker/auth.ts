@@ -88,7 +88,7 @@ export async function getAuthUser(req: Request, env: Env): Promise<AppUser> {
     const authUser = (await whoamiResponse.json()) as AuthUser;
     const appUser = await getRepo(env).getBy("users", "email", authUser.email) as AppUser;
     // This should not happen, we have to enrol users for those who we give access to Cloudflare
-    if (!appUser) throw new AuthError("Authenticated user not found in app", 404, { appUser });
+    if (!appUser) throw new AuthError("Authenticated user not found in app", 404, { authUser });
     return appUser;
 }
 
