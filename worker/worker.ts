@@ -10,6 +10,7 @@ export interface Env {
     KSEF_TOKEN: string
     API_KEY: string
     D1: D1Database
+    assets: Fetcher
 }
 
 // noinspection JSUnusedGlobalSymbols

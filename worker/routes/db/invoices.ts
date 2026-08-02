@@ -4,8 +4,7 @@ import {XMLParser} from "fast-xml-parser";
 import {AppCounterparty, AppUser} from "../../types/db";
 import {KsefSubject} from "../../types/ksef";
 import {getAuthUser} from "../../auth";
-import ksefSchema from "../../../resources/schemas/KSeFInvoice.avsc";
-import {mapAliases} from "../../avro/invoice";
+import {dtoFromAliases} from "../../avro/invoice";
 
 let repo: Repository;
 function getRepo(env: Env): Repository {
@@ -36,7 +35,10 @@ export async function post(req: Request, env: Env): Promise<Response> {
     // Parse XML
     const parser = new XMLParser({ ignoreAttributes: false, attributeNamePrefix: "@_", removeNSPrefix: true });
     const invoiceXml = parser.parse(rawXml).Faktura;
-    const invoice = mapAliases(invoiceXml, ksefSchema);
+    const asset = new URL("/schemas/KSeFInvoice.avsc", req.url)
+    const schemaText = await env.assets.fetch(asset).then((res) => res.text());
+    const ksefAvroSchema = JSON.parse(schemaText);
+    const invoice = dtoFromAliases(invoiceXml, ksefAvroSchema);
     // Find or create counterparties
     const sellerId = await getOrCreateCounterparty(env, {
         name: invoice.Seller.IdentificationData.Name,

@@ -1,8 +1,11 @@
-export function mapAliases(value: any, schema: any): any {
+/**
+ * Uses the aliases of an Avro schema to provide a translated DTO.
+ */
+export function dtoFromAliases(value: any, schema: any): any {
     // Avro union: ["null", {...}]
     if (Array.isArray(schema)) {
         const realSchema = schema.find(s => typeof s === "object");
-        return mapAliases(value, realSchema);
+        return dtoFromAliases(value, realSchema);
     }
     // Record
     if (schema.type === "record") {
@@ -11,7 +14,7 @@ export function mapAliases(value: any, schema: any): any {
             const inputName = field.name;
             const outputName = field.aliases?.[0] ?? inputName;
             if (value[inputName] !== undefined) {
-                result[outputName] = mapAliases(
+                result[outputName] = dtoFromAliases(
                     value[inputName],
                     field.type
                 );
@@ -20,7 +23,7 @@ export function mapAliases(value: any, schema: any): any {
         return result;
     }
     // Array
-    if (schema.type === "array") return value.map((item: any) => mapAliases(item, schema.items));
+    if (schema.type === "array") return value.map((item: any) => dtoFromAliases(item, schema.items));
     // Primitive
     return value;
 }

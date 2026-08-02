@@ -35,6 +35,41 @@ export const openApiSpec = {
                     }
                 }
             },
+            Invoice: {
+                type: "object",
+                additionalProperties: false,
+                required: [
+                    "seller_id",
+                    "buyer_id",
+                    "raw_xml"
+                ],
+                properties: {
+                    seller_id: {
+                        type: "string",
+                        description: "Seller unique ID.",
+                    },
+                    buyer_id: {
+                        type: "string",
+                        description: "Seller unique ID.",
+                    },
+                    country_code: {
+                        type: "string",
+                        default: "PL",
+                        description: "Two letter country code.",
+                    },
+                    raw_xml: {
+                        type: "string",
+                        description: "Original XML body of the document.",
+                    },
+                    json_data: {
+                        type: "string",
+                        description: "Formatted JSON of the original XML document.",
+                    },
+                    notes: {
+                        type: "string"
+                    }
+                }
+            },
             Counterparty: {
                 type: "object",
                 additionalProperties: false,
@@ -83,41 +118,6 @@ export const openApiSpec = {
                     vat_group: {
                         type: "integer",
                         description: "(GV) 1: invoice concerns a VAT group member, 2: invoice does not concern a VAT group member.",
-                    },
-                    notes: {
-                        type: "string"
-                    }
-                }
-            },
-            Invoice: {
-                type: "object",
-                additionalProperties: false,
-                required: [
-                    "seller_id",
-                    "buyer_id",
-                    "raw_xml"
-                ],
-                properties: {
-                    seller_id: {
-                        type: "string",
-                        description: "Seller unique ID.",
-                    },
-                    buyer_id: {
-                        type: "string",
-                        description: "Seller unique ID.",
-                    },
-                    country_code: {
-                        type: "string",
-                        default: "PL",
-                        description: "Two letter country code.",
-                    },
-                    raw_xml: {
-                        type: "string",
-                        description: "Original XML body of the document.",
-                    },
-                    json_data: {
-                        type: "string",
-                        description: "Formatted JSON of the original XML document.",
                     },
                     notes: {
                         type: "string"
@@ -341,65 +341,6 @@ export const openApiSpec = {
                 }
             }
         },
-        "/app/counterparties": {
-            get: {
-                summary: "List counterparties - Restricted to resources owned by the authenticated user.",
-                tags: ["App"],
-                security: [{ ApiKeyAuth: [] }],
-                parameters: [{ name: "id", in: "query", required: false, schema: { type: "string" } }],
-                responses: {
-                    "200": { description: "Counterparty records" },
-                    "401": { description: "Unauthorized" },
-                    "404": { description: "Counterparty not found" }
-                }
-            },
-            post: {
-                summary: "Create a counterparty - Restricted to resources owned by the authenticated user.",
-                tags: ["App"],
-                security: [{ ApiKeyAuth: [] }],
-                requestBody: {
-                    required: true,
-                    content: {
-                        "application/json": {
-                            schema: { $ref: "#/components/schemas/Counterparty" }
-                        }
-                    }
-                },
-                responses: {
-                    "200": { description: "Counterparty stored" },
-                    "401": { description: "Unauthorized" }
-                }
-            },
-            put: {
-                summary: "Update a counterparty - Restricted to resources owned by the authenticated user.",
-                tags: ["App"],
-                security: [{ ApiKeyAuth: [] }],
-                requestBody: {
-                    required: true,
-                    content: {
-                        "application/json": {
-                            schema: { $ref: "#/components/schemas/Counterparty" }
-                        }
-                    }
-                },
-                responses: {
-                    "200": { description: "Counterparty updated" },
-                    "400": { description: "Bad request" },
-                    "401": { description: "Unauthorized" }
-                }
-            },
-            delete: {
-                summary: "Delete a counterparty - Restricted to resources owned by the authenticated user.",
-                tags: ["App"],
-                security: [{ ApiKeyAuth: [] }],
-                parameters: [{ name: "id", in: "query", required: true, schema: { type: "string" } }],
-                responses: {
-                    "200": { description: "Counterparty deleted" },
-                    "401": { description: "Unauthorized" },
-                    "404": { description: "Counterparty not found" }
-                }
-            }
-        },
         "/app/invoices": {
             get: {
                 summary: "List invoices - Restricted to resources owned by the authenticated user.",
@@ -460,6 +401,65 @@ export const openApiSpec = {
                     "200": { description: "Invoice deleted" },
                     "401": { description: "Unauthorized" },
                     "404": { description: "Invoice not found" }
+                }
+            }
+        },
+        "/app/counterparties": {
+            get: {
+                summary: "List counterparties - Restricted to resources owned by the authenticated user.",
+                tags: ["App"],
+                security: [{ ApiKeyAuth: [] }],
+                parameters: [{ name: "id", in: "query", required: false, schema: { type: "string" } }],
+                responses: {
+                    "200": { description: "Counterparty records" },
+                    "401": { description: "Unauthorized" },
+                    "404": { description: "Counterparty not found" }
+                }
+            },
+            post: {
+                summary: "Create a counterparty - Restricted to resources owned by the authenticated user.",
+                tags: ["App"],
+                security: [{ ApiKeyAuth: [] }],
+                requestBody: {
+                    required: true,
+                    content: {
+                        "application/json": {
+                            schema: { $ref: "#/components/schemas/Counterparty" }
+                        }
+                    }
+                },
+                responses: {
+                    "200": { description: "Counterparty stored" },
+                    "401": { description: "Unauthorized" }
+                }
+            },
+            put: {
+                summary: "Update a counterparty - Restricted to resources owned by the authenticated user.",
+                tags: ["App"],
+                security: [{ ApiKeyAuth: [] }],
+                requestBody: {
+                    required: true,
+                    content: {
+                        "application/json": {
+                            schema: { $ref: "#/components/schemas/Counterparty" }
+                        }
+                    }
+                },
+                responses: {
+                    "200": { description: "Counterparty updated" },
+                    "400": { description: "Bad request" },
+                    "401": { description: "Unauthorized" }
+                }
+            },
+            delete: {
+                summary: "Delete a counterparty - Restricted to resources owned by the authenticated user.",
+                tags: ["App"],
+                security: [{ ApiKeyAuth: [] }],
+                parameters: [{ name: "id", in: "query", required: true, schema: { type: "string" } }],
+                responses: {
+                    "200": { description: "Counterparty deleted" },
+                    "401": { description: "Unauthorized" },
+                    "404": { description: "Counterparty not found" }
                 }
             }
         },
