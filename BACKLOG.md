@@ -10,11 +10,11 @@
 - [x] DB REST tests  
 - [x] Rework auth  
 - [x] Document OpenAPI schemas  
-- [ ] Auth REST tests  
-- [ ] Review security architecture  
+- [x] Auth tests
 - [ ] Post db invoice should be XML upload  
 - [ ] Retrieve invoice from KSeF  
 - [ ] Compute taxes  
+- [ ] Review security architecture  
 - [ ] Ultra simple frontend  
 - [ ] SSO/Enrolment  
 - [ ] GIT-version on deploy  

@@ -58,18 +58,8 @@ export async function post(req: Request, env: Env): Promise<Response> {
     }
 }
 
-export async function put(req: Request, env: Env): Promise<Response> {
-    const authUser = await getAuthUser(req, env) as AppUser;
-    const payload = await req.json() as AppInvoice & { owner_id?: string };
-    // Never allow client to change id, ownership, or creation timestamp
-    const { id, created_at, updated_at, owner_id, ...updatePayload } = payload;
-    const result = await getRepo(env).update("invoices", {
-        ...updatePayload,
-        updated_at: new Date().toISOString()
-    }, id!, { owner_id: authUser.id });
-    if (result.changes === 0)
-        return Response.json({ success: false, id: id, error: "Invoice not found" }, { status: 404 });
-    return Response.json({ success: true, id: id }, { status: result.success ? 200 : 400 });
+export async function put(_req: Request, _env: Env): Promise<Response> {
+    return Response.json({ error: "Invoice update not supported" }, { status: 501 });
 }
 
 export async function del(req: Request, env: Env): Promise<Response> {

@@ -430,21 +430,11 @@ export const openApiSpec = {
                 }
             },
             put: {
-                summary: "Update an invoice - Restricted to resources owned by the authenticated user.",
+                summary: "Update an invoice - Unsupported operation.",
                 tags: ["App"],
                 security: [{ ApiKeyAuth: [] }],
-                requestBody: {
-                    required: true,
-                    content: {
-                        "application/json": {
-                            schema: { $ref: "#/components/schemas/Invoice" }
-                        }
-                    }
-                },
                 responses: {
-                    "200": { description: "Invoice updated" },
-                    "400": { description: "Bad request" },
-                    "401": { description: "Unauthorized" }
+                    "405": { description: "Method Not Allowed - Invoice updates are not supported" }
                 }
             },
             delete: {
