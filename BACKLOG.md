@@ -11,7 +11,8 @@
 - [x] Rework auth  
 - [x] Document OpenAPI schemas  
 - [x] Auth tests
-- [ ] Post db invoice should be XML upload  
+- [x] Post db invoice should be XML upload  
+- [ ] Schema not loading as avro  
 - [ ] Retrieve invoice from KSeF  
 - [ ] Compute taxes  
 - [ ] Review security architecture  

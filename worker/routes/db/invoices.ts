@@ -4,7 +4,7 @@ import {XMLParser} from "fast-xml-parser";
 import {AppCounterparty, AppUser} from "../../types/db";
 import {KsefSubject} from "../../types/ksef";
 import {getAuthUser} from "../../auth";
-import ksefSchema from "../../../resources/schemas/KSeFInvoice.json";
+import ksefSchema from "../../../resources/schemas/KSeFInvoice.avsc";
 import {mapAliases} from "../../avro/invoices";
 
 let repo: Repository;
