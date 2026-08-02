@@ -78,7 +78,7 @@ export async function auth(req: Request, env: Env): Promise<boolean> {
  * Can return the application user for the authenticated user, or error HTTP response
  */
 export async function getAuthUser(req: Request, env: Env): Promise<AppUser> {
-    // For local development, just return the admin user
+    // For local development, always returns the admin user
     if (env.ENVIRONMENT === "dev") {
         const adminUser =  await getRepo(env).getAll("users", { tier: 0 });
         return adminUser[0] as AppUser;
