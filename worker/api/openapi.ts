@@ -10,7 +10,7 @@ export const openApiSpec = {
                 type: "apiKey",
                 in: "header",
                 name: "X-API-Key",
-                description: "Clients can authenticate using this."
+                description: "Clients can authenticate using this header."
             }
         },
         schemas: {
