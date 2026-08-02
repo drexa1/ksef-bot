@@ -1,5 +1,4 @@
 export type AppUser = {
-    id: string
     // User data
     email: string
     name?: string

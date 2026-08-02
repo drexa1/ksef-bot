@@ -13,7 +13,7 @@ export async function get(req: Request, env: Env): Promise<Response> {
     const url = new URL(req.url);
     const id = url.searchParams.get("id");
     // Allow to fetch only owned tax records (except for superadmin)
-    const filters = authUser.tier === 0 ? {} : { owner_id: authUser.id };
+    const filters = authUser.tier === 0 ? {} : { owner_id: authUser.email };
     const rows = id
         ? await getRepo(env).get("taxes", id, filters)
         : await getRepo(env).getAll("taxes", filters);
@@ -30,7 +30,7 @@ export async function post(req: Request, env: Env): Promise<Response> {
     const record = {
         ...payloadData,
         id: crypto.randomUUID(),
-        owner_id: authUser.id,
+        owner_id: authUser.email,
         // TODO: compute all taxes...
         updated_at: new Date().toISOString()
     };
@@ -52,7 +52,7 @@ export async function put(req: Request, env: Env): Promise<Response> {
     const result = await getRepo(env).update("taxes", {
         ...updatePayload,
         updated_at: new Date().toISOString()
-    }, id!, { owner_id: authUser.id });
+    }, id!, { owner_id: authUser.email });
     if (result.changes === 0)
         return Response.json({ success: false, id: id, error: "Tax record not found" }, { status: 404 });
     return Response.json({ success: true, id: id }, { status: result.success ? 200 : 400 });
@@ -63,7 +63,7 @@ export async function del(req: Request, env: Env): Promise<Response> {
     const url = new URL(req.url);
     const id = url.searchParams.get("id")!;
     // Allow to delete only owned tax records (except for superadmin)
-    const filters = authUser.tier === 0 ? {} : { owner_id: authUser.id };
+    const filters = authUser.tier === 0 ? {} : { owner_id: authUser.email };
     const result = await getRepo(env).delete("taxes", id, filters);
     if (result.changes === 0)
         return Response.json({ success: false, id: id, error: "Tax record not found" }, { status: 404 });

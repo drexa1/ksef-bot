@@ -28,7 +28,7 @@ export async function post(req: Request, env: Env): Promise<Response> {
         return new Response("Unauthorized", { status: 401, headers: corsHeaders });
     // Never allow client to control id, ownership, or creation/update timestamps
     const payload = await req.json() as AppUser;
-    const { id, created_at, updated_at, ...payloadData } = payload;
+    const { created_at, updated_at, ...payloadData } = payload;
     const record = { ...payloadData, id: crypto.randomUUID(), tier: 1, updated_at: new Date().toISOString() };
     try {
         await getRepo(env).save("users", record);

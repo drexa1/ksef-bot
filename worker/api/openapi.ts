@@ -373,7 +373,7 @@ export const openApiSpec = {
                                     notes: {
                                         type: "string",
                                         description: "Optional notes",
-                                        example: "some notes"
+                                        example: "Just some notes"
                                     }
                                 }
                             }

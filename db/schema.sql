@@ -1,9 +1,8 @@
 CREATE TABLE IF NOT EXISTS users (
-    id TEXT PRIMARY KEY,
     -- User data
-    email TEXT NOT NULL UNIQUE,
+    email TEXT PRIMARY KEY,
     name TEXT,
-    api_key TEXT,
+    api_key TEXT UNIQUE,
     tier INTEGER NOT NULL,
     -- DBA
     created_at TEXT DEFAULT CURRENT_TIMESTAMP,
@@ -11,7 +10,6 @@ CREATE TABLE IF NOT EXISTS users (
 )  WITHOUT ROWID;
 -- Create admin user
 INSERT INTO users VALUES (
-  '38cd09f7-1e69-4b0b-ba67-c3a0b89db466',
   'drexa1@hotmail.com',
   'Diego Ruiz',
   NULL,
@@ -26,10 +24,10 @@ CREATE TABLE IF NOT EXISTS counterparties (
     owner_id TEXT NOT NULL REFERENCES users(id),
     -- Counterparty data
     name TEXT NOT NULL,
-    nip TEXT,
-    pesel TEXT,
-    regon TEXT,
-    internal_identifier TEXT,
+    nip TEXT UNIQUE,
+    pesel TEXT UNIQUE,
+    regon TEXT UNIQUE,
+    internal_identifier TEXT UNIQUE,
     -- Address
     country_code TEXT DEFAULT 'PL',
     address_l1 TEXT NOT NULL,
@@ -46,7 +44,7 @@ CREATE TABLE IF NOT EXISTS counterparties (
 CREATE TABLE IF NOT EXISTS invoices (
     id TEXT PRIMARY KEY,
     -- Owner
-    owner_id TEXT NOT NULL REFERENCES users(id),
+    owner_id TEXT NOT NULL REFERENCES users(email),
     -- Parties
     seller_id TEXT NOT NULL REFERENCES counterparties(id),
     buyer_id  TEXT NOT NULL REFERENCES counterparties(id),
@@ -63,7 +61,7 @@ CREATE TABLE IF NOT EXISTS invoices (
 CREATE TABLE IF NOT EXISTS taxes (
   id TEXT PRIMARY KEY,
   -- Owner
-  owner_id TEXT NOT NULL REFERENCES users(id),
+  owner_id TEXT NOT NULL REFERENCES users(email),
   -- Tax record
   period TEXT,
   brut_income REAL NOT NULL,
