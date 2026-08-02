@@ -9,7 +9,8 @@ export const openApiSpec = {
             ApiKeyAuth: {
                 type: "apiKey",
                 in: "header",
-                name: "X-API-Key"
+                name: "X-API-Key",
+                description: "Clients can authenticate using this."
             }
         },
         schemas: {
@@ -20,9 +21,18 @@ export const openApiSpec = {
                     "email"
                 ],
                 properties: {
-                    email: { type: "string" },
-                    name: { type: "string" },
-                    api_key: { type: "string" }
+                    email: {
+                        type: "string",
+                        description: "This will be matched against the authenticated user."
+                    },
+                    name: {
+                        type: "string",
+                        description: "Full user name as shown on the invoices."
+                    },
+                    api_key: {
+                        type: "string",
+                        description: "In case the user has been granted an API key."
+                    }
                 }
             },
             Counterparty: {
@@ -33,20 +43,50 @@ export const openApiSpec = {
                     "address_l1"
                 ],
                 properties: {
-                    name: { type: "string" },
-                    nip: { type: "string" },
-                    pesel: { type: "string" },
-                    regon: { type: "string" },
-                    internal_identifier: { type: "string" },
+                    name: {
+                        type: "string",
+                        description: "Full user name as shown on the invoices."
+                    },
+                    nip: {
+                        type: "string",
+                        description: "PL tax payer identifier."
+                    },
+                    pesel: {
+                        type: "string",
+                        description: "PL national identifier."
+                    },
+                    regon: {
+                        type: "string",
+                        description: "PL unique business identifier."
+                    },
+                    internal_identifier: {
+                        type: "string",
+                        description: "In case none of the aforementioned are available."
+                    },
                     country_code: {
                         type: "string",
-                        default: "PL"
+                        default: "PL",
+                        description: "Two letter country code.",
                     },
-                    address_l1: { type: "string" },
-                    address_l2: { type: "string" },
-                    local_government_unit: { type: "integer" },
-                    vat_group: { type: "integer" },
-                    notes: { type: "string" }
+                    address_l1: {
+                        type: "string",
+                        description: "Primary address.",
+                    },
+                    address_l2: {
+                        type: "string",
+                        description: "Optional secondary address.",
+                    },
+                    local_government_unit: {
+                        type: "integer",
+                        description: "(JST) 0: NA, 1: municipality, 2: county, 3: voivodeship.",
+                    },
+                    vat_group: {
+                        type: "integer",
+                        description: "(GV) 1: invoice concerns a VAT group member, 2: invoice does not concern a VAT group member.",
+                    },
+                    notes: {
+                        type: "string"
+                    }
                 }
             },
             Invoice: {
@@ -58,12 +98,30 @@ export const openApiSpec = {
                     "raw_xml"
                 ],
                 properties: {
-                    seller_id: { type: "string" },
-                    buyer_id: { type: "string" },
-                    country_code: { type: "string" },
-                    raw_xml: { type: "string" },
-                    json_data: { type: "string" },
-                    notes: { type: "string" }
+                    seller_id: {
+                        type: "string",
+                        description: "Seller unique ID.",
+                    },
+                    buyer_id: {
+                        type: "string",
+                        description: "Seller unique ID.",
+                    },
+                    country_code: {
+                        type: "string",
+                        default: "PL",
+                        description: "Two letter country code.",
+                    },
+                    raw_xml: {
+                        type: "string",
+                        description: "Original XML body of the document.",
+                    },
+                    json_data: {
+                        type: "string",
+                        description: "Formatted JSON of the original XML document.",
+                    },
+                    notes: {
+                        type: "string"
+                    }
                 }
             },
             TaxRecord: {
@@ -74,14 +132,41 @@ export const openApiSpec = {
                     "brut_income"
                 ],
                 properties: {
-                    period: { type: "string" },
-                    brut_income: { type: "number" },
-                    vat_percentage: { type: "number" },
-                    income_tax: { type: "number" },
-                    health_insurance_base: { type: "number" },
-                    health_insurance_rate: { type: "number" },
-                    total_clean_revenue: { type: "number" },
-                    notes: { type: "string" }
+                    period: {
+                        type: "string",
+                        description: "Invoicing period in format YYYY-MM.",
+                    },
+                    brut_income: {
+                        type: "number",
+                        description: "Brut income. Typically the hourly rate * number of hours",
+                    },
+                    vat_percentage: {
+                        type: "number",
+                        default: 23,
+                        description: "By default standard VAT rate of 23%."
+                    },
+                    tax_rate: {
+                        type: "number",
+                        default: 12,
+                        description: "By default standard flat rate of 12%."
+                    },
+                    health_insurance_base: {
+                        type: "number",
+                        default: 5537.18,
+                        description: "Statutory monthly base = 60% × average monthly salary."
+                    },
+                    health_insurance_rate: {
+                        type: "number",
+                        default: 9,
+                        description: "PL health insurance law: 9% of the contribution base."
+                    },
+                    total_clean_revenue: {
+                        type: "number",
+                        description: "Clean revenue after obligations"
+                    },
+                    notes: {
+                        type: "string"
+                    }
                 }
             }
         }

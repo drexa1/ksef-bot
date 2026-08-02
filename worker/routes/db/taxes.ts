@@ -8,10 +8,11 @@ type AppTaxRecord = {
     // Tax record
     period: string
     brut_income: number
-    net_before_obligations: number
-    // Obligations
     vat_percentage: number
     vat_amount: number
+    net_before_obligations: number
+    // Obligations
+    tax_rate: number,
     income_tax: number
     health_insurance_base: number
     health_insurance_rate: number

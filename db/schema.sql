@@ -67,13 +67,14 @@ CREATE TABLE IF NOT EXISTS taxes (
   -- Tax record
   period TEXT,
   brut_income REAL NOT NULL,
+  vat_percentage REAL DEFAULT 23,
+  vat_amount REAL NOT NULL,
   net_before_obligations REAL NOT NULL,
   -- Obligations
-  vat_percentage REAL DEFAULT 12,
-  vat_amount REAL NOT NULL,
+  tax_rate REAL DEFAULT 12,
   income_tax REAL NOT NULL,
   health_insurance_base REAL DEFAULT 5537.18,
-  health_insurance_rate REAL DEFAULT 0.09,
+  health_insurance_rate REAL DEFAULT 9,
   health_contribution REAL NOT NULL,
   -- Total after obligations
   total_clean_revenue REAL NOT NULL,
