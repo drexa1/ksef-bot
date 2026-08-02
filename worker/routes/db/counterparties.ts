@@ -1,8 +1,8 @@
 import {Env} from "../../worker";
 import {D1Driver, Repository} from "../../repository/d1";
-import {AppCounterparty, AppUser} from "../../types/db";
+import {AppCounterparty, AppCounterpartyUpdate, AppUser} from "../../types/db";
 import {getAuthUser} from "../../auth";
-import { nanoid } from "nanoid";
+import {nanoid} from "nanoid";
 
 let repo: Repository;
 function getRepo(env: Env): Repository {
@@ -16,8 +16,8 @@ export async function get(req: Request, env: Env): Promise<Response> {
     // Allow to fetch only owned counterparties (except for superadmin)
     const filters = authUser.tier === 0 ? {} : { owner_id: authUser.email };
     const rows = id
-        ? await getRepo(env).get("counterparties", id, filters)
-        : await getRepo(env).getAll("counterparties", filters);
+        ? await getRepo(env).get<AppCounterparty>("counterparties", id, filters)
+        : await getRepo(env).getAll<AppCounterparty>("counterparties", filters);
     if (rows === null)
         return Response.json({ error: "Counterparty not found", id: id }, { status: 404 });
     return Response.json(rows, { status: 200 });
@@ -30,7 +30,7 @@ export async function post(req: Request, env: Env): Promise<Response> {
     const { id, owner_id, created_at, updated_at, ...payloadData } = payload;
     const record = { ...payloadData, id: nanoid(), owner_id: authUser.email, updated_at: new Date().toISOString() };
     try {
-        await getRepo(env).save("counterparties", record);
+        await getRepo(env).save<AppCounterparty>("counterparties", record);
         return Response.json({ success: true, id: record.id }, { status: 200 });
     } catch (error) {
         if (String(error).includes("UNIQUE constraint failed"))
@@ -42,9 +42,9 @@ export async function post(req: Request, env: Env): Promise<Response> {
 export async function put(req: Request, env: Env): Promise<Response> {
     const authUser = await getAuthUser(req, env) as AppUser;
     const payload = await req.json() as AppCounterparty & { owner_id?: string };
-    // Never allow client to change id, ownership, or creation timestamp
-    const { id, created_at, updated_at, owner_id, ...updatePayload } = payload;
-    const result = await getRepo(env).update("counterparties", {
+    // Never allow client to change id, ownership, or creation/update timestamp
+    const { id, owner_id, created_at, updated_at, ...updatePayload } = payload;
+    const result = await getRepo(env).update<AppCounterpartyUpdate>("counterparties", {
         ...updatePayload,
         updated_at: new Date().toISOString()
     }, id!, { owner_id: authUser.email });

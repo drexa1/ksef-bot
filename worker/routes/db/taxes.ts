@@ -1,8 +1,8 @@
 import {Env} from "../../worker";
 import {D1Driver, Repository} from "../../repository/d1";
-import {AppTaxRecord, AppUser} from "../../types/db";
+import {AppTaxRecord, AppTaxRecordUpdate, AppUser} from "../../types/db";
 import {getAuthUser} from "../../auth";
-import { nanoid } from "nanoid";
+import {nanoid} from "nanoid";
 
 let repo: Repository;
 function getRepo(env: Env): Repository {
@@ -16,8 +16,8 @@ export async function get(req: Request, env: Env): Promise<Response> {
     // Allow to fetch only owned tax records (except for superadmin)
     const filters = authUser.tier === 0 ? {} : { owner_id: authUser.email };
     const rows = id
-        ? await getRepo(env).get("taxes", id, filters)
-        : await getRepo(env).getAll("taxes", filters);
+        ? await getRepo(env).get<AppTaxRecord>("taxes", id, filters)
+        : await getRepo(env).getAll<AppTaxRecord>("taxes", filters);
     if (rows === null)
         return Response.json({ error: "Tax record not found", id: id }, { status: 404 });
     return Response.json(rows, { status: 200 });
@@ -36,7 +36,7 @@ export async function post(req: Request, env: Env): Promise<Response> {
         updated_at: new Date().toISOString()
     };
     try {
-        await getRepo(env).save("taxes", record);
+        await getRepo(env).save<AppTaxRecord>("taxes", record);
         return Response.json({ success: true, id: record.id }, { status: 200 });
     } catch (error) {
         if (String(error).includes("UNIQUE constraint failed"))
@@ -48,9 +48,9 @@ export async function post(req: Request, env: Env): Promise<Response> {
 export async function put(req: Request, env: Env): Promise<Response> {
     const authUser = await getAuthUser(req, env) as AppUser;
     const payload = await req.json() as AppTaxRecord & { owner_id?: string };
-    // Never allow client to change id, ownership, or creation timestamp
-    const { id, created_at, updated_at, owner_id, ...updatePayload } = payload;
-    const result = await getRepo(env).update("taxes", {
+    // Never allow client to change id, ownership, or creation/update timestamp
+    const { id, owner_id, created_at, updated_at, ...updatePayload } = payload;
+    const result = await getRepo(env).update<AppTaxRecordUpdate>("taxes", {
         ...updatePayload,
         updated_at: new Date().toISOString()
     }, id!, { owner_id: authUser.email });

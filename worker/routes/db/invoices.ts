@@ -1,11 +1,11 @@
 import {Env} from "../../worker";
 import {D1Driver, Repository} from "../../repository/d1";
 import {XMLParser} from "fast-xml-parser";
-import {AppCounterparty, AppUser} from "../../types/db";
+import {AppCounterparty, AppInvoice, AppUser} from "../../types/db";
 import {KsefSubject} from "../../types/ksef";
 import {getAuthUser} from "../../auth";
 import {dtoFromAliases} from "../../avro/invoice";
-import { nanoid } from "nanoid";
+import {nanoid} from "nanoid";
 
 let repo: Repository;
 function getRepo(env: Env): Repository {
@@ -19,11 +19,12 @@ export async function get(req: Request, env: Env): Promise<Response> {
     // Allow to fetch only owned invoices (except for superadmin)
     const filters = authUser.tier === 0 ? {} : { owner_id: authUser.email };
     const rows = id
-        ? await getRepo(env).get("invoices", id, filters)
-        : await getRepo(env).getAll("invoices", filters);
-    if (rows === null)
+        ? await getRepo(env).get<AppInvoice>("invoices", id, filters)
+        : await getRepo(env).getAll<AppInvoice>("invoices", filters);
+    if (!rows)
         return Response.json({ error: "Invoice not found", id: id }, { status: 404 });
-    return Response.json(rows, { status: 200 });
+    const result = Array.isArray(rows) ? rows.map(row => JSON.parse(row.json_data)) : JSON.parse(rows.json_data);
+    return Response.json(result, { status: 200 });
 }
 
 export async function post(req: Request, env: Env): Promise<Response> {
@@ -32,43 +33,9 @@ export async function post(req: Request, env: Env): Promise<Response> {
     const file = form.get("file");
     const notes = form.get("notes")?.toString();
     if (!(file instanceof File)) return Response.json({ error: "Missing XML file" }, { status: 400 });
-    const rawXml = await file.text();
-    // Parse XML
-    const parser = new XMLParser({ ignoreAttributes: false, parseTagValue: false, attributeNamePrefix: "", textNodeName: "value" });
-    const invoiceXml = parser.parse(rawXml).Faktura;
-    const ksefInvoiceAvroSchema = await env.assets
-        .fetch(new URL(env.KSEF_INVOICE_SCHEMA, req.url))
-        .then((res) => res.json());
-    const ksefInvoice = dtoFromAliases(invoiceXml, ksefInvoiceAvroSchema);
-    // Find or create counterparties
-    const sellerId = await getOrCreateCounterparty(env, {
-        owner_id: authUser.email,
-        name: ksefInvoice.Seller.IdentificationData.Name,
-        nip: ksefInvoice.Seller.IdentificationData.NIP,
-        country_code: ksefInvoice.Seller.Address.CountryCode,
-        address_l1: ksefInvoice.Seller.Address.AddressLine1
-    });
-    const buyerId = await getOrCreateCounterparty(env, {
-        owner_id: authUser.email,
-        name: ksefInvoice.Buyer.IdentificationData.Name,
-        nip: ksefInvoice.Buyer.IdentificationData.NIP,
-        country_code: ksefInvoice.Buyer.Address.CountryCode,
-        address_l1: ksefInvoice.Buyer.Address.AddressLine1
-    });
-    // Never allow client to control id, ownership, or creation/update timestamps
-    const record = {
-        id: ksefInvoice.InvoiceBody.InvoiceNumber,
-        owner_id: authUser.email,
-        seller_id: sellerId,
-        buyer_id: buyerId,
-        ...(ksefInvoice.country_code && { country_code: ksefInvoice.country_code }),
-        raw_xml: rawXml,
-        json_data: JSON.stringify(ksefInvoice),
-        notes,
-        updated_at: new Date().toISOString()
-    };
+    const record = await invoiceFromXml(env, req, authUser, file, notes);
     try {
-        await getRepo(env).save("invoices", record);
+        await getRepo(env).save<AppInvoice>("invoices", record);
         return Response.json({ success: true, id: record.id }, { status: 200 });
     } catch (error) {
         if (String(error).includes("UNIQUE constraint failed"))
@@ -91,6 +58,46 @@ export async function del(req: Request, env: Env): Promise<Response> {
     if (result.changes === 0)
         return Response.json({ success: false, id: id, error: "Invoice not found" }, { status: 404 });
     return Response.json({ success: result.success, id: id }, { status: result.success ? 200 : 400 });
+}
+
+// ---------------------------------------------------------------------------------------------------------------------
+// Invoice record creation
+// ---------------------------------------------------------------------------------------------------------------------
+async function invoiceFromXml(env: Env, req: Request, authUser: AppUser, file: File, notes?: string) {
+    // Parse XML
+    const parser = new XMLParser({ ignoreAttributes: false, parseTagValue: false, attributeNamePrefix: "", textNodeName: "value"});
+    const rawXml = await file.text();
+    const invoiceXml = parser.parse(rawXml).Faktura;
+    const ksefInvoiceAvroSchema = await env.assets
+        .fetch(new URL(env.KSEF_INVOICE_SCHEMA, req.url))
+        .then((res) => res.json());
+    const ksefInvoice = dtoFromAliases(invoiceXml, ksefInvoiceAvroSchema);
+    // Find or create counterparties
+    const sellerId = await getOrCreateCounterparty(env, {
+        owner_id: authUser.email,
+        name: ksefInvoice.Seller.IdentificationData.Name,
+        nip: ksefInvoice.Seller.IdentificationData.NIP,
+        country_code: ksefInvoice.Seller.Address.CountryCode,
+        address_l1: ksefInvoice.Seller.Address.AddressLine1
+    });
+    const buyerId = await getOrCreateCounterparty(env, {
+        owner_id: authUser.email,
+        name: ksefInvoice.Buyer.IdentificationData.Name,
+        nip: ksefInvoice.Buyer.IdentificationData.NIP,
+        country_code: ksefInvoice.Buyer.Address.CountryCode,
+        address_l1: ksefInvoice.Buyer.Address.AddressLine1
+    });
+    return {
+        id: ksefInvoice.InvoiceBody.InvoiceNumber,
+        owner_id: authUser.email,
+        seller_id: sellerId,
+        buyer_id: buyerId,
+        ...(ksefInvoice.country_code && {country_code: ksefInvoice.country_code}),
+        raw_xml: rawXml,
+        json_data: JSON.stringify(ksefInvoice),
+        notes,
+        updated_at: new Date().toISOString()
+    };
 }
 
 // ---------------------------------------------------------------------------------------------------------------------

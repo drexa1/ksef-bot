@@ -1,16 +1,33 @@
+export type AppUserUpdate = Partial<Omit<AppUser, "email">>;
 export type AppUser = {
     // User data
     email: string
     name?: string
     api_key?: string
-    tier: number
+    tier?: number
     // DBA
-    created_at: string
+    created_at?: string
     updated_at?: string
 };
 
+export type AppInvoice = {
+    id: string
+    // Parties
+    seller_id: string
+    buyer_id: string
+    // Raw data
+    country_code: string
+    raw_xml: string
+    json_data: string
+    notes?: string
+    // DBA
+    created_at?: string
+    updated_at?: string
+};
+
+export type AppCounterpartyUpdate = Partial<Omit<AppCounterparty, "id">>;
 export type AppCounterparty = {
-    id?: string
+    id: string
     // Counterparty data
     name: string
     nip?: string
@@ -26,27 +43,13 @@ export type AppCounterparty = {
     vat_group?: number
     notes?: string
     // DBA
-    created_at: string
+    created_at?: string
     updated_at?: string
 };
 
-export type AppInvoice = {
-    id?: string
-    // Parties
-    seller_id: string
-    buyer_id: string
-    // Raw data
-    country_code: string
-    raw_xml: string
-    json_data: string
-    notes?: string
-    // DBA
-    created_at: string
-    updated_at?: string
-};
-
+export type AppTaxRecordUpdate = Partial<Omit<AppTaxRecord, "id">>;
 export type AppTaxRecord = {
-    id?: string
+    id: string
     // Tax record
     period: string
     brut_income: number
@@ -63,6 +66,6 @@ export type AppTaxRecord = {
     total_clean_revenue: number
     notes: string
     // DBA
-    created_at: string
+    created_at?: string
     updated_at?: string
 };
