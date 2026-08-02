@@ -61,7 +61,7 @@ export const openApiSpec = {
                     },
                     internal_identifier: {
                         type: "string",
-                        description: "In case none of the aforementioned are available."
+                        description: "In case none of the other identifiers are available."
                     },
                     country_code: {
                         type: "string",

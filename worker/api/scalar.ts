@@ -14,6 +14,7 @@ export const scalarHtml = `
                 Scalar.createApiReference("#app", {
                     url: "/openapi.json",
                     theme: "laserwave",
+                    orderSchemaPropertiesBy: "preserve",
                     defaultOpenAllTags: true,
                     hideSearch: true
                 });
