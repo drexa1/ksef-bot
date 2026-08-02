@@ -2,6 +2,7 @@ import {Env} from "../../worker";
 import {D1Driver, Repository} from "../../repository/d1";
 import {AppTaxRecord, AppUser} from "../../types/db";
 import {getAuthUser} from "../../auth";
+import { nanoid } from "nanoid";
 
 let repo: Repository;
 function getRepo(env: Env): Repository {
@@ -29,7 +30,7 @@ export async function post(req: Request, env: Env): Promise<Response> {
     const { id, owner_id, created_at, updated_at, ...payloadData } = payload;
     const record = {
         ...payloadData,
-        id: crypto.randomUUID(),
+        id: nanoid(),
         owner_id: authUser.email,
         // TODO: compute all taxes...
         updated_at: new Date().toISOString()

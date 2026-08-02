@@ -5,6 +5,7 @@ import {AppCounterparty, AppUser} from "../../types/db";
 import {KsefSubject} from "../../types/ksef";
 import {getAuthUser} from "../../auth";
 import {dtoFromAliases} from "../../avro/invoice";
+import { nanoid } from "nanoid";
 
 let repo: Repository;
 function getRepo(env: Env): Repository {
@@ -60,7 +61,7 @@ export async function post(req: Request, env: Env): Promise<Response> {
         owner_id: authUser.email,
         seller_id: sellerId,
         buyer_id: buyerId,
-        country_code: ksefInvoice.country_code,
+        ...(ksefInvoice.country_code && { country_code: ksefInvoice.country_code }),
         raw_xml: rawXml,
         json_data: JSON.stringify(ksefInvoice),
         notes,
@@ -108,15 +109,15 @@ async function getOrCreateCounterparty(env: Env, subject: {
     const existing = await getRepo(env).getBy("counterparties", field, value) as AppCounterparty;
     if (existing) return existing.id!;
     const counterparty: AppCounterparty = {
-        id: crypto.randomUUID(),
+        id: nanoid(),
+        ...({ owner_id: subject.owner_id }),
         name: subject.name,
-        nip: subject.nip,
-        pesel: subject.pesel,
-        regon: subject.regon,
+        ...(subject.nip   && { nip:   subject.nip }),
+        ...(subject.pesel && { pesel: subject.pesel }),
+        ...(subject.regon && { regon: subject.regon }),
         country_code: subject.country_code ?? "PL",
         address_l1: subject.address_l1 ?? "",
         created_at: new Date().toISOString(),
-        ...({ owner_id: subject.owner_id })
     };
     await getRepo(env).save("counterparties", counterparty);
     return counterparty.id!;
