@@ -138,7 +138,7 @@ export const openApiSpec = {
                     },
                     brut_income: {
                         type: "number",
-                        description: "Brut income. Typically the hourly rate * number of hours",
+                        description: "Brut income. Typically the hourly rate × number of hours",
                     },
                     vat_percentage: {
                         type: "number",
