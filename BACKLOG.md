@@ -12,7 +12,7 @@
 - [x] Document OpenAPI schemas  
 - [x] Auth tests
 - [x] Post db invoice should be XML upload  
-- [ ] Schema not loading as avro  
+- [x] Schema not loading as avro  
 - [ ] Retrieve invoice from KSeF  
 - [ ] Compute taxes  
 - [ ] Review security architecture  
