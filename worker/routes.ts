@@ -16,18 +16,18 @@ export type Route = (req: Request, env: Env) => Promise<Response>;
 
 export const routes: Record<string, Routes> =  {
     // Don't use redirection at root, in this case we serve the static assets
-    "/openapi.json":      { GET: async () => Response.json(openApiSpec) },
-    "/swagger":           { GET: async () => new Response(swaggerHtml, { headers: { "Content-Type": "text/html" }}) },
-    "/docs":              { GET: async () => new Response(scalarHtml, { headers: { "Content-Type": "text/html" }}) },
-    "/health":            { GET: healthGET },
+    "/openapi.json":       { GET: async () => Response.json(openApiSpec) },
+    "/swagger":            { GET: async () => new Response(swaggerHtml, { headers: { "Content-Type": "text/html" }}) },
+    "/docs":               { GET: async () => new Response(scalarHtml, { headers: { "Content-Type": "text/html" }}) },
+    "/health":             { GET: healthGET },
     // Requiring authentication
-    "/whoami":            { GET: whoamiGET },
-    "/ksef/sales":        { GET: salesGET, POST: salesPOST },
-    "/ksef/purchases":    { GET: purchasesGET },
-    "/db/users":          { GET: usersGET, POST: usersPOST, PUT: usersPUT, DELETE: usersDELETE },
-    "/db/counterparties": { GET: counterpartiesGET, POST: counterpartiesPOST, PUT: counterpartiesPUT, DELETE: counterpartiesDELETE },
-    "/db/invoices":       { GET: invoicesGET, POST: invoicesPOST, PUT: invoicesPUT, DELETE: invoicesDELETE },
-    "/db/taxes":          { GET: taxesGET, POST: taxesPOST, PUT: taxesPUT, DELETE: taxesDELETE }
+    "/whoami":             { GET: whoamiGET },
+    "/ksef/sales":         { GET: salesGET, POST: salesPOST },
+    "/ksef/purchases":     { GET: purchasesGET },
+    "/app/users":          { GET: usersGET, POST: usersPOST, PUT: usersPUT, DELETE: usersDELETE },
+    "/app/counterparties": { GET: counterpartiesGET, POST: counterpartiesPOST, PUT: counterpartiesPUT, DELETE: counterpartiesDELETE },
+    "/app/invoices":       { GET: invoicesGET, POST: invoicesPOST, PUT: invoicesPUT, DELETE: invoicesDELETE },
+    "/app/taxes":          { GET: taxesGET, POST: taxesPOST, PUT: taxesPUT, DELETE: taxesDELETE }
 };
 
 
