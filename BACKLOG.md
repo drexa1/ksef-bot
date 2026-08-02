@@ -17,6 +17,7 @@
 - [ ] Compute taxes  
 - [ ] Ultra simple frontend  
 - [ ] SSO/Enrolment  
+- [ ] GIT-version on deploy  
 - [ ] Transparency disclaimer / no Ai  
 - [ ] WhatsApp bot  
 - [ ] Post invoice  

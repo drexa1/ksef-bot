@@ -16,6 +16,7 @@
 - Unitary and E2E tests
 - OpenAPI UI
 - Live documentation
+- Versioning and release process
 
 # Wishlist
 - WhatsApp integration
