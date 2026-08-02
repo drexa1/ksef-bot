@@ -4,11 +4,11 @@
 @invoiceId = 6751577878-20260629-514966000000-3F
 
 ### Delete non-existing invoice
-DELETE {{baseUrl}}/db/counterparties?id=missing
+DELETE {{baseUrl}}/app/counterparties?id=missing
 Content-Type: application/json
 X-API-Key: {{apiKey}}
 
 ### Delete existing invoice
-DELETE {{baseUrl}}/db/invoices?id={{invoiceId}}
+DELETE {{baseUrl}}/app/invoices?id={{invoiceId}}
 Content-Type: application/json
 X-API-Key: {{apiKey}}

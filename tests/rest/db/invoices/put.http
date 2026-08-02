@@ -4,7 +4,7 @@
 @invoiceId = 6751577878-20260629-514966000000-3F
 
 ### Update a missing invoice
-PUT {{baseUrl}}/db/invoices
+PUT {{baseUrl}}/app/invoices
 Content-Type: application/json
 X-API-Key: {{apiKey}}
 
@@ -14,7 +14,7 @@ X-API-Key: {{apiKey}}
 }
 
 ### Update existing invoice
-PUT {{baseUrl}}/db/invoices
+PUT {{baseUrl}}/app/invoices
 Content-Type: application/json
 X-API-Key: {{apiKey}}
 

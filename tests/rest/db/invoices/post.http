@@ -3,14 +3,14 @@
 @apiKey = test
 
 ### Create invoice for the first time
-POST {{baseUrl}}/db/invoices
+POST {{baseUrl}}/app/invoices
 Content-Type: application/json
 X-API-Key: {{apiKey}}
 
 < ../../../testresources/invoices/invoice-1.json
 
 ### Second create attempt whould trigger PK violation error
-POST {{baseUrl}}/db/invoices
+POST {{baseUrl}}/app/invoices
 Content-Type: application/json
 X-API-Key: {{apiKey}}
 

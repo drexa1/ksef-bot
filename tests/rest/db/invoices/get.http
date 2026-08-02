@@ -4,16 +4,16 @@
 @invoiceId = 6751577878-20260629-514966000000-3F
 
 ### List all
-GET {{baseUrl}}/db/invoices
+GET {{baseUrl}}/app/invoices
 Content-Type: application/json
 X-API-Key: {{apiKey}}
 
 ### List non-existing invoice
-GET {{baseUrl}}/db/invoices?id=missing
+GET {{baseUrl}}/app/invoices?id=missing
 Content-Type: application/json
 X-API-Key: {{apiKey}}
 
 ### List existing invoice
-GET {{baseUrl}}/db/invoices?id={{invoiceId}}
+GET {{baseUrl}}/app/invoices?id={{invoiceId}}
 Content-Type: application/json
 X-API-Key: {{apiKey}}

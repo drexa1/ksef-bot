@@ -3,14 +3,14 @@
 @apiKey = test
 
 ### Create tax record for the first time
-POST {{baseUrl}}/db/c
+POST {{baseUrl}}/app/taxes
 Content-Type: application/json
 X-API-Key: {{apiKey}}
 
 < ../../../testresources/taxes/tax-record-1.json
 
 ### Second create attempt whould trigger PK violation error
-POST {{baseUrl}}/db/tax-record
+POST {{baseUrl}}/app/taxes
 Content-Type: application/json
 X-API-Key: {{apiKey}}
 

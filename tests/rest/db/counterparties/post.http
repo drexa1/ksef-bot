@@ -3,21 +3,21 @@
 @apiKey = test
 
 ### Create counterparty #1 for the first time
-POST {{baseUrl}}/db/counterparties
+POST {{baseUrl}}/app/counterparties
 Content-Type: application/json
 X-API-Key: {{apiKey}}
 
 < ../../../testresources/counterparties/counterparty-1.json
 
 ### Create counterparty #2 for the first time
-POST {{baseUrl}}/db/counterparties
+POST {{baseUrl}}/app/counterparties
 Content-Type: application/json
 X-API-Key: {{apiKey}}
 
 < ../../../testresources/counterparties/counterparty-2.json
 
 ### Second create attempt whould trigger PK violation error
-POST {{baseUrl}}/db/counterparties
+POST {{baseUrl}}/app/counterparties
 Content-Type: application/json
 X-API-Key: {{apiKey}}
 

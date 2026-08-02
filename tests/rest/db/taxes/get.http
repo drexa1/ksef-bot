@@ -4,16 +4,16 @@
 @taxRecordId = 9de76eee-87fe-44b7-adbe-c9c596113aa9
 
 ### List all
-GET {{baseUrl}}/db/taxes
+GET {{baseUrl}}/app/taxes
 Content-Type: application/json
 X-API-Key: {{apiKey}}
 
 ### List non-existing tax record
-GET {{baseUrl}}/db/taxes?id=missing
+GET {{baseUrl}}/app/taxes?id=missing
 Content-Type: application/json
 X-API-Key: {{apiKey}}
 
 ### List existing tax record
-GET {{baseUrl}}/db/taxes?id={{taxRecordId}}
+GET {{baseUrl}}/app/taxes?id={{taxRecordId}}
 Content-Type: application/json
 X-API-Key: {{apiKey}}

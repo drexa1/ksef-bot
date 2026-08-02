@@ -4,7 +4,7 @@
 @taxRecordId = 9de76eee-87fe-44b7-adbe-c9c596113aa9
 
 ### Update a missing tax record
-PUT {{baseUrl}}/db/taxes
+PUT {{baseUrl}}/app/taxes
 Content-Type: application/json
 X-API-Key: {{apiKey}}
 
@@ -14,7 +14,7 @@ X-API-Key: {{apiKey}}
 }
 
 ### Update existing tax record
-PUT {{baseUrl}}/db/taxes
+PUT {{baseUrl}}/app/taxes
 Content-Type: application/json
 X-API-Key: {{apiKey}}
 

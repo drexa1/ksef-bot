@@ -4,7 +4,7 @@
 @userId = 38cd09f7-1e69-4b0b-ba67-c3a0b89db466
 
 ### Update a missing user
-PUT {{baseUrl}}/db/users
+PUT {{baseUrl}}/app/users
 Content-Type: application/json
 X-API-Key: {{apiKey}}
 
@@ -14,7 +14,7 @@ X-API-Key: {{apiKey}}
 }
 
 ### Update existing user
-PUT {{baseUrl}}/db/users
+PUT {{baseUrl}}/app/users
 Content-Type: application/json
 X-API-Key: {{apiKey}}
 
