@@ -72,13 +72,12 @@ export async function auth(req: Request, env: Env): Promise<boolean> {
 export async function getAuthUser(req: Request, env: Env): Promise<AppUser> {
     // For local development without ZeroTrust, always returns the admin user
     if (env.ENVIRONMENT === "dev") {
-        const adminUser =  await getRepo(env).getAll("users", { tier: 0 });
-        return adminUser[0] as AppUser;
+        return await getRepo(env).get<AppUser>("users", { tier: 0 });
     }
     // TODO: Could come via Cloudflare session or could come by other means (ie: application SSO)
     const whoamiResponse = await whoami(req, env);
     const authUser = (await whoamiResponse.json()) as AuthUser;
-    const appUser = await getRepo(env).getBy("users", "email", authUser.email) as AppUser;
+    const appUser = await getRepo(env).get<AppUser>("users", { email: authUser.email });
     // This should not happen, we have to enrol users for those who we give access to Cloudflare
     if (!appUser) throw new AuthError("Authenticated user not found in app", 404, { authUser });
     return appUser;
@@ -89,8 +88,8 @@ export async function getAuthUser(req: Request, env: Env): Promise<AppUser> {
  */
 export async function whoami(req: Request, env: Env): Promise<Response> {
     if (env.ENVIRONMENT === "dev") {
-        const adminUser =  await getRepo(env).getAll("users", { tier: 0 });
-        return Response.json(adminUser[0] as AppUser);
+        const adminUser =  await getRepo(env).getAll<AppUser>("users", { tier: 0 });
+        return Response.json(adminUser[0]);
     }
     const jwt = req.headers.get("Cf-Access-Jwt-Assertion");
     if (!jwt) throw new Response("Unknown user");

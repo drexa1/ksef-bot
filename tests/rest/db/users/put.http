@@ -1,24 +1,18 @@
 #@no-redirect
 @baseUrl = http://localhost:3001
 @apiKey = test
-@userId = 38cd09f7-1e69-4b0b-ba67-c3a0b89db466
+@userEmail = user@mail.com
 
-### Update a missing user
+### Update a missing user should fail
 PUT {{baseUrl}}/app/users
 Content-Type: application/json
 X-API-Key: {{apiKey}}
 
-{
-    "id": "missing",
-    "name": "nevermind"
-}
+{ "email": "missing", "name": "nevermind" }
 
 ### Update existing user
 PUT {{baseUrl}}/app/users
 Content-Type: application/json
 X-API-Key: {{apiKey}}
 
-{
-    "id": "{{userId}}",
-    "name": "edited"
-}
+{ "email": "{{userEmail}}", "name": "edited" }

@@ -2,16 +2,23 @@
 @baseUrl = http://localhost:3001
 @apiKey = test
 
-### Create user for the first time
+### Attempt to create the admin user should trigger PK violation error
 POST {{baseUrl}}/app/users
 Content-Type: application/json
 X-API-Key: {{apiKey}}
 
-< ../../../testresources/users/user-1.json
+{ "email": "drexa1@hotmail.com", "name": "nevermind" }
 
-### Second create attempt whould trigger PK violation error
+### Create user for the first time should suceed
 POST {{baseUrl}}/app/users
 Content-Type: application/json
 X-API-Key: {{apiKey}}
 
-< ../../../testresources/users/user-1.json
+{ "email": "user@mail.com", "name": "Test user" }
+
+### Second create attempt should trigger PK violation error
+POST {{baseUrl}}/app/users
+Content-Type: application/json
+X-API-Key: {{apiKey}}
+
+{ "email": "user@mail.com", "name": "Test user" }

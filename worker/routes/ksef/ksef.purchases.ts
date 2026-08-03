@@ -24,7 +24,7 @@ export async function get(req: Request, env: Env): Promise<Response> {
 
 async function queryPurchaseInvoices(req: Request, env: Env, from: Date, to: Date) {
     const authUser = await getAuthUser(req, env) as AppUser;
-    const userCounterparty = await getRepo(env).get("counterparties", authUser.email) as AppCounterparty;
+    const userCounterparty = await getRepo(env).get<AppCounterparty>("counterparties", { email: authUser.email });
     if (!userCounterparty)
         return Response.json({ error: "Counterparty not found. Have you created a counterparty record?", id: authUser.email }, { status: 404 });
     const client = new KsefClient(env, userCounterparty);

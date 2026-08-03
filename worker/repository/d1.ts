@@ -42,15 +42,11 @@ export class D1Driver implements DBDriver {
 export class Repository {
     constructor(private driver: DBDriver) {}
 
-    async get<T>(table: string, id: string, filters?: Record<string, any>): Promise<T | null> {
-        const conditions = [`id = ?`];
-        const values: any[] = [id];
-        for (const [field, value] of Object.entries(filters ?? {})) {
-            conditions.push(`"${field}" = ?`);
-            values.push(value);
-        }
-        const sql = `SELECT * FROM ${table} WHERE ${conditions.join(" AND ")} LIMIT 1`;
-        return await this.driver.get(sql, values) as T | null;
+    async get<T>(table: string, filters: Record<string, any>): Promise<T> {
+        const conditions = Object.keys(filters).map(field => `"${field}" = ?`).join(" AND ");
+        const values = Object.values(filters);
+        const sql = `SELECT * FROM ${table} WHERE ${conditions} LIMIT 1`;
+        return await this.driver.get(sql, values) as T;
     }
 
     async getAll<T>(table: string, filters?: Record<string, any>, cols?: string[]): Promise<T[]> {
@@ -64,11 +60,6 @@ export class Repository {
         const where = conditions.length ? ` WHERE ${conditions.join(" AND ")}` : "";
         const sql = `SELECT ${select} FROM ${table} ${where}`;
         return await this.driver.getAll(sql, values) as T[];
-    }
-
-    async getBy<T>(table: string, field: string, value: any): Promise <T> {
-        const sql = `SELECT * FROM ${table} WHERE ${field} = ? LIMIT 1`;
-        return await this.driver.get(sql, [value]);
     }
 
     async save<T>(table: string, data: T): Promise<DBResult> {
@@ -85,29 +76,21 @@ export class Repository {
         return { sql, values };
     }
 
-    async update<T>(table: string, data: T, id: string, filters?: Record<string, any>): Promise<DBResult> {
-        const entries = Object.entries(data as any).filter(([key]) => key !== "id");
-        if (entries.length === 0) return { success: false, changes: 0 };
-        const assignments = entries.map(([key]) => `"${key}" = ?`).join(", ");
-        const values = entries.map(([_, value]) => value instanceof Date ? value.toISOString() : value);
-        const conditions = ["id = ?"];
-        const filterValues: any[] = [];
-        for (const [field, value] of Object.entries(filters ?? {})) {
-            conditions.push(`"${field}" = ?`);
-            filterValues.push(value);
-        }
-        const sql = `UPDATE ${table} SET ${assignments} WHERE ${conditions.join(" AND ")}`;
-        return this.driver.update(sql, [...values, id, ...filterValues]);
+    async update<T>(table: string, data: T, filters?: Record<string, any>): Promise<DBResult> {
+        const entries = Object.entries(data as any);
+        if (!entries.length) return { success: false, changes: 0 };
+        const assignments = entries.map(([k]) => `"${k}" = ?`).join(", ");
+        const values = entries.map(([_, v]) => v instanceof Date ? v.toISOString() : v);
+        const conditions = Object.keys(filters ?? {}).map(k => `"${k}" = ?`).join(" AND ");
+        const filterValues = Object.values(filters ?? {});
+        const sql = `UPDATE ${table} SET ${assignments} ${conditions ? ` WHERE ${conditions}` : ""}`;
+        return this.driver.update(sql, [...values, ...filterValues]);
     }
 
-    async delete(table: string, id: string, filters?: Record<string, any>): Promise<DBResult> {
-        const conditions = ["id = ?"];
-        const values: any[] = [id];
-        for (const [field, value] of Object.entries(filters ?? {})) {
-            conditions.push(`"${field}" = ?`);
-            values.push(value);
-        }
-        const sql = `DELETE FROM ${table} WHERE ${conditions.join(" AND ")}`;
+    async delete(table: string, filters: Record<string, any>): Promise<DBResult> {
+        const conditions = Object.keys(filters).map(field => `"${field}" = ?`).join(" AND ");
+        const values = Object.values(filters);
+        const sql = `DELETE FROM ${table} WHERE ${conditions}`;
         return this.driver.delete(sql, values);
     }
 }

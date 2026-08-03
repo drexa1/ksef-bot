@@ -13,13 +13,13 @@ function getRepo(env: Env): Repository {
 }
 
 export async function get(req: Request, env: Env): Promise<Response> {
-    const authUser = await getAuthUser(req, env) as AppUser;
+    const authUser = await getAuthUser(req, env);
     const url = new URL(req.url);
     const id = url.searchParams.get("id");
     // Allow to fetch only owned invoices (except for superadmin)
     const filters = authUser.tier === 0 ? {} : { owner_id: authUser.email };
     const rows = id
-        ? await getRepo(env).get<AppInvoice>("invoices", id, filters)
+        ? await getRepo(env).get<AppInvoice>("invoices", { id, ...filters })
         : await getRepo(env).getAll<AppInvoice>("invoices", filters);
     if (!rows)
         return Response.json({ error: "Invoice not found", id: id }, { status: 404 });
@@ -28,7 +28,7 @@ export async function get(req: Request, env: Env): Promise<Response> {
 }
 
 export async function post(req: Request, env: Env): Promise<Response> {
-    const authUser = await getAuthUser(req, env) as AppUser;
+    const authUser = await getAuthUser(req, env);
     const form = await req.formData();
     const file = form.get("file");
     const notes = form.get("notes")?.toString();
@@ -49,12 +49,12 @@ export async function put(_req: Request, _env: Env): Promise<Response> {
 }
 
 export async function del(req: Request, env: Env): Promise<Response> {
-    const authUser = await getAuthUser(req, env) as AppUser;
+    const authUser = await getAuthUser(req, env);
     const url = new URL(req.url);
     const id = url.searchParams.get("id")!;
     // Allow to delete only owned invoices (except for superadmin)
     const filters = authUser.tier === 0 ? {} : { owner_id: authUser.email };
-    const result = await getRepo(env).delete("invoices", id, filters);
+    const result = await getRepo(env).delete("invoices", { id, ...filters });
     if (result.changes === 0)
         return Response.json({ success: false, id: id, error: "Invoice not found" }, { status: 404 });
     return Response.json({ success: result.success, id: id }, { status: result.success ? 200 : 400 });
@@ -63,7 +63,7 @@ export async function del(req: Request, env: Env): Promise<Response> {
 // ---------------------------------------------------------------------------------------------------------------------
 // Invoice record creation
 // ---------------------------------------------------------------------------------------------------------------------
-async function invoiceFromXml(env: Env, req: Request, authUser: AppUser, file: File, notes?: string) {
+async function invoiceFromXml(env: Env, req: Request, authUser: AppUser, file: File, notes?: string): Promise<AppInvoice> {
     // Parse XML
     const parser = new XMLParser({ ignoreAttributes: false, parseTagValue: false, attributeNamePrefix: "", textNodeName: "value"});
     const rawXml = await file.text();
@@ -112,8 +112,8 @@ async function getOrCreateCounterparty(env: Env, subject: {
     country_code?: string
     address_l1?: string
 }): Promise<string> {
-    const { field, value } = getCounterpartyIdentifier(subject);
-    const existing = await getRepo(env).getBy("counterparties", field, value) as AppCounterparty;
+    const { idField, idValue } = getCounterpartyIdentifier(subject);
+    const existing = await getRepo(env).get<AppCounterparty>("counterparties", { [idField]: idValue });
     if (existing) return existing.id!;
     const counterparty: AppCounterparty = {
         id: nanoid(),
@@ -130,12 +130,12 @@ async function getOrCreateCounterparty(env: Env, subject: {
     return counterparty.id!;
 }
 
-function getCounterpartyIdentifier(subject: KsefSubject): { field: "nip" | "pesel" | "regon", value: string } {
+function getCounterpartyIdentifier(subject: KsefSubject): { idField: "nip" | "pesel" | "regon", idValue: string } {
     if (subject.nip)
-        return { field: "nip", value: subject.nip };
+        return { idField: "nip", idValue: subject.nip };
     if (subject.pesel)
-        return { field: "pesel", value: subject.pesel };
+        return { idField: "pesel", idValue: subject.pesel };
     if (subject.regon)
-        return { field: "regon", value: subject.regon };
+        return { idField: "regon", idValue: subject.regon };
     throw new Error("Counterparty has no supported fiscal identifier");
 }
