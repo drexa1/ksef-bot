@@ -95,7 +95,7 @@ async function invoiceFromXml(env: Env, req: Request, authUser: AppUser, file: F
         ...(ksefInvoice.country_code && {country_code: ksefInvoice.country_code}),
         raw_xml: rawXml,
         json_data: JSON.stringify(ksefInvoice),
-        notes,
+        notes: notes ?? null,
         updated_at: new Date().toISOString()
     };
 }

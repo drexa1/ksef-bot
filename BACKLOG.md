@@ -14,10 +14,10 @@
 - [x] Post db invoice should be XML upload  
 - [x] Schema not loading as avro  
 - [x] Review REST users tests after refactor
-- [ ] Review REST counterparties tests after refactor  
-- [ ] Review REST invoices tests after refactor  
-- [ ] Review REST taxes tests after refactor  
+- [x] Review REST counterparties tests after refactor  
+- [x] Review REST invoices tests after refactor  
 - [ ] Retrieve invoice from KSeF  
+- [ ] Review REST taxes tests after refactor  
 - [ ] Compute taxes  
 - [ ] Review security architecture  
 - [ ] Ultra simple frontend  

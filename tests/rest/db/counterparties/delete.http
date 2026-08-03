@@ -1,7 +1,7 @@
 #@no-redirect
 @baseUrl = http://localhost:3001
 @apiKey = test
-@counterpartyId = 7c4f2d9a-8b31-4e65-a1f7-2d9c6b3e5048
+@counterpartyId = 1SkIa0fw2CZ61lqnhhkJ_
 
 ### Delete non-existing counterparty
 DELETE {{baseUrl}}/app/counterparties?id=missing

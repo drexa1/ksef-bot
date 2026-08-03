@@ -4,14 +4,28 @@
 
 ### Create invoice for the first time
 POST {{baseUrl}}/app/invoices
-Content-Type: application/json
+Content-Type: multipart/form-data; boundary=ksefInvoice
 X-API-Key: {{apiKey}}
 
-< ../../../testresources/invoices/invoice-1.json
+--ksefInvoice
+Content-Disposition: form-data; name="file"; filename="invoice-1.xml"
+Content-Type: application/xml
+
+< ../../../testresources/invoices/issued/6751577878-20260629-514966000000-3F.xml
+--ksefInvoice
+Content-Disposition: form-data; name="notes"
+
+Test notes
+--ksefInvoice--
 
 ### Second create attempt whould trigger PK violation error
 POST {{baseUrl}}/app/invoices
-Content-Type: application/json
+Content-Type: multipart/form-data; boundary=ksefInvoice
 X-API-Key: {{apiKey}}
 
-< ../../../testresources/invoices/invoice-1.json
+--ksefInvoice
+Content-Disposition: form-data; name="file"; filename="invoice-1.xml"
+Content-Type: application/xml
+
+< ../../../testresources/invoices/issued/6751577878-20260629-514966000000-3F.xml
+--ksefInvoice--

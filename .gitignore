@@ -5,5 +5,5 @@ dist
 node_modules
 out
 target
-tests/testresources/ksef
+tests/testresources/invoices
 API_KEY
