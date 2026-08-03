@@ -7,18 +7,18 @@ POST {{baseUrl}}/app/users
 Content-Type: application/json
 X-API-Key: {{apiKey}}
 
-{ "email": "drexa1@hotmail.com", "name": "nevermind" }
+< ../../../testresources/users/admin-user.json
 
 ### Create user for the first time should suceed
 POST {{baseUrl}}/app/users
 Content-Type: application/json
 X-API-Key: {{apiKey}}
 
-{ "email": "user@mail.com", "name": "Test user" }
+< ../../../testresources/users/user-1.json
 
 ### Second create attempt should trigger PK violation error
 POST {{baseUrl}}/app/users
 Content-Type: application/json
 X-API-Key: {{apiKey}}
 
-{ "email": "user@mail.com", "name": "Test user" }
+< ../../../testresources/users/user-1.json

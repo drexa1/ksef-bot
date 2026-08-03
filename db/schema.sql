@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS users (
     bdo TEXT,  -- Number in the Waste Database. The information will appear on the invoices
     fist_name TEXT NOT NULL,
     last_name TEXT NOT NULL,
-    date_of_birth DATE NOT NULL,
+    date_of_birth DATE NOT NULL CHECK (date_of_birth GLOB '????-??-??' AND date_of_birth >= '1900-01-01'),
     company_name TEXT,
     company_logo BLOB,
     -- Address details
