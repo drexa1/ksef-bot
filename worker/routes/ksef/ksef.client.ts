@@ -131,7 +131,8 @@ class KsefClientBase {
     }
 }
 
-export class KsefClient extends KsefClientBase{
+export class KsefClient extends KsefClientBase {
+
     async createInvoiceQuery(from?: Date, to?: Date): Promise<{ queryReferenceNumber: string }> {
         const response = await fetch(`${this.env.KSEF_URL}/invoices/query`, {
             method: "POST",
