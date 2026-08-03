@@ -16,7 +16,8 @@
 - [x] Review REST users tests after refactor
 - [x] Review REST counterparties tests after refactor  
 - [x] Review REST invoices tests after refactor  
-- [ ] Retrieve invoice from KSeF  
+- [x] Retrieve invoice from KSeF  
+- [ ] REST tests for KSef  
 - [ ] Review REST taxes tests after refactor  
 - [ ] Compute taxes  
 - [ ] Review security architecture  

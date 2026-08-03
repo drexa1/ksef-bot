@@ -8,10 +8,10 @@ import {
     KsefSubject
 } from "../../types/ksef";
 
-export class KsefClient {
+class KsefClientBase {
     token?: string;
 
-    constructor(private env: Env, private subject: KsefSubject) {}
+    constructor(protected env: Env, protected subject: KsefSubject) {}
 
     async authenticate(): Promise<void> {
         this.token = await this.getKsefToken(this.env, this.subject);
@@ -125,60 +125,46 @@ export class KsefClient {
         throw new Error("Unsupported tax identifier");
     }
 
-    private authHeaders() {
-        if (!this.token)
-            throw new Error("KSeF client is not authenticated");
-        return { "Authorization": `Bearer ${this.token}`, "Content-Type": "application/json" };
+    async getQueryStatus(referenceNumber: string): Promise<KsefQueryStatus> {
+        const response = await fetch(`${this.env.KSEF_URL}/invoices/query/${referenceNumber}`, {
+            headers: { "Authorization": `Bearer ${this.token}`, "Content-Type": "application/json" }
+        });
+        if (!response.ok) throw new Error(`Query status failed ${response.status}`);
+        return await response.json();
     }
+}
 
-    async createInvoiceQuery(from: Date, to: Date): Promise<{ queryReferenceNumber: string }> {
+export class KsefClient extends KsefClientBase{
+    async createInvoiceQuery(from?: Date, to?: Date): Promise<{ queryReferenceNumber: string }> {
         const response = await fetch(`${this.env.KSEF_URL}/invoices/query`, {
             method: "POST",
-            headers: this.authHeaders(),
+            headers: { "Authorization": `Bearer ${this.token}`, "Content-Type": "application/json" },
             body: JSON.stringify({
                 subjectType: "subject1",
                 dateRange: {
                     dateType: "issue",
-                    from: from.toISOString(),
-                    to: to.toISOString()
+                    from: from!.toISOString(),
+                    to: to!.toISOString()
                 }
             })
         });
-        if (!response.ok)
-            throw new Error(`Query creation failed ${response.status}`);
+        if (!response.ok) throw new Error(`Query creation failed ${response.status}`);
         return await response.json() as { queryReferenceNumber: string };
-    }
-
-    async getQueryStatus(referenceNumber: string): Promise<KsefQueryStatus> {
-        const response = await fetch(`${this.env.KSEF_URL}/invoices/query/${referenceNumber}`, {
-            headers: this.authHeaders()
-        });
-        if (!response.ok)
-            throw new Error(`Query status failed ${response.status}`);
-        return await response.json();
     }
 
     async getInvoices(referenceNumber: string): Promise<KsefInvoiceMetadata[]> {
         const response = await fetch(`${this.env.KSEF_URL}/invoices/query/${referenceNumber}/result`, {
-            headers: this.authHeaders()
+            headers: { "Authorization": `Bearer ${this.token}`, "Content-Type": "application/json" }
         });
-        if (!response.ok)
-            throw new Error(`Invoice retrieval failed ${response.status}`);
+        if (!response.ok) throw new Error(`Invoice retrieval failed ${response.status}`);
         return await response.json();
     }
 
     async downloadInvoice(ksefNumber: string): Promise<string> {
-        if (!this.token)
-            throw new Error("KSeF client is not authenticated");
-
         const response = await fetch(`${this.env.KSEF_URL}/invoices/${ksefNumber}`, {
-            headers: {
-                Authorization: `Bearer ${this.token}`,
-                Accept: "application/xml"
-            }
+            headers: { Authorization: `Bearer ${this.token}`, Accept: "application/xml" }
         });
-        if (!response.ok)
-            throw new Error(`Invoice download failed ${response.status}`);
+        if (!response.ok) throw new Error(`Invoice download failed ${response.status}`);
         return await response.text();
     }
 }

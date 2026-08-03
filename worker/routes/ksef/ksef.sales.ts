@@ -1,14 +1,10 @@
 import {Env} from "../../worker";
 
 export async function get(req: Request, env: Env): Promise<Response> {
-    const url = new URL(req.url);
-    const invoiceId = url.searchParams.get("invoiceId")!;
-    const searchResult: any[] = [];  // TODO
-    if (!searchResult.length) return Response.json("Invoice not found", { status: 404 });
-    return Response.json(searchResult);
+    return Response.json(null);
 }
 
 export async function post(req: Request, env: Env): Promise<Response> {
-    // TODO
+    // TODO: offer endpoint for JSON and from XML
     return Response.json(null);
 }

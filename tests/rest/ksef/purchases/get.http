@@ -1,0 +1,15 @@
+#@no-redirect
+@baseUrl = http://localhost:3001
+@apiKey = test
+@from = 20206/06/01
+@to = 20206/07/01
+
+### list for non-existing dates
+GET {{baseUrl}}/app/invoices?from=missing&to=missing
+Content-Type: application/json
+X-API-Key: {{apiKey}}
+
+### list for existing dates
+GET {{baseUrl}}/app/invoices?from={{from}}&to={{to}}
+Content-Type: application/json
+X-API-Key: {{apiKey}}

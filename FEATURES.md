@@ -13,6 +13,7 @@
 - Friendly cloud SQL data-store
 - Continuous integration
 - Defensive application design
+- No Ai involvement
 - Unitary and E2E tests
 - OpenAPI UI
 - Live documentation
