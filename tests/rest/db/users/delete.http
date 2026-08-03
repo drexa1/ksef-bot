@@ -1,7 +1,7 @@
 #@no-redirect
 @baseUrl = http://localhost:3001
 @apiKey = test
-@userId = 38cd09f7-1e69-4b0b-ba67-c3a0b89db466
+@userEmail = user@mail.com
 
 ### Delete non-existing user should fail
 DELETE {{baseUrl}}/app/users?email=missing
@@ -9,6 +9,6 @@ Content-Type: application/json
 X-API-Key: {{apiKey}}
 
 ### Delete existing user
-DELETE {{baseUrl}}/app/users?email={{userId}}
+DELETE {{baseUrl}}/app/users?email={{userEmail}}
 Content-Type: application/json
 X-API-Key: {{apiKey}}
