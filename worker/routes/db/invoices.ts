@@ -2,7 +2,7 @@ import {Env} from "../../worker";
 import {D1Driver, Repository} from "../../repository/d1";
 import {XMLParser} from "fast-xml-parser";
 import {AppCounterparty, AppInvoice, AppUser} from "../../types/db";
-import {KsefSubject} from "../../types/ksef";
+import {KsefIdentifiable} from "../../types/ksef";
 import {getAuthUser} from "../../auth";
 import {dtoFromAliases} from "../../avro/invoice";
 import {nanoid} from "nanoid";
@@ -13,11 +13,11 @@ function getRepo(env: Env): Repository {
 }
 
 export async function get(req: Request, env: Env): Promise<Response> {
-    const authUser = await getAuthUser(req, env);
+    const appUser = await getAuthUser(req, env);
     const url = new URL(req.url);
     const id = url.searchParams.get("id");
     // Allow to fetch only owned invoices (except for superadmin)
-    const filters = authUser.tier === 0 ? {} : { owner_id: authUser.email };
+    const filters = appUser.tier === 0 ? {} : { owner_id: appUser.email };
     const rows = id
         ? await getRepo(env).get<AppInvoice>("invoices", { id, ...filters })
         : await getRepo(env).getAll<AppInvoice>("invoices", filters);
@@ -28,12 +28,12 @@ export async function get(req: Request, env: Env): Promise<Response> {
 }
 
 export async function post(req: Request, env: Env): Promise<Response> {
-    const authUser = await getAuthUser(req, env);
+    const appUser = await getAuthUser(req, env);
     const form = await req.formData();
     const file = form.get("file");
     const notes = form.get("notes")?.toString();
     if (!(file instanceof File)) return Response.json({ error: "Missing XML file" }, { status: 400 });
-    const record = await invoiceFromXml(env, req, authUser, file, notes);
+    const record = await invoiceFromXml(env, req, appUser, file, notes);
     try {
         await getRepo(env).save<AppInvoice>("invoices", record);
         return Response.json({ success: true, id: record.id }, { status: 200 });
@@ -49,11 +49,11 @@ export async function put(_req: Request, _env: Env): Promise<Response> {
 }
 
 export async function del(req: Request, env: Env): Promise<Response> {
-    const authUser = await getAuthUser(req, env);
+    const appUser = await getAuthUser(req, env);
     const url = new URL(req.url);
     const id = url.searchParams.get("id")!;
     // Allow to delete only owned invoices (except for superadmin)
-    const filters = authUser.tier === 0 ? {} : { owner_id: authUser.email };
+    const filters = appUser.tier === 0 ? {} : { owner_id: appUser.email };
     const result = await getRepo(env).delete("invoices", { id, ...filters });
     if (result.changes === 0)
         return Response.json({ success: false, error: "Invoice not found", id: id }, { status: 404 });
@@ -103,7 +103,7 @@ async function invoiceFromXml(env: Env, req: Request, authUser: AppUser, file: F
 // ---------------------------------------------------------------------------------------------------------------------
 // Counterparty helpers during invoice creation
 // ---------------------------------------------------------------------------------------------------------------------
-async function getOrCreateCounterparty(env: Env, subject: {
+async function getOrCreateCounterparty(env: Env, counterpartyParts: {
     owner_id: string
     name: string
     nip?: string
@@ -112,30 +112,30 @@ async function getOrCreateCounterparty(env: Env, subject: {
     country_code?: string
     address_l1?: string
 }): Promise<string> {
-    const { idField, idValue } = getCounterpartyIdentifier(subject);
+    const { idField, idValue } = getCounterpartyIdentifier(counterpartyParts);
     const existing = await getRepo(env).get<AppCounterparty>("counterparties", { [idField]: idValue });
     if (existing) return existing.id!;
     const counterparty: AppCounterparty = {
         id: nanoid(),
-        ...({ owner_id: subject.owner_id }),
-        name: subject.name,
-        ...(subject.nip   && { nip:   subject.nip }),
-        ...(subject.pesel && { pesel: subject.pesel }),
-        ...(subject.regon && { regon: subject.regon }),
-        country_code: subject.country_code ?? "PL",
-        address_l1: subject.address_l1 ?? "",
+        ...({ owner_id: counterpartyParts.owner_id }),
+        name: counterpartyParts.name,
+        ...(counterpartyParts.nip   && { nip:   counterpartyParts.nip }),
+        ...(counterpartyParts.pesel && { pesel: counterpartyParts.pesel }),
+        ...(counterpartyParts.regon && { regon: counterpartyParts.regon }),
+        country_code: counterpartyParts.country_code ?? "PL",
+        address_l1: counterpartyParts.address_l1 ?? "",
         created_at: new Date().toISOString(),
     };
     await getRepo(env).save("counterparties", counterparty);
     return counterparty.id!;
 }
 
-function getCounterpartyIdentifier(subject: KsefSubject): { idField: "nip" | "pesel" | "regon", idValue: string } {
-    if (subject.nip)
-        return { idField: "nip", idValue: subject.nip };
-    if (subject.pesel)
-        return { idField: "pesel", idValue: subject.pesel };
-    if (subject.regon)
-        return { idField: "regon", idValue: subject.regon };
+function getCounterpartyIdentifier(counterpartyParts: KsefIdentifiable): { idField: "nip" | "pesel" | "regon", idValue: string } {
+    if (counterpartyParts.nip)
+        return { idField: "nip", idValue: counterpartyParts.nip };
+    if (counterpartyParts.pesel)
+        return { idField: "pesel", idValue: counterpartyParts.pesel };
+    if (counterpartyParts.regon)
+        return { idField: "regon", idValue: counterpartyParts.regon };
     throw new Error("Counterparty has no supported fiscal identifier");
 }

@@ -1,21 +1,72 @@
 CREATE TABLE IF NOT EXISTS users (
-    -- User data
     email TEXT PRIMARY KEY,
-    name TEXT,
+    -- Application
     api_key TEXT UNIQUE,
     tier INTEGER NOT NULL,
+    -- Identification data
+    nip TEXT NOT NULL CHECK (length(nip) = 10 AND nip NOT GLOB '*[^0-9]*'),
+    regon TEXT CHECK (regon IS NULL OR (length(regon) = 9 AND regon NOT GLOB '*[^0-9]*')),
+    bdo TEXT,  -- Number in the Waste Database. The information will appear on the invoices
+    fist_name TEXT NOT NULL,
+    last_name TEXT NOT NULL,
+    date_of_birth DATE NOT NULL,
+    company_name TEXT,
+    company_logo BLOB,
+    -- Address details
+    country TEXT NOT NULL DEFAULT 'Poland',
+    voivodeship TEXT NOT NULL,
+    county TEXT NOT NULL,
+    commune TEXT NOT NULL,
+    town TEXT NOT NULL,
+    zip_code TEXT NOT NULL,
+    street TEXT,
+    building_number TEXT NOT NULL,
+    apartment_number TEXT,
+    phone_number TEXT,  -- The information will appear on the invoices
+    display_email_on_ksef_invoices BOOLEAN NOT NULL DEFAULT FALSE,
+    -- Billing data
+    settlement_type TEXT NOT NULL CHECK (settlement_type IN ('monthly', 'quarterly')),
+    cash_method BOOLEAN NOT NULL DEFAULT FALSE,  -- Default billing of invoices - MK
+    bank_account_number TEXT CHECK (bank_account_number IS NULL OR (length(bank_account_number) = 26 AND bank_account_number NOT GLOB '*[^0-9]*')),  -- The information will appear on the invoices
+    tax_office TEXT,  -- Name and code
     -- DBA
     created_at TEXT DEFAULT CURRENT_TIMESTAMP,
     updated_at TEXT
 );
 -- Create admin user
 INSERT INTO users VALUES (
-  'drexa1@hotmail.com',
-  'Diego Ruiz',
-  NULL,
-  0,
-  CURRENT_TIMESTAMP,
-  CURRENT_TIMESTAMP
+    'drexa1@hotmail.com',
+    -- Application
+    NULL,
+    0,
+     -- Identification data
+    '6751577878',
+    NULL,
+    NULL,
+    'Diego',
+    'Ruiz Barbero',
+    DATE('1983-07-16'),
+    'Diego Ruiz Barbero Software Engineering & Data Science',
+    NULL,
+    'Poland',
+    'małopolskie',
+    'Kraków',
+    'Kraków',
+    'Kraków',
+    '30-638',
+    NULL,
+    '15',
+    '32',
+    NULL,
+    FALSE,
+     -- Billing data
+    'monthly',
+    FALSE,
+    NULL,
+    'URZĄD SKARBOWY KRAKÓW-PODGÓRZE (1210)',
+     -- DBA
+    CURRENT_TIMESTAMP,
+    CURRENT_TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS invoices (

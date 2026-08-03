@@ -9,9 +9,9 @@ function getRepo(env: Env): Repository {
 }
 
 export async function get(req: Request, env: Env): Promise<Response> {
-    const authUser = await getAuthUser(req, env);
+    const appUser = await getAuthUser(req, env);
     // Allow to fetch users only to superadmin
-    if (authUser.tier !== 0)
+    if (appUser.tier !== 0)
         return new Response("Unauthorized", { status: 401, headers: corsHeaders });
     const url = new URL(req.url);
     const email = url.searchParams.get("email");
@@ -24,9 +24,9 @@ export async function get(req: Request, env: Env): Promise<Response> {
 }
 
 export async function post(req: Request, env: Env): Promise<Response> {
-    const authUser = await getAuthUser(req, env);
+    const appUser = await getAuthUser(req, env);
     // Allow to create users only to superadmin
-    if (authUser.tier !== 0)
+    if (appUser.tier !== 0)
         return new Response("Unauthorized", { status: 401, headers: corsHeaders });
     // Never allow client to control id, ownership, or creation/update timestamps
     const payload = await req.json() as AppUser;
@@ -43,9 +43,9 @@ export async function post(req: Request, env: Env): Promise<Response> {
 }
 
 export async function put(req: Request, env: Env): Promise<Response> {
-    const authUser = await getAuthUser(req, env);
+    const appUser = await getAuthUser(req, env);
     // Allow to update users only to superadmin
-    if (authUser.tier !== 0)
+    if (appUser.tier !== 0)
         return new Response("Unauthorized", { status: 401, headers: corsHeaders });
     const payload = await req.json() as AppUser;
     // Never allow client to change id, or creation/update timestamp
@@ -60,9 +60,9 @@ export async function put(req: Request, env: Env): Promise<Response> {
 }
 
 export async function del(req: Request, env: Env): Promise<Response> {
-    const authUser = await getAuthUser(req, env);
+    const appUser = await getAuthUser(req, env);
     // Allow to update users only to superadmin
-    if (authUser.tier !== 0)
+    if (appUser.tier !== 0)
         return new Response("Unauthorized", { status: 401, headers: corsHeaders });
     const url = new URL(req.url);
     const email = url.searchParams.get("email")!;

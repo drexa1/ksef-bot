@@ -1,10 +1,8 @@
 import {Env} from "../../worker";
 import {KsefClient} from "./ksef.client";
 import {D1Driver, Repository} from "../../repository/d1";
-import {AppCounterparty, AppUser} from "../../types/db";
 import pRetry, {AbortError} from "p-retry";
 import {getAuthUser} from "../../auth";
-import {InvoicePartNotFound} from "../../types/ksef";
 
 let repo: Repository;
 function getRepo(env: Env): Repository {
@@ -24,11 +22,8 @@ export async function get(req: Request, env: Env): Promise<Response> {
 }
 
 async function queryPurchaseInvoices(req: Request, env: Env, from: Date, to: Date) {
-    const authUser = await getAuthUser(req, env);
-    const userCounterparty = await getRepo(env).get<AppCounterparty>("counterparties", { email: authUser.email });
-    if (!userCounterparty)
-        throw new InvoicePartNotFound("Counterparty not found. Has the authenticated user an associated counterparty in the app?", 404, { email: authUser.email });
-    const client = new KsefClient(env, userCounterparty);
+    const appUser = await getAuthUser(req, env);
+    const client = new KsefClient(env, appUser);
     // Authenticate
     await client.authenticate();
     // Start invoice search

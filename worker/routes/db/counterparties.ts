@@ -10,11 +10,11 @@ function getRepo(env: Env): Repository {
 }
 
 export async function get(req: Request, env: Env): Promise<Response> {
-    const authUser = await getAuthUser(req, env);
+    const appUser = await getAuthUser(req, env);
     const url = new URL(req.url);
     const id = url.searchParams.get("id");
     // Allow to fetch only owned counterparties (except for superadmin)
-    const filters = authUser.tier === 0 ? {} : { owner_id: authUser.email };
+    const filters = appUser.tier === 0 ? {} : { owner_id: appUser.email };
     const rows = id
         ? await getRepo(env).get<AppCounterparty>("counterparties", { id, ...filters })
         : await getRepo(env).getAll<AppCounterparty>("counterparties", filters);
@@ -24,11 +24,11 @@ export async function get(req: Request, env: Env): Promise<Response> {
 }
 
 export async function post(req: Request, env: Env): Promise<Response> {
-    const authUser = await getAuthUser(req, env);
+    const appUser = await getAuthUser(req, env);
     const payload = await req.json() as AppCounterparty & { owner_id?: string };
     // Never allow client to control id, ownership, or creation/update timestamps
     const { id, owner_id, created_at, updated_at, ...payloadData } = payload;
-    const record = { ...payloadData, id: nanoid(), owner_id: authUser.email, updated_at: new Date().toISOString() };
+    const record = { ...payloadData, id: nanoid(), owner_id: appUser.email, updated_at: new Date().toISOString() };
     try {
         await getRepo(env).save<AppCounterparty>("counterparties", record);
         return Response.json({ success: true, id: record.id }, { status: 200 });
@@ -40,25 +40,25 @@ export async function post(req: Request, env: Env): Promise<Response> {
 }
 
 export async function put(req: Request, env: Env): Promise<Response> {
-    const authUser = await getAuthUser(req, env);
+    const appUser = await getAuthUser(req, env);
     const payload = await req.json() as AppCounterparty & { owner_id?: string };
     // Never allow client to change id, ownership, or creation/update timestamp
     const { id, owner_id, created_at, updated_at, ...updatePayload } = payload;
     const result = await getRepo(env).update<AppCounterpartyUpdate>("counterparties", {
         ...updatePayload,
         updated_at: new Date().toISOString()
-    }, { id, owner_id: authUser.email });
+    }, { id, owner_id: appUser.email });
     if (result.changes === 0)
         return Response.json({ success: false, error: "Counterparty not found", id: id }, { status: 404 });
     return Response.json({ success: true, id: id }, { status: result.success ? 200 : 400 });
 }
 
 export async function del(req: Request, env: Env): Promise<Response> {
-    const authUser = await getAuthUser(req, env);
+    const appUser = await getAuthUser(req, env);
     const url = new URL(req.url);
     const id = url.searchParams.get("id")!;
     // Allow to delete only owned counterparties (except for superadmin)
-    const filters = authUser.tier === 0 ? {} : { owner_id: authUser.email };
+    const filters = appUser.tier === 0 ? {} : { owner_id: appUser.email };
     const result = await getRepo(env).delete("counterparties", { id, ...filters });
     if (result.changes === 0)
         return Response.json({ success: false, error: "Counterparty not found", id: id }, { status: 404 });

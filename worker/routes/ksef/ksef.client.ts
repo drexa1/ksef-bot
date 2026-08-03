@@ -5,23 +5,23 @@ import {
     KsefContextIdentifier,
     KsefInvoiceMetadata,
     KsefQueryStatus,
-    KsefSubject
+    KsefIdentifiable
 } from "../../types/ksef";
 
 class KsefClientBase {
     token?: string;
 
-    constructor(protected env: Env, protected subject: KsefSubject) {}
+    constructor(protected env: Env, protected user: KsefIdentifiable) {}
 
     async authenticate(): Promise<void> {
-        this.token = await this.getKsefToken(this.env, this.subject);
+        this.token = await this.getKsefToken(this.env, this.user);
     }
 
-    private async getKsefToken(env: Env, subject: KsefSubject): Promise<string> {
+    private async getKsefToken(env: Env, user: KsefIdentifiable): Promise<string> {
         const ksefChallenge = await this.getKsefChallenge(env);
         const ksefCertificate = await this.getKsefEncryptionCertificate(env);
         const encryptedToken = await this.encryptKsefToken(env.KSEF_TOKEN, ksefChallenge.timestamp, ksefCertificate);
-        const auth = await this.startKsefAuthentication(env, subject, ksefChallenge.challengeCode, encryptedToken);
+        const auth = await this.startKsefAuthentication(env, user, ksefChallenge.challengeCode, encryptedToken);
         await this.waitForKsefAuthentication(env, auth.referenceNumber, auth.authenticationToken);
         return await this.redeemKsefToken(env, auth.authenticationToken);
     }
@@ -66,7 +66,7 @@ class KsefClientBase {
 
     private async startKsefAuthentication(
         env: Env,
-        subject: KsefSubject,
+        user: KsefIdentifiable,
         challengeCode: string,
         encryptedToken: string
     ): Promise<{ referenceNumber: string, authenticationToken: string }> {
@@ -75,13 +75,20 @@ class KsefClientBase {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
                 challengeCode,
-                contextIdentifier: this.ksefContextIdentifier(subject),
+                contextIdentifier: this.ksefContextIdentifier(user),
                 encryptedToken
             })
         });
         if (!response.ok)
             throw new Error(`KSeF authentication failed: ${response.status}`);
         return await response.json() as { referenceNumber: string, authenticationToken: string };
+    }
+
+    private ksefContextIdentifier(user: KsefIdentifiable): KsefContextIdentifier {
+        if (user.nip)   return { type: "Nip",   identifier: user.nip };
+        if (user.pesel) return { type: "Pesel", identifier: user.pesel };
+        if (user.regon) return { type: "Regon", identifier: user.regon };
+        throw new Error("Unsupported tax identifier");
     }
 
     private async waitForKsefAuthentication(env: Env, referenceNumber: string, authenticationToken: string): Promise<void> {
@@ -113,16 +120,6 @@ class KsefClientBase {
             throw new Error(`KSeF token redeem failed: ${response.status}`);
         const tokens = await response.json() as { accessToken: { token: string }};
         return tokens.accessToken.token;
-    }
-
-    private ksefContextIdentifier(subject: KsefSubject): KsefContextIdentifier {
-        if (subject.nip)
-            return { type: "Nip", identifier: subject.nip };
-        if (subject.pesel)
-            return { type: "Pesel", identifier: subject.pesel };
-        if (subject.regon)
-            return { type: "Regon", identifier: subject.regon };
-        throw new Error("Unsupported tax identifier");
     }
 
     async getQueryStatus(referenceNumber: string): Promise<KsefQueryStatus> {
