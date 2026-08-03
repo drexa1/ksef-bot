@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS users (
     nip TEXT NOT NULL CHECK (length(nip) = 10 AND nip NOT GLOB '*[^0-9]*'),
     regon TEXT CHECK (regon IS NULL OR (length(regon) = 9 AND regon NOT GLOB '*[^0-9]*')),
     bdo TEXT,  -- Number in the Waste Database. The information will appear on the invoices
-    fist_name TEXT NOT NULL,
+    first_name TEXT NOT NULL,
     last_name TEXT NOT NULL,
     date_of_birth DATE NOT NULL CHECK (date_of_birth GLOB '????-??-??' AND date_of_birth >= '1900-01-01'),
     company_name TEXT,
