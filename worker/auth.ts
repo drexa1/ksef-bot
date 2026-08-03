@@ -1,6 +1,5 @@
 import {Env} from "./worker";
 import {D1Driver, Repository} from "./repository/d1";
-import {Method, Routes} from "./routes";
 import {AppUser} from "./types/db";
 import {AuthError, AuthUser} from "./types/auth";
 
@@ -21,23 +20,6 @@ export const withCors = ( res: Response) => {
         headers.set(k, v);
     }
     return new Response(res.body, { status: res.status, statusText: res.statusText, headers });
-};
-
-export const withAuthHandling = (routes: Routes): Routes => {
-    const routesWithAuth: Routes = {};
-    for (const [method, route] of Object.entries(routes)) {
-        routesWithAuth[method as Method] = async (req: Request, env: Env) => {
-            try {
-                return await route(req, env);
-            } catch (error: unknown) {
-                console.error(error);
-                if (error instanceof AuthError)
-                    return Response.json({ error: error.message, details: error.details }, { status: error.status, headers: corsHeaders });
-                return Response.json({ error: "Internal server error" }, { status: 500, headers: corsHeaders });
-            }
-        };
-    }
-    return routesWithAuth;
 };
 
 export async function auth(req: Request, env: Env): Promise<boolean> {

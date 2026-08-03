@@ -47,13 +47,6 @@ export type AppCounterparty = {
     updated_at?: string
 };
 
-export class CounterpartyNotFound extends Error {
-    constructor(message: string, public status: number, public details?: unknown) {
-        super(message);
-        this.name = "CounterpartyNotFound";
-    }
-}
-
 export type AppTaxRecordUpdate = Partial<Omit<AppTaxRecord, "id">>;
 export type AppTaxRecord = {
     id: string
