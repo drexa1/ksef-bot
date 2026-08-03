@@ -19,7 +19,7 @@ export async function get(req: Request, env: Env): Promise<Response> {
         ? await getRepo(env).get<AppUser>("users", { email })
         : await getRepo(env).getAll<AppUser>("users");
     if (rows === null)
-        return Response.json({ error: "User not found", email: email }, { status: 404 });
+        return Response.json({ success: false, error: "User not found", email: email }, { status: 404 });
     return Response.json(rows, { status: 200 });
 }
 
@@ -55,8 +55,8 @@ export async function put(req: Request, env: Env): Promise<Response> {
         updated_at: new Date().toISOString()
     }, { email: email });
     if (result.changes === 0)
-        return Response.json({ success: false, id: email, error: "User not found" }, { status: 404 });
-    return Response.json({ success: true, id: email }, { status: result.success ? 200 : 400 });
+        return Response.json({ success: false, error: "User not found", email: email }, { status: 404 });
+    return Response.json({ success: true, email: email }, { status: result.success ? 200 : 400 });
 }
 
 export async function del(req: Request, env: Env): Promise<Response> {
@@ -68,6 +68,6 @@ export async function del(req: Request, env: Env): Promise<Response> {
     const email = url.searchParams.get("email")!;
     const result = await getRepo(env).delete("users", { email });
     if (result.changes === 0)
-        return Response.json({ success: false, id: email, error: "User not found" }, { status: 404 });
-    return Response.json({ success: result.success, id: email }, { status: result.success ? 200 : 404 });
+        return Response.json({ success: false, error: "User not found", email: email }, { status: 404 });
+    return Response.json({ success: result.success, email: email }, { status: result.success ? 200 : 404 });
 }

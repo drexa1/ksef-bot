@@ -22,7 +22,7 @@ export async function get(req: Request, env: Env): Promise<Response> {
         ? await getRepo(env).get<AppInvoice>("invoices", { id, ...filters })
         : await getRepo(env).getAll<AppInvoice>("invoices", filters);
     if (!rows)
-        return Response.json({ error: "Invoice not found", id: id }, { status: 404 });
+        return Response.json({  success: false, error: "Invoice not found", id: id }, { status: 404 });
     const result = Array.isArray(rows) ? rows.map(row => JSON.parse(row.json_data)) : JSON.parse(rows.json_data);
     return Response.json(result, { status: 200 });
 }
@@ -56,7 +56,7 @@ export async function del(req: Request, env: Env): Promise<Response> {
     const filters = authUser.tier === 0 ? {} : { owner_id: authUser.email };
     const result = await getRepo(env).delete("invoices", { id, ...filters });
     if (result.changes === 0)
-        return Response.json({ success: false, id: id, error: "Invoice not found" }, { status: 404 });
+        return Response.json({ success: false, error: "Invoice not found", id: id }, { status: 404 });
     return Response.json({ success: result.success, id: id }, { status: result.success ? 200 : 400 });
 }
 

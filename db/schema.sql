@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS users (
     -- DBA
     created_at TEXT DEFAULT CURRENT_TIMESTAMP,
     updated_at TEXT
-)  WITHOUT ROWID;
+);
 -- Create admin user
 INSERT INTO users VALUES (
   'drexa1@hotmail.com',
@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS invoices (
     -- DBA
     created_at TEXT DEFAULT CURRENT_TIMESTAMP,
     updated_at TEXT
-) WITHOUT ROWID;
+);
 
 CREATE TABLE IF NOT EXISTS counterparties (
     id TEXT PRIMARY KEY,
@@ -56,7 +56,7 @@ CREATE TABLE IF NOT EXISTS counterparties (
     -- DBA
     created_at TEXT DEFAULT CURRENT_TIMESTAMP,
     updated_at TEXT
-) WITHOUT ROWID;
+);
 
 CREATE TABLE IF NOT EXISTS taxes (
   id TEXT PRIMARY KEY,
@@ -80,4 +80,4 @@ CREATE TABLE IF NOT EXISTS taxes (
     -- DBA
   created_at TEXT DEFAULT CURRENT_TIMESTAMP,
   updated_at TEXT
-) WITHOUT ROWID;
+);

@@ -19,7 +19,7 @@ export async function get(req: Request, env: Env): Promise<Response> {
         ? await getRepo(env).get<AppTaxRecord>("taxes", { id, ...filters })
         : await getRepo(env).getAll<AppTaxRecord>("taxes", filters);
     if (rows === null)
-        return Response.json({ error: "Tax record not found", id: id }, { status: 404 });
+        return Response.json({ success: false, error: "Tax record not found", id: id }, { status: 404 });
     return Response.json(rows, { status: 200 });
 }
 
@@ -55,7 +55,7 @@ export async function put(req: Request, env: Env): Promise<Response> {
         updated_at: new Date().toISOString()
     }, { id, owner_id: authUser.email });
     if (result.changes === 0)
-        return Response.json({ success: false, id: id, error: "Tax record not found" }, { status: 404 });
+        return Response.json({ success: false, error: "Tax record not found", id: id }, { status: 404 });
     return Response.json({ success: true, id: id }, { status: result.success ? 200 : 400 });
 }
 
@@ -67,6 +67,6 @@ export async function del(req: Request, env: Env): Promise<Response> {
     const filters = authUser.tier === 0 ? {} : { owner_id: authUser.email };
     const result = await getRepo(env).delete("taxes", { id, ...filters });
     if (result.changes === 0)
-        return Response.json({ success: false, id: id, error: "Tax record not found" }, { status: 404 });
+        return Response.json({ success: false, error: "Tax record not found", id: id }, { status: 404 });
     return Response.json({ success: result.success, id: id }, { status: result.success ? 200 : 400 });
 }
