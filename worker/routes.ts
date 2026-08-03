@@ -20,7 +20,6 @@ import {
 } from "./routes/db/invoices";
 import {del as taxesDELETE, get as taxesGET, post as taxesPOST, put as taxesPUT} from "./routes/db/taxes";
 import {AuthError} from "./types/auth";
-import {InvoicePartNotFound} from "./types/ksef";
 
 export type Routes = Partial<Record<Method, Route>>;
 export type Method = "GET" | "POST" | "PUT" | "DELETE" | "OPTIONS";
@@ -35,8 +34,6 @@ const withErrorHandling = (routes: Routes): Routes => {
             } catch (error: unknown) {
                 console.error(error);
                 if (error instanceof AuthError)
-                    return Response.json({ error: error.message, details: error.details }, { status: error.status, headers: corsHeaders });
-                if (error instanceof InvoicePartNotFound)
                     return Response.json({ error: error.message, details: error.details }, { status: error.status, headers: corsHeaders });
                 return Response.json({ error: "Internal server error" }, { status: 500, headers: corsHeaders });
             }
