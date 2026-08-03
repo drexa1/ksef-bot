@@ -1,9 +1,10 @@
 import {Env} from "../../worker";
 import {KsefClient} from "./ksef.client";
 import {D1Driver, Repository} from "../../repository/d1";
-import {AppCounterparty, AppUser} from "../../types/db";
+import {AppCounterparty, AppUser, CounterpartyNotFound} from "../../types/db";
 import pRetry, {AbortError} from "p-retry";
 import {getAuthUser} from "../../auth";
+import {AuthError} from "../../types/auth";
 
 let repo: Repository;
 function getRepo(env: Env): Repository {
@@ -17,16 +18,16 @@ export async function get(req: Request, env: Env): Promise<Response> {
     const from = new Date(fromParam);
     const to = new Date(toParam);
     if (isNaN(from.getTime()) || isNaN(to.getTime()))
-        return Response.json({ error: "Invalid date parameters" }, { status: 400 });
+        return Response.json({ success: false, error: "Invalid date parameters" }, { status: 400 });
     const invoices = await queryPurchaseInvoices(req, env, from, to);
-    return Response.json(invoices);
+    return Response.json(invoices, { status: 200 });
 }
 
 async function queryPurchaseInvoices(req: Request, env: Env, from: Date, to: Date) {
-    const authUser = await getAuthUser(req, env) as AppUser;
+    const authUser = await getAuthUser(req, env);
     const userCounterparty = await getRepo(env).get<AppCounterparty>("counterparties", { email: authUser.email });
     if (!userCounterparty)
-        return Response.json({ error: "Counterparty not found. Have you created a counterparty record?", id: authUser.email }, { status: 404 });
+        throw new CounterpartyNotFound("Counterparty not found. Has a counterparty been created for this user?", 404, { authUser });
     const client = new KsefClient(env, userCounterparty);
     // Authenticate
     await client.authenticate();

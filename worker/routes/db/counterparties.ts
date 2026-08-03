@@ -19,7 +19,7 @@ export async function get(req: Request, env: Env): Promise<Response> {
         ? await getRepo(env).get<AppCounterparty>("counterparties", { id, ...filters })
         : await getRepo(env).getAll<AppCounterparty>("counterparties", filters);
     if (rows === null)
-        return Response.json({  success: false, error: "Counterparty not found", id: id }, { status: 404 });
+        return Response.json({ success: false, error: "Counterparty not found", id: id }, { status: 404 });
     return Response.json(rows, { status: 200 });
 }
 

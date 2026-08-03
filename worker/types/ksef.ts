@@ -1,4 +1,3 @@
-
 export type KsefContextIdentifier = { type: "Nip" | "Pesel" | "Regon", identifier: string };
 
 export type KsefAuthenticationStatus = { status: "Pending" | "InProgress" | "Completed" | "Failed", message?: string };
