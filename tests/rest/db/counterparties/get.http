@@ -1,7 +1,7 @@
 #@no-redirect
 @baseUrl = http://localhost:3001
 @apiKey = test
-@counterpartyId = 1SkIa0fw2CZ61lqnhhkJ_
+@counterpartyId = JP4t96R8FD___z60VX84r
 
 ### List all
 GET {{baseUrl}}/app/counterparties
