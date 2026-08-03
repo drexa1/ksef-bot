@@ -7,7 +7,7 @@ POST {{baseUrl}}/app/users
 Content-Type: application/json
 X-API-Key: {{apiKey}}
 
-< ../../../testresources/users/admin-user.json
+< ../../../testresources/users/user-admin.json
 
 ### Create user for the first time should suceed
 POST {{baseUrl}}/app/users
