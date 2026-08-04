@@ -1,0 +1,10 @@
+{
+  "name": "KSeF Bot",
+  "icons": [
+    {
+      "src": "assets/favicon/favicon-mobile.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
