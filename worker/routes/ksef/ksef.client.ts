@@ -30,17 +30,13 @@ class KsefClientBase {
 
     private async getKsefChallenge(env: Env): Promise<{ challenge: string, timestamp: number }> {
         const response = await fetch(`${env.KSEF_URL}/auth/challenge`, { method: "POST" });
-        if (!response.ok) throw new Error(`KSeF challenge failed: ${response.status}`);
         return await response.json() as { challenge: string, timestamp: number };
     }
 
     private async getKsefEncryptionCertificate(env: Env): Promise<{ certificate: string, publicKeyId: string }> {
         const response = await fetch(`${env.KSEF_URL}/security/public-key-certificates`);
-        if (!response.ok)
-            throw new Error(`KSeF public key failed: ${response.status}`);
         const data = await response.json() as { certificate: string, usage: string[], publicKeyId: string }[];
-        const ksefTokenEncryption = data.find(c => c.usage.includes("KsefTokenEncryption"));
-        if (!ksefTokenEncryption) throw new Error("No KSeF token encryption certificate found");
+        const ksefTokenEncryption = data.find(c => c.usage.includes("KsefTokenEncryption"))!;
         return { certificate: ksefTokenEncryption.certificate, publicKeyId: ksefTokenEncryption.publicKeyId };
     }
 
@@ -86,7 +82,7 @@ class KsefClientBase {
     }
 
     private ksefContextIdentifier(user: KsefIdentifiable): KsefContextIdentifier {
-        if (user.nip) return   { type: "Nip",        value: user.nip };
+        if (user.nip)   return { type: "Nip",        value: user.nip };
         if (user.pesel) return { type: "InternalId", value: user.pesel };
         throw new Error("Unsupported tax identifier");
     }
@@ -112,8 +108,6 @@ class KsefClientBase {
             method: "POST",
             headers: { Authorization: `Bearer ${authenticationToken}` }
         });
-        if (!response.ok)
-            throw new Error(`KSeF token redeem failed: ${response.status}`);
         const tokens = await response.json() as { accessToken: { token: string }};
         return tokens.accessToken.token;
     }
