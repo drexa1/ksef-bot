@@ -6,5 +6,4 @@ node_modules
 out
 target
 tests/testresources/invoices
-API_KEY
-KSEF_TOKEN
+.dev.vars

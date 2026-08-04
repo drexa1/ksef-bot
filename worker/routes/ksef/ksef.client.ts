@@ -99,14 +99,11 @@ class KsefClientBase {
                 if (!response.ok) throw new Error(`KSeF authentication status failed: ${response.status}`);
                 const status = await response.json() as KsefAuthenticationStatus;
                 switch (status.status) {
-                    case "Completed":
-                        return;
-                    case "Failed":
-                        throw new AbortError(status.message ?? "KSeF authentication failed");
-                    default:
-                        throw new Error(`KSeF authentication not completed: ${status.status}`);
+                    case "Completed": return;
+                    case "Failed":    throw new AbortError(status.message ?? "KSeF authentication failed");
+                    default:          throw new Error(`KSeF authentication not completed: ${status.status}`);
                 }
-            }, { retries: 3, minTimeout: env.KSEF_MIN_TIMEOUT, maxTimeout: env.KSEF_MAX_TIMEOUT, factor: 1 }
+            }, { retries: 10, minTimeout: env.KSEF_MIN_TIMEOUT, maxTimeout: env.KSEF_MAX_TIMEOUT, factor: 1 }
         );
     }
 

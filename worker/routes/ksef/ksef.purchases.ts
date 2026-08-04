@@ -41,7 +41,7 @@ async function queryPurchaseInvoices(req: Request, env: Env, from: Date, to: Dat
                 case "failed":
                     throw new AbortError(queryStatus.message ?? "KSeF query failed");
             }
-        }, { retries: 3, minTimeout: env.KSEF_MIN_TIMEOUT, maxTimeout: env.KSEF_MAX_TIMEOUT, factor: 1 }
+        }, { retries: 10, minTimeout: env.KSEF_MIN_TIMEOUT, maxTimeout: env.KSEF_MAX_TIMEOUT, factor: 1 }
     );
     // Get invoice metadata
     const invoicesMetadata = await client.getInvoices(query.queryReferenceNumber);
