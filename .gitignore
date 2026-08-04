@@ -7,3 +7,4 @@ out
 target
 tests/testresources/invoices
 .dev.vars
+API_KEY
