@@ -7,6 +7,8 @@ import {
     KsefQueryStatus,
     KsefIdentifiable
 } from "../../types/ksef";
+import * as asn1js from "asn1js";
+import * as pkijs from "pkijs";
 
 class KsefClientBase {
     token?: string;
@@ -20,74 +22,72 @@ class KsefClientBase {
     private async getKsefToken(env: Env, user: KsefIdentifiable): Promise<string> {
         const ksefChallenge = await this.getKsefChallenge(env);
         const ksefCertificate = await this.getKsefEncryptionCertificate(env);
-        const encryptedToken = await this.encryptKsefToken(env.KSEF_TOKEN, ksefChallenge.timestamp, ksefCertificate);
-        const auth = await this.startKsefAuthentication(env, user, ksefChallenge.challengeCode, encryptedToken);
+        const encryptedToken = await this.encryptKsefToken(env.KSEF_TOKEN, ksefChallenge.timestamp, ksefCertificate.certificate);
+        const auth = await this.startKsefAuthentication(env, user, ksefChallenge.challenge, encryptedToken, ksefCertificate.publicKeyId);
         await this.waitForKsefAuthentication(env, auth.referenceNumber, auth.authenticationToken);
         return await this.redeemKsefToken(env, auth.authenticationToken);
     }
 
-    private async getKsefChallenge(env: Env): Promise<{ challengeCode: string, timestamp: number }> {
-        const response = await fetch(`${env.KSEF_URL}/auth/challenge`, { method: "POST"});
-        if (!response.ok)
-            throw new Error(`KSeF challenge failed: ${response.status}`);
-        return await response.json() as { challengeCode: string, timestamp: number };
+    private async getKsefChallenge(env: Env): Promise<{ challenge: string, timestamp: number }> {
+        const response = await fetch(`${env.KSEF_URL}/auth/challenge`, { method: "POST" });
+        if (!response.ok) throw new Error(`KSeF challenge failed: ${response.status}`);
+        return await response.json() as { challenge: string, timestamp: number };
     }
 
-    private async getKsefEncryptionCertificate(env: Env): Promise<string> {
+    private async getKsefEncryptionCertificate(env: Env): Promise<{ certificate: string, publicKeyId: string }> {
         const response = await fetch(`${env.KSEF_URL}/security/public-key-certificates`);
         if (!response.ok)
             throw new Error(`KSeF public key failed: ${response.status}`);
-        const data = await response.json() as { certificates: { certificate: string, usage: string[] }[] };
-        const certificate = data.certificates.find(c =>
-            c.usage.includes("KsefTokenEncryption")
-        );
-        if (!certificate)
-            throw new Error("No KSeF token encryption certificate found");
-        return certificate.certificate;
+        const data = await response.json() as { certificate: string, usage: string[], publicKeyId: string }[];
+        const ksefTokenEncryption = data.find(c => c.usage.includes("KsefTokenEncryption"));
+        if (!ksefTokenEncryption) throw new Error("No KSeF token encryption certificate found");
+        return { certificate: ksefTokenEncryption.certificate, publicKeyId: ksefTokenEncryption.publicKeyId };
     }
 
     private async encryptKsefToken(token: string, timestamp: number, certificate: string): Promise<string> {
-        const tokenPayload = new TextEncoder().encode(`${token}|${timestamp}`);
-        const certificateDer = Uint8Array.from(
-            atob(
-                certificate
-                    .replace(/-----BEGIN CERTIFICATE-----/, "")
-                    .replace(/-----END CERTIFICATE-----/, "")
-                    .replace(/\s/g, "")
-            ), c => c.charCodeAt(0)
-        );
-        const publicKey = await crypto.subtle.importKey("spki", certificateDer, {
-            name: "RSA-OAEP",
-            hash: "SHA-256"
-        }, false, ["encrypt"]);
+        const timestampMs = new Date(timestamp).getTime();
+        const tokenPayload = new TextEncoder().encode(`${token}|${timestampMs}`);
+        console.log("Encrypting payload:", tokenPayload);
+        // PEM certificate -> DER bytes
+        const certificateDer = Uint8Array.from(atob(certificate
+            .replace(/-----BEGIN CERTIFICATE-----/, "")
+            .replace(/-----END CERTIFICATE-----/, "")
+            .replace(/\s/g, "")), c => c.charCodeAt(0));
+        // Parse X.509 certificate
+        const asn1 = asn1js.fromBER(certificateDer.buffer);
+        if (asn1.offset === -1) throw new Error("Invalid certificate DER");
+        const cert = new pkijs.Certificate({ schema: asn1.result });
+        // Extract SubjectPublicKeyInfo
+        const spki = cert.subjectPublicKeyInfo.toSchema().toBER();
+        // Import RSA public key
+        const publicKey = await crypto.subtle.importKey("spki", spki, { name: "RSA-OAEP", hash: "SHA-256"}, false, ["encrypt"]);
+        // Encrypt token payload
         const encrypted = await crypto.subtle.encrypt({ name: "RSA-OAEP" }, publicKey, tokenPayload);
         return btoa(String.fromCharCode(...new Uint8Array(encrypted)));
     }
 
-    private async startKsefAuthentication(
-        env: Env,
-        user: KsefIdentifiable,
-        challengeCode: string,
-        encryptedToken: string
-    ): Promise<{ referenceNumber: string, authenticationToken: string }> {
+    private async startKsefAuthentication(env: Env, user: KsefIdentifiable, challenge: string, encryptedToken: string, publicKeyId: string): Promise<{ referenceNumber: string, authenticationToken: string }> {
         const response = await fetch(`${env.KSEF_URL}/auth/ksef-token`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                challengeCode,
+                challenge,
                 contextIdentifier: this.ksefContextIdentifier(user),
-                encryptedToken
+                encryptedToken,
+                publicKeyId
             })
         });
-        if (!response.ok)
-            throw new Error(`KSeF authentication failed: ${response.status}`);
-        return await response.json() as { referenceNumber: string, authenticationToken: string };
+        if (!response.ok) {
+            const body = await response.text();
+            throw new Error(`KSeF authentication failed ${response.status}: ${body}`);
+        }
+        const data = await response.json() as { referenceNumber: string; authenticationToken: { token: string, validUntil: string }};
+        return { referenceNumber: data.referenceNumber, authenticationToken: data.authenticationToken.token};
     }
 
     private ksefContextIdentifier(user: KsefIdentifiable): KsefContextIdentifier {
-        if (user.nip)   return { type: "Nip",   identifier: user.nip };
-        if (user.pesel) return { type: "Pesel", identifier: user.pesel };
-        if (user.regon) return { type: "Regon", identifier: user.regon };
+        if (user.nip) return   { type: "Nip",        value: user.nip };
+        if (user.pesel) return { type: "InternalId", value: user.pesel };
         throw new Error("Unsupported tax identifier");
     }
 
@@ -96,8 +96,7 @@ class KsefClientBase {
             async () => {
                 const response = await fetch(`${env.KSEF_URL}/auth/${referenceNumber}`, {
                     headers: { Authorization: `Bearer ${authenticationToken}` }});
-                if (!response.ok)
-                    throw new Error(`KSeF authentication status failed: ${response.status}`);
+                if (!response.ok) throw new Error(`KSeF authentication status failed: ${response.status}`);
                 const status = await response.json() as KsefAuthenticationStatus;
                 switch (status.status) {
                     case "Completed":

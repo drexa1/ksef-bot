@@ -7,3 +7,4 @@ out
 target
 tests/testresources/invoices
 API_KEY
+KSEF_TOKEN
