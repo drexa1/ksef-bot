@@ -18,7 +18,8 @@
 - [x] Review REST invoices tests after refactor  
 - [x] Retrieve invoice from KSeF  
 - [x] REST tests for KSef  
-- [x] Review REST taxes tests after refactor  
+- [ ] Review REST taxes tests after refactor  
+- [ ] Finalized get purchase invoices  
 - [ ] Compute taxes  
 - [ ] Review security architecture  
 - [ ] Ultra simple frontend  
