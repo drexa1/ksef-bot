@@ -1,13 +1,6 @@
 import {Env} from "../../worker";
 import {KsefClient} from "./ksef.client";
-import {D1Driver, Repository} from "../../repository/d1";
-import pRetry, {AbortError} from "p-retry";
 import {getAuthUser} from "../../auth";
-
-let repo: Repository;
-function getRepo(env: Env): Repository {
-    return repo ??= new Repository(new D1Driver(env.D1));
-}
 
 export async function get(req: Request, env: Env): Promise<Response> {
     const url = new URL(req.url);
@@ -28,9 +21,11 @@ async function queryPurchaseInvoices(req: Request, env: Env, from: Date, to: Dat
     await client.authenticate();
     // Query invoice metadata
     const metadataResult = await client.queryInvoiceMetadata(from, to);
+    console.log("🗃️ Downloaded invoices metadata...");
     // Download invoice XML files
     return await Promise.all(metadataResult.invoices.map(async (metadata) => {
         const xml = await client.downloadInvoice(metadata.ksefNumber);
+        console.log("💳 Purchase invoices downloaded:", metadata.invoiceNumber);
         return { metadata, xml };
     }));
 }

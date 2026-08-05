@@ -3,9 +3,9 @@ import pRetry, {AbortError} from "p-retry";
 import {
     KsefAuthenticationStatus,
     KsefContextIdentifier,
-    KsefInvoiceMetadata,
     KsefQueryStatus,
-    KsefIdentifiable, KsefInvoiceQueryResult
+    KsefIdentifiable,
+    KsefInvoiceQueryResult
 } from "../../types/ksef";
 import * as asn1js from "asn1js";
 import * as pkijs from "pkijs";
@@ -17,14 +17,20 @@ class KsefClientBase {
 
     async authenticate(): Promise<void> {
         this.token = await this.getKsefToken(this.env, this.user);
+        console.info("🆔 KSeF token acquired")
     }
 
     private async getKsefToken(env: Env, user: KsefIdentifiable): Promise<string> {
+        console.info("🛡️ Requesting KSeF auth challenge...");
         const ksefChallenge = await this.getKsefChallenge(env);
+        console.info("🛡️ Requesting KSeF public key certificates...");
         const ksefCertificate = await this.getKsefEncryptionCertificate(env);
+        console.info("🛡️ Encrypting token...");
         const encryptedToken = await this.encryptKsefToken(env.KSEF_TOKEN, ksefChallenge.timestamp, ksefCertificate.certificate);
+        console.info("🛡️ Requesting KSeF authentication...");
         const auth = await this.startKsefAuthentication(env, user, ksefChallenge.challenge, encryptedToken, ksefCertificate.publicKeyId);
         await this.waitForKsefAuthentication(env, auth.referenceNumber, auth.authenticationToken);
+        console.info("🛡️ Redeeming KSeF token...");
         return await this.redeemKsefToken(env, auth.authenticationToken);
     }
 
@@ -43,7 +49,6 @@ class KsefClientBase {
     private async encryptKsefToken(token: string, timestamp: number, certificate: string): Promise<string> {
         const timestampMs = new Date(timestamp).getTime();
         const tokenPayload = new TextEncoder().encode(`${token}|${timestampMs}`);
-        console.log("Encrypting payload:", tokenPayload);
         // PEM certificate -> DER bytes
         const certificateDer = Uint8Array.from(atob(certificate
             .replace(/-----BEGIN CERTIFICATE-----/, "")
@@ -114,18 +119,6 @@ class KsefClientBase {
         }});
         const tokens = await response.json() as { accessToken: { token: string }};
         return tokens.accessToken.token;
-    }
-
-    async getQueryStatus(referenceNumber: string): Promise<KsefQueryStatus> {
-        const response = await fetch(`${this.env.KSEF_URL}/invoices/query/${referenceNumber}`, { headers: {
-            "Authorization": `Bearer ${this.token}`,
-            "Content-Type": "application/json"
-        }});
-        if (!response.ok) {
-            const errorBody = await response.text();
-            throw new Error(`KSeF query status failed ${response.status}: ${errorBody}`);
-        }
-        return await response.json();
     }
 }
 
