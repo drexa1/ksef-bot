@@ -21,14 +21,16 @@
 - [ ] Finalized get purchase invoices  
 - [ ] Compute taxes  
 - [ ] Review REST taxes tests after refactor  
+- [ ] Post invoice  
+- [ ] WhatsApp bot  
 - [ ] Review security architecture  
 - [ ] Ultra simple frontend  
 - [ ] SSO/Enrolment  
 - [ ] GIT-version on deploy  
 - [ ] Transparency disclaimer / no Ai  
-- [ ] WhatsApp bot  
-- [ ] Post invoice  
+- [ ] Business plan  
+- [ ] Sales execution  
 - [ ] UI theming  
-- [ ] Go public  
 - [ ] Google Analytics  
-- [ ] Marketing outreach  
+- [ ] Slack bot  
+- [ ] Go public
