@@ -23,7 +23,10 @@ export async function get(req: Request, env: Env): Promise<Response> {
         : await getRepo(env).getAll<AppInvoice>("invoices", filters);
     if (!rows)
         return Response.json({  success: false, error: "Invoice not found", id: id }, { status: 404 });
-    const result = Array.isArray(rows) ? rows.map(row => JSON.parse(row.json_data)) : JSON.parse(rows.json_data);
+    // Return the JSON formatted
+    const result = Array.isArray(rows)
+        ? rows.map(row => JSON.parse(row.json_data))
+        : JSON.parse(rows.json_data);
     return Response.json(result, { status: 200 });
 }
 
