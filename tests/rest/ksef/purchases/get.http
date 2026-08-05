@@ -1,8 +1,8 @@
 #@no-redirect
 @baseUrl = http://localhost:3001
 @apiKey = test
-@from = 20206/06/01
-@to = 20206/07/01
+@from = 2026/06/01
+@to = 2026/08/01
 
 ### list for non-existing dates
 GET {{baseUrl}}/ksef/purchases?from=missing&to=missing

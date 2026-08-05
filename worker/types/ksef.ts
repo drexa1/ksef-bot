@@ -2,9 +2,21 @@ export type KsefIdentifiable = { nip?: string, pesel?: string, regon?: string };
 
 export interface KsefContextIdentifier { type: "Nip" | "InternalId" | "NipVatUe" | "PeppolId", value: string }
 
-export type KsefAuthenticationStatus = { status: "Pending" | "InProgress" | "Completed" | "Failed", message?: string };
+export type KsefAuthenticationStatus = {
+    status: {
+        code: number
+        description: string
+        details?: string[]
+    };
+};
 
 export type KsefQueryStatus = { status: "queued" | "processing" | "completed" | "failed", message?: string };
+
+export type KsefInvoiceQueryResult = {
+    hasMore: boolean;
+    isTruncated: boolean;
+    invoices: KsefInvoiceMetadata[];
+};
 
 export type KsefInvoiceMetadata = {
     ksefNumber: string

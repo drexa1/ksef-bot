@@ -24,31 +24,13 @@ export async function get(req: Request, env: Env): Promise<Response> {
 async function queryPurchaseInvoices(req: Request, env: Env, from: Date, to: Date) {
     const appUser = await getAuthUser(req, env);
     const client = new KsefClient(env, appUser);
-    // Authenticate
+    // Authentication
     await client.authenticate();
-    // Start invoice search
-    const query = await client.createInvoiceQuery(from, to);
-    // Poll until completed
-    await pRetry(
-        async () => {
-            const queryStatus = await client.getQueryStatus(query.queryReferenceNumber);
-            switch (queryStatus.status) {
-                case "completed":
-                    return;
-                case "queued":
-                case "processing":
-                    throw new Error(`KSeF query not ready: ${queryStatus.status}`);
-                case "failed":
-                    throw new AbortError(queryStatus.message ?? "KSeF query failed");
-            }
-        }, { retries: 10, minTimeout: env.KSEF_MIN_TIMEOUT, maxTimeout: env.KSEF_MAX_TIMEOUT, factor: 1 }
-    );
-    // Get invoice metadata
-    const invoicesMetadata = await client.getInvoices(query.queryReferenceNumber);
-    return await Promise.all(
-        invoicesMetadata.map(async (metadata) => {
-            const xml = await client.downloadInvoice(metadata.ksefNumber);
-            return { metadata, xml };
-        })
-    );
+    // Query invoice metadata
+    const metadataResult = await client.queryInvoiceMetadata(from, to);
+    // Download invoice XML files
+    return await Promise.all(metadataResult.invoices.map(async (metadata) => {
+        const xml = await client.downloadInvoice(metadata.ksefNumber);
+        return { metadata, xml };
+    }));
 }

@@ -5,7 +5,7 @@ import {
     KsefContextIdentifier,
     KsefInvoiceMetadata,
     KsefQueryStatus,
-    KsefIdentifiable
+    KsefIdentifiable, KsefInvoiceQueryResult
 } from "../../types/ksef";
 import * as asn1js from "asn1js";
 import * as pkijs from "pkijs";
@@ -82,8 +82,10 @@ class KsefClientBase {
     }
 
     private ksefContextIdentifier(user: KsefIdentifiable): KsefContextIdentifier {
-        if (user.nip)   return { type: "Nip",        value: user.nip };
-        if (user.pesel) return { type: "InternalId", value: user.pesel };
+        if (user.nip)
+            return { type: "Nip", value: user.nip };
+        if (user.pesel)
+            return { type: "InternalId", value: user.pesel };
         throw new Error("Unsupported tax identifier");
     }
 
@@ -91,68 +93,73 @@ class KsefClientBase {
         await pRetry(
             async () => {
                 const response = await fetch(`${env.KSEF_URL}/auth/${referenceNumber}`, {
-                    headers: { Authorization: `Bearer ${authenticationToken}` }});
+                    headers: { Authorization: `Bearer ${authenticationToken}` }
+                });
                 if (!response.ok) throw new Error(`KSeF authentication status failed: ${response.status}`);
                 const ksefAuthenticationStatus = await response.json() as KsefAuthenticationStatus;
-                switch (ksefAuthenticationStatus.status) {
-                    case "Completed": return;
-                    case "Failed":    throw new AbortError(ksefAuthenticationStatus.message ?? "KSeF authentication failed");
-                    default:          throw new Error(`KSeF authentication not completed: ${ksefAuthenticationStatus.status}`);
+                switch (ksefAuthenticationStatus.status.code) {
+                    // Authentication in progress
+                    case 100: throw new Error(`KSeF authentication pending: ${ksefAuthenticationStatus.status}`);
+                    // Success
+                    case 200: return;
+                    default:  throw new AbortError(`${ksefAuthenticationStatus.status}}`);
                 }
             }, { retries: 10, minTimeout: env.KSEF_MIN_TIMEOUT, maxTimeout: env.KSEF_MAX_TIMEOUT, factor: 1 }
         );
     }
 
     private async redeemKsefToken(env: Env, authenticationToken: string): Promise<string> {
-        const response = await fetch(`${env.KSEF_URL}/auth/token/redeem`, {
-            method: "POST",
-            headers: { Authorization: `Bearer ${authenticationToken}` }
-        });
+        const response = await fetch(`${env.KSEF_URL}/auth/token/redeem`, { method: "POST", headers: {
+            Authorization: `Bearer ${authenticationToken}`
+        }});
         const tokens = await response.json() as { accessToken: { token: string }};
         return tokens.accessToken.token;
     }
 
     async getQueryStatus(referenceNumber: string): Promise<KsefQueryStatus> {
-        const response = await fetch(`${this.env.KSEF_URL}/invoices/query/${referenceNumber}`, {
-            headers: { "Authorization": `Bearer ${this.token}`, "Content-Type": "application/json" }
-        });
-        if (!response.ok) throw new Error(`Query status failed ${response.status}`);
+        const response = await fetch(`${this.env.KSEF_URL}/invoices/query/${referenceNumber}`, { headers: {
+            "Authorization": `Bearer ${this.token}`,
+            "Content-Type": "application/json"
+        }});
+        if (!response.ok) {
+            const errorBody = await response.text();
+            throw new Error(`KSeF query status failed ${response.status}: ${errorBody}`);
+        }
         return await response.json();
     }
 }
 
 export class KsefClient extends KsefClientBase {
 
-    async createInvoiceQuery(from?: Date, to?: Date): Promise<{ queryReferenceNumber: string }> {
-        const response = await fetch(`${this.env.KSEF_URL}/invoices/query`, {
+    async queryInvoiceMetadata(from: Date, to: Date): Promise<KsefInvoiceQueryResult> {
+        const response = await fetch(`${this.env.KSEF_URL}/invoices/query/metadata`, {
             method: "POST",
             headers: { "Authorization": `Bearer ${this.token}`, "Content-Type": "application/json" },
             body: JSON.stringify({
-                subjectType: "subject1",
+                subjectType: "Subject1",
                 dateRange: {
-                    dateType: "issue",
-                    from: from!.toISOString(),
-                    to: to!.toISOString()
+                    dateType: "Issue",
+                    from: from.toISOString(),
+                    to: to.toISOString()
                 }
             })
         });
-        if (!response.ok) throw new Error(`Query creation failed ${response.status}`);
-        return await response.json() as { queryReferenceNumber: string };
-    }
-
-    async getInvoices(referenceNumber: string): Promise<KsefInvoiceMetadata[]> {
-        const response = await fetch(`${this.env.KSEF_URL}/invoices/query/${referenceNumber}/result`, {
-            headers: { "Authorization": `Bearer ${this.token}`, "Content-Type": "application/json" }
-        });
-        if (!response.ok) throw new Error(`Invoice retrieval failed ${response.status}`);
-        return await response.json();
+        if (!response.ok) {
+            const errorBody = await response.text();
+            throw new Error(`KSeF query failed ${response.status}: ${errorBody}`);
+        }
+        return await response.json() as KsefInvoiceQueryResult;
     }
 
     async downloadInvoice(ksefNumber: string): Promise<string> {
-        const response = await fetch(`${this.env.KSEF_URL}/invoices/${ksefNumber}`, {
-            headers: { Authorization: `Bearer ${this.token}`, Accept: "application/xml" }
-        });
-        if (!response.ok) throw new Error(`Invoice download failed ${response.status}`);
+        const response = await fetch(`${this.env.KSEF_URL}/invoices/ksef/${ksefNumber}`, { headers: {
+            Authorization: `Bearer ${this.token}`,
+            Accept: "application/xml"
+        }});
+        if (!response.ok) {
+            const errorBody = await response.text();
+            throw new Error(`KSeF invoice download failed ${response.status}: ${errorBody}`);
+        }
         return await response.text();
     }
 }
