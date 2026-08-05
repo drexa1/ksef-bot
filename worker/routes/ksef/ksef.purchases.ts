@@ -1,6 +1,14 @@
 import {Env} from "../../worker";
 import {KsefClient} from "./ksef.client";
+import {AppInvoice} from "../../types/db";
+import {D1Driver, Repository} from "../../repository/d1";
 import {getAuthUser} from "../../auth";
+import {invoiceFromXml} from "../db/invoices";
+
+let repo: Repository;
+function getRepo(env: Env): Repository {
+    return repo ??= new Repository(new D1Driver(env.D1));
+}
 
 export async function get(req: Request, env: Env): Promise<Response> {
     const url = new URL(req.url);
@@ -23,9 +31,15 @@ async function queryPurchaseInvoices(req: Request, env: Env, from: Date, to: Dat
     const metadataResult = await client.queryInvoiceMetadata(from, to);
     console.log("🗃️ Downloaded invoices metadata...");
     // Download invoice XML files
-    return await Promise.all(metadataResult.invoices.map(async (metadata) => {
-        const xml = await client.downloadInvoice(metadata.ksefNumber);
-        console.log("💳 Purchase invoices downloaded:", metadata.invoiceNumber);
-        return { metadata, xml };
-    }));
+    const records = await Promise.all(
+        metadataResult.invoices.map(async (metadata) => {
+            const xml = await client.downloadInvoice(metadata.ksefNumber);
+            return await invoiceFromXml(env, xml, appUser);
+        })
+    );
+    // Save in app
+    for (const record of records) {
+        await getRepo(env).save<AppInvoice>("invoices", record);
+    }
+    return records;
 }

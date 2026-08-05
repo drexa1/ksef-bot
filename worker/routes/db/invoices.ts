@@ -33,7 +33,7 @@ export async function post(req: Request, env: Env): Promise<Response> {
     const file = form.get("file");
     const notes = form.get("notes")?.toString();
     if (!(file instanceof File)) return Response.json({ error: "Missing XML file" }, { status: 400 });
-    const record = await invoiceFromXml(env, req, appUser, file, notes);
+    const record = await invoiceFromXml(env, await file.text(), appUser, notes);
     try {
         await getRepo(env).save<AppInvoice>("invoices", record);
         return Response.json({ success: true, id: record.id }, { status: 200 });
@@ -63,13 +63,12 @@ export async function del(req: Request, env: Env): Promise<Response> {
 // ---------------------------------------------------------------------------------------------------------------------
 // Invoice record creation
 // ---------------------------------------------------------------------------------------------------------------------
-async function invoiceFromXml(env: Env, req: Request, authUser: AppUser, file: File, notes?: string): Promise<AppInvoice> {
+export async function invoiceFromXml(env: Env, rawXml: string, authUser: AppUser, notes?: string): Promise<AppInvoice & { owner_id: string }> {
     // Parse XML
-    const parser = new XMLParser({ ignoreAttributes: false, parseTagValue: false, attributeNamePrefix: "", textNodeName: "value"});
-    const rawXml = await file.text();
+    const parser = new XMLParser({ignoreAttributes: false, parseTagValue: false, attributeNamePrefix: "", textNodeName: "value" });
     const invoiceXml = parser.parse(rawXml).Faktura;
     const ksefInvoiceAvroSchema = await env.assets
-        .fetch(new URL(env.KSEF_INVOICE_SCHEMA, req.url))
+        .fetch(new URL(env.KSEF_INVOICE_SCHEMA))
         .then((res) => res.json());
     const ksefInvoice = dtoFromAliases(invoiceXml, ksefInvoiceAvroSchema);
     // Find or create counterparties
@@ -90,12 +89,12 @@ async function invoiceFromXml(env: Env, req: Request, authUser: AppUser, file: F
     return {
         id: ksefInvoice.InvoiceBody.InvoiceNumber,
         owner_id: authUser.email,
+        ...(ksefInvoice.country_code && {country_code: ksefInvoice.country_code}),
         seller_id: sellerId,
         buyer_id: buyerId,
-        ...(ksefInvoice.country_code && {country_code: ksefInvoice.country_code}),
         raw_xml: rawXml,
         json_data: JSON.stringify(ksefInvoice),
-        notes: notes ?? null,
+        ...(notes && { notes }),
         updated_at: new Date().toISOString()
     };
 }
