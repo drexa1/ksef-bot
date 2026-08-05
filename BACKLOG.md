@@ -33,4 +33,4 @@
 - [ ] UI theming  
 - [ ] Google Analytics  
 - [ ] Slack bot  
-- [ ] Go public
+- [ ] Go public  
