@@ -18,20 +18,20 @@ class KsefClientBase {
 
     async authenticate(): Promise<void> {
         this.token = await this.getKsefToken(this.env, this.user);
-        console.info("🆔 KSeF token acquired")
+        console.info("🪪 KSeF token acquired")
     }
 
     private async getKsefToken(env: Env, user: KsefIdentifiable): Promise<string> {
-        console.info("🛡️ Requesting KSeF auth challenge...");
+        console.info("1️⃣️ Requesting KSeF auth challenge...");
         const ksefChallenge = await this.getKsefChallenge(env);
-        console.info("🛡️ Requesting KSeF public key certificates...");
+        console.info("2️⃣️ Requesting KSeF public key certificates...");
         const ksefCertificate = await this.getKsefEncryptionCertificate(env);
-        console.info("🛡️ Encrypting token...");
+        console.info("3️⃣️ Encrypting token...");
         const encryptedToken = await this.encryptKsefToken(env.KSEF_TOKEN, ksefChallenge.timestamp, ksefCertificate.certificate);
-        console.info("🛡️ Requesting KSeF authentication...");
+        console.info("4️⃣️ Requesting KSeF authentication...");
         const auth = await this.startKsefAuthentication(env, user, ksefChallenge.challenge, encryptedToken, ksefCertificate.publicKeyId);
         await this.waitForKsefAuthentication(env, auth.referenceNumber, auth.authenticationToken);
-        console.info("🛡️ Redeeming KSeF token...");
+        console.info("5️⃣️ Redeeming KSeF token...");
         return await this.redeemKsefToken(env, auth.authenticationToken);
     }
 
@@ -131,11 +131,11 @@ export class KsefClient extends KsefClientBase {
         await client.authenticate();
         // Query invoice metadata
         const metadataResult = await client.queryInvoiceMetadata(subjectType, from, to);
-        console.info("🗃️ Downloaded invoices metadata...");
+        console.info("📋️️ Downloaded invoices metadata...");
         // Download invoice XML files
         return await Promise.all(metadataResult.invoices.map(async (invoiceMetadata) => {
             const xmlContent = await client.downloadInvoice(invoiceMetadata.ksefNumber);
-            console.info("🗃️ Downloaded invoice:", invoiceMetadata.invoiceNumber);
+            console.info(`${subjectType === "Subject1" ? "💵" : "💳" }`+ "️ Downloaded invoice:", invoiceMetadata.invoiceNumber);
             return await invoiceFromXml(env, appUser, xmlContent);
         }));
     }
