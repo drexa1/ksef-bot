@@ -18,7 +18,7 @@
 - [x] Review REST invoices tests after refactor  
 - [x] Retrieve invoice from KSeF  
 - [x] REST tests for KSef
-- [ ] Finalized get purchase invoices  
+- [x] Finalized get purchase invoices  
 - [ ] Compute taxes  
 - [ ] Review REST taxes tests after refactor  
 - [ ] Post invoice  

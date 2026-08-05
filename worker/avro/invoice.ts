@@ -3,6 +3,8 @@
  * ⚠️ DO NOT TOUCH
  */
 export function dtoFromAliases(value: any, schema: any): any {
+    if (value == null)
+        return value;
     // Avro union
     if (Array.isArray(schema)) {
         const realSchema = schema.find(s => typeof s === "object" && s !== null);

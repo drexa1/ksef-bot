@@ -136,7 +136,7 @@ export class KsefClient extends KsefClientBase {
         return await Promise.all(metadataResult.invoices.map(async (invoiceMetadata) => {
             const xmlContent = await client.downloadInvoice(invoiceMetadata.ksefNumber);
             console.info(`${subjectType === "Subject1" ? "💵" : "💳" }`+ "️ Downloaded invoice:", invoiceMetadata.invoiceNumber);
-            return await invoiceFromXml(env, appUser, xmlContent, "Downloaded from KSeF");
+            return await invoiceFromXml(env, xmlContent, appUser, "Downloaded from KSeF");
         }));
     }
 

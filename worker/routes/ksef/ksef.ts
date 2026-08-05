@@ -18,12 +18,18 @@ export async function getKsefInvoices(req: Request, env: Env, subjectType: "Subj
     const to = new Date(toParam);
     if (isNaN(from.getTime()) || isNaN(to.getTime()))
         return Response.json({ success: false, error: "Invalid date parameters" }, { status: 400 });
-    const client = new KsefClient(env, appUser);
-    const invoices = await client.queryPurchaseInvoices(env, appUser, subjectType, from, to);
-    await saveInvoices(env, invoices);
-    // Return the JSON formatted
-    const result = invoices.map(row => JSON.parse(row.json_data));
-    return Response.json({ success: true, result }, { status: 200 });
+    try {
+        const client = new KsefClient(env, appUser);
+        const invoices = await client.queryPurchaseInvoices(env, appUser, subjectType, from, to);
+        await saveInvoices(env, invoices);
+        // Return the JSON formatted
+        const result = invoices.map(row => JSON.parse(row.json_data));
+        return Response.json({ success: true, result }, { status: 200 });
+    } catch (error: any) {
+        if (String(error).includes("Too Many Requests"))
+            return Response.json({ success: false, error: "The limit of 20 requests per hour has been exceeded." }, { status: 429 });
+        throw error;
+    }
 }
 
 async function saveInvoices(env: Env, invoices: Awaited<AppInvoice & { owner_id: string }>[]) {

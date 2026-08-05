@@ -36,7 +36,7 @@ export async function post(req: Request, env: Env): Promise<Response> {
     const file = form.get("file");
     const notes = form.get("notes")?.toString();
     if (!(file instanceof File)) return Response.json({ error: "Missing XML file" }, { status: 400 });
-    const record = await invoiceFromXml(env, appUser, await file.text(), notes);
+    const record = await invoiceFromXml(env, await file.text(), appUser, notes);
     try {
         await getRepo(env).save<AppInvoice>("invoices", record);
         return Response.json({ success: true, id: record.id }, { status: 200 });
@@ -66,11 +66,11 @@ export async function del(req: Request, env: Env): Promise<Response> {
 // ---------------------------------------------------------------------------------------------------------------------
 // Invoice record creation
 // ---------------------------------------------------------------------------------------------------------------------
-export async function invoiceFromXml(env: Env, authUser: AppUser, xmlContent: string, notes?: string): Promise<AppInvoice & { owner_id: string }> {
+const parser = new XMLParser({ ignoreAttributes: false, removeNSPrefix: true, parseTagValue: false, textNodeName: "value", attributeNamePrefix: "" });
+export async function invoiceFromXml(env: Env, xmlContent: string, authUser: AppUser, notes?: string): Promise<AppInvoice & { owner_id: string }> {
     // Parse XML
-    const parser = new XMLParser({ignoreAttributes: false, parseTagValue: false, attributeNamePrefix: "", textNodeName: "value" });
     const invoiceXml = parser.parse(xmlContent).Faktura;
-    const ksefInvoiceAvroSchema = await env.assets.fetch(env.KSEF_INVOICE_SCHEMA).then((res) => res.json());
+    const ksefInvoiceAvroSchema = await env.assets.fetch(new URL(env.KSEF_INVOICE_SCHEMA)).then((res) => res.json());
     const ksefInvoice = dtoFromAliases(invoiceXml, ksefInvoiceAvroSchema);
     // Find or create counterparties
     const sellerId = await getOrCreateCounterparty(env, {
