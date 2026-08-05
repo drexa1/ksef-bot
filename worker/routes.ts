@@ -1,7 +1,7 @@
 import {Env} from "./worker";
 import {openApiSpec, swaggerHtml} from "./api/openapi";
 import {scalarHtml} from "./api/scalar";
-import {get as healthGET} from "./routes/health";
+import {get as healthGET} from "./routes/health/health";
 import {corsHeaders, whoami as whoamiGET} from "./auth";
 import {get as salesGET, post as salesPOST} from "./routes/ksef/ksef.sales";
 import {get as purchasesGET} from "./routes/ksef/ksef.purchases";
