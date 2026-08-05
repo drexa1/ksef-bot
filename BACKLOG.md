@@ -17,8 +17,8 @@
 - [x] Review REST counterparties tests after refactor  
 - [x] Review REST invoices tests after refactor  
 - [x] Retrieve invoice from KSeF  
-- [ ] REST tests for KSef  
-- [ ] Review REST taxes tests after refactor  
+- [x] REST tests for KSef  
+- [x] Review REST taxes tests after refactor  
 - [ ] Compute taxes  
 - [ ] Review security architecture  
 - [ ] Ultra simple frontend  

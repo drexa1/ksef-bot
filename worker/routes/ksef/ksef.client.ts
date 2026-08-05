@@ -3,12 +3,13 @@ import pRetry, {AbortError} from "p-retry";
 import {
     KsefAuthenticationStatus,
     KsefContextIdentifier,
-    KsefQueryStatus,
     KsefIdentifiable,
     KsefInvoiceQueryResult
 } from "../../types/ksef";
 import * as asn1js from "asn1js";
 import * as pkijs from "pkijs";
+import {AppUser} from "../../types/db";
+import {invoiceFromXml} from "../db/invoices";
 
 class KsefClientBase {
     token?: string;
@@ -124,18 +125,34 @@ class KsefClientBase {
 
 export class KsefClient extends KsefClientBase {
 
-    async queryInvoiceMetadata(from: Date, to: Date): Promise<KsefInvoiceQueryResult> {
+    async queryPurchaseInvoices(env: Env, appUser: AppUser, subjectType: "Subject1" | "Subject2", from?: Date, to?: Date) {
+        const client = new KsefClient(env, appUser);
+        // Authentication
+        await client.authenticate();
+        // Query invoice metadata
+        const metadataResult = await client.queryInvoiceMetadata(subjectType, from, to);
+        console.info("🗃️ Downloaded invoices metadata...");
+        // Download invoice XML files
+        return await Promise.all(metadataResult.invoices.map(async (invoiceMetadata) => {
+            const xmlContent = await client.downloadInvoice(invoiceMetadata.ksefNumber);
+            console.info("🗃️ Downloaded invoice:", invoiceMetadata.invoiceNumber);
+            return await invoiceFromXml(env, appUser, xmlContent);
+        }));
+    }
+
+    private async queryInvoiceMetadata(subjectType: "Subject1" | "Subject2", from?: Date, to?: Date): Promise<KsefInvoiceQueryResult> {
+        const dateRange = from || to ? {
+            dateType: "Issue" as const,
+            ...(from && { from: from.toISOString() }),
+            ...(to && { to: to.toISOString() })
+        } : undefined;
         const response = await fetch(`${this.env.KSEF_URL}/invoices/query/metadata`, {
             method: "POST",
-            headers: { "Authorization": `Bearer ${this.token}`, "Content-Type": "application/json" },
-            body: JSON.stringify({
-                subjectType: "Subject1",
-                dateRange: {
-                    dateType: "Issue",
-                    from: from.toISOString(),
-                    to: to.toISOString()
-                }
-            })
+            headers: {
+                "Authorization": `Bearer ${this.token}`,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ subjectType, ...(dateRange && { dateRange })})
         });
         if (!response.ok) {
             const errorBody = await response.text();
@@ -144,7 +161,7 @@ export class KsefClient extends KsefClientBase {
         return await response.json() as KsefInvoiceQueryResult;
     }
 
-    async downloadInvoice(ksefNumber: string): Promise<string> {
+    private async downloadInvoice(ksefNumber: string): Promise<string> {
         const response = await fetch(`${this.env.KSEF_URL}/invoices/ksef/${ksefNumber}`, { headers: {
             Authorization: `Bearer ${this.token}`,
             Accept: "application/xml"
