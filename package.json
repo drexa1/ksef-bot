@@ -32,7 +32,7 @@
         "⚠ db:remote:teardown": "wrangler d1 execute ksef-bot --remote --file=db/teardown.sql",
         "⚠ db:remote:create": "wrangler d1 execute ksef-bot  --remote --file=db/schema.sql",
 
-        "worker:deploy": "npm run api:tests:dev && npm run client:build && wrangler deploy --config wrangler.worker.toml",
+        "worker:deploy": "npm run client:build && wrangler deploy --config wrangler.worker.toml",
         "worker:logs": "wrangler tail ksef-bot"
     },
     "dependencies": {

@@ -21,6 +21,8 @@ jobs:
           cache: npm
       - name: Install dependencies
         run: npm install
+      - name: Run tests
+        run: npm run api:tests:dev
       - name: Deploy worker
         run: npm run worker:deploy
         env:
