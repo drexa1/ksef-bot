@@ -97,7 +97,7 @@ CREATE TABLE IF NOT EXISTS counterparties (
     internalIdentifier TEXT UNIQUE,
     -- Address
     countryCode TEXT DEFAULT 'PL',
-    address_L1 TEXT NOT NULL,
+    addressL1 TEXT NOT NULL,
     addressL2 TEXT,
     -- Counterparty metadata
     localGovernmentUnit INTEGER,
