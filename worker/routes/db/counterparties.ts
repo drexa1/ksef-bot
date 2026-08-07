@@ -1,6 +1,6 @@
 import {Env} from "../../worker";
 import {D1Driver, Repository} from "../../repository/d1";
-import {AppCounterparty, AppCounterpartyUpdate, AppUser} from "../../types/db";
+import {AppCounterparty, AppCounterpartyUpdate} from "../../types/db";
 import {getAuthUser} from "../../auth";
 import {nanoid} from "nanoid";
 
@@ -25,9 +25,9 @@ export async function get(req: Request, env: Env): Promise<Response> {
 
 export async function post(req: Request, env: Env): Promise<Response> {
     const appUser = await getAuthUser(req, env);
-    const payload = await req.json() as AppCounterparty & { owner_id?: string };
+    const payload = await req.json() as AppCounterparty;
     // Never allow client to control id, ownership, or creation/update timestamps
-    const { id, owner_id, created_at, updated_at, ...payloadData } = payload;
+    const { id, created_at, updated_at, ...payloadData } = payload;
     const record = { ...payloadData, id: nanoid(), owner_id: appUser.email, updated_at: new Date().toISOString() };
     try {
         await getRepo(env).save<AppCounterparty>("counterparties", record);

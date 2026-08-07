@@ -1,8 +1,9 @@
 import {Env} from "../../worker";
 import {D1Driver, Repository} from "../../repository/d1";
-import {AppTaxRecord, AppTaxRecordUpdate, AppUser} from "../../types/db";
+import {AppTaxRecord, AppTaxRecordUpdate} from "../../types/db";
 import {getAuthUser} from "../../auth";
 import {nanoid} from "nanoid";
+import {downloadKsefInvoices} from "../ksef/ksef";
 
 let repo: Repository;
 function getRepo(env: Env): Repository {
@@ -25,14 +26,42 @@ export async function get(req: Request, env: Env): Promise<Response> {
 
 export async function post(req: Request, env: Env): Promise<Response> {
     const appUser = await getAuthUser(req, env);
-    const payload = await req.json() as AppTaxRecord & { owner_id?: string };
+    const payload = await req.json() as AppTaxRecord;
+    const from = new Date(payload.from);
+    const to = new Date(payload.to);
+    if (isNaN(from.getTime()) || isNaN(to.getTime()))
+        return Response.json({ success: false, error: "Invalid date parameters" }, { status: 400 });
     // Never allow client to control id, ownership, or creation/update timestamps
-    const { id, owner_id, created_at, updated_at, ...payloadData } = payload;
+    const { id, created_at, updated_at, ...payloadData } = payload;
+    // VAT
+    const varPercentage = payload.vat_percentage ?? env.DEFAULT_VAT_PERCENTAGE;
+    const vatAmount = payload.brut_income * varPercentage / 100;
+    const netBeforeObligations = payload.brut_income - vatAmount;
+    // Obligations
+    const taxRate = payload.tax_rate ?? env.DEFAULT_TAX_RATE;
+    const incomeTax = payload.income_tax * taxRate / 100;
+    const healthInsuranceBase = payload.health_insurance_base ?? env.DEFAULT_HEALTH_INSURANCE_BASE;
+    const healthInsuranceRate = payload.health_insurance_rate ?? env.DEFAULT_HEALTH_INSURANCE_RATE;
+    const healthContribution = healthInsuranceBase * healthInsuranceRate / 100;
+    // Purchases/expenses deductions
+    const purchaseInvoices = await downloadKsefInvoices(env, appUser, "Subject2", from, to);
+    const purchasesDeductions = 0;
+    // Total after obligations and expenses deductions
+    const totalCleanRevenue = (netBeforeObligations - incomeTax - healthContribution) + purchasesDeductions;
     const record = {
         ...payloadData,
         id: nanoid(),
         owner_id: appUser.email,
-        // TODO: compute all taxes...
+        vat_percentage: varPercentage,
+        vat_amount: vatAmount,
+        net_before_obligations: netBeforeObligations,
+        tax_rate: taxRate,
+        income_tax: incomeTax,
+        health_insurance_base: healthInsuranceBase,
+        health_insurance_rate: healthInsuranceRate,
+        health_contribution: healthContribution,
+        total_clean_revenue: totalCleanRevenue,
+        ...(payload.notes && { notes: payload.notes }),
         updated_at: new Date().toISOString()
     };
     try {

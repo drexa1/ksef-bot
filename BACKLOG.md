@@ -19,8 +19,10 @@
 - [x] Retrieve invoice from KSeF  
 - [x] REST tests for KSef
 - [x] Finalized get purchase invoices  
+- [x] Move taxes figures to not hardcoded  
 - [ ] Compute taxes  
-- [ ] Review REST taxes tests after refactor  
+- [ ] Get taxes by period, not by id  
+- [ ] Review taxes REST tests  
 - [ ] Post invoice  
 - [ ] WhatsApp bot  
 - [ ] Review security architecture  

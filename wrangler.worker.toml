@@ -4,10 +4,16 @@ compatibility_date = "2026-01-01"
 
 [vars]
 ENVIRONMENT = "cloudflare"
+# KSeF
 KSEF_URL = "https://api.ksef.mf.gov.pl/v2"
 KSEF_INVOICE_SCHEMA = "https://assets.local/assets/schemas/KSeFInvoice.avsc"
 KSEF_MIN_TIMEOUT = 100
 KSEF_MAX_TIMEOUT = 3000
+# Taxes
+DEFAULT_VAT_PERCENTAGE = 23
+DEFAULT_TAX_RATE = 12
+DEFAULT_HEALTH_INSURANCE_BASE = 5537.18
+DEFAULT_HEALTH_INSURANCE_RATE = 9
 # ...Rest of required env coming from Cloudflare secrets
 
 [observability.logs]

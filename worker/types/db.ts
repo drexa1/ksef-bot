@@ -75,7 +75,8 @@ export type AppTaxRecordUpdate = Partial<Omit<AppTaxRecord, "id">>;
 export type AppTaxRecord = {
     id: string
     // Tax record
-    period: string
+    from: Date
+    to: Date
     brut_income: number
     vat_percentage: number
     vat_amount: number

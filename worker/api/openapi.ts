@@ -123,13 +123,22 @@ export const openApiSpec = {
                 type: "object",
                 additionalProperties: false,
                 required: [
-                    "period",
+                    "from",
+                    "to",
                     "brut_income"
                 ],
                 properties: {
-                    period: {
+                    from: {
                         type: "string",
-                        description: "Invoicing period in format YYYY-MM.",
+                        format: "date",
+                        description: "Start date of the reporting period.",
+                        example: "2026-07-01"
+                    },
+                    to: {
+                        type: "string",
+                        format: "date",
+                        description: "End date of the reporting period.",
+                        example: "2026-07-31"
                     },
                     brut_income: {
                         type: "number",
