@@ -23,7 +23,7 @@
 - [x] Compute taxes  
 - [x] PK taxes by period, not by id  
 - [x] Review taxes REST tests  
-- [ ] Run all tests suites  
+- [ ] Run tests suites as collection  
 - [ ] Post invoice  
 - [ ] WhatsApp bot  
 - [ ] Review security architecture  
