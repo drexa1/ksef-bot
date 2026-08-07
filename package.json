@@ -19,9 +19,11 @@
         "client:dev": "npm run client:build && vite --port 3000",
         "client:test": "vitest",
 
+        "db:local:teardown": "wrangler d1 execute ksef-bot --config wrangler.worker.toml --local --file=db/teardown.sql",
         "db:local:create": "wrangler d1 execute ksef-bot --config wrangler.worker.toml --local --file=db/schema.sql",
         "worker:dev": "npm run client:build && wrangler dev --config wrangler.worker.toml --local --port 3001 --inspector-port 9999",
 
+        "⚠ db:remote:teardown": "wrangler d1 execute ksef-bot --remote --file=db/teardown.sql",
         "⚠ db:remote:create": "wrangler d1 execute ksef-bot  --remote --file=db/schema.sql",
         "worker:deploy": "npm run client:build && wrangler deploy --config wrangler.worker.toml",
         "worker:logs": "wrangler tail ksef-bot"
