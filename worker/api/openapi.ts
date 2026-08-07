@@ -217,9 +217,25 @@ export const openApiSpec = {
                 summary: "List sales invoices at KSeF - Restricted to resources owned by the authenticated user.",
                 tags: ["KSeF"],
                 security: [{ ApiKeyAuth: [] }],
+                parameters: [
+                    {
+                        name: "from",
+                        in: "query",
+                        required: true,
+                        description: "Start date",
+                        schema: { type: "string", format: "date", example: "2026-07-01" }
+                    }, {
+                        name: "to",
+                        in: "query",
+                        required: true,
+                        description: "End date",
+                        schema: { type: "string", format: "date", example: "2026-08-01" }
+                    }
+                ],
                 responses: {
-                    "200": { description: "Invoices found" },
-                    "401": { description: "Unauthorized" },
+                    "200": { description: "Purchase invoices" },
+                    "400": { description: "Invalid date params" },
+                    "401": { description: "Unauthorized" }
                 }
             },
             post: {
