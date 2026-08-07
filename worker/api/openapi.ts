@@ -261,13 +261,13 @@ export const openApiSpec = {
                         in: "query",
                         required: true,
                         description: "Start date",
-                        schema: { type: "string", format: "date", example: "2026-06-01" }
+                        schema: { type: "string", format: "date", example: "2026-07-01" }
                     }, {
                         name: "to",
                         in: "query",
                         required: true,
                         description: "End date",
-                        schema: { type: "string", format: "date", example: "2026-07-01" }
+                        schema: { type: "string", format: "date", example: "2026-08-01" }
                     }
                 ],
                 responses: {
