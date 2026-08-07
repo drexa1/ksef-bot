@@ -11,7 +11,7 @@ script:pre-request {
     req.setBody(JSON.parse(body));
 }
 tests {
-    test("Second attempt to create the same user should trigger PK violation error", function() {
+    test("Second attempt to create an existing user should trigger PK violation error", function() {
         expect(res.status).to.equal(409);
     })
 }

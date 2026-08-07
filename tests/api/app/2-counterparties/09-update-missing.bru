@@ -1,0 +1,15 @@
+put {
+    url: {{baseUrl}}/app/counterparties
+}
+headers {
+    Content-Type: application/json
+    X-API-Key: {{apiKey}}
+}
+script:pre-request {
+    req.setBody(JSON.stringify({ id: "missing", name: "nevermind" }));
+}
+tests {
+    test("Update a missing counterparty should fail", function() {
+        expect(res.status).to.equal(404);
+    })
+}

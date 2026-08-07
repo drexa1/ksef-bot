@@ -1,0 +1,15 @@
+put {
+    url: {{baseUrl}}/app/counterparties
+}
+headers {
+    Content-Type: application/json
+    X-API-Key: {{apiKey}}
+}
+script:pre-request {
+    req.setBody(JSON.stringify({ id: bru.getCollectionVar("counterparty1Id"), name: "edited" }));
+}
+tests {
+    test("Update a recently created counterparty should succeed", function() {
+        expect(res.body.id).to.equal(bru.getCollectionVar("counterparty1Id"));
+    })
+}

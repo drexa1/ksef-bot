@@ -1,0 +1,12 @@
+delete {
+    url: {{baseUrl}}/app/counterparties?id={{counterparty1Id}}
+}
+headers {
+    Content-Type: application/json
+    X-API-Key: {{apiKey}}
+}
+tests {
+    test("Delete a recently updated user counterparty should succeed", function() {
+        expect(res.body.id).to.equal(bru.getCollectionVar("counterparty1Id"));
+    })
+}
