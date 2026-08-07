@@ -20,9 +20,9 @@
 - [x] REST tests for KSef
 - [x] Finalized get purchase invoices  
 - [x] Move taxes figures to not hardcoded  
-- [ ] Compute taxes  
-- [ ] PK taxes by period, not by id  
-- [ ] Review taxes REST tests  
+- [x] Compute taxes  
+- [x] PK taxes by period, not by id  
+- [x] Review taxes REST tests  
 - [ ] Post invoice  
 - [ ] WhatsApp bot  
 - [ ] Review security architecture  
