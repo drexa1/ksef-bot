@@ -19,7 +19,7 @@ export async function getKsefInvoices(req: Request, env: Env, subjectType: "Subj
     if (isNaN(from.getTime()) || isNaN(to.getTime()) || from > to)
         return Response.json({ success: false, error: "Invalid date parameters" }, { status: 400 });
     try {
-        const result = await downloadKsefInvoices(env, appUser, subjectType, from, to);
+        const result = await fetchKsefInvoices(env, appUser, subjectType, from, to);
         return Response.json({ success: true, result }, { status: 200 });
     } catch (error: any) {
         if (String(error).includes("Too Many Requests"))
@@ -28,7 +28,7 @@ export async function getKsefInvoices(req: Request, env: Env, subjectType: "Subj
     }
 }
 
-export async function downloadKsefInvoices(env: Env, appUser: AppUser, subjectType: "Subject1" | "Subject2", from: Date, to: Date) {
+export async function fetchKsefInvoices(env: Env, appUser: AppUser, subjectType: "Subject1" | "Subject2", from: Date, to: Date) {
     const client = new KsefClient(env, appUser);
     const invoices = await client.queryPurchaseInvoices(env, appUser, subjectType, from, to);
     await saveInvoices(env, invoices);

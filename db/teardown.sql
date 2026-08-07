@@ -1,5 +1,6 @@
 PRAGMA foreign_keys = OFF;
 
+DROP TABLE IF EXISTS taxes;
 DROP TABLE IF EXISTS invoices;
 DROP TABLE IF EXISTS counterparties;
 DROP TABLE IF EXISTS users;
