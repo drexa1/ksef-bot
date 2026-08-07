@@ -88,7 +88,7 @@ export type AppTaxRecord = {
     healthInsuranceRate: number
     healthContribution: number
     // Expenses deductions
-    expensesSummary: ExpenseSummary
+    expensesSummary: ExpenseSummary[]
     // Total after obligations and expenses deductions
     totalCleanRevenue: number
     notes: string
@@ -96,3 +96,15 @@ export type AppTaxRecord = {
     createdAt?: string
     updatedAt?: string
 };
+export type TaxRecordObligations = {
+    vatPercentage: number
+    vatAmount: number
+    netBeforeObligations: number
+    taxRate: number
+    incomeTax: number
+    healthInsuranceBase: number
+    healthInsuranceRate: number
+    healthContribution: number
+    expensesSummary: ExpenseSummary[]
+    totalCleanRevenue: number
+}

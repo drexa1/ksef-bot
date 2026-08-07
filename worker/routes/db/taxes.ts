@@ -1,6 +1,6 @@
 import {Env} from "../../worker";
 import {D1Driver, Repository} from "../../repository/d1";
-import {AppTaxRecord, AppTaxRecordUpdate} from "../../types/db";
+import {AppTaxRecord, AppTaxRecordUpdate, AppUser, TaxRecordObligations} from "../../types/db";
 import {getAuthUser} from "../../auth";
 import {downloadKsefInvoices} from "../ksef/ksef";
 
@@ -39,15 +39,43 @@ export async function post(req: Request, env: Env): Promise<Response> {
         return Response.json({ success: false, error: "Invalid date parameters" }, { status: 400 });
     // Never allow client to control id, ownership, or creation/update timestamps
     const { createdAt, updatedAt, ...payloadData } = payload;
+    const obligations = await computeObligations(env, appUser, payloadData, from, to);
+    const record = {
+        ...payloadData,
+        ownerId: appUser.email,
+        vatPercentage: obligations.vatPercentage,
+        vatAmount: obligations.vatAmount,
+        netBeforeObligations: obligations.netBeforeObligations,
+        taxRate: obligations.taxRate,
+        incomeTax: obligations.incomeTax,
+        healthInsuranceBase: obligations.healthInsuranceBase,
+        healthInsuranceRate: obligations.healthInsuranceRate,
+        healthContribution: obligations.healthContribution,
+        expensesSummary: obligations.expensesSummary,
+        totalCleanRevenue: obligations.totalCleanRevenue,
+        ...(payload.notes && { notes: payload.notes }),
+        updatedAt: new Date().toISOString()
+    };
+    try {
+        await getRepo(env).save<AppTaxRecord>("taxes", record);
+        return Response.json({ success: true, from: record.from, to: record.to }, { status: 200 });
+    } catch (error) {
+        if (String(error).includes("UNIQUE constraint failed"))
+            return Response.json({ success: false, error: "Tax record already exists", from: record.from, to: record.to }, { status: 409 });
+        throw error;
+    }
+}
+
+async function computeObligations(env: Env, appUser: AppUser, taxRecord: AppTaxRecord, from: Date, to: Date): Promise<TaxRecordObligations> {
     // VAT
-    const varPercentage = payload.vatPercentage ?? env.DEFAULT_VAT_PERCENTAGE;
-    const vatAmount = payload.brutIncome * varPercentage / (100 + varPercentage);
-    const netBeforeObligations = payload.brutIncome - vatAmount;
+    const vatPercentage = taxRecord.vatPercentage ?? env.DEFAULT_VAT_PERCENTAGE;
+    const vatAmount = taxRecord.brutIncome * vatPercentage / (100 + vatPercentage);
+    const netBeforeObligations = taxRecord.brutIncome - vatAmount;
     // Obligations
-    const taxRate = payload.taxRate ?? env.DEFAULT_TAX_RATE;
+    const taxRate = taxRecord.taxRate ?? env.DEFAULT_TAX_RATE;
     const incomeTax = netBeforeObligations * taxRate / 100;
-    const healthInsuranceBase = payload.healthInsuranceBase ?? env.DEFAULT_HEALTH_INSURANCE_BASE;
-    const healthInsuranceRate = payload.healthInsuranceRate ?? env.DEFAULT_HEALTH_INSURANCE_RATE;
+    const healthInsuranceBase = taxRecord.healthInsuranceBase ?? env.DEFAULT_HEALTH_INSURANCE_BASE;
+    const healthInsuranceRate = taxRecord.healthInsuranceRate ?? env.DEFAULT_HEALTH_INSURANCE_RATE;
     const healthContribution = healthInsuranceBase * healthInsuranceRate / 100;
     // Expenses deductions
     const expensesInvoices = await downloadKsefInvoices(env, appUser, "Subject2", from, to);
@@ -59,30 +87,18 @@ export async function post(req: Request, env: Env): Promise<Response> {
     const expensesDeductions = expensesInvoices.reduce((sum, invoice) => sum + (invoice.InvoiceBody?.TotalVatAmount ?? 0), 0);
     // Total after obligations and expenses deductions
     const totalCleanRevenue = (netBeforeObligations - incomeTax - healthContribution) + expensesDeductions;
-    const record = {
-        ...payloadData,
-        ownerId: appUser.email,
-        vat_percentage: varPercentage,
-        vat_amount: vatAmount,
-        net_before_obligations: netBeforeObligations,
-        tax_rate: taxRate,
-        income_tax: incomeTax,
-        health_insurance_base: healthInsuranceBase,
-        health_insurance_rate: healthInsuranceRate,
-        health_contribution: healthContribution,
-        expenses_summary: JSON.stringify(expensesSummary),
-        total_clean_revenue: totalCleanRevenue,
-        ...(payload.notes && { notes: payload.notes }),
-        updated_at: new Date().toISOString()
+    return {
+        vatPercentage,
+        vatAmount,
+        netBeforeObligations,
+        taxRate,
+        incomeTax,
+        healthInsuranceBase,
+        healthInsuranceRate,
+        healthContribution,
+        expensesSummary,
+        totalCleanRevenue
     };
-    try {
-        await getRepo(env).save<AppTaxRecord>("taxes", record);
-        return Response.json({ success: true, from: record.from, to: record.to }, { status: 200 });
-    } catch (error) {
-        if (String(error).includes("UNIQUE constraint failed"))
-            return Response.json({ success: false, error: "Tax record already exists", from: record.from, to: record.to }, { status: 409 });
-        throw error;
-    }
 }
 
 export async function put(req: Request, env: Env): Promise<Response> {
