@@ -11,7 +11,7 @@ script:pre-request {
     req.setBody(JSON.parse(body));
 }
 tests {
-    test("Attempt to create the admin user should trigger PK violation error", function() {
+    test("Attempt to (re)create the admin user should trigger PK violation error", function() {
         expect(res.status).to.equal(409);
     })
 }

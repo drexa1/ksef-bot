@@ -1,4 +1,4 @@
-get {
+delete {
     url: {{baseUrl}}/app/users?email={{userEmail}}
 }
 headers {
@@ -6,7 +6,7 @@ headers {
     X-API-Key: {{apiKey}}
 }
 tests {
-    test("List the recently created user", function() {
+    test("Delete a recently updated user should succeed", function() {
         expect(res.body.email).to.equal(bru.getCollectionVar("userEmail"));
     })
 }

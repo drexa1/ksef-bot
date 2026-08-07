@@ -11,7 +11,7 @@ script:pre-request {
     req.setBody(JSON.parse(body));
 }
 tests {
-    test("Create user for the first time should succeed", function() {
+    test("Create a user for the first time should succeed", function() {
         expect(res.status).to.equal(201);
     })
 }

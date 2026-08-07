@@ -1,4 +1,4 @@
-get {
+delete {
     url: {{baseUrl}}/app/users?email=missing
 }
 headers {
@@ -6,7 +6,7 @@ headers {
     X-API-Key: {{apiKey}}
 }
 tests {
-    test("List a non-existing user should fail", function() {
+    test("Delete a non-existing user should fail", function() {
         expect(res.status).to.equal(404);
     })
 }

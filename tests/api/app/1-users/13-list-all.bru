@@ -7,6 +7,6 @@ headers {
 }
 tests {
     test("List all users should at least return admin users", function() {
-        expect(res.body.filter(u => u.tier === 0).length).to.be.at.least(1);
+        expect(res.body.every(u => u.tier === 0)).to.be.true;
     })
 }

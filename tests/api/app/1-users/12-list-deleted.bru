@@ -6,7 +6,7 @@ headers {
     X-API-Key: {{apiKey}}
 }
 tests {
-    test("List the recently created user", function() {
-        expect(res.body.email).to.equal(bru.getCollectionVar("userEmail"));
+    test("List a recently deleted user should fail", function() {
+        expect(res.status).to.equal(404);
     })
 }
