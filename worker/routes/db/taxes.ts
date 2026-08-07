@@ -3,7 +3,6 @@ import {D1Driver, Repository} from "../../repository/d1";
 import {
     AppTaxRecord,
     AppTaxRecordDb,
-    AppTaxRecordUpdate,
     AppUser,
     TaxRecordObligations
 } from "../../types/db";
@@ -51,6 +50,8 @@ export async function post(req: Request, env: Env): Promise<Response> {
     const obligations = await computeObligations(env, appUser, payloadData, from, to);
     const record = {
         ...payloadData,
+        from: from.toISOString(),
+        to: to.toISOString(),
         ownerId: appUser.email,
         vatPercentage: obligations.vatPercentage,
         vatAmount: obligations.vatAmount,
@@ -118,8 +119,10 @@ export async function put(req: Request, env: Env): Promise<Response> {
         return Response.json({ success: false, error: "Invalid date parameters" }, { status: 400 });
     // Never allow client to change id, ownership, or creation/update timestamp
     const { ownerId, createdAt, updatedAt, ...updatePayload } = payload;
-    const result = await getRepo(env).update<AppTaxRecordUpdate>("taxes", {
+    const result = await getRepo(env).update<AppTaxRecord>("taxes", {
         ...updatePayload,
+        from: from.toISOString(),
+        to: to.toISOString(),
         updatedAt: new Date().toISOString()
     }, { ownerId: appUser.email });
     if (result.changes === 0)

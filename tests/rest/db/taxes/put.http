@@ -1,24 +1,19 @@
 #@no-redirect
 @baseUrl = http://localhost:3001
 @apiKey = test
-@taxRecordId = 9de76eee-87fe-44b7-adbe-c9c596113aa9
+@from = 2026-07-01
+@to = 2026-08-01
 
 ### Update a missing tax record
 PUT {{baseUrl}}/app/taxes
 Content-Type: application/json
 X-API-Key: {{apiKey}}
 
-{
-    "id": "missing",
-    "notes": "nevermind"
-}
+{ "from": "missing", "to": "missing", "notes": "nevermind" }
 
 ### Update existing tax record
 PUT {{baseUrl}}/app/taxes
 Content-Type: application/json
 X-API-Key: {{apiKey}}
 
-{
-    "id": "{{taxRecordId}}",
-    "notes": "edited"
-}
+{ "from": "{{from}}", "to": "{{to}}", "notes": "edited" }
