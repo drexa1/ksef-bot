@@ -77,7 +77,6 @@ CREATE TABLE IF NOT EXISTS invoices (
     seller_id TEXT NOT NULL REFERENCES counterparties(id),
     buyer_id  TEXT NOT NULL REFERENCES counterparties(id),
     -- Raw data
-    country_code TEXT DEFAULT 'PL',
     raw_xml  TEXT NOT NULL,
     json_data TEXT NOT NULL CHECK (json_valid(json_data)),
     notes TEXT,

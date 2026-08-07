@@ -90,7 +90,6 @@ export async function invoiceFromXml(env: Env, xmlContent: string, authUser: App
     return {
         id: ksefInvoice.InvoiceBody.InvoiceNumber,
         owner_id: authUser.email,
-        ...(ksefInvoice.country_code && {country_code: ksefInvoice.country_code}),
         seller_id: sellerId,
         buyer_id: buyerId,
         raw_xml: xmlContent,

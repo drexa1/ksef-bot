@@ -41,7 +41,6 @@ export type AppInvoice = {
     seller_id: string
     buyer_id: string
     // Raw data
-    country_code: string
     raw_xml: string
     json_data: string
     notes?: string

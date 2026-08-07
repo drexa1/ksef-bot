@@ -52,11 +52,6 @@ export const openApiSpec = {
                         type: "string",
                         description: "Seller unique ID.",
                     },
-                    country_code: {
-                        type: "string",
-                        default: "PL",
-                        description: "Two letter country code.",
-                    },
                     raw_xml: {
                         type: "string",
                         description: "Original XML body of the document.",
