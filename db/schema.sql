@@ -1,4 +1,5 @@
-CREATE TABLE IF NOT EXISTS users (
+DROP TABLE IF EXISTS users;
+CREATE TABLE users (
     email TEXT PRIMARY KEY,
     -- Application
     apiKey TEXT UNIQUE,
@@ -69,7 +70,8 @@ INSERT INTO users VALUES (
     CURRENT_TIMESTAMP
 );
 
-CREATE TABLE IF NOT EXISTS invoices (
+DROP TABLE IF EXISTS invoices;
+CREATE TABLE invoices (
     id TEXT PRIMARY KEY,
     -- Owner
     ownerId TEXT NOT NULL REFERENCES users(email),
@@ -85,7 +87,8 @@ CREATE TABLE IF NOT EXISTS invoices (
     updatedAt TEXT
 );
 
-CREATE TABLE IF NOT EXISTS counterparties (
+DROP TABLE IF EXISTS counterparties;
+CREATE TABLE counterparties (
     id TEXT PRIMARY KEY,
     -- Owner
     ownerId TEXT NOT NULL REFERENCES users(email),
@@ -108,7 +111,8 @@ CREATE TABLE IF NOT EXISTS counterparties (
     updatedAt TEXT
 );
 
-CREATE TABLE IF NOT EXISTS taxes (
+DROP TABLE IF EXISTS taxes;
+CREATE TABLE taxes (
     "from" DATE,
     "to" DATE,
     -- Owner
