@@ -24,6 +24,7 @@
 - [x] PK taxes by period, not by id  
 - [x] Review taxes REST tests  
 - [ ] Run tests suites as collection  
+- [ ] Bank client PoC  
 - [ ] Post invoice  
 - [ ] WhatsApp bot  
 - [ ] Review security architecture  

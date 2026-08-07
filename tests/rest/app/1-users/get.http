@@ -3,7 +3,7 @@
 @apiKey = test
 @userEmail = user@mail.com
 
-### List all should suceed
+### List all should always return the admin user
 GET {{baseUrl}}/app/users
 Content-Type: application/json
 X-API-Key: {{apiKey}}

@@ -15,7 +15,7 @@
 - Defensive application design
 - No Ai auditory
 - Workflow documentation
-- Unitary and E2E tests
+- 100% coverage E2E tests
 - OpenAPI UI
 - Live documentation
 - Versioning and release process

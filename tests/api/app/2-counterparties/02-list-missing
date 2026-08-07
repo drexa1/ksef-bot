@@ -1,0 +1,5 @@
+tests {
+  test("Dummy test passes", function() {
+    expect(true).to.equal(true)
+  })
+}

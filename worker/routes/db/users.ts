@@ -31,7 +31,7 @@ export async function post(req: Request, env: Env): Promise<Response> {
     // Never allow client to control id, ownership, or creation/update timestamps
     const payload = await req.json() as AppUser;
     const { createdAt, updatedAt, ...payloadData } = payload;
-    const record = { ...payloadData, tier: 1, updated_at: new Date().toISOString() };
+    const record = { ...payloadData, tier: 1, updatedAt: new Date().toISOString() };
     try {
         await getRepo(env).save<AppUser>("users", record);
         return Response.json({ success: true, email: record.email }, { status: 200 });

@@ -1,0 +1,16 @@
+post {
+    url: {{baseUrl}}/app/users
+}
+headers {
+  Content-Type: application/json
+  X-API-Key: {{apiKey}}
+}
+body {
+  type: json
+  file: ../../../testresources/users/user-admin.json
+}
+tests {
+    test("Attempt to create the admin user should trigger PK violation error", function() {
+        expect(res.status).to.equal(409)
+    })
+}

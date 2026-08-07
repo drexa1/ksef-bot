@@ -21,11 +21,17 @@
 
         "db:local:teardown": "wrangler d1 execute ksef-bot --config wrangler.worker.toml --local --file=db/teardown.sql",
         "db:local:create": "wrangler d1 execute ksef-bot --config wrangler.worker.toml --local --file=db/schema.sql",
+
         "worker:dev": "npm run client:build && wrangler dev --config wrangler.worker.toml --local --port 3001 --inspector-port 9999",
+
+        "api:tests:wait": "wait-on http://localhost:3001 && npm run api:tests:bruno",
+        "api:tests:bruno": "cd tests/api && bru run -r --env dev",
+        "api:tests:run": "concurrently -k npm:worker:dev npm:api:tests:wait",
 
         "⚠ db:remote:teardown": "wrangler d1 execute ksef-bot --remote --file=db/teardown.sql",
         "⚠ db:remote:create": "wrangler d1 execute ksef-bot  --remote --file=db/schema.sql",
-        "worker:deploy": "npm run client:build && wrangler deploy --config wrangler.worker.toml",
+
+        "worker:deploy": "api:tests:run && npm run client:build && wrangler deploy --config wrangler.worker.toml",
         "worker:logs": "wrangler tail ksef-bot"
     },
     "dependencies": {
@@ -42,8 +48,11 @@
         "@sentry/cloudflare": "latest",
         "@sentry/tracing": "latest",
         "@types/bootstrap": "latest",
+        "@usebruno/cli": "latest",
+        "concurrently": "^10.0.4",
         "typescript": "latest",
         "vitest": "latest",
+        "wait-on": "latest",
         "wasm-pack": "latest"
     }
 }
