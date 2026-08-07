@@ -24,9 +24,7 @@ export async function get(req: Request, env: Env): Promise<Response> {
     if (!rows)
         return Response.json({  success: false, error: "Invoice not found", id: id }, { status: 404 });
     // Return the JSON formatted
-    const result = Array.isArray(rows)
-        ? rows.map(row => JSON.parse(row.jsonData))
-        : JSON.parse(rows.jsonData);
+    const result = Array.isArray(rows) ? rows.map(row => JSON.parse(row.jsonData)) : JSON.parse(rows.jsonData);
     return Response.json(result, { status: 200 });
 }
 

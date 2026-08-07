@@ -23,11 +23,14 @@ export async function get(req: Request, env: Env): Promise<Response> {
     // Allow to fetch only owned tax records (except for superadmin)
     const filters = appUser.tier === 0 ? {} : { ownerId: appUser.email };
     const rows = fromParam && toParam
-        ? await getRepo(env).get<AppTaxRecord>("taxes", { from: fromParam, to: toParam, ...filters })
-        : await getRepo(env).getAll<AppTaxRecord>("taxes", filters);
+        ? await getRepo(env).get<AppTaxRecordDb>("taxes", { from: fromParam, to: toParam, ...filters })
+        : await getRepo(env).getAll<AppTaxRecordDb>("taxes", filters);
     if (rows === null)
         return Response.json({ success: false, error: "Tax record not found", from: from, to: to }, { status: 404 });
-    return Response.json(rows, { status: 200 });
+    const result = Array.isArray(rows)
+        ? rows.map(row => ({ ...row, expensesSummary: JSON.parse(row.expensesSummary) }))
+        : { ...rows, expensesSummary: JSON.parse(rows.expensesSummary) };
+    return Response.json(result, { status: 200 });
 }
 
 export async function post(req: Request, env: Env): Promise<Response> {
