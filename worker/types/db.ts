@@ -71,12 +71,11 @@ export type AppCounterparty = {
     updated_at?: string
 };
 
-export type AppTaxRecordUpdate = Partial<Omit<AppTaxRecord, "id">>;
+export type AppTaxRecordUpdate = Partial<Omit<AppTaxRecord, "from" | "to">>;
 export type AppTaxRecord = {
-    id: string
-    // Tax record
     from: Date
     to: Date
+    // Tax record
     brut_income: number
     vat_percentage: number
     vat_amount: number
@@ -93,4 +92,5 @@ export type AppTaxRecord = {
     // DBA
     created_at?: string
     updated_at?: string
+
 };

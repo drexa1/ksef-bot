@@ -11,7 +11,7 @@ X-API-Key: {{apiKey}}
 Content-Disposition: form-data; name="file"; filename="invoice-1.xml"
 Content-Type: application/xml
 
-< ../../../testresources/ksef/issued/6751577878-20260629-514966000000-3F.xml
+< ../../../testresources/ksef/sales/6751577878-20260629-514966000000-3F.xml
 --ksefInvoice
 Content-Disposition: form-data; name="notes"
 
@@ -27,5 +27,5 @@ X-API-Key: {{apiKey}}
 Content-Disposition: form-data; name="file"; filename="invoice-1.xml"
 Content-Type: application/xml
 
-< ../../../testresources/ksef/issued/6751577878-20260629-514966000000-3F.xml
+< ../../../testresources/ksef/sales/6751577878-20260629-514966000000-3F.xml
 --ksefInvoice--

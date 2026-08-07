@@ -109,26 +109,29 @@ CREATE TABLE IF NOT EXISTS counterparties (
 );
 
 CREATE TABLE IF NOT EXISTS taxes (
-  id TEXT PRIMARY KEY,
-  -- Owner
-  owner_id TEXT NOT NULL REFERENCES users(email),
-  -- Tax record
-  period TEXT,
-  brut_income REAL NOT NULL,
+    "from" DATE,
+    "to" DATE,
+    -- Owner
+    owner_id TEXT NOT NULL REFERENCES users(email),
+    -- Tax record
+    brut_income REAL NOT NULL,
     -- VAT
-  vat_percentage REAL DEFAULT 23,
-  vat_amount REAL NOT NULL,
-  net_before_obligations REAL NOT NULL,
-  -- Obligations
-  tax_rate REAL DEFAULT 12,
-  income_tax REAL NOT NULL,
-  health_insurance_base REAL DEFAULT 5537.18,
-  health_insurance_rate REAL DEFAULT 9,
-  health_contribution REAL NOT NULL,
-  -- Total after obligations and expenses deductions
-  total_clean_revenue REAL NOT NULL,
-  notes TEXT,
+    vat_percentage REAL DEFAULT 23,
+    vat_amount REAL NOT NULL,
+    net_before_obligations REAL NOT NULL,
+    -- Obligations
+    tax_rate REAL DEFAULT 12,
+    income_tax REAL NOT NULL,
+    health_insurance_base REAL DEFAULT 5537.18,
+    health_insurance_rate REAL DEFAULT 9,
+    health_contribution REAL NOT NULL,
+    -- Expenses deductions
+    expenses_deductions TEXT CHECK (json_valid(expenses_deductions)),
+    -- Total after obligations and expenses deductions
+    total_clean_revenue REAL NOT NULL,
+    notes TEXT,
     -- DBA
-  created_at TEXT DEFAULT CURRENT_TIMESTAMP,
-  updated_at TEXT
+    created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+    updated_at TEXT,
+    PRIMARY KEY ("from", "to")
 );

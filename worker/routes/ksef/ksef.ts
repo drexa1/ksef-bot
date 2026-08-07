@@ -16,7 +16,7 @@ export async function getKsefInvoices(req: Request, env: Env, subjectType: "Subj
     const toParam = url.searchParams.get("to")!;
     const from = new Date(fromParam);
     const to = new Date(toParam);
-    if (isNaN(from.getTime()) || isNaN(to.getTime()))
+    if (isNaN(from.getTime()) || isNaN(to.getTime()) || from > to)
         return Response.json({ success: false, error: "Invalid date parameters" }, { status: 400 });
     try {
         const result = await downloadKsefInvoices(env, appUser, subjectType, from, to);

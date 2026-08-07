@@ -4,7 +4,7 @@ import {scalarHtml} from "./api/scalar";
 import {get as healthGET} from "./routes/health/health";
 import {corsHeaders, whoami as whoamiGET} from "./auth";
 import {get as salesGET, post as salesPOST} from "./routes/ksef/ksef.sales";
-import {get as purchasesGET} from "./routes/ksef/ksef.purchases";
+import {get as expensesGET} from "./routes/ksef/ksef.expenses";
 import {del as usersDELETE, get as usersGET, post as usersPOST, put as usersPUT} from "./routes/db/users";
 import {
     del as counterpartiesDELETE,
@@ -51,7 +51,7 @@ export const routes: Record<string, Routes> =  {
     // Requiring authentication
     "/whoami":             withErrorHandling({ GET: whoamiGET }),
     "/ksef/sales":         withErrorHandling({ GET: salesGET, POST: salesPOST }),
-    "/ksef/purchases":     withErrorHandling({ GET: purchasesGET }),
+    "/ksef/expenses":      withErrorHandling({ GET: expensesGET }),
     "/app/users":          withErrorHandling({ GET: usersGET, POST: usersPOST, PUT: usersPUT, DELETE: usersDELETE }),
     "/app/counterparties": withErrorHandling({ GET: counterpartiesGET, POST: counterpartiesPOST, PUT: counterpartiesPUT, DELETE: counterpartiesDELETE }),
     "/app/invoices":       withErrorHandling({ GET: invoicesGET, POST: invoicesPOST, PUT: invoicesPUT, DELETE: invoicesDELETE }),

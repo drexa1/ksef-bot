@@ -275,9 +275,9 @@ export const openApiSpec = {
                 }
             }
         },
-        "/ksef/purchases": {
+        "/ksef/expenses": {
             get: {
-                summary: "List purchases invoices at KSeF - Restricted to resources owned by the authenticated user.",
+                summary: "List expenses invoices at KSeF - Restricted to resources owned by the authenticated user.",
                 tags: ["KSeF"],
                 security: [{ ApiKeyAuth: [] }],
                 parameters: [

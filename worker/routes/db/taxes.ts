@@ -13,14 +13,21 @@ function getRepo(env: Env): Repository {
 export async function get(req: Request, env: Env): Promise<Response> {
     const appUser = await getAuthUser(req, env);
     const url = new URL(req.url);
-    const id = url.searchParams.get("id");
+    const fromParam = url.searchParams.get("from");
+    const toParam = url.searchParams.get("to");
+    const from = fromParam ? new Date(fromParam) : null;
+    const to = toParam ? new Date(toParam) : null;
+    if ((fromParam && !toParam) || (!fromParam && toParam))
+        return Response.json({ success: false, error: "From and To are required together" }, { status: 400 });
+    if (from && to && (isNaN(from.getTime()) || isNaN(to.getTime()) || from > to))
+        return Response.json({ success: false, error: "Invalid date parameters" }, { status: 400 });
     // Allow to fetch only owned tax records (except for superadmin)
     const filters = appUser.tier === 0 ? {} : { owner_id: appUser.email };
-    const rows = id
-        ? await getRepo(env).get<AppTaxRecord>("taxes", { id, ...filters })
+    const rows = fromParam && toParam
+        ? await getRepo(env).get<AppTaxRecord>("taxes", { from: fromParam, to: toParam, ...filters })
         : await getRepo(env).getAll<AppTaxRecord>("taxes", filters);
     if (rows === null)
-        return Response.json({ success: false, error: "Tax record not found", id: id }, { status: 404 });
+        return Response.json({ success: false, error: "Tax record not found", from: from, to: to }, { status: 404 });
     return Response.json(rows, { status: 200 });
 }
 
@@ -29,28 +36,27 @@ export async function post(req: Request, env: Env): Promise<Response> {
     const payload = await req.json() as AppTaxRecord;
     const from = new Date(payload.from);
     const to = new Date(payload.to);
-    if (isNaN(from.getTime()) || isNaN(to.getTime()))
+    if (isNaN(from.getTime()) || isNaN(to.getTime()) || from > to)
         return Response.json({ success: false, error: "Invalid date parameters" }, { status: 400 });
     // Never allow client to control id, ownership, or creation/update timestamps
-    const { id, created_at, updated_at, ...payloadData } = payload;
+    const { created_at, updated_at, ...payloadData } = payload;
     // VAT
     const varPercentage = payload.vat_percentage ?? env.DEFAULT_VAT_PERCENTAGE;
-    const vatAmount = payload.brut_income * varPercentage / 100;
+    const vatAmount = payload.brut_income * varPercentage / (100 + varPercentage);
     const netBeforeObligations = payload.brut_income - vatAmount;
     // Obligations
     const taxRate = payload.tax_rate ?? env.DEFAULT_TAX_RATE;
-    const incomeTax = payload.income_tax * taxRate / 100;
+    const incomeTax = netBeforeObligations * taxRate / 100;
     const healthInsuranceBase = payload.health_insurance_base ?? env.DEFAULT_HEALTH_INSURANCE_BASE;
     const healthInsuranceRate = payload.health_insurance_rate ?? env.DEFAULT_HEALTH_INSURANCE_RATE;
     const healthContribution = healthInsuranceBase * healthInsuranceRate / 100;
-    // Purchases/expenses deductions
-    const purchaseInvoices = await downloadKsefInvoices(env, appUser, "Subject2", from, to);
-    const purchasesDeductions = 0;
+    // Expenses deductions
+    const expensesInvoices = await downloadKsefInvoices(env, appUser, "Subject2", from, to);
+    const expensesDeductions = expensesInvoices.reduce((sum, invoice) => sum + (invoice.InvoiceBody?.TotalVatAmount ?? 0), 0);
     // Total after obligations and expenses deductions
-    const totalCleanRevenue = (netBeforeObligations - incomeTax - healthContribution) + purchasesDeductions;
+    const totalCleanRevenue = (netBeforeObligations - incomeTax - healthContribution) + expensesDeductions;
     const record = {
         ...payloadData,
-        id: nanoid(),
         owner_id: appUser.email,
         vat_percentage: varPercentage,
         vat_amount: vatAmount,
@@ -66,10 +72,10 @@ export async function post(req: Request, env: Env): Promise<Response> {
     };
     try {
         await getRepo(env).save<AppTaxRecord>("taxes", record);
-        return Response.json({ success: true, id: record.id }, { status: 200 });
+        return Response.json({ success: true, from: record.from, to: record.to }, { status: 200 });
     } catch (error) {
         if (String(error).includes("UNIQUE constraint failed"))
-            return Response.json({ success: false, error: "Tax record already exists", id: record.id }, { status: 409 });
+            return Response.json({ success: false, error: "Tax record already exists", from: record.from, to: record.to }, { status: 409 });
         throw error;
     }
 }
@@ -77,25 +83,34 @@ export async function post(req: Request, env: Env): Promise<Response> {
 export async function put(req: Request, env: Env): Promise<Response> {
     const appUser = await getAuthUser(req, env);
     const payload = await req.json() as AppTaxRecord & { owner_id?: string };
+    const from = new Date(payload.from);
+    const to = new Date(payload.to);
+    if (isNaN(from.getTime()) || isNaN(to.getTime()) || from > to)
+        return Response.json({ success: false, error: "Invalid date parameters" }, { status: 400 });
     // Never allow client to change id, ownership, or creation/update timestamp
-    const { id, owner_id, created_at, updated_at, ...updatePayload } = payload;
+    const { owner_id, created_at, updated_at, ...updatePayload } = payload;
     const result = await getRepo(env).update<AppTaxRecordUpdate>("taxes", {
         ...updatePayload,
         updated_at: new Date().toISOString()
-    }, { id, owner_id: appUser.email });
+    }, { owner_id: appUser.email });
     if (result.changes === 0)
-        return Response.json({ success: false, error: "Tax record not found", id: id }, { status: 404 });
-    return Response.json({ success: true, id: id }, { status: result.success ? 200 : 400 });
+        return Response.json({ success: false, error: "Tax record not found", from: from, to: to }, { status: 404 });
+    return Response.json({ success: true, from: from, to: to }, { status: result.success ? 200 : 400 });
 }
 
 export async function del(req: Request, env: Env): Promise<Response> {
     const appUser = await getAuthUser(req, env);
     const url = new URL(req.url);
-    const id = url.searchParams.get("id")!;
+    const fromParam = url.searchParams.get("from")!;
+    const toParam = url.searchParams.get("to")!;
+    const from = new Date(fromParam);
+    const to = new Date(toParam);
+    if (isNaN(from.getTime()) || isNaN(to.getTime()) || from > to)
+        return Response.json({ success: false, error: "Invalid date parameters" }, { status: 400 });
     // Allow to delete only owned tax records (except for superadmin)
     const filters = appUser.tier === 0 ? {} : { owner_id: appUser.email };
-    const result = await getRepo(env).delete("taxes", { id, ...filters });
+    const result = await getRepo(env).delete("taxes", { from: fromParam, to: toParam, ...filters });
     if (result.changes === 0)
-        return Response.json({ success: false, error: "Tax record not found", id: id }, { status: 404 });
-    return Response.json({ success: result.success, id: id }, { status: result.success ? 200 : 400 });
+        return Response.json({ success: false, error: "Tax record not found", from: from, to: to }, { status: 404 });
+    return Response.json({ success: result.success, from: from, to: to }, { status: result.success ? 200 : 400 });
 }

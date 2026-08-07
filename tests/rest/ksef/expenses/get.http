@@ -5,11 +5,11 @@
 @to = 2026/08/01
 
 ### list for non-existing dates
-GET {{baseUrl}}/ksef/purchases?from=missing&to=missing
+GET {{baseUrl}}/ksef/expenses?from=missing&to=missing
 Content-Type: application/json
 X-API-Key: {{apiKey}}
 
 ### list for existing dates
-GET {{baseUrl}}/ksef/purchases?from={{from}}&to={{to}}
+GET {{baseUrl}}/ksef/expenses?from={{from}}&to={{to}}
 Content-Type: application/json
 X-API-Key: {{apiKey}}

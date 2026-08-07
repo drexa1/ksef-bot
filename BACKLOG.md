@@ -21,7 +21,7 @@
 - [x] Finalized get purchase invoices  
 - [x] Move taxes figures to not hardcoded  
 - [ ] Compute taxes  
-- [ ] Get taxes by period, not by id  
+- [ ] PK taxes by period, not by id  
 - [ ] Review taxes REST tests  
 - [ ] Post invoice  
 - [ ] WhatsApp bot  
