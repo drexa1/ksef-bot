@@ -52,9 +52,9 @@ export async function post(req: Request, env: Env): Promise<Response> {
     // Expenses deductions
     const expensesInvoices = await downloadKsefInvoices(env, appUser, "Subject2", from, to);
     const expensesSummary = expensesInvoices.map((invoice) => ({
-        InvoiceNumber: invoice.InvoiceBody?.InvoiceNumber ?? null,
-        TotalGrossAmount: invoice.InvoiceBody?.TotalGrossAmount ?? 0,
-        TotalVatAmount: invoice.InvoiceBody?.TotalVatAmount ?? 0,
+        InvoiceNumber: invoice.InvoiceBody?.InvoiceNumber,
+        TotalGrossAmount: invoice.InvoiceBody?.TotalGrossAmount,
+        TotalVatAmount: invoice.InvoiceBody?.TotalVatAmount
     }));
     const expensesDeductions = expensesInvoices.reduce((sum, invoice) => sum + (invoice.InvoiceBody?.TotalVatAmount ?? 0), 0);
     // Total after obligations and expenses deductions
@@ -70,7 +70,7 @@ export async function post(req: Request, env: Env): Promise<Response> {
         health_insurance_base: healthInsuranceBase,
         health_insurance_rate: healthInsuranceRate,
         health_contribution: healthContribution,
-        expenses_summary: expensesSummary,
+        expenses_summary: JSON.stringify(expensesSummary),
         total_clean_revenue: totalCleanRevenue,
         ...(payload.notes && { notes: payload.notes }),
         updated_at: new Date().toISOString()
