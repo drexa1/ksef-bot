@@ -1,6 +1,6 @@
 import {Env} from "../../worker";
 import {D1Driver, Repository} from "../../repository/d1";
-import {AppTaxRecord, AppTaxRecordUpdate, AppUser, TaxRecordObligations} from "../../types/db";
+import {AppTaxRecord, AppTaxRecordDb, AppTaxRecordUpdate, AppUser, TaxRecordObligations} from "../../types/db";
 import {getAuthUser} from "../../auth";
 import {downloadKsefInvoices} from "../ksef/ksef";
 
@@ -51,13 +51,13 @@ export async function post(req: Request, env: Env): Promise<Response> {
         healthInsuranceBase: obligations.healthInsuranceBase,
         healthInsuranceRate: obligations.healthInsuranceRate,
         healthContribution: obligations.healthContribution,
-        expensesSummary: obligations.expensesSummary,
+        expensesSummary: JSON.stringify(obligations.expensesSummary),
         totalCleanRevenue: (obligations.netBeforeObligations - obligations.incomeTax - obligations.healthContribution) + obligations.expensesDeductions,
         ...(payload.notes && { notes: payload.notes }),
         updatedAt: new Date().toISOString()
     };
     try {
-        await getRepo(env).save<AppTaxRecord>("taxes", record);
+        await getRepo(env).save<AppTaxRecordDb>("taxes", record);
         return Response.json({ success: true, from: record.from, to: record.to }, { status: 200 });
     } catch (error) {
         if (String(error).includes("UNIQUE constraint failed"))

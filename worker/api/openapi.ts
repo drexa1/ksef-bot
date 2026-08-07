@@ -298,6 +298,12 @@ export const openApiSpec = {
                         default: 9,
                         description: "PL health insurance law: 9% of the contribution base."
                     },
+                    expensesSummary: {
+                        type: "array",
+                        items: {
+                            $ref: "#/components/schemas/ExpenseSummary"
+                        }
+                    },
                     totalCleanRevenue: {
                         type: "number",
                         description: "Clean revenue after obligations"
@@ -305,6 +311,14 @@ export const openApiSpec = {
                     notes: {
                         type: "string"
                     }
+                }
+            },
+            ExpenseSummary: {
+                type: "object",
+                properties: {
+                    InvoiceNumber: { type: "string" },
+                    TotalGrossAmount: { type: "number" },
+                    TotalVatAmount: { type: "number" }
                 }
             }
         }

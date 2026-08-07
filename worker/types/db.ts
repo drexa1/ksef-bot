@@ -72,7 +72,7 @@ export type AppCounterparty = {
 };
 
 export type AppTaxRecordUpdate = Partial<Omit<AppTaxRecord, "from" | "to">>;
-export type ExpenseSummary = { InvoiceNumber: string, TotalGrossAmount: number, TotalVatAmount: number }
+export type AppTaxRecordDb = Omit<AppTaxRecord, "expensesSummary"> & { expensesSummary: string };
 export type AppTaxRecord = {
     from: Date
     to: Date
@@ -96,6 +96,7 @@ export type AppTaxRecord = {
     createdAt?: string
     updatedAt?: string
 };
+export type ExpenseSummary = { InvoiceNumber: string, TotalGrossAmount: number, TotalVatAmount: number }
 export type TaxRecordObligations = {
     vatPercentage: number
     vatAmount: number
