@@ -68,7 +68,7 @@ export async function post(req: Request, env: Env): Promise<Response> {
     };
     try {
         await getRepo(env).save<AppTaxRecordDb>("taxes", record);
-        return Response.json({ success: true, from: record.from, to: record.to }, { status: 200 });
+        return Response.json({ success: true, from: record.from, to: record.to }, { status: 201 });
     } catch (error) {
         if (String(error).includes("UNIQUE constraint failed"))
             return Response.json({ success: false, error: "Tax record already exists", from: record.from, to: record.to }, { status: 409 });

@@ -31,7 +31,7 @@ export async function post(req: Request, env: Env): Promise<Response> {
     const record = { ...payloadData, id: nanoid(), ownerId: appUser.email, updatedAt: new Date().toISOString() };
     try {
         await getRepo(env).save<AppCounterparty>("counterparties", record);
-        return Response.json({ success: true, id: record.id }, { status: 200 });
+        return Response.json({ success: true, id: record.id }, { status: 201 });
     } catch (error) {
         if (String(error).includes("UNIQUE constraint failed"))
             return Response.json({ success: false, error: "Counterparty already exists", id: record.id }, { status: 409 });

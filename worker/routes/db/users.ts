@@ -34,7 +34,7 @@ export async function post(req: Request, env: Env): Promise<Response> {
     const record = { ...payloadData, tier: 1, updatedAt: new Date().toISOString() };
     try {
         await getRepo(env).save<AppUser>("users", record);
-        return Response.json({ success: true, email: record.email }, { status: 200 });
+        return Response.json({ success: true, email: record.email }, { status: 201 });
     } catch (error) {
         if (String(error).includes("UNIQUE constraint failed"))
             return Response.json({ success: false, error: "User already exists", email: record.email }, { status: 409 });

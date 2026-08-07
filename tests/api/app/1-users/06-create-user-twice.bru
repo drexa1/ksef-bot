@@ -11,10 +11,7 @@ script:pre-request {
     req.setBody(JSON.parse(body));
 }
 tests {
-    test("Create user for the first time should succeed", function() {
-        expect(res.status).to.equal(201);
+    test("Second create attempt should trigger PK violation error", function() {
+        expect(res.status).to.equal(409);
     })
-}
-script:post-response {
-    bru.setCollectionVar("userEmail", res.body.email);
 }

@@ -37,7 +37,7 @@ export async function post(req: Request, env: Env): Promise<Response> {
     const record = await invoiceFromXml(env, await file.text(), appUser, notes);
     try {
         await getRepo(env).save<AppInvoice>("invoices", record);
-        return Response.json({ success: true, id: record.id }, { status: 200 });
+        return Response.json({ success: true, id: record.id }, { status: 201 });
     } catch (error) {
         if (String(error).includes("UNIQUE constraint failed"))
             return Response.json({ success: false, error: "Invoice already exists", id: record.id }, { status: 409 });

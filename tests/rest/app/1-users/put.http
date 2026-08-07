@@ -8,11 +8,11 @@ PUT {{baseUrl}}/app/users
 Content-Type: application/json
 X-API-Key: {{apiKey}}
 
-{ "email": "missing", "first_name": "nevermind" }
+{ "email": "missing", "firstName": "nevermind" }
 
 ### Update existing user
 PUT {{baseUrl}}/app/users
 Content-Type: application/json
 X-API-Key: {{apiKey}}
 
-{ "email": "{{userEmail}}", "first_name": "edited" }
+{ "email": "{{userEmail}}", "firstName": "edited" }
