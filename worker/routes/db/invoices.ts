@@ -17,7 +17,7 @@ export async function get(req: Request, env: Env): Promise<Response> {
     const url = new URL(req.url);
     const id = url.searchParams.get("id");
     // Allow to fetch only owned invoices (except for superadmin)
-    const filters = appUser.tier === 0 ? {} : { owner_id: appUser.email };
+    const filters = appUser.tier === 0 ? {} : { ownerId: appUser.email };
     const rows = id
         ? await getRepo(env).get<AppInvoice>("invoices", { id, ...filters })
         : await getRepo(env).getAll<AppInvoice>("invoices", filters);
@@ -25,8 +25,8 @@ export async function get(req: Request, env: Env): Promise<Response> {
         return Response.json({  success: false, error: "Invoice not found", id: id }, { status: 404 });
     // Return the JSON formatted
     const result = Array.isArray(rows)
-        ? rows.map(row => JSON.parse(row.json_data))
-        : JSON.parse(rows.json_data);
+        ? rows.map(row => JSON.parse(row.jsonData))
+        : JSON.parse(rows.jsonData);
     return Response.json(result, { status: 200 });
 }
 
@@ -56,7 +56,7 @@ export async function del(req: Request, env: Env): Promise<Response> {
     const url = new URL(req.url);
     const id = url.searchParams.get("id")!;
     // Allow to delete only owned invoices (except for superadmin)
-    const filters = appUser.tier === 0 ? {} : { owner_id: appUser.email };
+    const filters = appUser.tier === 0 ? {} : { ownerId: appUser.email };
     const result = await getRepo(env).delete("invoices", { id, ...filters });
     if (result.changes === 0)
         return Response.json({ success: false, error: "Invoice not found", id: id }, { status: 404 });
@@ -67,35 +67,35 @@ export async function del(req: Request, env: Env): Promise<Response> {
 // Invoice record creation
 // ---------------------------------------------------------------------------------------------------------------------
 const parser = new XMLParser({ ignoreAttributes: false, removeNSPrefix: true, parseTagValue: false, textNodeName: "value", attributeNamePrefix: "" });
-export async function invoiceFromXml(env: Env, xmlContent: string, authUser: AppUser, notes?: string): Promise<AppInvoice & { owner_id: string }> {
+export async function invoiceFromXml(env: Env, xmlContent: string, authUser: AppUser, notes?: string): Promise<AppInvoice & { ownerId: string }> {
     // Parse XML
     const invoiceXml = parser.parse(xmlContent).Faktura;
     const ksefInvoiceAvroSchema = await env.assets.fetch(new URL(env.KSEF_INVOICE_SCHEMA)).then((res) => res.json());
     const ksefInvoice = dtoFromAliases(invoiceXml, ksefInvoiceAvroSchema);
     // Find or create counterparties
     const sellerId = await getOrCreateCounterparty(env, {
-        owner_id: authUser.email,
+        ownerId: authUser.email,
         name: ksefInvoice.Seller.IdentificationData.Name,
         nip: ksefInvoice.Seller.IdentificationData.NIP,
-        country_code: ksefInvoice.Seller.Address.CountryCode,
-        address_l1: ksefInvoice.Seller.Address.AddressLine1
+        countryCode: ksefInvoice.Seller.Address.CountryCode,
+        addressL1: ksefInvoice.Seller.Address.AddressLine1
     });
     const buyerId = await getOrCreateCounterparty(env, {
-        owner_id: authUser.email,
+        ownerId: authUser.email,
         name: ksefInvoice.Buyer.IdentificationData.Name,
         nip: ksefInvoice.Buyer.IdentificationData.NIP,
-        country_code: ksefInvoice.Buyer.Address.CountryCode,
-        address_l1: ksefInvoice.Buyer.Address.AddressLine1
+        countryCode: ksefInvoice.Buyer.Address.CountryCode,
+        addressL1: ksefInvoice.Buyer.Address.AddressLine1
     });
     return {
         id: ksefInvoice.InvoiceBody.InvoiceNumber,
-        owner_id: authUser.email,
-        seller_id: sellerId,
-        buyer_id: buyerId,
-        raw_xml: xmlContent,
-        json_data: JSON.stringify(ksefInvoice),
+        ownerId: authUser.email,
+        sellerId: sellerId,
+        buyerId: buyerId,
+        rawXml: xmlContent,
+        jsonData: JSON.stringify(ksefInvoice),
         ...(notes && { notes }),
-        updated_at: new Date().toISOString()
+        updatedAt: new Date().toISOString()
     };
 }
 
@@ -103,27 +103,27 @@ export async function invoiceFromXml(env: Env, xmlContent: string, authUser: App
 // Counterparty helpers during invoice creation
 // ---------------------------------------------------------------------------------------------------------------------
 async function getOrCreateCounterparty(env: Env, counterpartyParts: {
-    owner_id: string
+    ownerId: string
     name: string
     nip?: string
     pesel?: string
     regon?: string
-    country_code?: string
-    address_l1?: string
+    countryCode?: string
+    addressL1?: string
 }): Promise<string> {
     const { idField, idValue } = getCounterpartyIdentifier(counterpartyParts);
     const existing = await getRepo(env).get<AppCounterparty>("counterparties", { [idField]: idValue });
     if (existing) return existing.id!;
     const counterparty: AppCounterparty = {
         id: nanoid(),
-        ...({ owner_id: counterpartyParts.owner_id }),
+        ...({ ownerId: counterpartyParts.ownerId }),
         name: counterpartyParts.name,
         ...(counterpartyParts.nip   && { nip:   counterpartyParts.nip }),
         ...(counterpartyParts.pesel && { pesel: counterpartyParts.pesel }),
         ...(counterpartyParts.regon && { regon: counterpartyParts.regon }),
-        country_code: counterpartyParts.country_code ?? "PL",
-        address_l1: counterpartyParts.address_l1 ?? "",
-        created_at: new Date().toISOString(),
+        countryCode: counterpartyParts.countryCode ?? "PL",
+        addressL1: counterpartyParts.addressL1 ?? "",
+        createdAt: new Date().toISOString(),
     };
     await getRepo(env).save("counterparties", counterparty);
     return counterparty.id!;

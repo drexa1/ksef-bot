@@ -29,39 +29,173 @@ export const openApiSpec = {
                         type: "string",
                         description: "Full user name as shown on the invoices."
                     },
-                    api_key: {
+                    apiKey: {
                         type: "string",
                         description: "In case the user has been granted an API key."
                     }
                 }
             },
-            Invoice: {
+            KSeFInvoice: {
                 type: "object",
-                additionalProperties: false,
-                required: [
-                    "seller_id",
-                    "buyer_id",
-                    "raw_xml"
-                ],
                 properties: {
-                    seller_id: {
-                        type: "string",
-                        description: "Seller unique ID.",
+                    header: {
+                        type: "object",
+                        properties: {
+                            formCode: {
+                                type: "object",
+                                properties: {
+                                    value: { type: "string" },
+                                    systemCode: { type: "string" },
+                                    schemaVersion: { type: "string" }
+                                }
+                            },
+                            formVariant: { type: "integer" },
+                            invoiceCreationDate: { type: "string" },
+                            systemInfo: { type: "string" }
+                        }
                     },
-                    buyer_id: {
-                        type: "string",
-                        description: "Seller unique ID.",
+                    seller: {
+                        type: "object",
+                        properties: {
+                            identificationData: {
+                                type: "object",
+                                properties: {
+                                    NIP: { type: "string" },
+                                    name: { type: "string" }
+                                }
+                            },
+                            address: {
+                                type: "object",
+                                properties: {
+                                    countryCode: { type: "string" },
+                                    addressLine1: { type: "string" }
+                                }
+                            },
+                            contactData: {
+                                type: ["object", "null"]
+                            }
+                        }
                     },
-                    raw_xml: {
-                        type: "string",
-                        description: "Original XML body of the document.",
+                    buyer: {
+                        type: "object",
+                        properties: {
+                            identificationData: {
+                                type: "object",
+                                properties: {
+                                    NIP: { type: "string" },
+                                    name: { type: "string" }
+                                }
+                            },
+                            address: {
+                                type: "object",
+                                properties: {
+                                    countryCode: {
+                                        type: "string"
+                                    },
+                                    addressLine1: {
+                                        type: "string"
+                                    }
+                                }
+                            },
+                            localGovernmentEntity: {
+                                type: ["integer", "null"]
+                            },
+                            governmentUnit: {
+                                type: ["integer", "null"]
+                            }
+                        }
                     },
-                    json_data: {
-                        type: "string",
-                        description: "Formatted JSON of the original XML document.",
-                    },
-                    notes: {
-                        type: "string"
+                    invoiceBody: {
+                        type: "object",
+                        properties: {
+                            currencyCode: {
+                                type: "string"
+                            },
+                            issueDate: {
+                                type: "string"
+                            },
+                            issueLocation: {
+                                type: "string"
+                            },
+                            invoiceNumber: {
+                                type: "string"
+                            },
+                            serviceDate: {
+                                type: "string"
+                            },
+                            totalNetAmount: {
+                                type: "number"
+                            },
+                            totalVatAmount: {
+                                type: "number"
+                            },
+                            totalGrossAmount: {
+                                type: "number"
+                            },
+                            annotations: {
+                                type: "object",
+                                properties: {
+                                    cashAccounting: { type: "integer" },
+                                    selfBilling: { type: "integer" },
+                                    reverseCharge: { type: "integer" },
+                                    splitPayment: { type: "integer" },
+                                    exemption: {
+                                        type: "object",
+                                        properties: {
+                                            vatExemption: { type: "integer" }
+                                        }
+                                    },
+                                    newMeansOfTransport: {
+                                        type: "object",
+                                        properties: {
+                                            newTransport: { type: "integer" }
+                                        }
+                                    },
+                                    specialVatTransaction: { type: "integer" },
+                                    marginScheme: {
+                                        type: "object",
+                                        properties: {
+                                            marginSchemeIndicator: { type: "integer" }
+                                        }
+                                    }
+                                }
+                            },
+                            invoiceType: { type: "string" },
+                            invoiceLines: {
+                                type: "array",
+                                items: {
+                                    type: "object",
+                                    properties: {
+                                        lineNumber: { type: "integer" },
+                                        itemDescription: { type: "string" },
+                                        unitOfMeasure: { type: "string" },
+                                        quantity: { type: "number" },
+                                        unitPriceNet: { type: "number" },
+                                        lineNetValue: { type: "number" },
+                                        lineVatAmount: { type: "number" },
+                                        vatRate: { type: "number" }
+                                    }
+                                }
+                            },
+                            payment: {
+                                type: "object",
+                                properties: {
+                                    paymentDueDate: {
+                                        type: "object",
+                                        properties: {
+                                            dueDate: { type: "string" }
+                                        }
+                                    },
+                                    paymentMethod: { type: "integer" },
+                                    bankAccount: {
+                                        type: "object",
+                                        properties: {
+                                            accountNumber: { type: "string" }
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             },
@@ -70,7 +204,7 @@ export const openApiSpec = {
                 additionalProperties: false,
                 required: [
                     "name",
-                    "address_l1"
+                    "addressL1"
                 ],
                 properties: {
                     name: {
@@ -89,28 +223,28 @@ export const openApiSpec = {
                         type: "string",
                         description: "PL unique business identifier."
                     },
-                    internal_identifier: {
+                    internalIdentifier: {
                         type: "string",
                         description: "In case none of the other identifiers are available."
                     },
-                    country_code: {
+                    countryCode: {
                         type: "string",
                         default: "PL",
                         description: "Two letter country code.",
                     },
-                    address_l1: {
+                    addressL1: {
                         type: "string",
                         description: "Primary address.",
                     },
-                    address_l2: {
+                    addressL2: {
                         type: "string",
                         description: "Optional secondary address.",
                     },
-                    local_government_unit: {
+                    localGovernmentUnit: {
                         type: "integer",
                         description: "(JST) 0: NA, 1: municipality, 2: county, 3: voivodeship.",
                     },
-                    vat_group: {
+                    vatGroup: {
                         type: "integer",
                         description: "(GV) 1: invoice concerns a VAT group member, 2: invoice does not concern a VAT group member.",
                     },
@@ -125,7 +259,7 @@ export const openApiSpec = {
                 required: [
                     "from",
                     "to",
-                    "brut_income"
+                    "brutIncome"
                 ],
                 properties: {
                     from: {
@@ -140,31 +274,31 @@ export const openApiSpec = {
                         description: "End date of the reporting period.",
                         example: "2026-07-31"
                     },
-                    brut_income: {
+                    brutIncome: {
                         type: "number",
                         description: "Brut income. Typically the hourly rate × number of hours",
                     },
-                    vat_percentage: {
+                    vatPercentage: {
                         type: "number",
                         default: 23,
                         description: "By default standard VAT rate of 23%."
                     },
-                    tax_rate: {
+                    taxRate: {
                         type: "number",
                         default: 12,
                         description: "By default standard flat rate of 12%."
                     },
-                    health_insurance_base: {
+                    healthInsuranceBase: {
                         type: "number",
                         default: 5537.18,
                         description: "Statutory monthly base = 60% × average monthly salary."
                     },
-                    health_insurance_rate: {
+                    healthInsuranceRate: {
                         type: "number",
                         default: 9,
                         description: "PL health insurance law: 9% of the contribution base."
                     },
-                    total_clean_revenue: {
+                    totalCleanRevenue: {
                         type: "number",
                         description: "Clean revenue after obligations"
                     },

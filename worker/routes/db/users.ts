@@ -30,7 +30,7 @@ export async function post(req: Request, env: Env): Promise<Response> {
         return new Response("Unauthorized", { status: 401, headers: corsHeaders });
     // Never allow client to control id, ownership, or creation/update timestamps
     const payload = await req.json() as AppUser;
-    const { created_at, updated_at, ...payloadData } = payload;
+    const { createdAt, updatedAt, ...payloadData } = payload;
     const record = { ...payloadData, tier: 1, updated_at: new Date().toISOString() };
     try {
         await getRepo(env).save<AppUser>("users", record);
@@ -49,10 +49,10 @@ export async function put(req: Request, env: Env): Promise<Response> {
         return new Response("Unauthorized", { status: 401, headers: corsHeaders });
     const payload = await req.json() as AppUser;
     // Never allow client to change id, or creation/update timestamp
-    const { email, api_key, tier, created_at, updated_at, ...updatePayload } = payload;
+    const { email, apiKey, tier, createdAt, updatedAt, ...updatePayload } = payload;
     const result = await getRepo(env).update<AppUserUpdate>("users", {
         ...updatePayload,
-        updated_at: new Date().toISOString()
+        updatedAt: new Date().toISOString()
     }, { email: email });
     if (result.changes === 0)
         return Response.json({ success: false, error: "User not found", email: email }, { status: 404 });

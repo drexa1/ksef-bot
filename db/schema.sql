@@ -1,37 +1,37 @@
 CREATE TABLE IF NOT EXISTS users (
     email TEXT PRIMARY KEY,
     -- Application
-    api_key TEXT UNIQUE,
+    apiKey TEXT UNIQUE,
     tier INTEGER NOT NULL,
     -- Identification data
     nip TEXT NOT NULL CHECK (length(nip) = 10 AND nip NOT GLOB '*[^0-9]*'),
     regon TEXT CHECK (regon IS NULL OR (length(regon) = 9 AND regon NOT GLOB '*[^0-9]*')),
     bdo TEXT,  -- Number in the Waste Database. The information will appear on the invoices
-    first_name TEXT NOT NULL,
-    last_name TEXT NOT NULL,
-    date_of_birth DATE NOT NULL CHECK (date_of_birth GLOB '????-??-??' AND date_of_birth >= '1900-01-01'),
-    company_name TEXT,
-    company_logo BLOB,
+    firstName TEXT NOT NULL,
+    lastName TEXT NOT NULL,
+    dateOfBirth DATE NOT NULL CHECK (dateOfBirth GLOB '????-??-??' AND dateOfBirth >= '1900-01-01'),
+    companyName TEXT,
+    companyLogo BLOB,
     -- Address details
     country TEXT NOT NULL DEFAULT 'Poland',
     voivodeship TEXT NOT NULL,
     county TEXT NOT NULL,
     commune TEXT NOT NULL,
     town TEXT NOT NULL,
-    zip_code TEXT NOT NULL,
+    zipCode TEXT NOT NULL,
     street TEXT,
-    building_number TEXT NOT NULL,
-    apartment_number TEXT,
-    phone_number TEXT,  -- The information will appear on the invoices
-    display_email_on_ksef_invoices BOOLEAN NOT NULL DEFAULT FALSE,
+    buildingNumber TEXT NOT NULL,
+    apartmentNumber TEXT,
+    phoneNumber TEXT,  -- The information will appear on the invoices
+    displayEmailOnKsefInvoices BOOLEAN NOT NULL DEFAULT FALSE,
     -- Billing data
-    settlement_type TEXT NOT NULL CHECK (settlement_type IN ('monthly', 'quarterly')),
-    cash_method BOOLEAN NOT NULL DEFAULT FALSE,  -- Default billing of invoices - MK
-    bank_account_number TEXT CHECK (bank_account_number IS NULL OR (length(bank_account_number) = 26 AND bank_account_number NOT GLOB '*[^0-9]*')),  -- The information will appear on the invoices
-    tax_office TEXT,  -- Name and code
+    settlementType TEXT NOT NULL CHECK (settlementType IN ('monthly', 'quarterly')),
+    cashMethod BOOLEAN NOT NULL DEFAULT FALSE,  -- Default billing of invoices - MK
+    bankAccountNumber TEXT CHECK (bankAccountNumber IS NULL OR (length(bankAccountNumber) = 26 AND bankAccountNumber NOT GLOB '*[^0-9]*')),  -- The information will appear on the invoices
+    taxOffice TEXT,  -- Name and code
     -- DBA
-    created_at TEXT DEFAULT CURRENT_TIMESTAMP,
-    updated_at TEXT
+    createdAt TEXT DEFAULT CURRENT_TIMESTAMP,
+    updatedAt TEXT
 );
 -- Create admin user
 INSERT INTO users VALUES (
@@ -72,66 +72,66 @@ INSERT INTO users VALUES (
 CREATE TABLE IF NOT EXISTS invoices (
     id TEXT PRIMARY KEY,
     -- Owner
-    owner_id TEXT NOT NULL REFERENCES users(email),
+    ownerId TEXT NOT NULL REFERENCES users(email),
     -- Parties
-    seller_id TEXT NOT NULL REFERENCES counterparties(id),
-    buyer_id  TEXT NOT NULL REFERENCES counterparties(id),
+    sellerId TEXT NOT NULL REFERENCES counterparties(id),
+    buyerId  TEXT NOT NULL REFERENCES counterparties(id),
     -- Raw data
-    raw_xml  TEXT NOT NULL,
-    json_data TEXT NOT NULL CHECK (json_valid(json_data)),
+    rawXml  TEXT NOT NULL,
+    jsonData TEXT NOT NULL CHECK (json_valid(jsonData)),
     notes TEXT,
     -- DBA
-    created_at TEXT DEFAULT CURRENT_TIMESTAMP,
-    updated_at TEXT
+    createdAt TEXT DEFAULT CURRENT_TIMESTAMP,
+    updatedAt TEXT
 );
 
 CREATE TABLE IF NOT EXISTS counterparties (
     id TEXT PRIMARY KEY,
     -- Owner
-    owner_id TEXT NOT NULL REFERENCES users(email),
+    ownerId TEXT NOT NULL REFERENCES users(email),
     -- Counterparty data
     name TEXT NOT NULL,
     nip TEXT UNIQUE,
     pesel TEXT UNIQUE,
     regon TEXT UNIQUE,
-    internal_identifier TEXT UNIQUE,
+    internalIdentifier TEXT UNIQUE,
     -- Address
-    country_code TEXT DEFAULT 'PL',
-    address_l1 TEXT NOT NULL,
-    address_l2 TEXT,
+    countryCode TEXT DEFAULT 'PL',
+    address_L1 TEXT NOT NULL,
+    addressL2 TEXT,
     -- Counterparty metadata
-    local_government_unit INTEGER,
-    vat_group INTEGER,
+    localGovernmentUnit INTEGER,
+    vatGroup INTEGER,
     notes TEXT,
     -- DBA
-    created_at TEXT DEFAULT CURRENT_TIMESTAMP,
-    updated_at TEXT
+    createdAt TEXT DEFAULT CURRENT_TIMESTAMP,
+    updatedAt TEXT
 );
 
 CREATE TABLE IF NOT EXISTS taxes (
     "from" DATE,
     "to" DATE,
     -- Owner
-    owner_id TEXT NOT NULL REFERENCES users(email),
+    ownerId TEXT NOT NULL REFERENCES users(email),
     -- Tax record
-    brut_income REAL NOT NULL,
+    brutIncome REAL NOT NULL,
     -- VAT
-    vat_percentage REAL DEFAULT 23,
-    vat_amount REAL NOT NULL,
-    net_before_obligations REAL NOT NULL,
+    vatPercentage REAL DEFAULT 23,
+    vatAmount REAL NOT NULL,
+    netBeforeObligations REAL NOT NULL,
     -- Obligations
-    tax_rate REAL DEFAULT 12,
-    income_tax REAL NOT NULL,
-    health_insurance_base REAL DEFAULT 5537.18,
-    health_insurance_rate REAL DEFAULT 9,
-    health_contribution REAL NOT NULL,
+    taxRate REAL DEFAULT 12,
+    incomeTax REAL NOT NULL,
+    healthInsuranceBase REAL DEFAULT 5537.18,
+    healthInsuranceRate REAL DEFAULT 9,
+    healthContribution REAL NOT NULL,
     -- Expenses deductions
-    expenses_deductions TEXT CHECK (json_valid(expenses_deductions)),
+    expensesSummary TEXT CHECK (json_valid(expensesSummary)),
     -- Total after obligations and expenses deductions
-    total_clean_revenue REAL NOT NULL,
+    totalCleanRevenue REAL NOT NULL,
     notes TEXT,
     -- DBA
-    created_at TEXT DEFAULT CURRENT_TIMESTAMP,
-    updated_at TEXT,
+    createdAt TEXT DEFAULT CURRENT_TIMESTAMP,
+    updatedAt TEXT,
     PRIMARY KEY ("from", "to")
 );

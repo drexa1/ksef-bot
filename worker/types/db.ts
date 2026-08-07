@@ -2,51 +2,51 @@ export type AppUserUpdate = Partial<Omit<AppUser, "email">>;
 export type AppUser = {
     email: string
     // Application
-    api_key?: string
+    apiKey?: string
     tier?: number
     // Identification data
     nip: string
     regon?: string
     bdo?: string
-    first_name: string
-    last_name: string
-    date_of_birth: string
-    company_name?: string
-    company_logo?: Uint8Array
+    firstName: string
+    lastName: string
+    dateOfBirth: string
+    companyName?: string
+    companyLogo?: Uint8Array
     // Address details
     country: string
     voivodeship: string
     county: string
     commune: string
     town: string
-    zip_code: string
+    zipCode: string
     street?: string
-    building_number: string
-    apartment_number?: string
-    phone_number?: string
-    display_email_on_ksef_invoices?: boolean
+    buildingNumber: string
+    apartmentNumber?: string
+    phoneNumber?: string
+    displayEmailOnKsefInvoices?: boolean
     // Billing data
-    settlement_type: "monthly" | "quarterly"
-    cash_method?: boolean
-    bank_account_number?: string
-    tax_office?: string
+    settlementType: "monthly" | "quarterly"
+    cashMethod?: boolean
+    bankAccountNumber?: string
+    taxOffice?: string
     // DBA
-    created_at?: string
-    updated_at?: string
+    createdAt?: string
+    updatedAt?: string
 };
 
 export type AppInvoice = {
     id: string
     // Parties
-    seller_id: string
-    buyer_id: string
+    sellerId: string
+    buyerId: string
     // Raw data
-    raw_xml: string
-    json_data: string
+    rawXml: string
+    jsonData: string
     notes?: string
     // DBA
-    created_at?: string
-    updated_at?: string
+    createdAt?: string
+    updatedAt?: string
 };
 
 export type AppCounterpartyUpdate = Partial<Omit<AppCounterparty, "id">>;
@@ -57,40 +57,42 @@ export type AppCounterparty = {
     nip?: string
     pesel?: string
     regon?: string
-    internal_identifier?: string
+    internalIdentifier?: string
     // Address
-    country_code: string
-    address_l1: string
-    address_l2?: string
+    countryCode: string
+    addressL1: string
+    addressL2?: string
     // Counterparty metadata
-    local_government_unit?: number
-    vat_group?: number
+    localGovernmentUnit?: number
+    vatGroup?: number
     notes?: string
     // DBA
-    created_at?: string
-    updated_at?: string
+    createdAt?: string
+    updatedAt?: string
 };
 
 export type AppTaxRecordUpdate = Partial<Omit<AppTaxRecord, "from" | "to">>;
+export type ExpenseSummary = { InvoiceNumber: string, TotalGrossAmount: number, TotalVatAmount: number }
 export type AppTaxRecord = {
     from: Date
     to: Date
     // Tax record
-    brut_income: number
-    vat_percentage: number
-    vat_amount: number
-    net_before_obligations: number
+    brutIncome: number
+    vatPercentage: number
+    vatAmount: number
+    netBeforeObligations: number
     // Obligations
-    tax_rate: number,
-    income_tax: number
-    health_insurance_base: number
-    health_insurance_rate: number
-    health_contribution: number
-    // Total after obligations
-    total_clean_revenue: number
+    taxRate: number,
+    incomeTax: number
+    healthInsuranceBase: number
+    healthInsuranceRate: number
+    healthContribution: number
+    // Expenses deductions
+    expensesSummary: ExpenseSummary
+    // Total after obligations and expenses deductions
+    totalCleanRevenue: number
     notes: string
     // DBA
-    created_at?: string
-    updated_at?: string
-
+    createdAt?: string
+    updatedAt?: string
 };

@@ -2,7 +2,6 @@ import {Env} from "../../worker";
 import {D1Driver, Repository} from "../../repository/d1";
 import {AppTaxRecord, AppTaxRecordUpdate} from "../../types/db";
 import {getAuthUser} from "../../auth";
-import {nanoid} from "nanoid";
 import {downloadKsefInvoices} from "../ksef/ksef";
 
 let repo: Repository;
@@ -39,19 +38,24 @@ export async function post(req: Request, env: Env): Promise<Response> {
     if (isNaN(from.getTime()) || isNaN(to.getTime()) || from > to)
         return Response.json({ success: false, error: "Invalid date parameters" }, { status: 400 });
     // Never allow client to control id, ownership, or creation/update timestamps
-    const { created_at, updated_at, ...payloadData } = payload;
+    const { createdAt, updatedAt, ...payloadData } = payload;
     // VAT
-    const varPercentage = payload.vat_percentage ?? env.DEFAULT_VAT_PERCENTAGE;
-    const vatAmount = payload.brut_income * varPercentage / (100 + varPercentage);
-    const netBeforeObligations = payload.brut_income - vatAmount;
+    const varPercentage = payload.vatPercentage ?? env.DEFAULT_VAT_PERCENTAGE;
+    const vatAmount = payload.brutIncome * varPercentage / (100 + varPercentage);
+    const netBeforeObligations = payload.brutIncome - vatAmount;
     // Obligations
-    const taxRate = payload.tax_rate ?? env.DEFAULT_TAX_RATE;
+    const taxRate = payload.taxRate ?? env.DEFAULT_TAX_RATE;
     const incomeTax = netBeforeObligations * taxRate / 100;
-    const healthInsuranceBase = payload.health_insurance_base ?? env.DEFAULT_HEALTH_INSURANCE_BASE;
-    const healthInsuranceRate = payload.health_insurance_rate ?? env.DEFAULT_HEALTH_INSURANCE_RATE;
+    const healthInsuranceBase = payload.healthInsuranceBase ?? env.DEFAULT_HEALTH_INSURANCE_BASE;
+    const healthInsuranceRate = payload.healthInsuranceRate ?? env.DEFAULT_HEALTH_INSURANCE_RATE;
     const healthContribution = healthInsuranceBase * healthInsuranceRate / 100;
     // Expenses deductions
     const expensesInvoices = await downloadKsefInvoices(env, appUser, "Subject2", from, to);
+    const expensesSummary = expensesInvoices.map((invoice) => ({
+        InvoiceNumber: invoice.InvoiceBody?.InvoiceNumber ?? null,
+        TotalGrossAmount: invoice.InvoiceBody?.TotalGrossAmount ?? 0,
+        TotalVatAmount: invoice.InvoiceBody?.TotalVatAmount ?? 0,
+    }));
     const expensesDeductions = expensesInvoices.reduce((sum, invoice) => sum + (invoice.InvoiceBody?.TotalVatAmount ?? 0), 0);
     // Total after obligations and expenses deductions
     const totalCleanRevenue = (netBeforeObligations - incomeTax - healthContribution) + expensesDeductions;
@@ -66,6 +70,7 @@ export async function post(req: Request, env: Env): Promise<Response> {
         health_insurance_base: healthInsuranceBase,
         health_insurance_rate: healthInsuranceRate,
         health_contribution: healthContribution,
+        expenses_summary: expensesSummary,
         total_clean_revenue: totalCleanRevenue,
         ...(payload.notes && { notes: payload.notes }),
         updated_at: new Date().toISOString()
@@ -88,10 +93,10 @@ export async function put(req: Request, env: Env): Promise<Response> {
     if (isNaN(from.getTime()) || isNaN(to.getTime()) || from > to)
         return Response.json({ success: false, error: "Invalid date parameters" }, { status: 400 });
     // Never allow client to change id, ownership, or creation/update timestamp
-    const { owner_id, created_at, updated_at, ...updatePayload } = payload;
+    const { owner_id, createdAt, updatedAt, ...updatePayload } = payload;
     const result = await getRepo(env).update<AppTaxRecordUpdate>("taxes", {
         ...updatePayload,
-        updated_at: new Date().toISOString()
+        updatedAt: new Date().toISOString()
     }, { owner_id: appUser.email });
     if (result.changes === 0)
         return Response.json({ success: false, error: "Tax record not found", from: from, to: to }, { status: 404 });
