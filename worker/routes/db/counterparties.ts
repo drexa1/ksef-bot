@@ -14,7 +14,7 @@ export async function get(req: Request, env: Env): Promise<Response> {
     const url = new URL(req.url);
     const id = url.searchParams.get("id");
     // Allow to fetch only owned counterparties (except for superadmin)
-    const filters = appUser.tier === 0 ? {} : { owner_id: appUser.email };
+    const filters = appUser.tier === 0 ? {} : { ownerId: appUser.email };
     const rows = id
         ? await getRepo(env).get<AppCounterparty>("counterparties", { id, ...filters })
         : await getRepo(env).getAll<AppCounterparty>("counterparties", filters);

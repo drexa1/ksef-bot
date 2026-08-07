@@ -33,10 +33,10 @@ export async function downloadKsefInvoices(env: Env, appUser: AppUser, subjectTy
     const invoices = await client.queryPurchaseInvoices(env, appUser, subjectType, from, to);
     await saveInvoices(env, invoices);
     // Return the JSON formatted
-    return invoices.map(row => JSON.parse(row.json_data));
+    return invoices.map(row => JSON.parse(row.jsonData));
 }
 
-async function saveInvoices(env: Env, invoices: Awaited<AppInvoice & { owner_id: string }>[]) {
+async function saveInvoices(env: Env, invoices: Awaited<AppInvoice & { ownerId: string }>[]) {
     // Cache in app
     const saved = [];
     const existing = [];

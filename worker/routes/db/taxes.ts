@@ -21,7 +21,7 @@ export async function get(req: Request, env: Env): Promise<Response> {
     if (from && to && (isNaN(from.getTime()) || isNaN(to.getTime()) || from > to))
         return Response.json({ success: false, error: "Invalid date parameters" }, { status: 400 });
     // Allow to fetch only owned tax records (except for superadmin)
-    const filters = appUser.tier === 0 ? {} : { owner_id: appUser.email };
+    const filters = appUser.tier === 0 ? {} : { ownerId: appUser.email };
     const rows = fromParam && toParam
         ? await getRepo(env).get<AppTaxRecord>("taxes", { from: fromParam, to: toParam, ...filters })
         : await getRepo(env).getAll<AppTaxRecord>("taxes", filters);
@@ -61,7 +61,7 @@ export async function post(req: Request, env: Env): Promise<Response> {
     const totalCleanRevenue = (netBeforeObligations - incomeTax - healthContribution) + expensesDeductions;
     const record = {
         ...payloadData,
-        owner_id: appUser.email,
+        ownerId: appUser.email,
         vat_percentage: varPercentage,
         vat_amount: vatAmount,
         net_before_obligations: netBeforeObligations,
@@ -87,17 +87,17 @@ export async function post(req: Request, env: Env): Promise<Response> {
 
 export async function put(req: Request, env: Env): Promise<Response> {
     const appUser = await getAuthUser(req, env);
-    const payload = await req.json() as AppTaxRecord & { owner_id?: string };
+    const payload = await req.json() as AppTaxRecord & { ownerId?: string };
     const from = new Date(payload.from);
     const to = new Date(payload.to);
     if (isNaN(from.getTime()) || isNaN(to.getTime()) || from > to)
         return Response.json({ success: false, error: "Invalid date parameters" }, { status: 400 });
     // Never allow client to change id, ownership, or creation/update timestamp
-    const { owner_id, createdAt, updatedAt, ...updatePayload } = payload;
+    const { ownerId, createdAt, updatedAt, ...updatePayload } = payload;
     const result = await getRepo(env).update<AppTaxRecordUpdate>("taxes", {
         ...updatePayload,
         updatedAt: new Date().toISOString()
-    }, { owner_id: appUser.email });
+    }, { ownerId: appUser.email });
     if (result.changes === 0)
         return Response.json({ success: false, error: "Tax record not found", from: from, to: to }, { status: 404 });
     return Response.json({ success: true, from: from, to: to }, { status: result.success ? 200 : 400 });
@@ -113,7 +113,7 @@ export async function del(req: Request, env: Env): Promise<Response> {
     if (isNaN(from.getTime()) || isNaN(to.getTime()) || from > to)
         return Response.json({ success: false, error: "Invalid date parameters" }, { status: 400 });
     // Allow to delete only owned tax records (except for superadmin)
-    const filters = appUser.tier === 0 ? {} : { owner_id: appUser.email };
+    const filters = appUser.tier === 0 ? {} : { ownerId: appUser.email };
     const result = await getRepo(env).delete("taxes", { from: fromParam, to: toParam, ...filters });
     if (result.changes === 0)
         return Response.json({ success: false, error: "Tax record not found", from: from, to: to }, { status: 404 });
