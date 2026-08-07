@@ -23,7 +23,12 @@
 - [x] Compute taxes  
 - [x] PK taxes by period, not by id  
 - [x] Review taxes REST tests  
-- [ ] Run tests suites as collection  
+- [x] Run tests suites as collection  
+- [x] Test collection for users  
+- [ ] Test collection for counterparties  
+- [ ] Test collection for application invoices  
+- [ ] Test collection for tax record  
+- [ ] Test collection for ksef invoices  
 - [ ] Bank client PoC  
 - [ ] Post invoice  
 - [ ] WhatsApp bot  
