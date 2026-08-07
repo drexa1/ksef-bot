@@ -105,6 +105,6 @@ export type TaxRecordObligations = {
     healthInsuranceBase: number
     healthInsuranceRate: number
     healthContribution: number
+    expensesDeductions: number
     expensesSummary: ExpenseSummary[]
-    totalCleanRevenue: number
 }

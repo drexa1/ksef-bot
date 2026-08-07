@@ -52,7 +52,7 @@ export async function post(req: Request, env: Env): Promise<Response> {
         healthInsuranceRate: obligations.healthInsuranceRate,
         healthContribution: obligations.healthContribution,
         expensesSummary: obligations.expensesSummary,
-        totalCleanRevenue: obligations.totalCleanRevenue,
+        totalCleanRevenue: (obligations.netBeforeObligations - obligations.incomeTax - obligations.healthContribution) + obligations.expensesDeductions,
         ...(payload.notes && { notes: payload.notes }),
         updatedAt: new Date().toISOString()
     };
@@ -86,7 +86,6 @@ async function computeObligations(env: Env, appUser: AppUser, taxRecord: AppTaxR
     }));
     const expensesDeductions = expensesInvoices.reduce((sum, invoice) => sum + (invoice.InvoiceBody?.TotalVatAmount ?? 0), 0);
     // Total after obligations and expenses deductions
-    const totalCleanRevenue = (netBeforeObligations - incomeTax - healthContribution) + expensesDeductions;
     return {
         vatPercentage,
         vatAmount,
@@ -96,8 +95,8 @@ async function computeObligations(env: Env, appUser: AppUser, taxRecord: AppTaxR
         healthInsuranceBase,
         healthInsuranceRate,
         healthContribution,
+        expensesDeductions,
         expensesSummary,
-        totalCleanRevenue
     };
 }
 
