@@ -7,8 +7,8 @@ headers {
 }
 tests {
     test("List all should always return the admin user", function() {
-        expect(res.body).to.be.an("array")
-        const adminUser = res.body.find(u => u.tier === 0)
-        expect(adminUser).to.not.be.undefined
+        expect(res.body).to.be.an("array");
+        const adminUser = res.body.find(u => u.tier === 0);
+        expect(adminUser).to.not.be.undefined;
     })
 }

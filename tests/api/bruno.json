@@ -1,5 +1,12 @@
 {
     "version": "1",
     "name": "api-tests",
-    "type": "collection"
+    "type": "collection",
+
+    "scripts": {
+        "moduleWhitelist": ["fs", "path"],
+        "filesystemAccess": {
+            "allow": true
+        }
+    }
 }
