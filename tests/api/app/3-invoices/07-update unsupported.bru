@@ -1,0 +1,15 @@
+put {
+    url: {{baseUrl}}/app/invoices
+}
+headers {
+    Content-Type: application/json
+    X-API-Key: {{apiKey}}
+}
+script:pre-request {
+    req.setBody(JSON.stringify({ id: bru.getCollectionVar("salesInvoiceId"), name: "nevermind" }));
+}
+tests {
+    test("Update invoices is forbidden", function() {
+        expect(res.status).to.equal(403);
+    })
+}
