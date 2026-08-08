@@ -46,7 +46,7 @@ export async function post(req: Request, env: Env): Promise<Response> {
 }
 
 export async function put(_req: Request, _env: Env): Promise<Response> {
-    return Response.json({ error: "Updating invoices is forbidden" }, { status: 403  });
+    return Response.json({ error: "Updating invoices is forbidden" }, { status: 405 });
 }
 
 export async function del(req: Request, env: Env): Promise<Response> {

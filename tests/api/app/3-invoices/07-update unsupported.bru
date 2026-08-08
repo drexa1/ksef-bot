@@ -10,6 +10,6 @@ script:pre-request {
 }
 tests {
     test("Update invoices is forbidden", function() {
-        expect(res.status).to.equal(403);
+        expect(res.status).to.equal(405 );
     })
 }
