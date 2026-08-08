@@ -1,0 +1,12 @@
+get {
+    url: {{baseUrl}}/app/invoices?id=missing
+}
+headers {
+    Content-Type: application/json
+    X-API-Key: {{apiKey}}
+}
+tests {
+    test("List a non-existing invoice should fail", function() {
+        expect(res.status).to.equal(404);
+    })
+}

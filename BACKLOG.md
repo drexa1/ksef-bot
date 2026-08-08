@@ -25,7 +25,7 @@
 - [x] Review taxes REST tests  
 - [x] Run tests suites as collection  
 - [x] Test collection for users  
-- [ ] Test collection for counterparties  
+- [x] Test collection for counterparties  
 - [ ] Test collection for application invoices  
 - [ ] Test collection for tax record  
 - [ ] Test collection for ksef invoices  
