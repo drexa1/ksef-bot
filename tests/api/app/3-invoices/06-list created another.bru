@@ -1,0 +1,12 @@
+get {
+    url: {{baseUrl}}/app/invoices?id={{expensesInvoiceId}}
+}
+headers {
+    Content-Type: application/json
+    X-API-Key: {{apiKey}}
+}
+tests {
+    test("List the recently created expenses invoice", function() {
+        expect(res.body.InvoiceBody.InvoiceNumber).to.equal(bru.getCollectionVar("expensesInvoiceId"));
+    })
+}

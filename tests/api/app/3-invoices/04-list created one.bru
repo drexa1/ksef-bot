@@ -6,7 +6,7 @@ headers {
     X-API-Key: {{apiKey}}
 }
 tests {
-    test("List the recently created invoice", function() {
+    test("List the recently created sales invoice", function() {
         expect(res.body.InvoiceBody.InvoiceNumber).to.equal(bru.getCollectionVar("salesInvoiceId"));
     })
 }
