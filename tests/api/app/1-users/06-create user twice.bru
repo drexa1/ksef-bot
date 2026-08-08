@@ -1,0 +1,17 @@
+post {
+    url: {{baseUrl}}/app/users
+}
+headers {
+    Content-Type: application/json
+    X-API-Key: {{apiKey}}
+}
+script:pre-request {
+    const fs = require("fs");
+    const body = fs.readFileSync("../testresources/users/user-1.json", "utf8");
+    req.setBody(JSON.parse(body));
+}
+tests {
+    test("Second attempt to create an existing user should trigger PK violation error", function() {
+        expect(res.status).to.equal(409);
+    })
+}

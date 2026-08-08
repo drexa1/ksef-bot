@@ -1,0 +1,20 @@
+post {
+    url: {{baseUrl}}/app/counterparties
+}
+headers {
+    Content-Type: application/json
+    X-API-Key: {{apiKey}}
+}
+script:pre-request {
+    const fs = require("fs");
+    const body = fs.readFileSync("../testresources/counterparties/counterparty-2.json", "utf8");
+    req.setBody(JSON.parse(body));
+}
+tests {
+    test("Create another counterparty for the first time should succeed", function() {
+        expect(res.status).to.equal(201);
+    })
+}
+script:post-response {
+    bru.setCollectionVar("counterparty2Id", res.body.id);
+}

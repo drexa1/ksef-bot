@@ -1,0 +1,12 @@
+delete {
+    url: {{baseUrl}}/app/users?email={{userEmail}}
+}
+headers {
+    Content-Type: application/json
+    X-API-Key: {{apiKey}}
+}
+tests {
+    test("Delete a recently updated user should succeed", function() {
+        expect(res.body.email).to.equal(bru.getCollectionVar("userEmail"));
+    })
+}

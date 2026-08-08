@@ -1,0 +1,15 @@
+put {
+    url: {{baseUrl}}/app/users
+}
+headers {
+    Content-Type: application/json
+    X-API-Key: {{apiKey}}
+}
+script:pre-request {
+    req.setBody(JSON.stringify({ email: bru.getCollectionVar("userEmail"), firstName: "edited" }));
+}
+tests {
+    test("Update a recently created user should succeed", function() {
+        expect(res.body.email).to.equal(bru.getCollectionVar("userEmail"));
+    })
+}

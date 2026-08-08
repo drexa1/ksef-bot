@@ -1,0 +1,12 @@
+get {
+    url: {{baseUrl}}/app/counterparties?id={{counterparty2Id}}
+}
+headers {
+    Content-Type: application/json
+    X-API-Key: {{apiKey}}
+}
+tests {
+    test("List the recently created counterparty two", function() {
+        expect(res.body.id).to.equal(bru.getCollectionVar("counterparty2Id"));
+    })
+}

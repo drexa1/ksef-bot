@@ -1,0 +1,12 @@
+get {
+    url: {{baseUrl}}/app/users?email={{userEmail}}
+}
+headers {
+    Content-Type: application/json
+    X-API-Key: {{apiKey}}
+}
+tests {
+    test("List the recently created user", function() {
+        expect(res.body.email).to.equal(bru.getCollectionVar("userEmail"));
+    })
+}

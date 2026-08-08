@@ -1,0 +1,12 @@
+delete {
+    url: {{baseUrl}}/app/users?email=missing
+}
+headers {
+    Content-Type: application/json
+    X-API-Key: {{apiKey}}
+}
+tests {
+    test("Delete a non-existing user should fail", function() {
+        expect(res.status).to.equal(404);
+    })
+}

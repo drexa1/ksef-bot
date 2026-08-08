@@ -1,0 +1,17 @@
+post {
+    url: {{baseUrl}}/app/users
+}
+headers {
+  Content-Type: application/json
+  X-API-Key: {{apiKey}}
+}
+script:pre-request {
+    const fs = require("fs");
+    const body = fs.readFileSync("../testresources/users/user-admin.json", "utf8");
+    req.setBody(JSON.parse(body));
+}
+tests {
+    test("Attempt to (re)create the admin user should trigger PK violation error", function() {
+        expect(res.status).to.equal(409);
+    })
+}

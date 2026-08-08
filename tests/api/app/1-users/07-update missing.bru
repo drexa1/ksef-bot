@@ -1,0 +1,15 @@
+put {
+    url: {{baseUrl}}/app/users
+}
+headers {
+    Content-Type: application/json
+    X-API-Key: {{apiKey}}
+}
+script:pre-request {
+    req.setBody(JSON.stringify({ email: "missing", firstName: "nevermind" }));
+}
+tests {
+    test("Update a missing user should fail", function() {
+        expect(res.status).to.equal(404);
+    })
+}
