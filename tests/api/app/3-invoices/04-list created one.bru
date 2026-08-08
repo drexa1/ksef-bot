@@ -7,6 +7,6 @@ headers {
 }
 tests {
     test("List the recently created invoice", function() {
-        expect(res.body.id).to.equal(bru.getCollectionVar("counterparty1Id"));
+        expect(res.body.InvoiceBody.InvoiceNumber).to.equal(bru.getCollectionVar("salesInvoiceId"));
     })
 }

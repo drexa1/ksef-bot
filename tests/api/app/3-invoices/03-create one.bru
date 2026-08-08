@@ -25,10 +25,6 @@ script:pre-request {
     req.setBody(body);
 }
 tests {
-    test("debug response", function() {
-        console.log(res.status);
-        console.log(res.body);
-    });
     test("Create a sales invoice for the first time should succeed", function() {
         expect(res.status).to.equal(201);
     })
