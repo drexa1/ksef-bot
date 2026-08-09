@@ -24,6 +24,6 @@ jobs:
       - name: Install dependencies
         run: npm install
       - name: Database teardown
-        run: npm run db:remote:teardown
+        run: npm run "⚠ db:remote:teardown"
       - name: Database create
-        run: npm run db:remote:create
+        run: npm run "⚠ db:remote:create"
