@@ -1,0 +1,13 @@
+get {
+    url: {{baseUrl}}/app/taxes?from={{taxRecordFrom}}&to={{taxRecordTo}}
+}
+headers {
+    Content-Type: application/json
+    X-API-Key: {{apiKey}}
+}
+tests {
+    test("List a recently updated counterparty should show the edition", function() {
+        console.info(res.body);
+        expect(res.body.notes).to.equal("edited");
+    })
+}

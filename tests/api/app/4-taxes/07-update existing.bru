@@ -1,0 +1,16 @@
+put {
+    url: {{baseUrl}}/app/taxes
+}
+headers {
+    Content-Type: application/json
+    X-API-Key: {{apiKey}}
+}
+script:pre-request {
+    req.setBody(JSON.stringify({ from: bru.getCollectionVar("taxRecordFrom"), to: bru.getCollectionVar("taxRecordTo"), notes: "edited" }));
+}
+tests {
+    test("Update a recently created tax record should succeed", function() {
+        expect(res.body.from).to.equal(bru.getCollectionVar("taxRecordFrom"));
+        expect(res.body.to).to.equal(bru.getCollectionVar("taxRecordTo"));
+    })
+}
