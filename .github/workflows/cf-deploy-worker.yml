@@ -31,6 +31,20 @@ jobs:
           API_KEY=${API_KEY}
           TEST_MODE=true
           EOF
+
+      - name: Start worker
+        run: |
+          npm run worker:dev > worker.log 2>&1 &
+          npx wait-on http://localhost:3001
+      - name: Call users endpoint
+        run: |
+          curl -v \
+            -H "X-API-Key: ${API_KEY}" \
+            http://localhost:3001/app/users
+      - name: Worker log
+        if: always()
+        run: cat worker.log
+
       - name: Run tests
         run: npm run api:tests:dev
       - name: Deploy worker
