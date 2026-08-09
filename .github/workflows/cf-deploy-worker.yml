@@ -32,7 +32,6 @@ jobs:
           TEST_MODE=true
           EOF
       - name: Run tests
-        if: false
         run: npm run api:tests:dev
       - name: Deploy worker
         run: npm run worker:deploy
