@@ -35,7 +35,7 @@ const withErrorHandling = (routes: Routes): Routes => {
                 console.error(error);
                 if (error instanceof AuthError)
                     return Response.json({ error: error.message, details: error.details }, { status: error.status, headers: corsHeaders });
-                return Response.json({ error: "Internal server error 222" }, { status: 500, headers: corsHeaders });
+                return Response.json({ error: error }, { status: 500, headers: corsHeaders });
             }
         };
     }
