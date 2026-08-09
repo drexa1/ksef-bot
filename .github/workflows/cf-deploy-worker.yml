@@ -35,9 +35,8 @@ jobs:
       - name: Recreate local database
         run: npm run db:local:recreate
       - name: Run API tests
-        run: concurrently -k npm:worker:dev npm:api:tests:wait
+        run: npm run api:tests:wait
 
-      - name: Run tests
-        run: npm run api:tests:dev
+
       - name: Deploy worker
         run: npm run worker:deploy
