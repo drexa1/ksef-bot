@@ -88,9 +88,10 @@ export class Repository {
     }
 
     async delete(table: string, filters: Record<string, any>): Promise<DBResult> {
-        const conditions = Object.keys(filters).map(field => `"${field}" = ?`).join(" AND ");
-        const values = Object.values(filters);
-        const sql = `DELETE FROM ${table} WHERE ${conditions}`;
+        const entries = Object.entries(filters);
+        const where = entries.length > 0 ? ` WHERE ${entries.map(([field]) => `"${field}" = ?`).join(" AND ")}` : "";
+        const values = entries.map(([, value]) => value);
+        const sql = `DELETE FROM ${table}${where}`;
         return this.driver.delete(sql, values);
     }
 }

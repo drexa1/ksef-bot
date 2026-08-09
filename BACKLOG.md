@@ -26,9 +26,8 @@
 - [x] Run tests suites as collection  
 - [x] Test collection for users  
 - [x] Test collection for counterparties  
-- [ ] Test collection for application invoices  
-- [ ] Test collection for tax record  
-- [ ] Test collection for ksef invoices  
+- [x] Test collection for application invoices  
+- [ ] Test collection for tax record   
 - [ ] Bank client PoC  
 - [ ] Post invoice  
 - [ ] WhatsApp bot  

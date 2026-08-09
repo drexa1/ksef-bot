@@ -30,8 +30,8 @@ export async function get(req: Request, env: Env): Promise<Response> {
     const rows = from && to
         ? await getRepo(env).get<AppTaxRecordDb>("taxes", { from: from.toISOString(), to: to.toISOString(), ...filters })
         : await getRepo(env).getAll<AppTaxRecordDb>("taxes", filters);
-    if (rows === null)
-        return Response.json({ success: false, error: "Tax record not found", from: from, to: to }, { status: 404 });
+    if (!rows)
+        return Response.json({ success: false, error: "Tax records not found", from: from, to: to }, { status: 404 });
     const result = Array.isArray(rows)
         ? rows.map(row => ({ ...row, expensesSummary: JSON.parse(row.expensesSummary) }))
         : { ...rows, expensesSummary: JSON.parse(rows.expensesSummary) };
@@ -88,7 +88,7 @@ async function computeObligations(env: Env, appUser: AppUser, taxRecord: AppTaxR
     const healthInsuranceRate = taxRecord.healthInsuranceRate ?? env.DEFAULT_HEALTH_INSURANCE_RATE;
     const healthContribution = healthInsuranceBase * healthInsuranceRate / 100;
     // Expenses deductions
-    const expensesInvoices = await fetchKsefInvoices(env, appUser, "Subject2", from, to);
+    const expensesInvoices = env.TEST_MODE ? [] : await fetchKsefInvoices(env, appUser, "Subject2", from, to);
     const expensesSummary = expensesInvoices.map((invoice) => ({
         InvoiceNumber: invoice.InvoiceBody?.InvoiceNumber,
         TotalGrossAmount: invoice.InvoiceBody?.TotalGrossAmount,
@@ -127,7 +127,7 @@ export async function put(req: Request, env: Env): Promise<Response> {
     }, { ownerId: appUser.email });
     if (result.changes === 0)
         return Response.json({ success: false, error: "Tax record not found", from: from, to: to }, { status: 404 });
-    return Response.json({ success: true, from: from, to: to }, { status: result.success ? 200 : 400 });
+    return Response.json({ success: true, changes: result.changes, from: from, to: to }, { status: result.success ? 200 : 400 });
 }
 
 export async function del(req: Request, env: Env): Promise<Response> {
@@ -143,6 +143,6 @@ export async function del(req: Request, env: Env): Promise<Response> {
     const filters = appUser.tier === 0 ? {} : { ownerId: appUser.email };
     const result = await getRepo(env).delete("taxes", { from: from.toISOString(), to: to.toISOString(), ...filters });
     if (result.changes === 0)
-        return Response.json({ success: false, error: "Tax record not found", from: from, to: to }, { status: 404 });
-    return Response.json({ success: result.success, from: from, to: to }, { status: result.success ? 200 : 400 });
+        return Response.json({ success: false, error: "Tax records not found", from: from, to: to }, { status: 404 });
+    return Response.json({ success: result.success, changes: result.changes, from: from, to: to }, { status: 200 });
 }

@@ -4,7 +4,7 @@
 @invoiceId = eFV/2026/06/29/1/KSeF
 
 ### Delete non-existing invoice
-DELETE {{baseUrl}}/app/counterparties?id=missing
+DELETE {{baseUrl}}/app/invoices?id=missing
 Content-Type: application/json
 X-API-Key: {{apiKey}}
 

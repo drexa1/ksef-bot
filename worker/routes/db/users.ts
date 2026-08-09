@@ -14,12 +14,15 @@ export async function get(req: Request, env: Env): Promise<Response> {
     if (appUser.tier !== 0)
         return new Response("Unauthorized", { status: 401, headers: corsHeaders });
     const url = new URL(req.url);
-    const email = url.searchParams.get("email");
-    const rows = email
-        ? await getRepo(env).get<AppUser>("users", { email })
+    const filters: Record<string, any> ={};
+    for (const [key, value] of url.searchParams.entries()) {
+        filters[key] = value;
+    }
+    const rows = Object.keys(filters).length
+        ? await getRepo(env).get<AppUser>("users", filters)
         : await getRepo(env).getAll<AppUser>("users");
-    if (rows === null)
-        return Response.json({ success: false, error: "User not found", email: email }, { status: 404 });
+    if (!rows)
+        return Response.json({ success: false, error: "Users not found", filters: filters }, { status: 404 });
     return Response.json(rows, { status: 200 });
 }
 
@@ -56,18 +59,21 @@ export async function put(req: Request, env: Env): Promise<Response> {
     }, { email: email });
     if (result.changes === 0)
         return Response.json({ success: false, error: "User not found", email: email }, { status: 404 });
-    return Response.json({ success: true, email: email }, { status: result.success ? 200 : 400 });
+    return Response.json({ success: true, changes: result.changes, email: email }, { status: result.success ? 200 : 400 });
 }
 
 export async function del(req: Request, env: Env): Promise<Response> {
     const appUser = await getAuthUser(req, env);
-    // Allow to update users only to superadmin
+    // Only superadmins can delete users
     if (appUser.tier !== 0)
-        return new Response("Unauthorized", { status: 401, headers: corsHeaders });
+        return new Response("Unauthorized", {status: 401, headers: corsHeaders });
     const url = new URL(req.url);
-    const email = url.searchParams.get("email")!;
-    const result = await getRepo(env).delete("users", { email });
+    const filters: Record<string, any> = {};
+    for (const [key, value] of url.searchParams.entries()) {
+        filters[key] = value;
+    }
+    const result = await getRepo(env).delete("users", filters);
     if (result.changes === 0)
-        return Response.json({ success: false, error: "User not found", email: email }, { status: 404 });
-    return Response.json({ success: result.success, email: email }, { status: result.success ? 200 : 404 });
+        return Response.json({ success: false, error: "Users not found", filters }, { status: 404 });
+    return Response.json({ success: result.success, changes: result.changes, ...filters }, { status: 200 });
 }

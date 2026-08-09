@@ -12,14 +12,16 @@ function getRepo(env: Env): Repository {
 export async function get(req: Request, env: Env): Promise<Response> {
     const appUser = await getAuthUser(req, env);
     const url = new URL(req.url);
-    const id = url.searchParams.get("id");
     // Allow to fetch only owned counterparties (except for superadmin)
-    const filters = appUser.tier === 0 ? {} : { ownerId: appUser.email };
-    const rows = id
-        ? await getRepo(env).get<AppCounterparty>("counterparties", { id, ...filters })
-        : await getRepo(env).getAll<AppCounterparty>("counterparties", filters);
-    if (rows === null)
-        return Response.json({ success: false, error: "Counterparty not found", id: id }, { status: 404 });
+    const filters: Record<string, any> = appUser.tier === 0 ? {} : { ownerId: appUser.email };
+    for (const [key, value] of url.searchParams.entries()) {
+        filters[key] = value;
+    }
+    const rows = Object.keys(filters).length
+        ? await getRepo(env).get<AppCounterparty>("counterparties", filters)
+        : await getRepo(env).getAll<AppCounterparty>("counterparties");
+    if (!rows)
+        return Response.json({ success: false, error: "Counterparties not found", filters }, { status: 404 });
     return Response.json(rows, { status: 200 });
 }
 
@@ -50,17 +52,20 @@ export async function put(req: Request, env: Env): Promise<Response> {
     }, { id, ownerId: appUser.email });
     if (result.changes === 0)
         return Response.json({ success: false, error: "Counterparty not found", id: id }, { status: 404 });
-    return Response.json({ success: true, id: id }, { status: result.success ? 200 : 400 });
+    return Response.json({ success: true, changes: result.changes, id: id }, { status: result.success ? 200 : 400 });
 }
 
 export async function del(req: Request, env: Env): Promise<Response> {
     const appUser = await getAuthUser(req, env);
     const url = new URL(req.url);
-    const id = url.searchParams.get("id")!;
     // Allow to delete only owned counterparties (except for superadmin)
-    const filters = appUser.tier === 0 ? {} : { ownerId: appUser.email };
-    const result = await getRepo(env).delete("counterparties", { id, ...filters });
+    const filters: Record<string, any> = {};
+    for (const [key, value] of url.searchParams.entries()) {
+        filters[key] = value;
+    }
+    if (appUser.tier !== 0) filters.ownerId = appUser.email;
+    const result = await getRepo(env).delete("counterparties", filters);
     if (result.changes === 0)
-        return Response.json({ success: false, error: "Counterparty not found", id: id }, { status: 404 });
-    return Response.json({ success: result.success, id: id }, { status: result.success ? 200 : 404 });
+        return Response.json({ success: false, error: "Counterparties not found", filters }, { status: 404 });
+    return Response.json({ success: result.success, changes: result.changes, ...filters }, { status: 200 });
 }

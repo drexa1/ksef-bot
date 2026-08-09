@@ -15,15 +15,16 @@ function getRepo(env: Env): Repository {
 export async function get(req: Request, env: Env): Promise<Response> {
     const appUser = await getAuthUser(req, env);
     const url = new URL(req.url);
-    const id = url.searchParams.get("id");
     // Allow to fetch only owned invoices (except for superadmin)
-    const filters = appUser.tier === 0 ? {} : { ownerId: appUser.email };
-    const rows = id
-        ? await getRepo(env).get<AppInvoice>("invoices", { id, ...filters })
-        : await getRepo(env).getAll<AppInvoice>("invoices", filters);
+    const filters: Record<string, any> = appUser.tier === 0 ? {} : { ownerId: appUser.email };
+    for (const [key, value] of url.searchParams.entries()) {
+        filters[key] = value;
+    }
+    const rows = Object.keys(filters).length
+        ? await getRepo(env).get<AppInvoice>("invoices", filters)
+        : await getRepo(env).getAll<AppInvoice>("invoices");
     if (!rows)
-        return Response.json({  success: false, error: "Invoice not found", id: id }, { status: 404 });
-    // Return the JSON formatted
+        return Response.json({ success: false, error: "Invoices not found", filters }, { status: 404 });
     const result = Array.isArray(rows) ? rows.map(row => JSON.parse(row.jsonData)) : JSON.parse(rows.jsonData);
     return Response.json(result, { status: 200 });
 }
@@ -52,18 +53,22 @@ export async function put(_req: Request, _env: Env): Promise<Response> {
 export async function del(req: Request, env: Env): Promise<Response> {
     const appUser = await getAuthUser(req, env);
     const url = new URL(req.url);
-    const id = url.searchParams.get("id")!;
     // Allow to delete only owned invoices (except for superadmin)
-    const filters = appUser.tier === 0 ? {} : { ownerId: appUser.email };
-    const result = await getRepo(env).delete("invoices", { id, ...filters });
+    const filters: Record<string, any> = {};
+    for (const [key, value] of url.searchParams.entries()) {
+        filters[key] = value;
+    }
+    if (appUser.tier !== 0) filters.ownerId = appUser.email;
+    const result = await getRepo(env).delete("invoices", filters);
     if (result.changes === 0)
-        return Response.json({ success: false, error: "Invoice not found", id: id }, { status: 404 });
-    return Response.json({ success: result.success, id: id }, { status: result.success ? 200 : 400 });
+        return Response.json({ success: false, error: "Invoices not found", filters }, { status: 404 });
+    return Response.json({ success: result.success, changes: result.changes, ...filters }, { status: 200 });
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Invoice record creation
 // ---------------------------------------------------------------------------------------------------------------------
+
 const parser = new XMLParser({ ignoreAttributes: false, removeNSPrefix: true, parseTagValue: false, textNodeName: "value", attributeNamePrefix: "" });
 export async function invoiceFromXml(env: Env, xmlContent: string, authUser: AppUser, notes?: string): Promise<AppInvoice & { ownerId: string }> {
     // Parse XML
@@ -97,9 +102,6 @@ export async function invoiceFromXml(env: Env, xmlContent: string, authUser: App
     };
 }
 
-// ---------------------------------------------------------------------------------------------------------------------
-// Counterparty helpers during invoice creation
-// ---------------------------------------------------------------------------------------------------------------------
 async function getOrCreateCounterparty(env: Env, counterpartyParts: {
     ownerId: string
     name: string

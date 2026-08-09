@@ -25,10 +25,7 @@ script:pre-request {
     req.setBody(body);
 }
 tests {
-    test("Create an expenses invoice for the first time should succeed", function() {
-        expect(res.status).to.equal(201);
+    test("Second attempt to create an existing expenses invoice should trigger PK violation error", function() {
+        expect(res.status).to.equal(409);
     })
-}
-script:post-response {
-    bru.setCollectionVar("expensesInvoiceId", res.body.id);
 }

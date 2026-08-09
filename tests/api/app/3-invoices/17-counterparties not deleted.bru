@@ -1,0 +1,22 @@
+get {
+    url: {{baseUrl}}/app/counterparties
+}
+headers {
+    Content-Type: application/json
+    X-API-Key: {{apiKey}}
+}
+script:pre-request {
+    const counterpartyIds = new Set();
+    counterpartyIds.add(bru.getCollectionVar("salesInvoiceSellerId"));
+    counterpartyIds.add(bru.getCollectionVar("salesInvoiceBuyerId"));
+    counterpartyIds.add(bru.getCollectionVar("expensesInvoiceSellerId"));
+    counterpartyIds.add(bru.getCollectionVar("expensesInvoiceBuyerId"));
+    bru.setCollectionVar("createdCounterparties", JSON.stringify([...counterpartyIds]));
+}
+tests {
+    test("List all counterparties created are still existing", function() {
+        console.info(res.body);
+        const createdCounterparties = JSON.parse(bru.getCollectionVar("createdCounterparties"));
+        expect(res.body.length).to.equal(createdCounterparties.length);
+    })
+}

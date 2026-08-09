@@ -1,0 +1,21 @@
+post {
+    url: {{baseUrl}}/app/taxes
+}
+headers {
+    Content-Type: application/json
+    X-API-Key: {{apiKey}}
+}
+script:pre-request {
+    const fs = require("fs");
+    const body = fs.readFileSync("../testresources/taxes/tax-record-1.json", "utf8");
+    req.setBody(JSON.parse(body));
+}
+tests {
+    test("Create a tax record for the first time should succeed", function() {
+        expect(res.status).to.equal(201);
+    })
+}
+script:post-response {
+    bru.setCollectionVar("taxRecordFrom", res.body.from);
+    bru.setCollectionVar("taxRecordTo", res.body.to);
+}

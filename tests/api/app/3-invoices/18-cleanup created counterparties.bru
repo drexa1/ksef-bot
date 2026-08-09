@@ -1,0 +1,14 @@
+delete {
+    url: {{baseUrl}}/app/counterparties
+}
+headers {
+    Content-Type: application/json
+    X-API-Key: {{apiKey}}
+}
+tests {
+    test("Delete all counterparties", function() {
+        console.info(res.body);
+        const createdCounterparties = JSON.parse(bru.getCollectionVar("createdCounterparties"));
+        expect(res.body.changes).to.equal(createdCounterparties.length);
+    })
+}

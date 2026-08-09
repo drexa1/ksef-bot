@@ -1,0 +1,12 @@
+get {
+    url: {{baseUrl}}/app/taxes?from=missing&to=missing
+}
+headers {
+    Content-Type: application/json
+    X-API-Key: {{apiKey}}
+}
+tests {
+    test("List non-existing tax records raise invalid dates", function() {
+        expect(res.status).to.equal(400);
+    })
+}

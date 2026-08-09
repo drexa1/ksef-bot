@@ -1,0 +1,31 @@
+post {
+    url: {{baseUrl}}/app/invoices
+    body: multipart-form
+    auth: inherit
+}
+headers {
+    Content-Type: application/json
+    X-API-Key: {{apiKey}}
+}
+script:pre-request {
+    const fs = require("fs");
+    const xml = fs.readFileSync("../testresources/ksef/expenses/5272710089-20260714-85064E400000-C7.xml", "utf8");
+    const body =
+        `--ksefInvoice\n` +
+        `Content-Disposition: form-data; name="file"; filename="expenses-invoice-1.xml"\n` +
+        `Content-Type: application/xml\n` +
+        `\n` +
+        `${xml}\n` +
+        `--ksefInvoice\n` +
+        `Content-Disposition: form-data; name="notes"\n` +
+        `\n` +
+        `Test notes\n` +
+        `--ksefInvoice--`;
+    req.setHeader("Content-Type", "multipart/form-data; boundary=ksefInvoice");
+    req.setBody(body);
+}
+tests {
+    test("Create an expenses invoice for the first time should succeed", function() {
+        expect(res.status).to.equal(201);
+    })
+}

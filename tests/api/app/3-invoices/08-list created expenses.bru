@@ -10,3 +10,7 @@ tests {
         expect(res.body.InvoiceBody.InvoiceNumber).to.equal(bru.getCollectionVar("expensesInvoiceId"));
     })
 }
+script:post-response {
+     bru.setCollectionVar("expensesInvoiceSellerId", res.body.Seller.IdentificationData.NIP);
+     bru.setCollectionVar("expensesInvoiceBuyerId", res.body.Buyer.IdentificationData.NIP);
+}

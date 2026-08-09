@@ -7,6 +7,11 @@ headers {
 }
 tests {
     test("List the recently created sales invoice", function() {
+        console.info(res.body);
         expect(res.body.InvoiceBody.InvoiceNumber).to.equal(bru.getCollectionVar("salesInvoiceId"));
     })
+}
+script:post-response {
+     bru.setCollectionVar("salesInvoiceSellerId", res.body.Seller.IdentificationData.NIP);
+     bru.setCollectionVar("salesInvoiceBuyerId", res.body.Buyer.IdentificationData.NIP);
 }
