@@ -5,6 +5,8 @@ on:
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+  CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+  CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
 
 jobs:
   deploy:
@@ -21,8 +23,7 @@ jobs:
           cache: npm
       - name: Install dependencies
         run: npm install
-      - name: Recreate database
-        run: npm run db:remote:recreate
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      - name: Database teardown
+        run: npm run db:remote:teardown
+      - name: Database create
+        run: npm run db:remote:create
