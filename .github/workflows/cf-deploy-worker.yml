@@ -31,16 +31,6 @@ jobs:
           API_KEY=${API_KEY}
           TEST_MODE=true
           EOF
-      - name: Check .dev.vars
-        run: |
-          sed 's/^API_KEY=.*/API_KEY=***REDACTED***/' .dev.vars
-          echo "API_KEY is set:"
-          if grep -q '^API_KEY=.' .dev.vars; then
-            echo "yes"
-          else
-            echo "NO"
-            exit 1
-          fi
       - name: Run tests
         run: npm run api:tests:dev
       - name: Deploy worker

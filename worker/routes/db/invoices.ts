@@ -42,7 +42,8 @@ export async function post(req: Request, env: Env): Promise<Response> {
     } catch (error) {
         if (String(error).includes("UNIQUE constraint failed"))
             return Response.json({ success: false, error: "Invoice already exists", id: record.id }, { status: 409 });
-        throw error;
+        else
+            throw error;
     }
 }
 

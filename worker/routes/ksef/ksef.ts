@@ -48,9 +48,8 @@ async function saveInvoices(env: Env, invoices: Awaited<AppInvoice & { ownerId: 
             if (String(error).includes("UNIQUE constraint failed")) {
                 console.warn("Invoice already existed in the app:", invoice.id);
                 existing.push(invoice.id);
-                continue;
-            }
-            throw error;
+            } else
+                throw error;
         }
     }
 }
