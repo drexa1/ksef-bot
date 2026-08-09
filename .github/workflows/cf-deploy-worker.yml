@@ -32,17 +32,17 @@ jobs:
           TEST_MODE=true
           EOF
 
-      - name: Start worker
+      - name: Start worker and run tests
         run: |
           npm run worker:dev > worker.log 2>&1 &
-          echo $! > worker.pid
-          sleep 5
+          WORKER_PID=$!
+          npx wait-on http://localhost:3001
+          npm run api:tests:bruno
+          TEST_EXIT=$?
+          kill $WORKER_PID || true
+          echo "===== WORKER LOG ====="
           cat worker.log
-      - name: Run API tests
-        run: npm run api:tests:bruno
-      - name: Worker logs
-        if: always()
-        run: cat worker.log
+          exit $TEST_EXIT
 
       - name: Deploy worker
         run: npm run worker:deploy
