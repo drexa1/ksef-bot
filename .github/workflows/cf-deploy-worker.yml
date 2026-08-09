@@ -26,7 +26,6 @@ jobs:
           cache: npm
       - name: Install dependencies
         run: npm install
-
       - name: Create CI .dev.vars
         run: |
           echo "ENVIRONMENT=dev" > .dev.vars
@@ -34,6 +33,5 @@ jobs:
           echo "TEST_MODE=true" >> .dev.vars
       - name: Run API tests
         run: npm run api:tests:dev
-
       - name: Deploy worker
         run: npm run worker:deploy
