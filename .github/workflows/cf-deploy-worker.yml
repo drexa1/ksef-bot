@@ -7,8 +7,6 @@ env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
   CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
   CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-  ENVIRONMENT: dev
-  TEST_MODE: true
   API_KEY: ${{ secrets.API_KEY }}
 
 jobs:
@@ -26,6 +24,13 @@ jobs:
           cache: npm
       - name: Install dependencies
         run: npm install
+      - name: Create Bruno config
+        run: |
+          cat > .dev.vars <<EOF
+          ENVIRONMENT=${ENVIRONMENT}
+          API_KEY=${API_KEY}
+          TEST_MODE=true
+          EOF
       - name: Run tests
         run: npm run api:tests:dev
       - name: Deploy worker
