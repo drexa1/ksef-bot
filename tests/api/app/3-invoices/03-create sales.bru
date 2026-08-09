@@ -10,25 +10,20 @@ headers {
 script:pre-request {
     const fs = require("fs");
     const filePath = "../resources/ksef/sales/6751577878-20260629-514966000000-3F.xml";
-     // For CI skip, as this samples are not versioned
-    if (!fs.existsSync(filePath)) {
-        req.setSkipRequest(true);
-    } else {
-        const xml = fs.readFileSync(filePath, "utf8");
-        const body =
-            `--ksefInvoice\n` +
-            `Content-Disposition: form-data; name="file"; filename="sales-invoice-1.xml"\n` +
-            `Content-Type: application/xml\n` +
-            `\n` +
-            `${xml}\n` +
-            `--ksefInvoice\n` +
-            `Content-Disposition: form-data; name="notes"\n` +
-            `\n` +
-            `Test notes\n` +
-            `--ksefInvoice--`;
-        req.setHeader("Content-Type", "multipart/form-data; boundary=ksefInvoice");
-        req.setBody(body);
-    }
+    const xml = fs.readFileSync(filePath, "utf8");
+    const body =
+        `--ksefInvoice\n` +
+        `Content-Disposition: form-data; name="file"; filename="sales-invoice-1.xml"\n` +
+        `Content-Type: application/xml\n` +
+        `\n` +
+        `${xml}\n` +
+        `--ksefInvoice\n` +
+        `Content-Disposition: form-data; name="notes"\n` +
+        `\n` +
+        `Test notes\n` +
+        `--ksefInvoice--`;
+    req.setHeader("Content-Type", "multipart/form-data; boundary=ksefInvoice");
+    req.setBody(body);
 }
 tests {
     test("Create a sales invoice for the first time should succeed", function() {
