@@ -27,7 +27,7 @@
 - [x] Test collection for users  
 - [x] Test collection for counterparties  
 - [x] Test collection for application invoices  
-- [ ] Test collection for tax record   
+- [x] Test collection for tax record   
 - [ ] Bank client PoC  
 - [ ] Post invoice  
 - [ ] WhatsApp bot  
