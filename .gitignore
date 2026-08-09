@@ -5,6 +5,7 @@ dist
 node_modules
 out
 target
+tests/api/collection.bru
 tests/testresources/ksef
 .dev.vars
 API_KEY
