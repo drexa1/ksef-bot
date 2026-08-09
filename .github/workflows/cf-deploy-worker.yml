@@ -24,7 +24,7 @@ jobs:
           cache: npm
       - name: Install dependencies
         run: npm install
-      - name: Create Bruno config
+      - name: Create CI config
         run: |
           cat > .dev.vars <<EOF
           ENVIRONMENT=${ENVIRONMENT}
