@@ -5,6 +5,8 @@ on:
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+  API_KEY: ${{ secrets.API_KEY }}
+  TEST_MODE: true
 
 jobs:
   deploy:
