@@ -34,7 +34,6 @@ jobs:
       - name: Check .dev.vars
         run: |
           sed 's/^API_KEY=.*/API_KEY=***REDACTED***/' .dev.vars
-          echo ""
           echo "API_KEY is set:"
           if grep -q '^API_KEY=.' .dev.vars; then
             echo "yes"
