@@ -1,0 +1,13 @@
+delete {
+    url: {{baseUrl}}/app/taxes?from={{taxRecordFrom}}&to={{taxRecordTo}}
+}
+headers {
+    Content-Type: application/json
+    X-API-Key: {{apiKey}}
+}
+tests {
+    test("Delete a recently updated tax record should succeed", function() {
+        expect(res.body.from).to.equal(bru.getCollectionVar("taxRecordFrom"));
+        expect(res.body.to).to.equal(bru.getCollectionVar("taxRecordTo"));
+    })
+}
