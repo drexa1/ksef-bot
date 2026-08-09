@@ -27,9 +27,9 @@ jobs:
       - name: Create CI config
         run: |
           cat > .dev.vars <<EOF
-          ENVIRONMENT=${ENVIRONMENT}
-          API_KEY=${API_KEY}
+          ENVIRONMENT=dev
           TEST_MODE=true
+          API_KEY=${API_KEY}
           EOF
 
       - name: Start worker and run tests
