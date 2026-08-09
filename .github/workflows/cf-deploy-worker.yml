@@ -32,18 +32,12 @@ jobs:
           TEST_MODE=true
           EOF
 
-      - name: Start worker
+      - name: Verify local D1
         run: |
-          npm run worker:dev > worker.log 2>&1 &
-          npx wait-on http://localhost:3001
-      - name: Call users endpoint
-        run: |
-          curl -v \
-            -H "X-API-Key: ${API_KEY}" \
-            http://localhost:3001/app/users
-      - name: Worker log
-        if: always()
-        run: cat worker.log
+          npx wrangler d1 execute ksef-bot \
+            --config wrangler.worker.toml \
+            --local \
+            --command='SELECT email, tier, firstName FROM users WHERE tier = 0'
 
       - name: Run tests
         run: npm run api:tests:dev
