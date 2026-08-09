@@ -30,8 +30,10 @@
 - [x] Test collection for tax record   
 - [ ] Bank client PoC  
 - [ ] Post invoice  
+- [ ] Rest test for posting an invoice  
 - [ ] WhatsApp bot  
 - [ ] Review security architecture  
+- [ ] Scheduling  
 - [ ] Ultra simple frontend  
 - [ ] SSO/Enrolment  
 - [ ] GIT-version on deploy  
