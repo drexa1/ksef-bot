@@ -34,18 +34,6 @@ jobs:
 
       - name: Recreate local database
         run: npm run db:local:recreate
-      - name: Verify local database
-        run: |
-          echo "=== USERS ==="
-          npx wrangler d1 execute ksef-bot \
-            --config wrangler.worker.toml \
-            --local \
-            --command='SELECT email, tier, firstName FROM users WHERE tier = 0'
-          echo "=== TABLES ==="
-          npx wrangler d1 execute ksef-bot \
-            --config wrangler.worker.toml \
-            --local \
-            --command="SELECT name FROM sqlite_master WHERE type='table' ORDER BY name"
       - name: Run API tests
         run: concurrently -k npm:worker:dev npm:api:tests:wait
 

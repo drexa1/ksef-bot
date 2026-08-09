@@ -38,6 +38,7 @@
     "dependencies": {
         "@sentry/cli": "latest",
         "asn1js": "latest",
+        "concurrently": "latest",
         "fast-xml-parser": "latest",
         "p-retry": "latest",
         "pkijs": "latest",
@@ -50,7 +51,6 @@
         "@sentry/tracing": "latest",
         "@types/bootstrap": "latest",
         "@usebruno/cli": "latest",
-        "concurrently": "latest",
         "typescript": "latest",
         "vitest": "latest",
         "wait-on": "latest",
