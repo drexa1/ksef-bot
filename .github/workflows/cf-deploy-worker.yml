@@ -32,11 +32,23 @@ jobs:
           TEST_MODE=true
           EOF
 
-      - name: Recreate local database
-        run: npm run db:local:recreate
+      - name: Start worker
+        run: |
+          npm run worker:dev > worker.log 2>&1 &
+          echo $! > worker.pid
+          for i in {1..30}; do
+            if curl -fsS http://localhost:3001/health >/dev/null 2>&1; then
+              echo "Worker is ready"
+              exit 0
+            fi
+            echo "Waiting for worker... ($i/30)"
+            sleep 1
+          done
+          echo "Worker failed to start:"
+          cat worker.log
+          exit 1
       - name: Run API tests
-        run: npm run api:tests:wait
-
+        run: npm run api:tests:bruno
 
       - name: Deploy worker
         run: npm run worker:deploy
