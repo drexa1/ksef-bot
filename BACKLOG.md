@@ -28,6 +28,7 @@
 - [x] Test collection for counterparties  
 - [x] Test collection for application invoices  
 - [x] Test collection for tax record  
+- [ ] Test invoices PII  
 - [ ] Fix running bruno tests on CI  
 - [ ] Bank client PoC  
 - [ ] Post invoice  
