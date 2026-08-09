@@ -1,9 +1,12 @@
 put {
-    url: {{baseUrl}}/app/taxes?from=missing&to=missing
+    url: {{baseUrl}}/app/taxes
 }
 headers {
     Content-Type: application/json
     X-API-Key: {{apiKey}}
+}
+script:pre-request {
+    req.setBody(JSON.stringify({ from: "missing", to: "missing", notes: "nevermind" }));
 }
 tests {
     test("Update a non-existing tax record raise invalid dates", function() {
