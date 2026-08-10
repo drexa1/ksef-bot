@@ -28,10 +28,10 @@ jobs:
         run: npm install
       - name: Create CI .dev.vars
         run: |
-          echo "ENVIRONMENT=dev" > .dev.vars
-          echo "API_KEY=test"   >> .dev.vars
-          echo "TEST_MODE=true" >> .dev.vars
-      - name: Run API tests
+          echo "ENVIRONMENT=dev"     > .dev.vars
+          echo "API_KEY=${API_KEY}" >> .dev.vars
+          echo "TEST_MODE=true"     >> .dev.vars
+      - name: API tests
         run: npm run api:tests:dev
       - name: Deploy worker
         run: npm run worker:deploy
