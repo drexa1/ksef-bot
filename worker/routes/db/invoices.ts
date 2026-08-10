@@ -70,10 +70,11 @@ export async function del(req: Request, env: Env): Promise<Response> {
 // Invoice record creation
 // ---------------------------------------------------------------------------------------------------------------------
 
-const parser = new XMLParser({ ignoreAttributes: false, removeNSPrefix: true, parseTagValue: false, textNodeName: "value", attributeNamePrefix: "" });
+export const xmlParser = new XMLParser({ ignoreAttributes: false, removeNSPrefix: true, parseTagValue: false, textNodeName: "value", attributeNamePrefix: "" });
+
 export async function invoiceFromXml(env: Env, xmlContent: string, authUser: AppUser, notes?: string): Promise<AppInvoice & { ownerId: string }> {
     // Parse XML
-    const invoiceXml = parser.parse(xmlContent).Faktura;
+    const invoiceXml = xmlParser.parse(xmlContent).Faktura;
     const ksefInvoiceAvroSchema = await env.assets.fetch(new URL(env.KSEF_INVOICE_SCHEMA)).then((res) => res.json());
     const ksefInvoice = dtoFromAliases(invoiceXml, ksefInvoiceAvroSchema);
     // Find or create counterparties

@@ -5,19 +5,10 @@ import {get as healthGET} from "./routes/health/health";
 import {corsHeaders, whoami as whoamiGET} from "./auth";
 import {get as salesGET, post as salesPOST} from "./routes/ksef/ksef.sales";
 import {get as expensesGET} from "./routes/ksef/ksef.expenses";
-import {del as usersDELETE, get as usersGET, post as usersPOST, put as usersPUT} from "./routes/db/users";
-import {
-    del as counterpartiesDELETE,
-    get as counterpartiesGET,
-    post as counterpartiesPOST,
-    put as counterpartiesPUT
-} from "./routes/db/counterparties";
-import {
-    del as invoicesDELETE,
-    get as invoicesGET,
-    post as invoicesPOST,
-    put as invoicesPUT
-} from "./routes/db/invoices";
+import {get as usersGET, post as usersPOST, put as usersPUT, del as usersDELETE} from "./routes/db/users";
+import {get as counterpartiesGET, post as counterpartiesPOST, put as counterpartiesPUT, del as counterpartiesDELETE} from "./routes/db/counterparties";
+import {get as invoicesGET, post as invoicesPOST, put as invoicesPUT, del as invoicesDELETE} from "./routes/db/invoices";
+import {post as piiPOST} from "./routes/db/invoices-pii";
 import {del as taxesDELETE, get as taxesGET, post as taxesPOST, put as taxesPUT} from "./routes/db/taxes";
 import {AuthError} from "./types/auth";
 
@@ -55,6 +46,7 @@ export const routes: Record<string, Routes> =  {
     "/app/users":          withErrorHandling({ GET: usersGET, POST: usersPOST, PUT: usersPUT, DELETE: usersDELETE }),
     "/app/counterparties": withErrorHandling({ GET: counterpartiesGET, POST: counterpartiesPOST, PUT: counterpartiesPUT, DELETE: counterpartiesDELETE }),
     "/app/invoices":       withErrorHandling({ GET: invoicesGET, POST: invoicesPOST, PUT: invoicesPUT, DELETE: invoicesDELETE }),
+    "/app/invoices/pii":   withErrorHandling({ POST: piiPOST }),
     "/app/taxes":          withErrorHandling({ GET: taxesGET, POST: taxesPOST, PUT: taxesPUT, DELETE: taxesDELETE })
 };
 
