@@ -1,15 +1,6 @@
 import {Env} from "../worker";
 
-/**
- * Intercepts calls to render the OpenAPI spec, to decide if we share experimental endpoints.
- */
-let experimentalEndpoints: any;
-export const getOpenApiSpec = (env: Env) => {
-    experimentalEndpoints = env.ENVIRONMENT === "dev";
-    return openApiSpec;
-}
-
-const openApiSpec = {
+export const getOpenApiSpec = (env: Env) => ({
     openapi: "3.0.0",
     info: {
         title: "ksef-bot-api",
@@ -587,7 +578,8 @@ const openApiSpec = {
                 }
             }
         },
-        ...(experimentalEndpoints ? {
+        // Experimental
+        ...(env.ENVIRONMENT === "dev" ? {
             "/app/invoices/pii": {
                 post: {
                     summary: "Anonymize PII in an uploaded XML invoice.",
@@ -637,8 +629,7 @@ const openApiSpec = {
                     }
                 }
             }
-        }
-        : {}),
+        } : {}),
         "/app/counterparties": {
             get: {
                 summary: "List counterparties - Restricted to resources owned by the authenticated user.",
@@ -758,7 +749,7 @@ const openApiSpec = {
             }
         }
     }
-};
+});
 
 export const swaggerHtml = `
 	<!DOCTYPE html>
