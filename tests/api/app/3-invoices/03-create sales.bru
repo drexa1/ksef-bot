@@ -9,7 +9,7 @@ headers {
 }
 script:pre-request {
     const fs = require("fs");
-    const xml = fs.readFileSync("../testresources/ksef/sales/6751577878-20260629-514966000000-3F.xml", "utf8");
+    const xml = fs.readFileSync("../testresources/ksef-pii/sales/6751577878-20260629-514966000000-3F.anonymized.xml", "utf8");
     const body =
         `--ksefInvoice\n` +
         `Content-Disposition: form-data; name="file"; filename="sales-invoice-1.xml"\n` +
