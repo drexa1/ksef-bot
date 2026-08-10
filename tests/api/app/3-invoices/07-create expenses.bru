@@ -9,8 +9,7 @@ headers {
 }
 script:pre-request {
     const fs = require("fs");
-    const filePath = "../testresources/ksef/expenses/5272710089-20260714-85064E400000-C7.xml";
-    const xml = fs.readFileSync(filePath, "utf8");
+    const xml = fs.readFileSync("../testresources/ksef/expenses/5272710089-20260714-85064E400000-C7.xml", "utf8");
     const body =
         `--ksefInvoice\n` +
         `Content-Disposition: form-data; name="file"; filename="expenses-invoice-1.xml"\n` +
@@ -29,4 +28,7 @@ tests {
     test("Create an expenses invoice for the first time should succeed", function() {
         expect(res.status).to.equal(201);
     })
+}
+script:post-response {
+    bru.setCollectionVar("expensesInvoiceId", res.body.id);
 }
