@@ -31,7 +31,7 @@ jobs:
           echo "ENVIRONMENT=dev"     > .dev.vars
           echo "API_KEY=${API_KEY}" >> .dev.vars
           echo "TEST_MODE=true"     >> .dev.vars
-      - name: API tests
+      - name: Run API collections
         run: npm run api:tests:dev
       - name: Deploy worker
         run: npm run worker:deploy
