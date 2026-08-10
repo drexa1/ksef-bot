@@ -39,6 +39,7 @@
         "@sentry/cli": "latest",
         "asn1js": "latest",
         "concurrently": "latest",
+        "fast-xml-builder": "latest",
         "fast-xml-parser": "latest",
         "p-retry": "latest",
         "pkijs": "latest",

@@ -1,14 +1,13 @@
 import {Env} from "../../worker";
 import {xmlParser} from "./invoices";
-
-type XmlNode = Record<string, unknown>;
+import XMLBuilder from "fast-xml-builder";
 
 export async function post(req: Request, _env: Env): Promise<Response> {
     const form = await req.formData();
     const file = form.get("file");
     if (!(file instanceof File))  return new Response("Missing XML file", { status: 400 });
     const salt = form.get("salt")!.toString();
-    const anonymizer = new KSeFXmlAnonymizer(salt);
+    const anonymizer = new XmlAnonymizer(salt);
     const xmlContent = await file.text();
     const anonymizedXml = await anonymizer.anonymize(xmlContent);
     return new Response(anonymizedXml, { status: 200, headers: {
@@ -17,96 +16,83 @@ export async function post(req: Request, _env: Env): Promise<Response> {
     }});
 }
 
-class KSeFXmlAnonymizer {
-    constructor(private readonly salt = "secret-salt") {}
+// ---------------------------------------------------------------------------------------------------------------------
+// PII Anonymizer
+// ---------------------------------------------------------------------------------------------------------------------
+
+class XmlAnonymizer {
+    constructor(private readonly salt: string, private readonly builder = new XMLBuilder({
+        attributesGroupName: ":@",
+        attributeNamePrefix: "",
+        textNodeName: "#text",
+        ignoreAttributes: false,
+        suppressEmptyNode: false,
+        format: true
+    })) {}
 
     async anonymize(xmlContent: string): Promise<string> {
-        const document = xmlParser.parse(xmlContent) as XmlNode[];
-        const anonymized = await this.anonymizeNodes(document, "$");
-        return this.serialize(anonymized);
+        const document = xmlParser.parse(xmlContent);
+        const anonymized = await this.anonymizeValue(document, "$");
+        return this.builder.build(anonymized);
     }
 
-    private async anonymizeNodes(nodes: XmlNode[], path: string): Promise<XmlNode[]> {
-        const result: XmlNode[] = [];
-        for (let i = 0; i < nodes.length; i++) {
-            result.push(await this.anonymizeNode(nodes[i], `${path}[${i}]`));
+    private async anonymizeValue(value: any, path: string): Promise<any> {
+        if (Array.isArray(value))
+            return Promise.all(value.map((item, index) => this.anonymizeValue(item, `${path}[${index}]`)));
+        if (value !== null && typeof value === "object") {
+            const result: Record<string, any> = {};
+            for (const [key, val] of Object.entries(value)) {
+                if (key === ":@" || key === "?xml") {
+                    result[key] = val;
+                    continue;
+                }
+                const currentPath = key === "#text" ? path : `${path}.${key}`;
+                result[key] = await this.anonymizeValue(val, currentPath);
+            }
+            return result;
         }
-        return result;
+        return this.anonymizePrimitive(value, path);
     }
 
-    private async anonymizeNode(node: XmlNode, path: string): Promise<XmlNode> {
-        const result: XmlNode = {};
-        for (const [key, value] of Object.entries(node)) {
-            if (key === ":@") {
-                result[key] = value;
-                continue;
-            }
-            if (key === "#text") {
-                result[key] = await this.anonymizeText(String(value), path);
-                continue;
-            }
-            if (Array.isArray(value)) {
-                result[key] = await this.anonymizeNodes(value as XmlNode[], `${path}.${key}`);
-                continue;
-            }
-            result[key] = value;
+    private async anonymizePrimitive(value: any, path: string): Promise<any> {
+        const strVal = String(value ?? "").trim();
+        if (!strVal) return value;
+        const hash = this.createHash(`${this.salt}:${path}:${strVal}`);
+        // Number
+        if (/^-?\d+(\.\d+)?$/.test(strVal)) {
+            const num = parseFloat(strVal);
+            const isInt = !strVal.includes(".");
+            const decimals = isInt ? 0 : strVal.split(".")[1].length;
+            // Pseudo-random deterministic jitter
+            const jitterRatio = ((hash % 1000) - 500) / 10000;
+            const newNum = num === 0 ? 0 : num * (1 + jitterRatio);
+            return isInt ? Math.round(newNum) : Number(newNum.toFixed(decimals));
         }
-        return result;
+        // Date
+        if (/^\d{4}-\d{2}-\d{2}/.test(strVal)) {
+            const dayShift = (hash % 60) - 30; // shift date +/- 30 days
+            const date = new Date(strVal);
+            if (!isNaN(date.getTime())) {
+                date.setDate(date.getDate() + dayShift);
+                return strVal.includes("T")
+                    ? date.toISOString().replace(".000Z", "Z")
+                    : date.toISOString().split("T")[0];
+            }
+        }
+        // Fallback for string
+        const hashHex = hash.toString(16).padStart(8, "0");
+        return `ANON_${hashHex}`;
     }
 
-    private async anonymizeText(value: string, path: string): Promise<string> {
-        if (value.trim() === "")
-            return value;
-        const hash = await this.hash(path, value);
-        return `[${hash.slice(0, 16)}]`;
-    }
-
-    private async hash(path: string, value: string): Promise<string> {
-        const input = new TextEncoder().encode(`${this.salt}\0${path}\0${value}`);
-        const digest = await crypto.subtle.digest("SHA-256", input);
-        return Array.from(new Uint8Array(digest), byte => byte.toString(16).padStart(2, "0")).join("");
-    }
-
-    private serialize(nodes: XmlNode[]): string {
-        return nodes.map(node => this.serializeNode(node)).join("");
-    }
-
-    private serializeNode(node: XmlNode): string {
-        return Object.entries(node).map(([name, value]) => {
-            if (name === "#text")
-                return this.escapeXml(String(value));
-            if (!Array.isArray(value))
-                return "";
-            return value.map(child => this.serializeNamedNode(name, child as XmlNode)).join("");
-        }).join("");
-    }
-
-    private serializeNamedNode(name: string, node: XmlNode): string {
-        const attributes = this.serializeAttributes(node[":@"] as Record<string, unknown> | undefined,);
-        const content = Object.entries(node)
-            .filter(([key]) => key !== ":@")
-            .map(([key, value]) => {
-                if (key === "#text")
-                    return this.escapeXml(String(value));
-                if (!Array.isArray(value))
-                    return "";
-                return value.map(child => this.serializeNamedNode(key, child as XmlNode)).join("");
-            }).join("");
-        return content === "" ? `<${name}${attributes}/>` : `<${name}${attributes}>${content}</${name}>`;
-    }
-
-    private serializeAttributes(attributes?: Record<string, unknown>): string {
-        if (!attributes)
-            return "";
-        return Object.entries(attributes).map(([name, value]) => ` ${name}="${this.escapeXml(String(value))}"`).join("");
-    }
-
-    private escapeXml(value: string): string {
-        return value
-            .replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/"/g, "&quot;")
-            .replace(/'/g, "&apos;");
+    /**
+     * Zero-dependency hashing function (32-bit FNV-1a algorithm)
+     */
+    private createHash(str: string): number {
+        let hash = 0x811c9dc5;
+        for (let i = 0; i < str.length; i++) {
+            hash ^= str.charCodeAt(i);
+            hash += (hash << 1) + (hash << 4) + (hash << 7) + (hash << 8) + (hash << 24);
+        }
+        return hash >>> 0;
     }
 }

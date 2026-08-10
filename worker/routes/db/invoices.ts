@@ -70,7 +70,14 @@ export async function del(req: Request, env: Env): Promise<Response> {
 // Invoice record creation
 // ---------------------------------------------------------------------------------------------------------------------
 
-export const xmlParser = new XMLParser({ ignoreAttributes: false, removeNSPrefix: true, parseTagValue: false, textNodeName: "value", attributeNamePrefix: "" });
+export const xmlParser = new XMLParser({
+    attributesGroupName: ":@",
+    textNodeName: "value",
+    attributeNamePrefix: "",
+    removeNSPrefix: true,
+    ignoreAttributes: false,
+    parseTagValue: false,
+});
 
 export async function invoiceFromXml(env: Env, xmlContent: string, authUser: AppUser, notes?: string): Promise<AppInvoice & { ownerId: string }> {
     // Parse XML
