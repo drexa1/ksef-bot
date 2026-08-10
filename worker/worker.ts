@@ -1,6 +1,6 @@
 import {D1Database} from "@cloudflare/workers-types"
 import {Method, routes} from "./routes";
-import {corsHeaders, auth, withCors} from "./auth";
+import {auth, corsHeaders, withCors} from "./auth";
 
 export interface Env {
     ENVIRONMENT: "dev" | "cloudflare"

@@ -1,5 +1,5 @@
 import {Env} from "./worker";
-import {openApiSpec, swaggerHtml} from "./api/openapi";
+import {swaggerHtml, getOpenApiSpec} from "./api/openapi";
 import {scalarHtml} from "./api/scalar";
 import {get as healthGET} from "./routes/health/health";
 import {corsHeaders, whoami as whoamiGET} from "./auth";
@@ -35,7 +35,7 @@ const withErrorHandling = (routes: Routes): Routes => {
 
 export const routes: Record<string, Routes> =  {
     // Don't use redirection at root, in this case we serve the static assets
-    "/openapi.json":       { GET: async () => Response.json(openApiSpec) },
+    "/openapi.json":       { GET: async (_, env) => Response.json(getOpenApiSpec(env)) },
     "/swagger":            { GET: async () => new Response(swaggerHtml, { headers: { "Content-Type": "text/html" }}) },
     "/docs":               { GET: async () => new Response(scalarHtml, { headers: { "Content-Type": "text/html" }}) },
     "/health":             { GET: healthGET },

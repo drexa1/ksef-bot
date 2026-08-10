@@ -1,3 +1,14 @@
+import {Env} from "../worker";
+
+/**
+ * Intercepts calls to render the OpenAPI spec, to decide if we share non-public/convenience endpoints.
+ */
+let nonPublicEnvironment: any;
+export const getOpenApiSpec = (env: Env) => {
+    nonPublicEnvironment = env.ENVIRONMENT === "dev";
+    return openApiSpec;
+}
+
 export const openApiSpec = {
     openapi: "3.0.0",
     info: {
@@ -576,55 +587,58 @@ export const openApiSpec = {
                 }
             }
         },
-        "/app/invoices/pii": {
-            post: {
-                summary: "Anonymize PII in an uploaded XML invoice.",
-                tags: ["Invoices"],
-                security: [{ ApiKeyAuth: [] }],
-                requestBody: {
-                    required: true,
-                    content: {
-                        "multipart/form-data": {
-                            schema: {
-                                type: "object",
-                                required: [
-                                    "file",
-                                    "salt"
-                                ],
-                                properties: {
-                                    file: {
-                                        type: "string",
-                                        format: "binary",
-                                        description: "Invoice XML file to anonymize"
-                                    },
-                                    salt: {
-                                        type: "string",
-                                        format: "password",
-                                        description: "A secret for deterministic anonymization",
-                                        example: "********"
+        ...(nonPublicEnvironment ? {
+            "/app/invoices/pii": {
+                post: {
+                    summary: "Anonymize PII in an uploaded XML invoice.",
+                    tags: ["Invoices"],
+                    security: [{ ApiKeyAuth: [] }],
+                    requestBody: {
+                        required: true,
+                        content: {
+                            "multipart/form-data": {
+                                schema: {
+                                    type: "object",
+                                    required: [
+                                        "file",
+                                        "salt"
+                                    ],
+                                    properties: {
+                                        file: {
+                                            type: "string",
+                                            format: "binary",
+                                            description: "Invoice XML file to anonymize"
+                                        },
+                                        salt: {
+                                            type: "string",
+                                            format: "password",
+                                            description: "A secret for deterministic anonymization",
+                                            example: "********"
+                                        }
                                     }
                                 }
                             }
                         }
-                    }
-                },
-                responses: {
-                    "200": {
-                        description: "Anonymized invoice XML",
-                        content: {
-                            "application/xml": {
-                                schema: {
-                                    type: "string",
-                                    format: "binary"
+                    },
+                    responses: {
+                        "200": {
+                            description: "Anonymized invoice XML",
+                            content: {
+                                "application/xml": {
+                                    schema: {
+                                        type: "string",
+                                        format: "binary"
+                                    }
                                 }
                             }
-                        }
-                    },
-                    "400": { description: "Invalid or missing invoice XML file" },
-                    "401": { description: "Unauthorized" }
+                        },
+                        "400": { description: "Invalid or missing invoice XML file" },
+                        "401": { description: "Unauthorized" }
+                    }
                 }
             }
-        },
+        }
+        : {}),
         "/app/counterparties": {
             get: {
                 summary: "List counterparties - Restricted to resources owned by the authenticated user.",
