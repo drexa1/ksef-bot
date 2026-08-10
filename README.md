@@ -17,6 +17,13 @@ App API Key
 
 ## Testing
 
+Cloudflare .dev.vars
+
+ENVIRONMENT = dev  
+API_KEY = test  
+TEST_MODE = true  
+KSEF_TOKEN = ...  
+
 ### REST endpoints tests
 
 ### API surface collections
@@ -26,3 +33,5 @@ App API Key
 ### Live API documentation
 
 ### Swagger UI
+
+## Continuous integration

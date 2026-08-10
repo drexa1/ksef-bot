@@ -13,9 +13,9 @@
 -[x] Secured behind Cloudflare ZeroTrust
 -[x] Defensive application design
 -[x] 100% coverage E2E tests
--[ ] No Ai auditory
 -[x] Friendly cloud data-store
 -[x] Live documentation
--[ ] Workflow documentation
 -[x] Continuous integration
--[x] Versioning and release process
+-[ ] No Ai auditory
+-[ ] Workflow documentation
+-[ ] Versioning and release process
