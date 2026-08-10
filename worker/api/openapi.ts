@@ -578,7 +578,7 @@ export const getOpenApiSpec = (env: Env) => ({
                 }
             }
         },
-        // Experimental
+        // @experimental
         ...(env.ENVIRONMENT === "dev" ? {
             "/app/invoices/pii": {
                 post: {
