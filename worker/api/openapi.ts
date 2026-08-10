@@ -3,9 +3,9 @@ import {Env} from "../worker";
 /**
  * Intercepts calls to render the OpenAPI spec, to decide if we share non-public/convenience endpoints.
  */
-let nonPublicEnvironment: any;
+let experimentalEndpoints: any;
 export const getOpenApiSpec = (env: Env) => {
-    nonPublicEnvironment = env.ENVIRONMENT === "dev";
+    experimentalEndpoints = env.ENVIRONMENT === "dev";
     return openApiSpec;
 }
 
@@ -587,7 +587,7 @@ export const openApiSpec = {
                 }
             }
         },
-        ...(nonPublicEnvironment ? {
+        ...(experimentalEndpoints ? {
             "/app/invoices/pii": {
                 post: {
                     summary: "Anonymize PII in an uploaded XML invoice.",
