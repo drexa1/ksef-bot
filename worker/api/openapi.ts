@@ -573,6 +573,55 @@ export const openApiSpec = {
                 }
             }
         },
+        "/app/invoices/pii": {
+            post: {
+                summary: "Anonymize PII in an uploaded XML invoice.",
+                tags: ["Invoices"],
+                security: [{ ApiKeyAuth: [] }],
+                requestBody: {
+                    required: true,
+                    content: {
+                        "multipart/form-data": {
+                            schema: {
+                                type: "object",
+                                required: [
+                                    "file",
+                                    "salt"
+                                ],
+                                properties: {
+                                    file: {
+                                        type: "string",
+                                        format: "binary",
+                                        description: "Invoice XML file to anonymize"
+                                    },
+                                    salt: {
+                                        type: "string",
+                                        format: "password",
+                                        description: "A secret for deterministic anonymization",
+                                        example: "********"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                responses: {
+                    "200": {
+                        description: "Anonymized invoice XML",
+                        content: {
+                            "application/xml": {
+                                schema: {
+                                    type: "string",
+                                    format: "binary"
+                                }
+                            }
+                        }
+                    },
+                    "400": { description: "Invalid or missing invoice XML file" },
+                    "401": { description: "Unauthorized" }
+                }
+            }
+        },
         "/app/counterparties": {
             get: {
                 summary: "List counterparties - Restricted to resources owned by the authenticated user.",

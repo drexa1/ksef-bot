@@ -38,6 +38,7 @@ export async function auth(req: Request, env: Env): Promise<boolean> {
         case "/ksef/expenses":
         case "/app/users":
         case "/app/invoices":
+        case "/app/invoices/pii":
         case "/app/counterparties":
         case "/app/taxes":
             // Potential client worker made it through Zero Trust, anything else demand API key
