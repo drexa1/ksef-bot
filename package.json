@@ -27,7 +27,7 @@
 
         "api:tests:wait": "wait-on http://localhost:3001 && npm run api:tests:bruno",
         "api:tests:bruno": "cd tests/api && bru run -r --env dev --sandbox dev",
-        "api:tests:dev": "npm run db:local:recreate && concurrently -k npm:worker:dev npm:api:tests:wait",
+        "api:tests:dev": "npm run db:local:recreate && concurrently --kill-others --success=command-2 npm:worker:dev npm:api:tests:wait",
 
         "⚠ db:remote:teardown": "wrangler d1 execute ksef-bot --remote --file=db/teardown.sql",
         "⚠ db:remote:create": "wrangler d1 execute ksef-bot  --remote --file=db/schema.sql",
