@@ -29,7 +29,7 @@
         "api:tests:bruno": "cd tests/api && bru run -r --env dev --sandbox dev",
 
         "api:tests:dev": "npm run db:local:recreate && concurrently -k npm:worker:dev npm:api:tests:wait",
-        "api:tests:ci": "bash .github/workflows/api-tests-ci.sh",
+        "api:tests:ci": "bash .github/scripts/api-tests-ci.sh",
 
         "⚠ db:remote:teardown": "wrangler d1 execute ksef-bot --remote --file=db/teardown.sql",
         "⚠ db:remote:create": "wrangler d1 execute ksef-bot  --remote --file=db/schema.sql",
