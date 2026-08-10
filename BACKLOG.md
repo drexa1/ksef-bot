@@ -30,6 +30,7 @@
 - [x] Test collection for tax record  
 - [x] Test invoices PII  
 - [x] Fix running bruno tests on CI  
+- [ ] JSON to XML converter  
 - [ ] Bank client PoC  
 - [ ] Post invoice  
 - [ ] Rest test for posting an invoice  
