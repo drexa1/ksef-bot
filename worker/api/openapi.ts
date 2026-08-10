@@ -1,7 +1,7 @@
 import {Env} from "../worker";
 
 /**
- * Intercepts calls to render the OpenAPI spec, to decide if we share non-public/convenience endpoints.
+ * Intercepts calls to render the OpenAPI spec, to decide if we share experimental endpoints.
  */
 let experimentalEndpoints: any;
 export const getOpenApiSpec = (env: Env) => {
