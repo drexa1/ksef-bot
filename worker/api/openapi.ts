@@ -9,7 +9,7 @@ export const getOpenApiSpec = (env: Env) => {
     return openApiSpec;
 }
 
-export const openApiSpec = {
+const openApiSpec = {
     openapi: "3.0.0",
     info: {
         title: "ksef-bot-api",
