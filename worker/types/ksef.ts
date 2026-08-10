@@ -10,8 +10,6 @@ export type KsefAuthenticationStatus = {
     };
 };
 
-export type KsefQueryStatus = { status: "queued" | "processing" | "completed" | "failed", message?: string };
-
 export type KsefInvoiceQueryResult = {
     hasMore: boolean;
     isTruncated: boolean;
@@ -24,4 +22,11 @@ export type KsefInvoiceMetadata = {
     sellerNip?: string
     issueDate?: string
     grossAmount?: number
+};
+
+export type InvoiceEncryptionData = {
+    cipherKey: Uint8Array
+    cipherIv: Uint8Array
+    encryptedSymmetricKey: string
+    initializationVector: string
 };
