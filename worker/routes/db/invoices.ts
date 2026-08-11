@@ -33,8 +33,8 @@ export async function post(req: Request, env: Env): Promise<Response> {
     const appUser = await getAuthUser(req, env);
     const form = await req.formData();
     const file = form.get("file");
-    const notes = form.get("notes")?.toString();
     if (!(file instanceof File)) return Response.json({ error: "Missing XML file" }, { status: 400 });
+    const notes = form.get("notes")?.toString();
     const record = await invoiceFromXml(env, await file.text(), appUser, notes);
     try {
         await getRepo(env).save<AppInvoice>("invoices", record);

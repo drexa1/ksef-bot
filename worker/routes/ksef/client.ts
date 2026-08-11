@@ -133,10 +133,7 @@ class KsefClientBase {
             throw new Error("Invalid KSeF certificate DER");
         const cert = new pkijs.Certificate({ schema: asn1.result });
         const spki = cert.subjectPublicKeyInfo.toSchema().toBER();
-        return crypto.subtle.importKey("spki", spki, {
-            name: "RSA-OAEP",
-            hash: "SHA-256"
-        }, false, ["encrypt"]);
+        return crypto.subtle.importKey("spki", spki, { name: "RSA-OAEP", hash: "SHA-256" }, false, ["encrypt"]);
     }
 
     protected async createInvoiceEncryptionData(publicKey: CryptoKey): Promise<InvoiceEncryptionData> {
@@ -151,10 +148,10 @@ class KsefClientBase {
         };
     }
 
-    protected async openOnlineSession(encryption: InvoiceEncryptionData, publicKeyId: string): Promise<{
-        referenceNumber: string;
-        validUntil: string;
-    }> {
+    protected async openOnlineSession(
+        encryption: InvoiceEncryptionData,
+        publicKeyId: string
+    ): Promise<{ referenceNumber: string, validUntil: string }> {
         const response = await fetch(`${this.env.KSEF_URL}/sessions/online`, {
             method: "POST",
             headers: { Authorization: `Bearer ${this.token}`, "Content-Type": "application/json" },
@@ -164,12 +161,7 @@ class KsefClientBase {
                     schemaVersion: "1-0E",
                     value: "FA"
                 },
-                encryption: {
-                    encryptedSymmetricKey:
-                    encryption.encryptedSymmetricKey,
-                    initializationVector:
-                    encryption.initializationVector
-                },
+                encryption: { encryptedSymmetricKey: encryption.encryptedSymmetricKey, initializationVector: encryption.initializationVector },
                 publicKeyId
             })
         });
@@ -182,28 +174,24 @@ class KsefClientBase {
 
     protected async sendOnlineInvoice(
         sessionReferenceNumber: string,
-        xml: string,
+        xmlContent: string,
         encryption: InvoiceEncryptionData
-    ): Promise<{
-        referenceNumber: string;
-    }> {
-        const invoiceBytes = new TextEncoder().encode(xml);
-        const encryptedInvoice = await this.encryptInvoiceXml(xml, encryption.cipherKey, encryption.cipherIv);
+    ): Promise<{ referenceNumber: string }> {
+        const invoiceBytes = new TextEncoder().encode(xmlContent);
+        const encryptedInvoice = await this.encryptInvoiceXml(xmlContent, encryption.cipherKey, encryption.cipherIv);
         const invoiceHash = await this.sha256Base64(invoiceBytes);
         const encryptedInvoiceHash = await this.sha256Base64(encryptedInvoice);
         const response = await fetch(`${this.env.KSEF_URL}/sessions/online/${sessionReferenceNumber}/invoices`, {
-                method: "POST",
-                headers: { Authorization: `Bearer ${this.token}`, "Content-Type": "application/json"},
-                body: JSON.stringify({
-                    invoiceHash,
-                    invoiceSize: invoiceBytes.length,
-                    encryptedInvoiceHash,
-                    encryptedInvoiceSize:
-                    encryptedInvoice.length,
-                    encryptedInvoiceContent: this.arrayBufferToBase64(encryptedInvoice)
-                })
-            }
-        );
+            method: "POST",
+            headers: { Authorization: `Bearer ${this.token}`, "Content-Type": "application/json"},
+            body: JSON.stringify({
+                invoiceHash,
+                invoiceSize: invoiceBytes.length,
+                encryptedInvoiceHash,
+                encryptedInvoiceSize: encryptedInvoice.length,
+                encryptedInvoiceContent: this.arrayBufferToBase64(encryptedInvoice)
+            })
+        });
         if (!response.ok) {
             const body = await response.text();
             throw new Error(`KSeF invoice submission failed ${response.status}: ${body}`);
@@ -211,11 +199,11 @@ class KsefClientBase {
         return await response.json() as { referenceNumber: string };
     }
 
-    private async encryptInvoiceXml(xml: string, cipherKey: Uint8Array, cipherIv: Uint8Array): Promise<Uint8Array> {
+    private async encryptInvoiceXml(xmlContent: string, cipherKey: Uint8Array, cipherIv: Uint8Array): Promise<Uint8Array> {
         const keyBytes = new Uint8Array(cipherKey);
         const ivBytes = new Uint8Array(cipherIv);
         const key = await crypto.subtle.importKey("raw", keyBytes.buffer, { name: "AES-CBC" }, false, ["encrypt"]);
-        const plaintext = new TextEncoder().encode(xml);
+        const plaintext = new TextEncoder().encode(xmlContent);
         // PKCS#7 padding
         const paddingLength = 16 - (plaintext.length % 16);
         const padded = new Uint8Array(plaintext.length + paddingLength);
@@ -258,7 +246,7 @@ class KsefClientBase {
     protected async closeOnlineSession(sessionReferenceNumber: string): Promise<void> {
         const response = await fetch(`${this.env.KSEF_URL}/sessions/online/${sessionReferenceNumber}/close`, {
             method: "POST",
-            headers: { Authorization: `Bearer ${this.token}`}
+            headers: { Authorization: `Bearer ${this.token}` }
         });
         if (!response.ok) {
             const body = await response.text();
@@ -267,10 +255,10 @@ class KsefClientBase {
     }
 }
 
-export class KsefClient extends KsefClientBase {
+export class Client extends KsefClientBase {
 
     async queryPurchaseInvoices(env: Env, appUser: AppUser, subjectType: "Subject1" | "Subject2", from?: Date, to?: Date) {
-        const client = new KsefClient(env, appUser);
+        const client = new Client(env, appUser);
         // Authentication
         await client.authenticate();
         // Query invoice metadata
@@ -317,7 +305,7 @@ export class KsefClient extends KsefClientBase {
         return await response.text();
     }
 
-    async postInvoice(xmlContent: string): Promise<{ invoiceReferenceNumber: string }> {
+    async postInvoice(xmlContent: string): Promise<{ referenceNumber: string }> {
         await this.authenticate();
         const { certificate, publicKeyId } = await this.getKsefEncryptionCertificate(this.env);
         const publicKey = await this.importKsefPublicKey(certificate);
@@ -327,7 +315,7 @@ export class KsefClient extends KsefClientBase {
             console.info("📤 Sending invoice...");
             const invoice = await this.sendOnlineInvoice(session.referenceNumber, xmlContent, encryption);
             console.info("📨 Invoice accepted for processing:", invoice.referenceNumber);
-            return { invoiceReferenceNumber: invoice.referenceNumber };
+            return { referenceNumber: invoice.referenceNumber };
         } finally {
             await this.closeOnlineSession(session.referenceNumber);
         }

@@ -30,10 +30,9 @@
 - [x] Test collection for tax record  
 - [x] Test invoices PII  
 - [x] Fix running bruno tests on CI  
-- [ ] Refactor KSeF client into query and submission  
+- [x] Post invoice
 - [ ] Invoice generator frontend  
-- [ ] Bank client PoC  
-- [ ] Post invoice  
+- [ ] Bank client PoC
 - [ ] Rest test for posting an invoice  
 - [ ] WhatsApp bot  
 - [ ] Review security architecture  

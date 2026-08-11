@@ -1,5 +1,5 @@
 import {Env} from "../../worker";
-import {KsefClient} from "./ksef.client";
+import {Client} from "./client";
 import {AppInvoice, AppUser} from "../../types/db";
 import {D1Driver, Repository} from "../../repository/d1";
 import {getAuthUser} from "../../auth";
@@ -29,7 +29,7 @@ export async function getKsefInvoices(req: Request, env: Env, subjectType: "Subj
 }
 
 export async function fetchKsefInvoices(env: Env, appUser: AppUser, subjectType: "Subject1" | "Subject2", from: Date, to: Date) {
-    const client = new KsefClient(env, appUser);
+    const client = new Client(env, appUser);
     const invoices = await client.queryPurchaseInvoices(env, appUser, subjectType, from, to);
     await saveInvoices(env, invoices);
     // Return the JSON formatted
