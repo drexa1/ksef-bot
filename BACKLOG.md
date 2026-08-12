@@ -32,8 +32,10 @@
 - [x] Fix running bruno tests on CI  
 - [x] Post invoice
 - [ ] Invoice generator frontend  
-- [ ] Bank client PoC
+- [ ] Generate next invoice XML
 - [ ] Rest test for posting an invoice  
+- [ ] Create user frontend  
+- [ ] Bank client PoC
 - [ ] WhatsApp bot  
 - [ ] Review security architecture  
 - [ ] Scheduling  
