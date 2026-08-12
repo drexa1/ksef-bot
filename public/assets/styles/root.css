@@ -1,8 +1,6 @@
-:root {
-
-}
-body {
-    background: #f5f6f8;
-    color: #252a31;
-    font-size: 14px;
+html, body {
+    width: 100%;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow-x: hidden !important;
 }
