@@ -1,417 +1,406 @@
-@media (prefers-color-scheme:light){
-    :root{
-        --bg:#f7f8fa;
-        --surface:#fff;
-        --surface-2:#f9fafb;
-        --text:#171a1f;
-        --text-2:#667085;
-        --text-3:#98a2b3;
-        --line:#eaecf0;
-        --line-strong:#d0d5dd;
-        --accent:#175cd3;
-        --accent-soft:#eff4ff;
-        --danger:#d92d20;
-        --danger-soft:#fef3f2;
+@media (prefers-color-scheme:light) {
+    .page-container {
+        max-width: 80em;
+        margin: 0 auto;
+        padding: 2rem 1.5rem 3rem;
+        overflow-x: hidden;
     }
-    body{
-        background:var(--bg);
-        color:var(--text);
+    /* Header ------------------------------------------------------------------------------------------------------- */
+    .header {
+        margin-bottom: 1.25rem;
     }
-    .page-container{
-        max-width:80em;
-        margin:0 auto;
-        padding:2rem 1.5rem 3rem;
-        overflow-x:hidden;
+    .header-content {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 2.5rem;
     }
-    .header{
-        margin-bottom:1.25rem;
+    .header-content h1 {
+        margin: 0;
+        color: #101828;
+        font-size: 1.5rem;
+        font-weight: 650;
+        letter-spacing: -.025em;
+        line-height: 1.2;
     }
-    .header-content{
-        position:relative;
-        display:flex;
-        align-items:center;
-        justify-content:center;
-        min-height:2.5rem;
+    .header-content>button {
+        position: absolute;
+        left: 0;
     }
-    .header-content h1{
-        margin:0;
-        color:#101828;
-        font-size:1.5rem;
-        font-weight:650;
-        letter-spacing:-.025em;
-        line-height:1.2;
+    .invoice-card {
+        margin-bottom: .75rem;
+        overflow: hidden;
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: .375rem;
+        box-shadow: 0 1px 2px rgba(16,24,40,.02);
     }
-    .header-content>button{
-        position:absolute;
-        left:0;
+    .section-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: .75rem 1rem;
+        background: var(--surface);
+        border-bottom: 1px solid var(--line);
+        color: #344054;
+        font-size: .8125rem;
+        font-weight: 600;
+        letter-spacing: .01em;
+        cursor: pointer;
     }
-    .invoice-card{
-        margin-bottom:.75rem;
-        overflow:hidden;
-        background:var(--surface);
-        border:1px solid var(--line);
-        border-radius:.375rem;
-        box-shadow:0 1px 2px rgba(16,24,40,.02);
+    .section-header:hover {
+        background: var(--surface-2);
     }
-    .section-header{
-        display:flex;
-        align-items:center;
-        justify-content:space-between;
-        padding:.75rem 1rem;
-        background:var(--surface);
-        border-bottom:1px solid var(--line);
-        color:#344054;
-        font-size:.8125rem;
-        font-weight:600;
-        letter-spacing:.01em;
-        cursor:pointer;
+    .collapse-label {
+        color: var(--text-3);
+        font-size: .75rem;
+        font-weight: 400;
     }
-    .section-header:hover{
-        background:var(--surface-2);
+    .section-body {
+        padding: 1rem;
     }
-    .collapse-label{
-        color:var(--text-3);
-        font-size:.75rem;
-        font-weight:400;
+    /* Invoice data ------------------------------------------------------------------------------------------------- */
+    .markings-list {
+        display: flex;
+        flex-direction: column;
+        gap: .5rem;
     }
-    .section-body{
-        padding:1rem;
+    .marking-item {
+        display: flex;
+        align-items: flex-start;
+        gap: .5rem;
+        color: #475467;
+        font-size: .8125rem;
+        line-height: 1.4;
+        cursor: pointer;
     }
-    .field{
-        min-width:0;
+    .marking-item input {
+        flex-shrink: 0;
+        margin-top: .125rem;
     }
-    .form-label{
-        display:block;
-        margin-bottom:.3125rem;
-        color:#475467;
-        font-size:.75rem;
-        font-weight:500;
-        line-height:1.4;
+    .invoice-data-grid {
+        display: grid;
+        grid-template-columns: repeat(12,minmax(0,1fr));
+        gap: 1rem 1.25rem;
     }
-    .required::after{
-        content:" *";
-        color:var(--danger);
+    .field {
+        min-width: 0;
     }
-    .help-text{
-        margin-top:.25rem;
-        color:var(--text-3);
-        font-size:.6875rem;
-        line-height:1.4;
+    .invoice-number {
+        grid-column: 1/-1;
+    }
+    .issue-date {
+        grid-column: 1/7;
+    }
+    .issue-place {
+        grid-column: 7/-1;
+    }
+    .accounting-date {
+        grid-column: 1/7;
+    }
+    .delivery-date {
+        grid-column: 7/-1;
+    }
+    .form-label {
+        display: block;
+        margin-bottom: .3125rem;
+        color: #475467;
+        font-size: .75rem;
+        font-weight: 500;
+        line-height: 1.4;
+    }
+    .required::after {
+        content: " *";
+        color: var(--danger);
     }
     .form-control,
-    .form-select{
-        min-height:2.375rem;
-        background:#fff;
-        border:1px solid var(--line-strong);
-        border-radius:.25rem;
-        color:var(--text);
-        font-size:.8125rem;
-        box-shadow:none;
-        transition:border-color .12s ease,box-shadow .12s ease;
+    .form-select {
+        min-height: 2.375rem;
+        background: #fff;
+        border: 1px solid var(--line-strong);
+        border-radius: .25rem;
+        color: var(--text);
+        font-size: .8125rem;
+        box-shadow: none;
+        transition: border-color .12s ease,box-shadow .12s ease;
     }
     .form-control:hover,
-    .form-select:hover{
-        border-color:#98a2b3;
+    .form-select:hover {
+        border-color: #98a2b3;
     }
     .form-control:focus,
-    .form-select:focus{
-        border-color:var(--accent);
-        box-shadow:0 0 0 2px rgba(23,92,211,.12);
+    .form-select:focus {
+        border-color: var(--accent);
+        box-shadow: 0 0 0 2px rgba(23,92,211,.12);
     }
-    .invoice-data-grid{
-        display:grid;
-        grid-template-columns:repeat(12,minmax(0,1fr));
-        gap:1rem 1.25rem;
+    .help-text {
+        margin-top: .25rem;
+        color: var(--text-3);
+        font-size: .6875rem;
+        line-height: 1.4;
     }
-    .invoice-number{
-        grid-column:1/-1;
+    /* Contractor --------------------------------------------------------------------------------------------------- */
+    .contractor-grid {
+        display: grid;
+        grid-template-columns: 5fr 3fr 4fr;
+        gap: 1rem 1.25rem;
     }
-    .issue-date{
-        grid-column:1/7;
+    .contractor-name {
+        grid-column: 1;
     }
-    .issue-place{
-        grid-column:7/-1;
+    .contractor-identifier {
+        grid-column: 2;
     }
-    .accounting-date{
-        grid-column:1/7;
+    .contractor-identifier-options {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        min-height: 2.375rem;
     }
-    .delivery-date{
-        grid-column:7/-1;
+    .contractor-identifier-option {
+        display: inline-flex;
+        align-items: center;
+        gap: .375rem;
+        margin: 0;
+        color: #475467;
+        font-size: .8125rem;
+        font-weight: 400;
+        cursor: pointer;
     }
-    .markings-list{
-        display:flex;
-        flex-direction:column;
-        gap:.5rem;
+    .contractor-identifier-option input {
+        margin: 0;
     }
-    .marking-item{
-        display:flex;
-        align-items:flex-start;
-        gap:.5rem;
-        color:#475467;
-        font-size:.8125rem;
-        line-height:1.4;
-        cursor:pointer;
+    .contractor-nip {
+        grid-column: 3;
     }
-    .marking-item input{
-        flex-shrink:0;
-        margin-top:.125rem;
+    .town {
+        grid-column: 1;
     }
-    .contractor-grid{
-        display:grid;
-        grid-template-columns:5fr 3fr 4fr;
-        gap:1rem 1.25rem;
+    .postal-code {
+        grid-column: 2;
     }
-    .contractor-name{
-        grid-column:1;
+    .post-office {
+        grid-column: 3;
     }
-    .contractor-identifier{
-        grid-column:2;
+    .street {
+        grid-column: 1;
     }
-    .contractor-nip{
-        grid-column:3;
+    .building {
+        grid-column: 2;
     }
-    .town{
-        grid-column:1;
+    .premises {
+        grid-column: 3;
     }
-    .postal-code{
-        grid-column:2;
+    .additional-entity {
+        grid-column: 1/-1;
     }
-    .post-office{
-        grid-column:3;
+    .additional-entity-options {
+        display: flex;
+        flex-direction: column;
+        gap: .5rem;
     }
-    .street{
-        grid-column:1;
+    .additional-entity-options label {
+        display: flex;
+        align-items: flex-start;
+        gap: .5rem;
+        color: #475467;
+        font-size: .8125rem;
+        line-height: 1.4;
+        cursor: pointer;
     }
-    .building{
-        grid-column:2;
+    .additional-entity-options input {
+        flex-shrink: 0;
+        margin-top: .1875rem;
     }
-    .premises{
-        grid-column:3;
+    /* Invoice items ------------------------------------------------------------------------------------------------ */
+    .invoice-type {
+        display: flex;
+        align-items: center;
+        gap: 1.25rem;
     }
-    .additional-entity{
-        grid-column:1/-1;
+    .invoice-type label {
+        display: inline-flex;
+        align-items: center;
+        gap: .375rem;
+        color: #475467;
+        font-size: .8125rem;
+        cursor: pointer;
     }
-    .contractor-identifier-options{
-        display:flex;
-        align-items:center;
-        gap:1rem;
-        min-height:2.375rem;
+    .info-box {
+        display: flex;
+        align-items: center;
+        gap: .625rem;
+        padding: .625rem .75rem;
+        border: 1px solid #fecdca;
+        border-radius: .25rem;
+        background: var(--danger-soft);
+        color: var(--danger);
+        font-size: .75rem;
     }
-    .contractor-identifier-option{
-        display:inline-flex;
-        align-items:center;
-        gap:.375rem;
-        margin:0;
-        color:#475467;
-        font-size:.8125rem;
-        font-weight:400;
-        cursor:pointer;
+    .info-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 1.125rem;
+        height: 1.125rem;
+        flex-shrink: 0;
+        border-radius: 50%;
+        background: var(--danger);
+        color: #fff;
+        font-size: .6875rem;
+        font-weight: 700;
     }
-    .contractor-identifier-option input{
-        margin:0;
+    .info-box a {
+        margin-left: auto;
+        color: var(--danger);
+        font-weight: 500;
+        text-decoration: none;
     }
-    .additional-entity-options{
-        display:flex;
-        flex-direction:column;
-        gap:.5rem;
+    .info-box a:hover {
+        text-decoration: underline;
     }
-    .additional-entity-options label{
-        display:flex;
-        align-items:flex-start;
-        gap:.5rem;
-        color:#475467;
-        font-size:.8125rem;
-        line-height:1.4;
-        cursor:pointer;
+    .items-table {
+        width: 100%;
+        margin-bottom: 0;
+        border-collapse: separate;
+        border-spacing: 0;
     }
-    .additional-entity-options input{
-        flex-shrink:0;
-        margin-top:.1875rem;
+    .items-table thead {
+        background: #f9fafb;
     }
-    .invoice-type{
-        display:flex;
-        align-items:center;
-        gap:1.25rem;
+    .items-table th {
+        padding: .5625rem .5rem;
+        border-bottom: 1px solid var(--line);
+        color: #667085;
+        font-size: .6875rem;
+        font-weight: 600;
+        letter-spacing: .02em;
+        white-space: nowrap;
+        vertical-align: middle;
     }
-    .invoice-type label{
-        display:inline-flex;
-        align-items:center;
-        gap:.375rem;
-        color:#475467;
-        font-size:.8125rem;
-        cursor:pointer;
+    .items-table td {
+        padding: .4375rem .5rem;
+        border-bottom: 1px solid var(--line);
+        vertical-align: middle;
     }
-    .info-box{
-        display:flex;
-        align-items:center;
-        gap:.625rem;
-        padding:.625rem .75rem;
-        border:1px solid #fecdca;
-        border-radius:.25rem;
-        background:var(--danger-soft);
-        color:var(--danger);
-        font-size:.75rem;
+    .items-table tbody tr:last-child td {
+        border-bottom: 0;
     }
-    .info-icon{
-        display:inline-flex;
-        align-items:center;
-        justify-content:center;
-        width:1.125rem;
-        height:1.125rem;
-        flex-shrink:0;
-        border-radius:50%;
-        background:var(--danger);
-        color:#fff;
-        font-size:.6875rem;
-        font-weight:700;
-    }
-    .info-box a{
-        margin-left:auto;
-        color:var(--danger);
-        font-weight:500;
-        text-decoration:none;
-    }
-    .info-box a:hover{
-        text-decoration:underline;
-    }
-    .items-table{
-        width:100%;
-        margin-bottom:0;
-        border-collapse:separate;
-        border-spacing:0;
-    }
-    .items-table thead{
-        background:#f9fafb;
-    }
-    .items-table th{
-        padding:.5625rem .5rem;
-        border-bottom:1px solid var(--line);
-        color:#667085;
-        font-size:.6875rem;
-        font-weight:600;
-        letter-spacing:.02em;
-        white-space:nowrap;
-        vertical-align:middle;
-    }
-    .items-table td{
-        padding:.4375rem .5rem;
-        border-bottom:1px solid var(--line);
-        vertical-align:middle;
-    }
-    .items-table tbody tr:last-child td{
-        border-bottom:0;
-    }
-    .items-table tbody tr:hover{
-        background:#fafcff;
+    .items-table tbody tr:hover {
+        background: #fafcff;
     }
     .items-table input,
-    .items-table select{
-        min-width:5.625rem;
+    .items-table select {
+        min-width: 5.625rem;
     }
-    .items-table .item-name{
-        min-width:11.25rem;
+    .item-number {
+        color: var(--text-3);
+        font-size: .75rem;
+        text-align: center;
+        white-space: nowrap;
     }
-    .items-table .price{
-        min-width:8.125rem;
+    .items-table .item-name {
+        min-width: 11.25rem;
     }
-    .items-table .quantity{
-        min-width:5.625rem;
+    .items-table .price {
+        min-width: 8.125rem;
     }
-    .items-table .unit{
-        min-width:6.875rem;
+    .items-table .quantity {
+        min-width: 5.625rem;
     }
-    .items-table .vat-rate{
-        min-width:6.25rem;
+    .items-table .unit {
+        min-width: 6.875rem;
+    }
+    .items-table .vat-rate {
+        min-width: 6.25rem;
     }
     .items-table .net,
     .items-table .vat,
-    .items-table .gross{
-        min-width:6.875rem;
+    .items-table .gross {
+        min-width: 6.875rem;
     }
-    .item-number{
-        color:var(--text-3);
-        font-size:.75rem;
-        text-align:center;
-        white-space:nowrap;
+    .total-row {
+        background: #f9fafb;
+        font-weight: 600;
     }
-    .total-row{
-        background:#f9fafb;
-        font-weight:600;
+    .total-row td {
+        padding-top: .6875rem;
+        padding-bottom: .6875rem;
+        border-top: 1px solid var(--line-strong);
     }
-    .total-row td{
-        padding-top:.6875rem;
-        padding-bottom:.6875rem;
-        border-top:1px solid var(--line-strong);
+    .total-row span {
+        white-space: nowrap;
     }
-    .total-row span{
-        white-space:nowrap;
+    /* Payment ------------------------------------------------------------------------------------------------------ */
+    .payment-grid {
+        display: grid;
+        grid-template-columns: minmax(0,1fr) minmax(0,1fr);
+        column-gap: 1.25rem;
+        row-gap: 1rem;
     }
-    .payment-grid{
-        display:grid;
-        grid-template-columns:minmax(0,1fr) minmax(0,1fr);
-        column-gap:1.25rem;
-        row-gap:1rem;
+    .payment-type {
+        grid-column: 1;
+        grid-row: 1;
     }
-    .payment-type{
-        grid-column:1;
-        grid-row:1;
+    .bank-account {
+        grid-column: 2;
+        grid-row: 1;
     }
-    .bank-account{
-        grid-column:2;
-        grid-row:1;
+    .payment-status {
+        grid-column: 1;
+        grid-row: 2;
     }
-    .payment-status{
-        grid-column:1;
-        grid-row:2;
+    .payment-paid {
+        display: flex;
+        align-items: center;
+        min-height: 2.375rem;
     }
-    .payment-term{
-        grid-column:2;
-        grid-row:2/span 2;
+    .payment-paid .form-check-input {
+        margin-top: 0;
     }
-    .payment-days{
-        grid-column:1;
-        grid-row:3;
+    .payment-paid .form-check-label {
+        color: #475467;
+        font-size: .8125rem;
+        cursor: pointer;
     }
-    .payment-deadline{
-        grid-column:1;
-        grid-row:4;
+    .payment-term {
+        grid-column: 2;
+        grid-row: 2/span 2;
     }
-    .payment-link{
-        grid-column:1;
-        grid-row:5;
+    .payment-term-description {
+        margin-top: 1rem;
     }
-    .ksef-payment-id{
-        grid-column:2;
-        grid-row:5;
+    .payment-days {
+        grid-column: 1;
+        grid-row: 3;
     }
-    .payment-term-description{
-        margin-top:1rem;
+    .payment-deadline {
+        grid-column: 1;
+        grid-row: 4;
     }
-    .payment-paid{
-        display:flex;
-        align-items:center;
-        min-height:2.375rem;
+    .payment-link {
+        grid-column: 1;
+        grid-row: 5;
     }
-    .payment-paid .form-check-input{
-        margin-top:0;
+    .ksef-payment-id {
+        grid-column: 2;
+        grid-row: 5;
     }
-    .payment-paid .form-check-label{
-        color:#475467;
-        font-size:.8125rem;
-        cursor:pointer;
+    /* Other -------------------------------------------------------------------------------------------------------- */
+    #notes {
+        min-height: 7rem;
+        resize: vertical;
     }
-    #notes{
-        min-height:7rem;
-        resize:vertical;
+    /* Footer ------------------------------------------------------------------------------------------------------- */
+    .footer-actions {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        gap: .5rem;
+        padding: .5rem 0 2rem;
     }
-    .footer-actions{
-        display:flex;
-        justify-content:flex-end;
-        align-items:center;
-        gap:.5rem;
-        padding:.5rem 0 2rem;
-    }
-    .footer-actions .btn{
-        min-width:7rem;
+    .footer-actions .btn {
+        min-width: 7rem;
     }
 }

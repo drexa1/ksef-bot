@@ -1,6 +1,26 @@
-html, body {
-    width: 100%;
-    margin: 0 !important;
-    padding: 0 !important;
-    overflow-x: hidden !important;
+@media (prefers-color-scheme:light) {
+    :root {
+        --bg: #f7f8fa;
+        --surface: #fff;
+        --surface-2: #f9fafb;
+        --text: #171a1f;
+        --text-2: #667085;
+        --text-3: #98a2b3;
+        --line: #eaecf0;
+        --line-strong: #d0d5dd;
+        --accent: #175cd3;
+        --accent-soft: #eff4ff;
+        --danger: #d92d20;
+        --danger-soft: #fef3f2;
+    }
+    html, body {
+        width: 100%;
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow-x: hidden !important;
+    }
+    body {
+        background:var(--bg);
+        color:var(--text);
+    }
 }
