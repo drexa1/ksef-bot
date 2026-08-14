@@ -50,29 +50,29 @@
             <section class="invoice-card">
                 <div class="section-header" data-bs-toggle="collapse" data-bs-target="#invoiceData" role="button">
                     <span>Invoice data</span>
-                    <span class="collapse-label">Collapse</span>
+                    <i class="bi bi-chevron-down ms-3"></i>
                 </div>
 
                 <div id="invoiceData" class="collapse show">
                     <div class="section-body">
 
-                        <h6 class="mb-3">Markings <span class="text-muted fw-normal">(optional)</span></h6>
+                        <div class="form-label mb-3">Markings <span class="text-muted">(optional)</span></div>
                         <div class="markings-list mb-4">
                             <label class="marking-item" for="markingMpp">
                                 <input id="markingMpp" type="checkbox" class="form-check-input">
-                                <span>MPP - split payment mechanism</span>
+                                <span class="fw-bold">MPP</span><span> - split payment mechanism</span>
                             </label>
                             <label class="marking-item" for="markingMk">
                                 <input id="markingMk" type="checkbox" class="form-check-input">
-                                <span>MK - cash method</span>
+                                <span class="fw-bold">MK</span><span> - cash method</span>
                             </label>
                             <label class="marking-item" for="markingFp">
                                 <input id="markingFp" type="checkbox" class="form-check-input">
-                                <span>FP - invoice referred to in Article 109(3d) of the Act (invoice for a receipt)</span>
+                                <span class="fw-bold">FP</span><span> - invoice referred to in Article 109(3d) of the Act (invoice for a receipt)</span>
                             </label>
                             <label class="marking-item" for="markingTp">
                                 <input id="markingTp" type="checkbox" class="form-check-input">
-                                <span>TP - existing relationships referred to in Article 32(2)(1) of the Act</span>
+                                <span class="fw-bold">TP</span><span> - existing relationships referred to in Article 32(2)(1) of the Act</span>
                             </label>
                         </div>
 
@@ -108,7 +108,7 @@
             <section class="invoice-card">
                 <div class="section-header" data-bs-toggle="collapse" data-bs-target="#contractorData" role="button">
                     <span>Contractor</span>
-                    <span class="collapse-label">Collapse</span>
+                    <i class="bi bi-chevron-down ms-3"></i>
                 </div>
 
                 <div id="contractorData" class="collapse">
@@ -198,7 +198,7 @@
             <section class="invoice-card">
                 <div class="section-header" data-bs-toggle="collapse" data-bs-target="#itemsData" role="button">
                     <span>Items</span>
-                    <span class="collapse-label">Collapse</span>
+                    <i class="bi bi-chevron-down ms-3"></i>
                 </div>
 
                 <div id="itemsData" class="collapse">
@@ -327,7 +327,7 @@
             <section class="invoice-card">
                 <div class="section-header" data-bs-toggle="collapse" data-bs-target="#paymentData" role="button">
                     <span>Payment</span>
-                    <span class="collapse-label">Collapse</span>
+                    <i class="bi bi-chevron-down ms-3"></i>
                 </div>
 
                 <div id="paymentData" class="collapse">
@@ -402,7 +402,7 @@
             <section class="invoice-card">
                 <div class="section-header" data-bs-toggle="collapse" data-bs-target="#additionalInfo" role="button">
                     <span>Other information on the invoice</span>
-                    <span class="collapse-label">Collapse</span>
+                    <i class="bi bi-chevron-down ms-3"></i>
                 </div>
 
                 <div id="additionalInfo" class="collapse">
@@ -419,9 +419,9 @@
 
             <!-- Action buttons --------------------------------------------------------------------------------------->
             <div class="footer-actions">
-                <button type="button" class="btn btn-secondary" id="cancelButton">Cancel</button>
+                <button type="button" class="btn btn-cancel" id="cancelButton">Cancel</button>
                 <button type="submit" class="btn btn-primary">Generate invoice</button>
-                <button type="submit" class="btn btn-primary" disabled>Download XML</button>
+                <button type="submit" class="btn btn-secondary" disabled>Download XML</button>
                 <button type="submit" class="btn btn-success" disabled>Submit</button>
             </div>
         </form>
