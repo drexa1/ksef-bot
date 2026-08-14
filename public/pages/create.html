@@ -18,8 +18,8 @@
     />
     <title>New KSeF sales invoice</title>
     <link rel="icon" type="image/png" href="/assets/favicon/favicon.png"/>
-    <link rel="apple-touch-icon" href="assets/favicon/favicon-mobile.png">
-    <link rel="manifest" href="assets/favicon/android.webmanifest" crossorigin="use-credentials">
+    <link rel="apple-touch-icon" href="../assets/favicon/favicon-mobile.png">
+    <link rel="manifest" href="../assets/favicon/android.webmanifest" crossorigin="use-credentials">
 
     <link rel="icon" type="image/png" href="/assets/favicon/favicon.png">
     <!-- Bootstrap -->
@@ -37,11 +37,11 @@
         <!-- Header --------------------------------------------------------------------------------------------------->
         <div class="header">
             <div class="header-content">
-                <button type="button" class="d-none btn btn-outline-secondary" id="backButton">← Back</button>
+                <button type="button" class="d-none btn btn-secondary" id="backButton">← Back</button>
                 <h1 class="mx-auto">New Sales Invoice (KSeF)</h1>
             </div>
         </div>
-        <div class="text-muted mb-3"><span class="text-danger">*</span> Required field</div>
+        <div class="text-muted small mb-3"><span class="text-danger">*</span> Required field</div>
         <form id="invoiceForm">
 
             <!-- Invoice data ----------------------------------------------------------------------------------------->
@@ -415,8 +415,10 @@
 
             <!-- Action buttons --------------------------------------------------------------------------------------->
             <div class="footer-actions">
-                <button type="submit" class="btn btn-primary">Generate invoice XML</button>
-                <button type="button" class="btn btn-outline-secondary" id="cancelButton">Cancel</button>
+                <button type="button" class="btn btn-secondary" id="cancelButton">Cancel</button>
+                <button type="submit" class="btn btn-primary">Generate invoice</button>
+                <button type="submit" class="btn btn-primary" disabled>Download XML</button>
+                <button type="submit" class="btn btn-primary" disabled>Submit</button>
             </div>
         </form>
     </div>

@@ -1,11 +1,13 @@
 @media (prefers-color-scheme:light) {
     :root {
-        --bg: #f7f8fa;
+        --bg: whitesmoke;
+        --text: dimgray;
+        --text-2: gray;
+        --text-3: darkgray;
+
         --surface: #fff;
-        --surface-2: #f9fafb;
-        --text: #171a1f;
-        --text-2: #667085;
-        --text-3: #98a2b3;
+        --surface-hover: #f9fafb;
+
         --line: #eaecf0;
         --line-strong: #d0d5dd;
         --accent: #175cd3;
@@ -15,9 +17,9 @@
     }
     html, body {
         width: 100%;
-        margin: 0 !important;
-        padding: 0 !important;
-        overflow-x: hidden !important;
+        margin: 0;
+        padding: 0;
+        overflow-y: hidden;
     }
     body {
         background:var(--bg);
