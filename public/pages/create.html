@@ -68,7 +68,7 @@
                             </label>
                             <label class="marking-item" for="markingFp">
                                 <input id="markingFp" type="checkbox" class="form-check-input">
-                                <span class="fw-bold">FP</span><span> - invoice referred to in Article 109(3d) of the Act (invoice for a receipt)</span>
+                                <span class="fw-bold">FP</span><span> - invoice referred to in Article 109, paragraph 3d of the Act (invoice for receipt)</span>
                             </label>
                             <label class="marking-item" for="markingTp">
                                 <input id="markingTp" type="checkbox" class="form-check-input">
@@ -78,24 +78,27 @@
 
                         <div class="invoice-data-grid">
                             <div class="field invoice-number">
-                                <label class="form-label required" for="invoiceNumber">Invoice number</label>
+                                <label class="form-label fw-bold required" for="invoiceNumber">Invoice number</label>
                                 <input id="invoiceNumber" type="text" class="form-control" value="eFA/2026/08/12/1/KSeF" required>
                             </div>
                             <div class="field issue-date">
-                                <label class="form-label required" for="issueDate">Issue date</label>
+                                <label class="form-label fw-bold required" for="issueDate">Date of issue</label>
                                 <input id="issueDate" type="date" class="form-control" value="2026-08-12" required>
                             </div>
                             <div class="field issue-place">
-                                <label class="form-label" for="issuePlace">Place of issue <span class="text-muted">(optional)</span></label>
+                                <label class="form-label fw-bold" for="issuePlace">Place of issue <span class="fw-normal">(optional)</span></label>
                                 <input id="issuePlace" type="text" class="form-control" value="Kraków">
                             </div>
                             <div class="field accounting-date">
-                                <label class="form-label required" for="accountingDate">Accounting date</label>
+                                <label class="form-label fw-bold required" for="accountingDate">Posting date</label>
                                 <input id="accountingDate" type="date" class="form-control" value="2026-08-12" required>
-                                <div class="help-text">The accounting date is the date the invoice is assigned to the billing period</div>
+                                <div class="help-text">
+                                    <i class="bi bi-info-circle ps-2"></i>
+                                    The posting date is the date on which the invoice is assigned to the billing period.
+                                </div>
                             </div>
                             <div class="field delivery-date">
-                                <label class="form-label required" for="deliveryDate">Delivery / service date</label>
+                                <label class="form-label fw-bold required" for="deliveryDate">Delivery / service date</label>
                                 <input id="deliveryDate" type="date" class="form-control" value="2026-08-12" required>
                             </div>
                         </div>
@@ -194,10 +197,10 @@
                 </div>
             </section>
 
-            <!-- Invoice items ---------------------------------------------------------------------------------------->
+            <!-- Positions ---------------------------------------------------------------------------------------->
             <section class="invoice-card">
                 <div class="section-header" data-bs-toggle="collapse" data-bs-target="#itemsData" role="button">
-                    <span>Items</span>
+                    <span>Positions</span>
                     <i class="bi bi-chevron-down ms-3"></i>
                 </div>
 
