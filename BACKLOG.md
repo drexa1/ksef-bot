@@ -31,7 +31,14 @@
 - [x] Test invoices PII  
 - [x] Fix running bruno tests on CI  
 - [x] Post invoice
-- [ ] Invoice generator frontend  
+- [x] Invoice generator frontend: start  
+- [ ] Invoice generator frontend: CSS cleanup  
+- [ ] Invoice generator frontend: mobile CSS cleanup  
+- [ ] Invoice generator frontend: invoice items table  
+- [ ] Invoice generator frontend: mobile invoice items table  
+- [ ] Invoice generator frontend: create logic  
+- [ ] Invoice generator frontend: import logic  
+- [ ] Invoice generator frontend: generate actions logic  
 - [ ] Generate next invoice XML
 - [ ] Rest test for posting an invoice  
 - [ ] Create user frontend  

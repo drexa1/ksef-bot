@@ -1,17 +1,18 @@
 @media (prefers-color-scheme:light) {
     :root {
         --bg: whitesmoke;
+        --surface: white;
+        --surface-hover: ghostwhite;
+
         --text: dimgray;
-        --text-2: gray;
         --text-3: darkgray;
+        --text-label: slategray;
 
-        --surface: #fff;
-        --surface-hover: #f9fafb;
+        --line: lightgray;
 
-        --line: #eaecf0;
-        --line-strong: #d0d5dd;
         --accent: #175cd3;
         --accent-soft: #eff4ff;
+
         --danger: #d92d20;
         --danger-soft: #fef3f2;
     }
@@ -19,7 +20,12 @@
         width: 100%;
         margin: 0;
         padding: 0;
-        overflow-y: hidden;
+        overflow-y: auto;
+        scrollbar-width: none; /* Firefox */
+    }
+    html::-webkit-scrollbar,
+    body::-webkit-scrollbar {
+        display: none; /* Chrome, Safari, Edge */
     }
     body {
         background:var(--bg);

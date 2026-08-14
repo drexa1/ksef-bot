@@ -37,7 +37,7 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: 1rem;
+        padding: .75rem 1rem;
         background: var(--surface);
         border-bottom: 1px solid var(--line);
         color: var(--text);
@@ -64,18 +64,17 @@
         display: flex;
         align-items: flex-start;
         gap: .5rem;
-        color: #475467;
-        font-size: .8125rem;
-        line-height: 1.4;
+        color: var(--text-label);
+        font-size: 0.8rem;
         cursor: pointer;
     }
     .marking-item input {
         flex-shrink: 0;
-        margin-top: .125rem;
+        margin-top: .1rem;
     }
     .invoice-data-grid {
         display: grid;
-        grid-template-columns: repeat(12,minmax(0,1fr));
+        grid-template-columns: repeat(12, minmax(0, 1fr));
         gap: 1rem 1.25rem;
     }
     .field {
@@ -99,10 +98,9 @@
     .form-label {
         display: block;
         margin-bottom: .3125rem;
-        color: #475467;
+        color: var(--text-label);
         font-size: .75rem;
         font-weight: 500;
-        line-height: 1.4;
     }
     .required::after {
         content: " *";
@@ -110,29 +108,22 @@
     }
     .form-control,
     .form-select {
-        min-height: 2.375rem;
-        background: #fff;
-        border: 1px solid var(--line-strong);
+        min-height: 2rem;
+        background: white;
+        border: 1px solid var(--line);
         border-radius: .25rem;
         color: var(--text);
-        font-size: .8125rem;
-        box-shadow: none;
-        transition: border-color .12s ease,box-shadow .12s ease;
-    }
-    .form-control:hover,
-    .form-select:hover {
-        border-color: #98a2b3;
+        font-size: .8rem;
+        transition: border-color .1s ease,box-shadow .1s ease;
     }
     .form-control:focus,
     .form-select:focus {
         border-color: var(--accent);
-        box-shadow: 0 0 0 2px rgba(23,92,211,.12);
     }
     .help-text {
         margin-top: .25rem;
         color: var(--text-3);
-        font-size: .6875rem;
-        line-height: 1.4;
+        font-size: .75rem;
     }
     /* Contractor --------------------------------------------------------------------------------------------------- */
     .contractor-grid {
@@ -150,15 +141,14 @@
         display: flex;
         align-items: center;
         gap: 1rem;
-        min-height: 2.375rem;
     }
     .contractor-identifier-option {
         display: inline-flex;
         align-items: center;
-        gap: .375rem;
+        gap: .3rem;
         margin: 0;
-        color: #475467;
-        font-size: .8125rem;
+        color: var(--text-label);
+        font-size: .8rem;
         font-weight: 400;
         cursor: pointer;
     }
@@ -198,14 +188,13 @@
         display: flex;
         align-items: flex-start;
         gap: .5rem;
-        color: #475467;
-        font-size: .8125rem;
-        line-height: 1.4;
+        color: var(--text-label);
+        font-size: .8rem;
         cursor: pointer;
     }
     .additional-entity-options input {
         flex-shrink: 0;
-        margin-top: .1875rem;
+        margin-top: .2rem;
     }
     /* Invoice items ------------------------------------------------------------------------------------------------ */
     .invoice-type {
@@ -216,18 +205,17 @@
     .invoice-type label {
         display: inline-flex;
         align-items: center;
-        gap: .375rem;
-        color: #475467;
-        font-size: .8125rem;
+        gap: .3rem;
+        color: var(--text-label);
+        font-size: .8rem;
         cursor: pointer;
     }
     .info-box {
         display: flex;
         align-items: center;
-        gap: .625rem;
-        padding: .625rem .75rem;
-        border: 1px solid #fecdca;
+        padding: .75rem;
         border-radius: .25rem;
+        border: 1px solid var(--danger);
         background: var(--danger-soft);
         color: var(--danger);
         font-size: .75rem;
@@ -241,8 +229,8 @@
         flex-shrink: 0;
         border-radius: 50%;
         background: var(--danger);
-        color: #fff;
-        font-size: .6875rem;
+        color: white;
+        font-size: .6rem;
         font-weight: 700;
     }
     .info-box a {
@@ -254,39 +242,26 @@
     .info-box a:hover {
         text-decoration: underline;
     }
-    .items-table {
-        width: 100%;
-        margin-bottom: 0;
-        border-collapse: separate;
-        border-spacing: 0;
-    }
+    /* Items table -------------------------------------------------------------------------------------------------- */
     .items-table thead {
-        background: #f9fafb;
+        background: var(--accent-soft);
     }
     .items-table th {
-        padding: .5625rem .5rem;
+        padding: .5rem;
         border-bottom: 1px solid var(--line);
-        color: #667085;
-        font-size: .6875rem;
+        color: var(--text-label);
+        font-size: .75rem;
         font-weight: 600;
-        letter-spacing: .02em;
         white-space: nowrap;
         vertical-align: middle;
     }
     .items-table td {
-        padding: .4375rem .5rem;
+        padding: .5rem;
         border-bottom: 1px solid var(--line);
         vertical-align: middle;
     }
-    .items-table tbody tr:last-child td {
-        border-bottom: 0;
-    }
     .items-table tbody tr:hover {
-        background: #fafcff;
-    }
-    .items-table input,
-    .items-table select {
-        min-width: 5.625rem;
+        background: var(--surface-hover);
     }
     .item-number {
         color: var(--text-3);
@@ -294,42 +269,13 @@
         text-align: center;
         white-space: nowrap;
     }
-    .items-table .item-name {
-        min-width: 11.25rem;
-    }
-    .items-table .price {
-        min-width: 8.125rem;
-    }
-    .items-table .quantity {
-        min-width: 5.625rem;
-    }
-    .items-table .unit {
-        min-width: 6.875rem;
-    }
-    .items-table .vat-rate {
-        min-width: 6.25rem;
-    }
-    .items-table .net,
-    .items-table .vat,
-    .items-table .gross {
-        min-width: 6.875rem;
-    }
     .total-row {
-        background: #f9fafb;
         font-weight: 600;
-    }
-    .total-row td {
-        padding-top: .6875rem;
-        padding-bottom: .6875rem;
-        border-top: 1px solid var(--line-strong);
-    }
-    .total-row span {
-        white-space: nowrap;
     }
     /* Payment ------------------------------------------------------------------------------------------------------ */
     .payment-grid {
         display: grid;
-        grid-template-columns: minmax(0,1fr) minmax(0,1fr);
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
         column-gap: 1.25rem;
         row-gap: 1rem;
     }
@@ -348,14 +294,14 @@
     .payment-paid {
         display: flex;
         align-items: center;
-        min-height: 2.375rem;
+        min-height: 2rem;
     }
     .payment-paid .form-check-input {
         margin-top: 0;
     }
     .payment-paid .form-check-label {
-        color: #475467;
-        font-size: .8125rem;
+        color: var(--text-label);
+        font-size: .8rem;
         cursor: pointer;
     }
     .payment-term {
@@ -393,8 +339,5 @@
         align-items: center;
         gap: .5rem;
         padding: .5rem 0 2rem;
-    }
-    .footer-actions .btn {
-        min-width: 7rem;
     }
 }
