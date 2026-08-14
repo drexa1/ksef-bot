@@ -1,16 +1,8 @@
 :root {
-    --bg: whitesmoke;
-    --surface: white;
-    --section-header: color-mix(in srgb, var(--text-1) 30%, var(--surface));
-    --section-hover: color-mix(in srgb, var(--text-1) 50%, var(--surface));
-    --text-1: dimgray;
-    --text-2: darkgray;
-    --text-label: slategray;
-    --line: lightgray;
-    --accent: dodgerblue;
-    --accent-soft: lightblue;
-    --danger: red;
-    --danger-soft: mistyrose;
+    --section-header: color-mix(in srgb, var(--text-1) 10%, var(--surface));
+    --section-hover: color-mix(in srgb, var(--text-1) 20%, var(--surface));
+    --danger: #c8102e;
+    --danger-soft: #f9e7e9;
 }
 
 html, body {

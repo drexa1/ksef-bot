@@ -4,7 +4,7 @@
     padding: 2rem 2rem 3rem;
     overflow-x: hidden;
 }
-/* Header ------------------------------------------------------------------------------------------------------- */
+/* Header ----------------------------------------------------------------------------------------------------------- */
 .header {
     margin-bottom: 2rem;
 }
@@ -24,7 +24,7 @@
     position: absolute;
     left: 0;
 }
-/* Section ------------------------------------------------------------------------------------------------------ */
+/* Section ---------------------------------------------------------------------------------------------------------- */
 .invoice-card {
     margin-bottom: 1rem;
     background: var(--surface);
@@ -39,7 +39,6 @@
     padding: .75rem 1rem;
     background: var(--section-header);
     border-bottom: 1px solid var(--line);
-    color: var(--bg);
     font-weight: 600;
     cursor: pointer;
 }
@@ -53,7 +52,7 @@
 .section-body {
     padding: 1rem;
 }
-/* Invoice data ------------------------------------------------------------------------------------------------- */
+/* Invoice data ----------------------------------------------------------------------------------------------------- */
 .markings-list {
     display: flex;
     flex-direction: column;
@@ -124,7 +123,7 @@
     color: var(--text-2);
     font-size: .75rem;
 }
-/* Contractor --------------------------------------------------------------------------------------------------- */
+/* Contractor ------------------------------------------------------------------------------------------------------- */
 .contractor-grid {
     display: grid;
     grid-template-columns: 5fr 3fr 4fr;
@@ -195,11 +194,11 @@
     flex-shrink: 0;
     margin-top: .2rem;
 }
-/* Invoice items ------------------------------------------------------------------------------------------------ */
+/* Invoice items ---------------------------------------------------------------------------------------------------- */
 .invoice-type {
     display: flex;
     align-items: center;
-    gap: 1.25rem;
+    gap: 1rem;
 }
 .invoice-type label {
     display: inline-flex;
@@ -241,18 +240,31 @@
 .info-box a:hover {
     text-decoration: underline;
 }
-/* Items table -------------------------------------------------------------------------------------------------- */
-.items-table thead {
-    background: var(--accent-soft);
+/* Items table ------------------------------------------------------------------------------------------------------ */
+.items-table thead tr {
+    border-top: none;
+    border-bottom: none;
+}
+.items-table th:first-child {
+    background-color: var(--bg);
+    border-left: none;
+}
+.items-table th:not(:first-child) {
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
 }
 .items-table th {
+    background-color: var(--accent-soft);
     padding: .5rem;
-    border-bottom: 1px solid var(--line);
     color: var(--text-label);
     font-size: .75rem;
     font-weight: 600;
     white-space: nowrap;
     vertical-align: middle;
+}
+.items-table tr:not(.total-row) td:first-child {
+    border-top: none;
+    border-left: none;
 }
 .items-table td {
     padding: .5rem;
@@ -262,16 +274,24 @@
 .items-table tbody tr:hover {
     background: var(--section-hover);
 }
+.items-table .item-row {
+    border-top: none;
+    border-bottom: none;
+}
 .item-number {
     color: var(--text-2);
     font-size: .75rem;
     text-align: center;
-    white-space: nowrap;
 }
 .total-row {
-    font-weight: 600;
+    font-weight: 500;
+    border-top: none;
+    border-bottom: none;
 }
-/* Payment ------------------------------------------------------------------------------------------------------ */
+.total-row td:first-child {
+    border: none;
+}
+/* Payment ---------------------------------------------------------------------------------------------------------- */
 .payment-grid {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
@@ -326,12 +346,12 @@
     grid-column: 2;
     grid-row: 5;
 }
-/* Other -------------------------------------------------------------------------------------------------------- */
+/* Other ------------------------------------------------------------------------------------------------------------ */
 #notes {
     min-height: 7rem;
     resize: vertical;
 }
-/* Footer ------------------------------------------------------------------------------------------------------- */
+/* Footer ----------------------------------------------------------------------------------------------------------- */
 .footer-actions {
     display: flex;
     justify-content: flex-end;

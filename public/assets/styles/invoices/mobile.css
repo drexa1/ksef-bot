@@ -47,7 +47,7 @@
     /* Items table -------------------------------------------------------------------------------------------------- */
     .items-table thead {
         float: left;
-        width: 40%;
+        width: 50%;
     }
     .items-table thead tr {
         display: flex;
@@ -56,15 +56,26 @@
     .items-table thead th {
         display: flex;
         font-weight: 600;
-        vertical-align: middle;
+        min-height: 2.5rem;
+        align-items: center;
     }
     .items-table tbody {
         display: block;
-        width: 60%;
-        margin-left: 40%;
+        width: 50%;
+        margin-left: 50%;
     }
     .items-table tbody tr:not(.total-row) td {
         display: flex;
+        padding: 0;
+        min-height: 2.5rem;
+        align-items: center;
+    }
+    .items-table tbody tr:not(.total-row) td input,
+    .items-table tbody tr:not(.total-row) td select {
+        border: none;
+    }
+    .item-number {
+        padding-left: 1rem !important;
     }
     .items-table .total-row {
         display: block;

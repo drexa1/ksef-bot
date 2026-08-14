@@ -28,6 +28,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css" crossorigin="anonymous">
 
     <link rel="stylesheet" href="/assets/styles/root.css">
+    <link rel="stylesheet" href="/assets/styles/light-theme.css">
     <link rel="stylesheet" href="/assets/styles/dark-theme.css">
     <link rel="stylesheet" href="/assets/styles/invoices/invoices.css">
     <link rel="stylesheet" href="/assets/styles/invoices/mobile.css">
@@ -227,6 +228,7 @@
                             <table class="table table-bordered items-table" id="itemsTable">
                                 <thead class="table-light">
                                     <tr>
+                                        <th scope="col"><span class="d-none">Actions</span></th>
                                         <th scope="col">No.</th>
                                         <th scope="col">Name</th>
                                         <th scope="col">Unit net price</th>
@@ -236,12 +238,15 @@
                                         <th scope="col">Net [PLN]</th>
                                         <th scope="col">VAT [PLN]</th>
                                         <th scope="col">Gross [PLN]</th>
-                                        <th scope="col"><span class="d-none">Actions</span></th>
                                     </tr>
                                 </thead>
 
                                 <tbody id="itemsBody">
                                     <tr class="item-row">
+                                        <td>
+                                            <button type="button" class="btn btn-danger btn-sm" aria-label="Remove item">×</button>
+                                        </td>
+
                                         <td class="item-number">1</td>
                                         <td>
                                             <label class="d-none" for="itemName1">Item name</label>
@@ -282,15 +287,13 @@
                                             <label class="d-none" for="itemGross1">Gross amount</label>
                                             <input id="itemGross1" type="number" step="0.01" class="form-control gross" readonly>
                                         </td>
-                                        <td>
-                                            <button type="button" class="btn btn-danger btn-sm" aria-label="Remove item">×</button>
-                                        </td>
                                     </tr>
                                 </tbody>
 
                                 <tfoot>
                                     <tr class="total-row">
-                                        <td colspan="6" class="text-end">Total</td>
+                                        <td></td>
+                                        <td colspan="5" class="text-end">Total</td>
                                         <td><span id="totalNet">0.00</span></td>
                                         <td><span id="totalVat">0.00</span></td>
                                         <td><span id="totalGross">0.00</span></td>
@@ -300,7 +303,7 @@
                             </table>
                         </div>
 
-                        <button type="button" class="btn btn-outline-primary btn-sm mt-3" id="addItem">+ Add another item</button>
+                        <button type="button" class="btn btn-outline-primary btn-sm" id="addItem">+ Add another item</button>
 
                         <div class="mt-4">
                             <span class="form-label required">Additional data on the invoice</span>

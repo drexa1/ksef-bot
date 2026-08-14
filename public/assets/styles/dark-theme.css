@@ -1,16 +1,12 @@
 @media (prefers-color-scheme: dark) {
     :root {
-        --bg: #454545FF;
-        --surface: darkslategray;
-        --section-header: color-mix(in srgb, var(--text-1) 30%, var(--surface));
-        --section-hover: color-mix(in srgb, var(--text-1) 50%, var(--surface));
-        --text-1: gainsboro;
-        --text-2: darkgray;
-        --text-label: slategray;
-        --line: dimgray;
-        --accent: lightskyblue;
-        --accent-soft: midnightblue;
-        --danger: red;
-        --danger-soft: mistyrose;
+        --bg: #121212;
+        --surface: #1e1e1e;
+        --text-1: #e0e0e0;
+        --text-2: #a0a0a0;
+        --text-label: #808080;
+        --line: #333333;
+        --accent: #64b5f6;
+        --accent-soft: rgba(100, 181, 246, 0.2);
     }
 }
