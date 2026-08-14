@@ -1,4 +1,4 @@
-@media (prefers-color-scheme:light) {
+@media (prefers-color-scheme: light) {
     .page-container {
         max-width: 80em;
         margin: 0 auto;
@@ -38,14 +38,14 @@
         align-items: center;
         justify-content: space-between;
         padding: .75rem 1rem;
-        background: var(--surface);
+        background: var(--section-header);
         border-bottom: 1px solid var(--line);
-        color: var(--text-1);
+        color: var(--bg);
         font-weight: 600;
         cursor: pointer;
     }
     .section-header:hover {
-        background: var(--surface-hover);
+        background: var(--section-hover);
     }
     .collapse-label {
         font-size: .75rem;

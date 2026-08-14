@@ -1,8 +1,9 @@
-@media (prefers-color-scheme:light) {
+@media (prefers-color-scheme: light) {
     :root {
         --bg: whitesmoke;
         --surface: white;
-        --surface-hover: ghostwhite;
+        --section-header: color-mix(in srgb, var(--text-1) 30%, var(--surface));
+        --section-hover: color-mix(in srgb, var(--text-1) 50%, var(--surface));
         --text-1: dimgray;
         --text-2: darkgray;
         --text-label: slategray;
@@ -12,19 +13,35 @@
         --danger: red;
         --danger-soft: mistyrose;
     }
-    html, body {
-        width: 100%;
-        margin: 0;
-        padding: 0;
-        overflow-y: auto;
-        scrollbar-width: none; /* Firefox */
+}
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg: darkslategray;
+        --surface: darkslategray;
+        --section-header: color-mix(in srgb, var(--text-1) 30%, var(--surface));
+        --section-hover: color-mix(in srgb, var(--text-1) 50%, var(--surface));
+        --text-1: gainsboro;
+        --text-2: darkgray;
+        --text-label: slategray;
+        --line: dimgray;
+        --accent: lightskyblue;
+        --accent-soft: midnightblue;
+        --danger: red;
+        --danger-soft: mistyrose;
     }
-    html::-webkit-scrollbar,
-    body::-webkit-scrollbar {
-        display: none; /* Chrome, Safari, Edge */
-    }
-    body {
-        background:var(--bg);
-        color:var(--text);
-    }
+}
+
+html, body {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    overflow-y: auto;
+    scrollbar-width: none;  /* Firefox */
+}
+html::-webkit-scrollbar, body::-webkit-scrollbar {
+    display: none;  /* Chrome, Safari, Edge */
+}
+body {
+    background:var(--bg);
+    color:var(--text-1);
 }
