@@ -1,0 +1,16 @@
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg: #454545FF;
+        --surface: darkslategray;
+        --section-header: color-mix(in srgb, var(--text-1) 30%, var(--surface));
+        --section-hover: color-mix(in srgb, var(--text-1) 50%, var(--surface));
+        --text-1: gainsboro;
+        --text-2: darkgray;
+        --text-label: slategray;
+        --line: dimgray;
+        --accent: lightskyblue;
+        --accent-soft: midnightblue;
+        --danger: red;
+        --danger-soft: mistyrose;
+    }
+}

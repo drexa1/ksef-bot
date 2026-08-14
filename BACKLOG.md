@@ -39,6 +39,7 @@
 - [ ] Invoice generator frontend: create logic  
 - [ ] Invoice generator frontend: import logic  
 - [ ] Invoice generator frontend: generate actions logic  
+- [ ] UI theming  
 - [ ] Generate next invoice XML
 - [ ] Rest test for posting an invoice  
 - [ ] Create user frontend  
@@ -51,8 +52,7 @@
 - [ ] GIT-version on deploy  
 - [ ] Transparency disclaimer / no Ai  
 - [ ] Business plan  
-- [ ] Sales execution  
-- [ ] UI theming  
+- [ ] Sales execution
 - [ ] Google Analytics  
 - [ ] Slack bot  
 - [ ] Go public  
