@@ -32,10 +32,10 @@
 - [x] Fix running bruno tests on CI  
 - [x] Post invoice
 - [x] Invoice generator frontend: start  
-- [ ] Invoice generator frontend: CSS cleanup  
-- [ ] Invoice generator frontend: mobile CSS cleanup  
-- [ ] Invoice generator frontend: invoice items table  
+- [x] Invoice generator frontend: CSS cleanup  
+- [x] Invoice generator frontend: mobile CSS cleanup
 - [ ] Invoice generator frontend: mobile invoice items table  
+- [ ] Invoice generator frontend: help hints  
 - [ ] Invoice generator frontend: create logic  
 - [ ] Invoice generator frontend: import logic  
 - [ ] Invoice generator frontend: generate actions logic  
