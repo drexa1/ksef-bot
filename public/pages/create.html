@@ -56,7 +56,7 @@
                 <div id="invoiceData" class="collapse show">
                     <div class="section-body">
 
-                        <div class="form-label mb-3">Markings <span class="text-muted">(optional)</span></div>
+                        <div class="form-label mb-3">Markings<span class="text-muted"> (optional)</span></div>
                         <div class="markings-list mb-4">
                             <label class="marking-item" for="markingMpp">
                                 <input id="markingMpp" type="checkbox" class="form-check-input">
@@ -86,7 +86,7 @@
                                 <input id="issueDate" type="date" class="form-control" value="2026-08-12" required>
                             </div>
                             <div class="field issue-place">
-                                <label class="form-label fw-bold" for="issuePlace">Place of issue <span class="fw-normal">(optional)</span></label>
+                                <label class="form-label fw-bold" for="issuePlace">Place of issue<span class="fw-normal"> (optional)</span></label>
                                 <input id="issuePlace" type="text" class="form-control" value="Kraków">
                             </div>
                             <div class="field accounting-date">
@@ -119,13 +119,16 @@
                         <div class="contractor-grid">
 
                             <div class="field contractor-name">
-                                <label class="form-label required" for="contractorName">Contractor name</label>
+                                <label class="form-label fw-bold required" for="contractorName">Contractor name</label>
                                 <input id="contractorName" type="text" class="form-control" placeholder="Contractor name" required>
-                                <div class="help-text">Start typing the name to display suggestions from the contractor database</div>
+                                <div class="help-text">
+                                    <i class="bi bi-info-circle ps-2"></i>
+                                    Start typing the name to display suggestions from the contractor database
+                                </div>
                             </div>
 
                             <div class="field contractor-identifier">
-                                <span class="form-label required">Contractor identifier</span>
+                                <span class="form-label fw-bold required">Contractor identifier</span>
                                 <div class="contractor-identifier-options">
                                     <label class="contractor-identifier-option" for="identifierNip">
                                         <input id="identifierNip" name="contractorIdentifier" type="radio" class="form-check-input" value="nip" checked>
@@ -139,55 +142,58 @@
                             </div>
 
                             <div class="field contractor-nip">
-                                <label class="form-label required" for="contractorNip">Contractor NIP</label>
+                                <label class="form-label fw-bold required" for="contractorNip">Contractor NIP</label>
                                 <input id="contractorNip" type="text" class="form-control" maxlength="10" inputmode="numeric" placeholder="Enter NIP (10 digits)" required>
-                                <div class="help-text">Start typing the number to display suggestions from the contractor database</div>
+                                <div class="help-text">
+                                    <i class="bi bi-info-circle ps-2"></i>
+                                    Start typing the number to display suggestions from the contractor database
+                                </div>
                             </div>
 
                             <div class="field town">
-                                <label class="form-label required" for="contractorTown">Town</label>
+                                <label class="form-label fw-bold required" for="contractorTown">Town</label>
                                 <input id="contractorTown" type="text" class="form-control" placeholder="Enter town name" required>
                             </div>
                             <div class="field postal-code">
-                                <label class="form-label required" for="contractorPostalCode">Postal code</label>
+                                <label class="form-label fw-bold required" for="contractorPostalCode">ZIP code</label>
                                 <input id="contractorPostalCode" type="text" class="form-control" placeholder="Enter postal code" required>
                             </div>
                             <div class="field post-office">
-                                <label class="form-label" for="contractorPostOffice">Post office <span class="text-muted">(optional)</span></label>
-                                <input id="contractorPostOffice" type="text" class="form-control" placeholder="Enter post office">
+                                <label class="form-label fw-bold" for="contractorMail">Mail<span class="fw-normal"> (optional)</span></label>
+                                <input id="contractorMail" type="text" class="form-control" placeholder="Enter your email address">
                             </div>
 
                             <div class="field street">
-                                <label class="form-label" for="contractorStreet">Street <span class="text-muted">(optional)</span></label>
+                                <label class="form-label fw-bold" for="contractorStreet">Street<span class="fw-normal"> (optional)</span></label>
                                 <input id="contractorStreet" type="text" class="form-control" placeholder="Enter street">
                             </div>
                             <div class="field building">
-                                <label class="form-label required" for="contractorBuilding">Building number</label>
-                                <input id="contractorBuilding" type="text" class="form-control" placeholder="Enter building number" required>
+                                <label class="form-label fw-bold required" for="contractorBuilding">Building number</label>
+                                <input id="contractorBuilding" type="text" class="form-control" placeholder="Enter the building number" required>
                             </div>
-                            <div class="field premises">
-                                <label class="form-label" for="contractorPremises">Premises number <span class="text-muted">(optional)</span></label>
-                                <input id="contractorPremises" type="text" class="form-control" placeholder="Enter premises number">
+                            <div class="field apartment">
+                                <label class="form-label fw-bold" for="contractorApartment">Apartment number<span class="fw-normal"> (optional)</span></label>
+                                <input id="contractorApartment" type="text" class="form-control" placeholder="Enter the apartment number">
                             </div>
 
                             <div class="field additional-entity">
-                                <span class="form-label required">Additional entity</span>
+                                <span class="form-label fw-bold required">Additional entity</span>
                                 <div class="additional-entity-options">
                                     <label for="additionalEntityNone">
                                         <input id="additionalEntityNone" name="additionalEntity" type="radio" value="none" checked>
-                                        <span>None</span>
+                                        <span class="fw-bold">None</span>
                                     </label>
                                     <label for="additionalEntityJst">
                                         <input id="additionalEntityJst" name="additionalEntity" type="radio" value="jst">
-                                        <span>JST - invoice concerns a subordinate unit of a local government unit</span>
+                                        <span class="fw-bold">JST</span><span> - invoice concerns a subordinate unit of a local government unit</span>
                                     </label>
                                     <label for="additionalEntityGv">
                                         <input id="additionalEntityGv" name="additionalEntity" type="radio" value="gv">
-                                        <span>GV - invoice concerns a member of a VAT group</span>
+                                        <span class="fw-bold">GV</span><span> - invoice concerns a member of a VAT group</span>
                                     </label>
                                     <label for="additionalEntityOther">
                                         <input id="additionalEntityOther" name="additionalEntity" type="radio" value="other">
-                                        <span>Other - additional entity other than JST/GV</span>
+                                        <span class="fw-bold">Other</span><span> - additional entity other than local government units / municipalities</span>
                                     </label>
                                 </div>
                             </div>
@@ -219,13 +225,25 @@
                             </label>
                         </div>
 
-                        <div class="info-box mb-3">
-                            <span class="info-icon me-2">!</span>
-                            <span>You can complete GTU and procedure markings in the additional columns.</span>
-                            <a href="#">Learn more</a>
+                        <div class="form-label mt-4 mb-1">
+                            Additional columns<span class="text-muted"> (optional)</span>
+                            <a class="learn-more fw-bold">Learn more <i class="bi bi-box-arrow-up-right"></i></a>
                         </div>
 
-                        <h6 class="mb-3">Additional columns</h6>
+                        <div class="markings-list mb-4">
+                            <label class="additional-column" for="additionalColumnGTU">
+                                <input id="additionalColumnGTU" type="checkbox" class="form-check-input">
+                                <span>GTU</span>
+                            </label>
+                            <label class="marking-item" for="procedureSymbols">
+                                <input id="procedureSymbols" type="checkbox" class="form-check-input">
+                                <span>Procedure symbols</span>
+                            </label>
+                            <label class="marking-item" for="additionalInformation">
+                                <input id="additionalInformation" type="checkbox" class="form-check-input">
+                                <span>Additional information</span>
+                            </label>
+                        </div>
 
                         <div class="table-responsive">
                             <table class="table table-bordered items-table" id="itemsTable">

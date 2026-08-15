@@ -62,7 +62,7 @@
     flex-direction: column;
     gap: .5rem;
 }
-.marking-item {
+.marking-item, .additional-column {
     display: flex;
     align-items: flex-start;
     gap: .5rem;
@@ -199,7 +199,7 @@
     flex-shrink: 0;
     margin-top: .2rem;
 }
-/* Invoice items ---------------------------------------------------------------------------------------------------- */
+/* Positions -------------------------------------------------------------------------------------------------------- */
 .invoice-type {
     display: flex;
     align-items: center;
@@ -213,37 +213,10 @@
     font-size: .8rem;
     cursor: pointer;
 }
-.info-box {
-    display: flex;
-    align-items: center;
-    padding: .75rem;
-    border-radius: .25rem;
-    border: 1px solid var(--danger);
-    background: var(--danger-soft);
-    color: var(--danger);
-    font-size: .75rem;
-}
-.info-icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 1.125rem;
-    height: 1.125rem;
-    flex-shrink: 0;
-    border-radius: 50%;
-    background: var(--danger);
-    color: white;
-    font-size: .6rem;
-    font-weight: 700;
-}
-.info-box a {
-    margin-left: auto;
-    color: var(--danger);
+.learn-more {
+    color: var(--ksef-blue);
     font-weight: 500;
-    text-decoration: none;
-}
-.info-box a:hover {
-    text-decoration: underline;
+    cursor: pointer;
 }
 /* Items table ------------------------------------------------------------------------------------------------------ */
 .items-table thead tr {
