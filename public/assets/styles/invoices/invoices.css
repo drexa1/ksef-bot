@@ -219,18 +219,6 @@
     cursor: pointer;
 }
 /* Items table ------------------------------------------------------------------------------------------------------ */
-.items-table thead tr {
-    border-top: none;
-    border-bottom: none;
-}
-.items-table th:first-child {
-    background-color: var(--bg);
-    border-left: none;
-}
-.items-table th:not(:first-child) {
-    border-top: 1px solid var(--line);
-    border-bottom: 1px solid var(--line);
-}
 .items-table th {
     background-color: var(--accent-soft);
     padding: .5rem;
@@ -239,17 +227,6 @@
     font-weight: 600;
     white-space: nowrap;
     vertical-align: middle;
-}
-.items-table tr:not(.total-row) td:first-child {
-    border-top: none;
-    border-left: none;
-}
-.items-table .item-row {
-    border-top: none;
-    border-bottom: none;
-}
-.items-table .item-row td:first-child {
-    border-bottom: none !important;
 }
 .items-table td {
     padding: .5rem;
@@ -263,11 +240,6 @@
 }
 .total-row {
     font-weight: 500;
-    border-top: none;
-    border-bottom: none;
-}
-.total-row td:first-child {
-    border: none;
 }
 /* Payment ---------------------------------------------------------------------------------------------------------- */
 .payment-grid {

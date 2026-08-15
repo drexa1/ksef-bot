@@ -249,7 +249,6 @@
                             <table class="table table-bordered items-table" id="itemsTable">
                                 <thead class="table-light">
                                     <tr>
-                                        <th scope="col"><span class="d-none">Actions</span></th>
                                         <th scope="col">No.</th>
                                         <th scope="col">Name</th>
                                         <th scope="col">Unit net price</th>
@@ -259,35 +258,38 @@
                                         <th scope="col">Net [PLN]</th>
                                         <th scope="col">VAT [PLN]</th>
                                         <th scope="col">Gross [PLN]</th>
+                                        <!-- Additional columns-->
+                                        <th scope="col" class="d-none">GTU</th>
+                                        <th scope="col" class="d-none">Procedure symbols</th>
+                                        <th scope="col" class="d-none">Additional information</th>
                                     </tr>
                                 </thead>
 
                                 <tbody id="itemsBody">
                                     <tr class="item-row">
-                                        <td>
+                                        <td class="item-number">
                                             <button type="button" class="btn btn-danger btn-sm" aria-label="Remove item">×</button>
+                                            <span>1</span>
                                         </td>
-
-                                        <td class="item-number">1</td>
                                         <td>
                                             <label class="d-none" for="itemName1">Item name</label>
-                                            <input id="itemName1" type="text" class="form-control item-name" placeholder="Enter name">
+                                            <input id="itemName1" type="text" class="form-control" placeholder="Enter name">
                                         </td>
                                         <td>
                                             <label class="d-none" for="itemPrice1">Unit net price</label>
-                                            <input id="itemPrice1" type="number" step="0.01" min="0" class="form-control price" placeholder="Enter amount">
+                                            <input id="itemPrice1" type="number" step="0.01" min="0" class="form-control" placeholder="Enter amount">
                                         </td>
                                         <td>
                                             <label class="d-none" for="itemQuantity1">Quantity</label>
-                                            <input id="itemQuantity1" type="number" step="0.01" min="0" value="1" class="form-control quantity" placeholder="Enter quantity">
+                                            <input id="itemQuantity1" type="number" step="0.01" min="0" value="1" class="form-control" placeholder="Enter quantity">
                                         </td>
                                         <td>
                                             <label class="d-none" for="itemUnit1">Unit of measurement</label>
-                                            <input id="itemUnit1" type="text" class="form-control unit" placeholder="Enter unit">
+                                            <input id="itemUnit1" type="text" class="form-control" placeholder="Enter unit">
                                         </td>
                                         <td>
                                             <label class="d-none" for="itemVat1">VAT rate</label>
-                                            <select id="itemVat1" class="form-select vat-rate">
+                                            <select id="itemVat1" class="form-select">
                                                 <option value="">Select</option>
                                                 <option value="23">23%</option>
                                                 <option value="8">8%</option>
@@ -298,15 +300,29 @@
                                         </td>
                                         <td>
                                             <label class="d-none" for="itemNet1">Net amount</label>
-                                            <input id="itemNet1" type="number" step="0.01" class="form-control net" readonly>
+                                            <input id="itemNet1" type="number" step="0.01" class="form-control" readonly>
                                         </td>
                                         <td>
                                             <label class="d-none" for="itemVatAmount1">VAT amount</label>
-                                            <input id="itemVatAmount1" type="number" step="0.01" class="form-control vat" readonly>
+                                            <input id="itemVatAmount1" type="number" step="0.01" class="form-control" readonly>
                                         </td>
                                         <td>
                                             <label class="d-none" for="itemGross1">Gross amount</label>
-                                            <input id="itemGross1" type="number" step="0.01" class="form-control gross" readonly>
+                                            <input id="itemGross1" type="number" step="0.01" class="form-control" readonly>
+                                        </td>
+
+                                        <!-- Additional columns-->
+                                        <td class="d-none">
+                                            <label class="d-none" for="itemGTU1">GTU</label>
+                                            <input id="itemGTU1" type="text" class="form-control" placeholder="GTU">
+                                        </td>
+                                        <td class="d-none">
+                                            <label class="d-none" for="itemProcedureSymbols1">Procedure symbols</label>
+                                            <input id="itemProcedureSymbols1" type="text" class="form-control" placeholder="SYMBOL">
+                                        </td>
+                                        <td class="d-none">
+                                            <label class="d-none" for="itemAdditionalInformation1">Additional information</label>
+                                            <input id="itemAdditionalInformation1" type="text" class="form-control" placeholder="Additional information">
                                         </td>
                                     </tr>
                                 </tbody>
@@ -318,7 +334,6 @@
                                         <td><span id="totalNet">0.00</span></td>
                                         <td><span id="totalVat">0.00</span></td>
                                         <td><span id="totalGross">0.00</span></td>
-                                        <td></td>
                                     </tr>
                                 </tfoot>
                             </table>
@@ -327,7 +342,7 @@
                         <button type="button" class="btn btn-outline-primary btn-sm" id="addItem">+ Add another item</button>
 
                         <div class="mt-4">
-                            <span class="form-label required">Additional data on the invoice</span>
+                            <span class="form-label fw-bold required">Additional data on the invoice</span>
                             <div class="invoice-type">
                                 <label for="additionalDataYes">
                                     <input id="additionalDataYes" type="radio" name="additionalData" value="yes" class="form-check-input">
@@ -356,7 +371,7 @@
                         <div class="payment-grid">
 
                             <div class="field payment-type">
-                                <label class="form-label required" for="paymentType">Payment type</label>
+                                <label class="form-label fw-bold required" for="paymentType">Payment type</label>
                                 <select id="paymentType" class="form-select" required>
                                     <option value="">Select</option>
                                     <option>Bank transfer</option>
@@ -367,13 +382,16 @@
                             </div>
 
                             <div class="field bank-account">
-                                <label class="form-label" for="bankAccount">Bank account number <span class="text-muted">(optional)</span></label>
+                                <label class="form-label fw-bold" for="bankAccount">Bank account number<span class="fw-normal"> (optional)</span></label>
                                 <input id="bankAccount" type="text" class="form-control" maxlength="26" placeholder="Enter bank account number (26 digits)">
-                                <div class="help-text">The information will appear on the invoice</div>
+                                <div class="help-text">
+                                    <i class="bi bi-info-circle ps-2"></i>
+                                    The information will appear on the invoice
+                                </div>
                             </div>
 
                             <div class="field payment-status">
-                                <span class="form-label">Invoice status <span class="text-muted">(optional)</span></span>
+                                <span class="form-label fw-bold">Invoice status<span class="fw-normal"> (optional)</span></span>
                                 <div class="form-check payment-paid">
                                     <input id="invoicePaid" class="form-check-input me-1" type="checkbox">
                                     <label class="form-check-label" for="invoicePaid">Invoice paid</label>
@@ -381,7 +399,7 @@
                             </div>
 
                             <div class="field payment-term">
-                                <label class="form-label required" for="paymentTerm">Payment deadline</label>
+                                <label class="form-label fw-bold required" for="paymentTerm">Payment deadline</label>
                                 <select id="paymentTerm" class="form-select" required>
                                     <option value="">Deadline</option>
                                     <option value="contract">According to contract</option>
@@ -395,22 +413,22 @@
                             </div>
 
                             <div class="field payment-days">
-                                <label class="form-label required" for="paymentDays">Days to pay</label>
+                                <label class="form-label fw-bold required" for="paymentDays">Days to pay</label>
                                 <input id="paymentDays" type="number" min="0" class="form-control" value="7" required>
                             </div>
 
                             <div class="field payment-deadline">
-                                <label class="form-label required" for="paymentDeadline">Payment deadline</label>
+                                <label class="form-label fw-bold required" for="paymentDeadline">Payment deadline</label>
                                 <input id="paymentDeadline" type="date" class="form-control" value="2026-08-19" required>
                             </div>
 
                             <div class="field payment-link">
-                                <label class="form-label" for="paymentLink">Cashless payment link <span class="text-muted">(optional)</span></label>
+                                <label class="form-label fw-bold" for="paymentLink">Cashless payment link<span class="fw-normal"> (optional)</span></label>
                                 <input id="paymentLink" type="url" class="form-control" placeholder="Enter payment link">
                             </div>
 
                             <div class="field ksef-payment-id">
-                                <label class="form-label" for="ksefPaymentId">KSeF Payment ID <span class="text-muted">(optional)</span></label>
+                                <label class="form-label fw-bold" for="ksefPaymentId">KSeF Payment ID<span class="fw-normal"> (optional)</span></label>
                                 <input id="ksefPaymentId" type="text" class="form-control" placeholder="Enter identifier">
                             </div>
 
@@ -428,7 +446,7 @@
 
                 <div id="additionalInfo" class="collapse">
                     <div class="section-body">
-                        <label class="form-label" for="notes">Invoice footer <span class="text-muted">(optional)</span></label>
+                        <label class="form-label fw-bold" for="notes">Invoice footer<span class="fw-normal"> (optional)</span></label>
                         <textarea id="notes" class="form-control" rows="5" maxlength="3500" placeholder="Enter additional notes (up to 3500 characters)"></textarea>
                         <div class="help-text text-end">
                             Field accepts up to 3500 characters (<span id="notesCount">0</span>/3500)
