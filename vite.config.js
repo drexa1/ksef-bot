@@ -3,7 +3,7 @@ import path from "path";
 
 export default defineConfig({
     base: "./",
-    root: ".",
+    root: "src",
     publicDir: "public",
     build: {
         outDir: "dist",
