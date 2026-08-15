@@ -304,12 +304,12 @@
 /* Footer ----------------------------------------------------------------------------------------------------------- */
 .footer-actions {
     display: flex;
-    justify-content: flex-start;
+    justify-content: flex-end;
     align-items: center;
     gap: .5rem;
     padding: .5rem 0 2rem;
 }
 .footer-actions button {
-    flex: 0 0 8rem;
+    flex: 0 0 10rem;
     box-sizing: border-box !important;
 }
