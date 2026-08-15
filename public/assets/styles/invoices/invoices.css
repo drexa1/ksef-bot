@@ -332,12 +332,12 @@
 /* Footer ----------------------------------------------------------------------------------------------------------- */
 .footer-actions {
     display: flex;
-    justify-content: stretch;
+    justify-content: flex-start;
     align-items: center;
     gap: .5rem;
     padding: .5rem 0 2rem;
 }
 .footer-actions button {
-    flex: 1 1 0;
+    flex: 0 0 8rem;
     box-sizing: border-box !important;
 }
