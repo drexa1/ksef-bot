@@ -328,7 +328,7 @@
                                 </tbody>
 
                                 <tfoot>
-                                    <tr class="total-row">
+                                    <tr class="total-row small">
                                         <td></td>
                                         <td colspan="5" class="text-end">Total</td>
                                         <td><span id="totalNet">0.00</span></td>
@@ -369,9 +369,10 @@
                 <div id="paymentData" class="collapse">
                     <div class="section-body">
                         <div class="payment-grid">
-
                             <div class="field payment-type">
-                                <label class="form-label fw-bold required" for="paymentType">Payment type</label>
+                                <label class="form-label fw-bold required" for="paymentType">
+                                    Payment type
+                                </label>
                                 <select id="paymentType" class="form-select" required>
                                     <option value="">Select</option>
                                     <option>Bank transfer</option>
@@ -382,7 +383,9 @@
                             </div>
 
                             <div class="field bank-account">
-                                <label class="form-label fw-bold" for="bankAccount">Bank account number<span class="fw-normal"> (optional)</span></label>
+                                <label class="form-label fw-bold" for="bankAccount">
+                                    Bank account number<span class="fw-normal"> (optional)</span>
+                                </label>
                                 <input id="bankAccount" type="text" class="form-control" maxlength="26" placeholder="Enter bank account number (26 digits)">
                                 <div class="help-text">
                                     <i class="bi bi-info-circle ps-2"></i>
@@ -391,49 +394,65 @@
                             </div>
 
                             <div class="field payment-status">
-                                <span class="form-label fw-bold">Invoice status<span class="fw-normal"> (optional)</span></span>
-                                <div class="form-check payment-paid">
-                                    <input id="invoicePaid" class="form-check-input me-1" type="checkbox">
-                                    <label class="form-check-label" for="invoicePaid">Invoice paid</label>
+                                <span class="form-label fw-bold">
+                                    Invoice status<span class="fw-normal"> (optional)</span>
+                                </span>
+                                <div class="form-check">
+                                    <label class="marking-item" for="invoicePaid">
+                                        <input id="invoicePaid" type="checkbox" class="form-check-input">
+                                        <span>Invoice paid</span>
+                                    </label>
                                 </div>
                             </div>
 
                             <div class="field payment-term">
-                                <label class="form-label fw-bold required" for="paymentTerm">Payment deadline</label>
+                                <label class="form-label fw-bold required" for="paymentTerm">
+                                    Payment deadline
+                                </label>
                                 <select id="paymentTerm" class="form-select" required>
                                     <option value="">Deadline</option>
                                     <option value="contract">According to contract</option>
                                     <option value="other">Other</option>
                                 </select>
+                            </div>
 
-                                <div class="payment-term-description">
-                                    <label class="form-label" for="paymentTermDescription">Payment term description</label>
-                                    <input id="paymentTermDescription" type="text" class="form-control" placeholder="Enter payment term description">
-                                </div>
+                            <div class="field payment-term-description">
+                                <label class="form-label fw-bold" for="paymentTermDescription">
+                                    Payment term description
+                                </label>
+                                <input id="paymentTermDescription" type="text" class="form-control" placeholder="Enter payment term description">
                             </div>
 
                             <div class="field payment-days">
-                                <label class="form-label fw-bold required" for="paymentDays">Days to pay</label>
+                                <label class="form-label fw-bold required" for="paymentDays">
+                                    Days to pay
+                                </label>
                                 <input id="paymentDays" type="number" min="0" class="form-control" value="7" required>
                             </div>
 
                             <div class="field payment-deadline">
-                                <label class="form-label fw-bold required" for="paymentDeadline">Payment deadline</label>
+                                <label class="form-label fw-bold required" for="paymentDeadline">
+                                    Payment deadline
+                                </label>
                                 <input id="paymentDeadline" type="date" class="form-control" value="2026-08-19" required>
                             </div>
 
                             <div class="field payment-link">
-                                <label class="form-label fw-bold" for="paymentLink">Cashless payment link<span class="fw-normal"> (optional)</span></label>
+                                <label class="form-label fw-bold" for="paymentLink">
+                                    Cashless payment link<span class="fw-normal"> (optional)</span>
+                                </label>
                                 <input id="paymentLink" type="url" class="form-control" placeholder="Enter payment link">
                             </div>
 
                             <div class="field ksef-payment-id">
-                                <label class="form-label fw-bold" for="ksefPaymentId">KSeF Payment ID<span class="fw-normal"> (optional)</span></label>
+                                <label class="form-label fw-bold" for="ksefPaymentId">
+                                    KSeF Payment ID<span class="fw-normal"> (optional)</span>
+                                </label>
                                 <input id="ksefPaymentId" type="text" class="form-control" placeholder="Enter identifier">
                             </div>
-
                         </div>
                     </div>
+
                 </div>
             </section>
 
