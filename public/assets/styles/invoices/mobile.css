@@ -66,9 +66,9 @@
     }
     .items-table tbody tr:not(.total-row) td {
         display: flex;
-        padding: 0;
         min-height: 2.5rem;
         align-items: center;
+        padding: 3px;
     }
     .items-table tbody tr:not(.total-row) td input,
     .items-table tbody tr:not(.total-row) td select {
@@ -82,22 +82,26 @@
         margin-top: 1rem;
         font-weight: 600;
     }
+    .total-row td:first-child {
+        display: none;
+    }
     .items-table .total-row td {
         display: flex;
     }
     /* Payment ------------------------------------------------------------------------------------------------------ */
     .payment-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: minmax(0, 1fr);
         row-gap: 1rem;
     }
-    .payment-type,
-    .bank-account,
-    .payment-status,
-    .payment-term,
-    .payment-days,
-    .payment-deadline,
-    .payment-link,
-    .ksef-payment-id {
+    .payment-grid .payment-type,
+    .payment-grid .bank-account,
+    .payment-grid .payment-status,
+    .payment-grid .payment-term,
+    .payment-grid .payment-term-description,
+    .payment-grid .payment-days,
+    .payment-grid .payment-deadline,
+    .payment-grid .payment-link,
+    .payment-grid .ksef-payment-id {
         grid-column: 1;
         grid-row: auto;
     }
@@ -105,5 +109,8 @@
     .footer-actions {
         flex-direction: column;
         align-items: stretch;
+    }
+    .footer-actions button {
+        flex: 0 0 2.5rem;
     }
 }
