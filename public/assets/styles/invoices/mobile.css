@@ -44,16 +44,24 @@
         gap: 1rem;
     }
     /* Positions ---------------------------------------------------------------------------------------------------- */
-    button#removePosition {
-        padding: 2px 5px !important;
-        font-size: 11px !important;
-        width: auto !important;
-        height: auto !important;
-        display: inline-flex !important;
-        align-items: center;
-        justify-content: center;
-    }
+
     /* Items table -------------------------------------------------------------------------------------------------- */
+
+    .items-table thead,
+    .items-table tbody,
+    .items-table thead tr,
+    .items-table tbody tr,
+    .items-table thead th + th,
+    .items-table tbody td + td {
+        border-top: none !important;
+        border-bottom: none !important;
+    }
+
+    .items-table thead th,
+    .items-table tbody td {
+        border-top: 1px solid var(--line) !important;
+    }
+
     .items-table thead {
         float: left;
         width: 50%;
@@ -61,12 +69,12 @@
     .items-table thead tr {
         display: flex;
         flex-direction: column;
-        border-bottom: 1px solid var(--line);
     }
     .items-table thead th:first-child {
         border-bottom: 1px solid var(--line) !important;
     }
-    .items-table thead th:nth-child(6) {
+    .items-table thead th:nth-child(6),
+    .items-table thead th:nth-child(9) {
         border-bottom: 1px solid var(--line) !important;
     }
     .items-table thead th {
@@ -85,7 +93,6 @@
     .item-number {
         padding-left: 1rem !important;
         padding-right: .5rem !important;
-        border-top: 1px solid var(--line) !important;
         border-bottom: 1px solid var(--line) !important;
         background-color: var(--accent-soft) !important;
     }
@@ -103,7 +110,8 @@
     .items-table tbody tr:not(.total-row) td select {
         border: none;
     }
-    .items-table tbody tr:not(.total-row) td:nth-child(6) {
+    .items-table tbody tr:not(.total-row) td:nth-child(6),
+    .items-table tbody tr:not(.total-row) td:nth-child(9) {
         border-bottom: 1px solid var(--line) !important;
     }
     .items-table tbody tr:not(.total-row) td:nth-child(7),
@@ -113,6 +121,11 @@
     .items-table tbody tr:not(.total-row) td:nth-child(8) input,
     .items-table tbody tr:not(.total-row) td:nth-child(9) input {
         background-color: var(--bg) !important;
+    }
+    .items-table td:nth-child(7) input,
+    .items-table td:nth-child(8) input,
+    .items-table td:nth-child(9) input {
+        text-align: right !important;
     }
     /* -------------------------------------------------------------------------------------------------------------- */
     .items-table .total-row {
