@@ -262,9 +262,9 @@
                                         <th scope="col">Quantity</th>
                                         <th scope="col">Unit of measurement</th>
                                         <th scope="col">VAT rate</th>
-                                        <th scope="col">Net [PLN]</th>
-                                        <th scope="col">VAT [PLN]</th>
-                                        <th scope="col">Gross [PLN]</th>
+                                        <th scope="col">Net (PLN)</th>
+                                        <th scope="col">VAT (PLN)</th>
+                                        <th scope="col">Gross (PLN)</th>
                                         <!-- Additional columns-->
                                         <th scope="col" class="d-none">GTU</th>
                                         <th scope="col" class="d-none">Procedure symbols</th>
@@ -275,7 +275,9 @@
                                 <tbody id="itemsBody">
                                     <tr class="item-row">
                                         <td class="item-number">
-                                            <button type="button" class="btn btn-danger btn-sm" aria-label="Remove item">×</button>
+                                            <button id="removePosition" type="button" class="btn btn-danger btn-sm" aria-label="Remove item">
+                                                <i class="bi bi-x-lg"></i>
+                                            </button>
                                             <span id="rowIndex">1</span>
                                         </td>
                                         <td>

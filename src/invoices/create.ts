@@ -258,7 +258,7 @@ function calculatePositionsTotals(): void {
 /// Remove invoice position
 document.addEventListener("click", (event: Event) => {
     const target = event.target as HTMLElement;
-    if (target.ariaLabel?.startsWith("Remove item")) {
+    if (target.id.startsWith("removePosition")) {
         target.closest(".item-row")?.remove();
         updateItemNumber();
         calculatePositionsTotals();

@@ -44,6 +44,15 @@
         gap: 1rem;
     }
     /* Positions ---------------------------------------------------------------------------------------------------- */
+    button#removePosition {
+        padding: 2px 5px !important;
+        font-size: 11px !important;
+        width: auto !important;
+        height: auto !important;
+        display: inline-flex !important;
+        align-items: center;
+        justify-content: center;
+    }
     /* Items table -------------------------------------------------------------------------------------------------- */
     .items-table thead {
         float: left;
@@ -52,17 +61,32 @@
     .items-table thead tr {
         display: flex;
         flex-direction: column;
+        border-bottom: 1px solid var(--line);
+    }
+    .items-table thead th:first-child {
+        border-bottom: 1px solid var(--line) !important;
     }
     .items-table thead th {
         display: flex;
         font-weight: 600;
         min-height: 2.5rem;
         align-items: center;
+        border-bottom: 1px solid transparent !important;
     }
+    /* -------------------------------------------------------------------------------------------------------------- */
     .items-table tbody {
         display: block;
         width: 50%;
         margin-left: 50%;
+    }
+    .item-number {
+        padding-left: 1rem !important;
+        padding-right: .5rem !important;
+        border-bottom: 1px solid var(--line) !important;
+    }
+    #itemsTable td {
+        border: 1px solid transparent;
+        border-right: 1px solid var(--line);
     }
     .items-table tbody tr:not(.total-row) td {
         display: flex;
@@ -74,19 +98,48 @@
     .items-table tbody tr:not(.total-row) td select {
         border: none;
     }
-    .item-number {
-        padding-left: 1rem !important;
-    }
+    /* -------------------------------------------------------------------------------------------------------------- */
     .items-table .total-row {
         display: block;
         margin-top: 1rem;
         font-weight: 600;
     }
-    .total-row td:first-child {
-        display: none;
+    .items-table .total-row td:first-child {
+        display: none !important;
+    }
+    .items-table .total-row td:nth-child(2) {
+        border-bottom: 1px solid var(--line) !important;
     }
     .items-table .total-row td {
         display: flex;
+        border-left: 1px solid var(--line) !important;
+    }
+    td.text-end {
+        justify-content: flex-end !important;
+        padding-right: 0.5rem !important;
+    }
+    span#totalNet,
+    span#totalVAT,
+    span#totalGross {
+        display: flex !important;
+        justify-content: space-between !important;
+        width: 100% !important;
+        align-items: center;
+    }
+    span#totalNet::before,
+    span#totalVAT::before,
+    span#totalGross::before {
+        color: var(--text-label);
+        font-size: .75rem;
+    }
+    span#totalNet::before {
+        content: "Net (PLN)";
+    }
+    span#totalVAT::before {
+        content: "VAT (PLN)";
+    }
+    span#totalGross::before {
+        content: "Gross (PLN)";
     }
     /* Payment ------------------------------------------------------------------------------------------------------ */
     .payment-grid {
