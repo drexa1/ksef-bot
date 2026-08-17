@@ -66,6 +66,9 @@
     .items-table thead th:first-child {
         border-bottom: 1px solid var(--line) !important;
     }
+    .items-table thead th:nth-child(6) {
+        border-bottom: 1px solid var(--line) !important;
+    }
     .items-table thead th {
         display: flex;
         font-weight: 600;
@@ -82,7 +85,9 @@
     .item-number {
         padding-left: 1rem !important;
         padding-right: .5rem !important;
+        border-top: 1px solid var(--line) !important;
         border-bottom: 1px solid var(--line) !important;
+        background-color: var(--accent-soft) !important;
     }
     #itemsTable td {
         border: 1px solid transparent;
@@ -97,6 +102,17 @@
     .items-table tbody tr:not(.total-row) td input,
     .items-table tbody tr:not(.total-row) td select {
         border: none;
+    }
+    .items-table tbody tr:not(.total-row) td:nth-child(6) {
+        border-bottom: 1px solid var(--line) !important;
+    }
+    .items-table tbody tr:not(.total-row) td:nth-child(7),
+    .items-table tbody tr:not(.total-row) td:nth-child(8),
+    .items-table tbody tr:not(.total-row) td:nth-child(9),
+    .items-table tbody tr:not(.total-row) td:nth-child(7) input,
+    .items-table tbody tr:not(.total-row) td:nth-child(8) input,
+    .items-table tbody tr:not(.total-row) td:nth-child(9) input {
+        background-color: var(--bg) !important;
     }
     /* -------------------------------------------------------------------------------------------------------------- */
     .items-table .total-row {
