@@ -242,11 +242,8 @@
     white-space: nowrap;
 }
 td.item-number span {
-    margin-left: .5rem;
-}
-td.item-number span {
     order: 1;
-    margin-left: 0;
+    margin-left: .5rem;
 }
 td.item-number button.btn-danger {
     order: 2;

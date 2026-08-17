@@ -1,16 +1,21 @@
-function calculateRow(row: Element): void {
-    const priceElement = row.querySelector(".price") as HTMLInputElement | null;
-    const quantityElement = row.querySelector(".quantity") as HTMLInputElement | null;
+function initInvoiceData() {
+    const invoiceData = document.getElementById("invoiceData") as HTMLDivElement;
+    const invoiceNumber = invoiceData.querySelector("#invoiceNumber") as HTMLInputElement;
+    invoiceNumber.value = "pollas";
+}
+
+function calculatePositionsRow(row: Element): void {
+    const priceElement = row.querySelector(".price") as HTMLInputElement;
+    const quantityElement = row.querySelector(".quantity") as HTMLInputElement;
     const vatRateElement = row.querySelector(".vat-rate") as HTMLSelectElement | null;
 
-    const price = parseFloat(priceElement?.value ?? "0") || 0;
-    const quantity = parseFloat(quantityElement?.value ?? "0") || 0;
+    const price = parseFloat(priceElement?.value) || 0;
+    const quantity = parseFloat(quantityElement?.value) || 0;
     const vatRate = vatRateElement?.value ?? "";
 
     const net = price * quantity;
     let vat = 0;
-    if (vatRate !== "zw")
-        vat = net * (parseFloat(vatRate) || 0) / 100;
+    if (vatRate !== "zw") vat = net * (parseFloat(vatRate) || 0) / 100;
     const gross = net + vat;
 
     const netInput = row.querySelector(".net") as HTMLInputElement | null;
@@ -21,10 +26,10 @@ function calculateRow(row: Element): void {
     if (vatInput) vatInput.value = vat.toFixed(2);
     if (grossInput) grossInput.value = gross.toFixed(2);
 
-    calculateTotals();
+    calculatePositionsTotals();
 }
 
-function calculateTotals(): void {
+function calculatePositionsTotals(): void {
     let totalNet = 0;
     let totalVat = 0;
     let totalGross = 0;
@@ -48,11 +53,16 @@ function calculateTotals(): void {
     if (totalGrossElement) totalGrossElement.textContent = totalGross.toFixed(2);
 }
 
+// ---------------------------------------------------------------------------------------------------------------------
+// Input handlers
+// ---------------------------------------------------------------------------------------------------------------------
+
 document.addEventListener("input", (event: Event) => {
     const target = event.target as HTMLElement;
     if (target.classList.contains("price") || target.classList.contains("quantity")) {
         const row = target.closest(".item-row");
-        if (row) calculateRow(row);
+        if (row)
+            calculatePositionsRow(row);
     }
     if (target.id === "notes") {
         const notesCount = document.getElementById("notesCount");
@@ -67,7 +77,7 @@ document.addEventListener("change", (event: Event) => {
     const target = event.target as HTMLElement;
     if (target.classList.contains("vat-rate")) {
         const row = target.closest(".item-row");
-        if (row) calculateRow(row);
+        if (row) calculatePositionsRow(row);
     }
 });
 
@@ -87,8 +97,8 @@ addItem?.addEventListener("click", () => {
     const vatRate = newRow.querySelector(".vat-rate") as HTMLSelectElement | null;
     if (vatRate) vatRate.value = "23";
     tbody.appendChild(newRow);
-    updateItemNumbers();
-    calculateRow(newRow);
+    updateItemNumber();
+    calculatePositionsRow(newRow);
 });
 
 document.addEventListener("click", (event: Event) => {
@@ -97,13 +107,13 @@ document.addEventListener("click", (event: Event) => {
         const rows = document.querySelectorAll(".item-row");
         if (rows.length > 1) {
             target.closest(".item-row")?.remove();
-            updateItemNumbers();
-            calculateTotals();
+            updateItemNumber();
+            calculatePositionsTotals();
         }
     }
 });
 
-function updateItemNumbers(): void {
+function updateItemNumber(): void {
     document.querySelectorAll(".item-row").forEach((row, index) => {
         const numberElement = row.querySelector(".item-number");
         if (numberElement) numberElement.textContent = String(index + 1);
@@ -114,10 +124,8 @@ function updatePaymentDeadline(): void {
     const issueDateInput = document.querySelector('input[type="date"]') as HTMLInputElement | null;
     const daysInput = document.getElementById("paymentDays") as HTMLInputElement | null;
     const deadlineInput = document.getElementById("paymentDeadline") as HTMLInputElement | null;
-    if (!issueDateInput || !daysInput || !deadlineInput)
-        return;
-    if (!issueDateInput.value)
-        return;
+    if (!issueDateInput || !daysInput || !deadlineInput) return;
+    if (!issueDateInput.value) return;
     const date = new Date(`${issueDateInput.value}T00:00:00`);
     const days = parseInt(daysInput.value, 10) || 0;
     date.setDate(date.getDate() + days);
@@ -129,6 +137,9 @@ function updatePaymentDeadline(): void {
 
 document.getElementById("paymentDays")?.addEventListener("input", updatePaymentDeadline);
 
+// ---------------------------------------------------------------------------------------------------------------------
+// Action handlers
+// ---------------------------------------------------------------------------------------------------------------------
 document.getElementById("invoiceForm")?.addEventListener("submit", (event: Event) => {
         event.preventDefault();
         const form = event.currentTarget as HTMLFormElement;
@@ -150,7 +161,7 @@ document.getElementById("savePdf")?.addEventListener("click", () => {
     alert("Invoice saved. PDF preview would open here.");
 });
 
-// Initial calculation
 document.querySelectorAll(".item-row").forEach((row) => {
-    calculateRow(row);
+    initInvoiceData();
+    calculatePositionsRow(row);
 });
