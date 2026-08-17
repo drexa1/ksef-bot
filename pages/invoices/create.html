@@ -19,7 +19,7 @@
     <title>New KSeF sales invoice</title>
     <link rel="icon" type="image/png" href="/assets/favicon/favicon.png"/>
     <link rel="apple-touch-icon" href="../../public/assets/favicon/favicon-mobile.png">
-    <link rel="manifest" href="../../public/assets/favicon/android.webmanifest" crossorigin="use-credentials">
+    <link rel="manifest" href="/assets/favicon/android.webmanifest" crossorigin="use-credentials">
 
     <link rel="icon" type="image/png" href="/assets/favicon/favicon.png">
     <!-- Bootstrap -->
@@ -82,19 +82,19 @@
                         <div class="invoice-data-grid">
                             <div class="field invoice-number">
                                 <label class="form-label fw-bold required" for="invoiceNumber">Invoice number</label>
-                                <input id="invoiceNumber" type="text" class="form-control" value="eFA/2026/08/12/1/KSeF" required>
+                                <input id="invoiceNumber" type="text" class="form-control" required>
                             </div>
                             <div class="field issue-date">
                                 <label class="form-label fw-bold required" for="issueDate">Date of issue</label>
-                                <input id="issueDate" type="date" class="form-control" value="2026-08-12" required>
+                                <input id="issueDate" type="date" class="form-control" required>
                             </div>
                             <div class="field issue-place">
                                 <label class="form-label fw-bold" for="issuePlace">Place of issue<span class="fw-normal"> (optional)</span></label>
                                 <input id="issuePlace" type="text" class="form-control" value="Kraków">
                             </div>
                             <div class="field accounting-date">
-                                <label class="form-label fw-bold required" for="accountingDate">Posting date</label>
-                                <input id="accountingDate" type="date" class="form-control" value="2026-08-12" required>
+                                <label class="form-label fw-bold required" for="postingDate">Posting date</label>
+                                <input id="postingDate" type="date" class="form-control" required>
                                 <div class="help-text">
                                     <i class="bi bi-info-circle ps-2"></i>
                                     The posting date is the date on which the invoice is assigned to the billing period.
@@ -102,7 +102,7 @@
                             </div>
                             <div class="field delivery-date">
                                 <label class="form-label fw-bold required" for="deliveryDate">Delivery / service date</label>
-                                <input id="deliveryDate" type="date" class="form-control" value="2026-08-12" required>
+                                <input id="deliveryDate" type="date" class="form-control" required>
                             </div>
                         </div>
 
@@ -123,7 +123,11 @@
 
                             <div class="field contractor-name">
                                 <label class="form-label fw-bold required" for="contractorName">Contractor name</label>
-                                <input id="contractorName" type="text" class="form-control" placeholder="Contractor name" required>
+
+                                <div class="contractor-autocomplete">
+                                    <input id="contractorName" type="text" class="form-control" placeholder="Contractor name" autocomplete="off" required>
+                                    <div id="contractorSuggestions" class="contractor-suggestions"></div>
+                                </div>
                                 <div class="help-text">
                                     <i class="bi bi-info-circle ps-2"></i>
                                     Start typing the name to display suggestions from the contractor database

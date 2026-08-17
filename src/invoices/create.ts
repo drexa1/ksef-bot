@@ -1,8 +1,133 @@
-function initInvoiceData() {
-    const invoiceData = document.getElementById("invoiceData") as HTMLDivElement;
-    const invoiceNumber = invoiceData.querySelector("#invoiceNumber") as HTMLInputElement;
-    invoiceNumber.value = "pollas";
+import {getCurrentLocation} from "../location";
+
+// ---------------------------------------------------------------------------------------------------------------------
+// Invoice data
+// ---------------------------------------------------------------------------------------------------------------------
+
+async function initInvoiceData() {
+    const invoiceDataSection = document.getElementById("invoiceData") as HTMLDivElement;
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, "0");
+    const lastMonthDay = new Date(now.getFullYear(), now.getMonth() + 1, 0).toLocaleDateString("sv-SE");
+    // Invoice number
+    const invoiceNumber = invoiceDataSection.querySelector("#invoiceNumber") as HTMLInputElement;
+    invoiceNumber.value = `eFA/${year}/${month}/1`;
+    // Date of issue
+    const issueDate = invoiceDataSection.querySelector("#issueDate") as HTMLInputElement;
+    issueDate.value = now.toISOString().slice(0, 10);
+    // Posting date
+    const postingDate = invoiceDataSection.querySelector("#postingDate") as HTMLInputElement;
+    postingDate.value = lastMonthDay;
+    // Delivery / service date
+    const deliveryDate = invoiceDataSection.querySelector("#deliveryDate") as HTMLInputElement;
+    deliveryDate.value = lastMonthDay;
+    // Place of issue
+    const issuePlace = invoiceDataSection.querySelector("#issuePlace") as HTMLInputElement;
+    const currentLocation = await getCurrentLocation();
+    issuePlace.value = currentLocation.city ?? "";
 }
+
+// ---------------------------------------------------------------------------------------------------------------------
+// Contractor data
+// ---------------------------------------------------------------------------------------------------------------------
+
+interface Contractor {
+    id: number
+    name: string
+    nip?: string
+    town?: string
+    postalCode?: string
+    street?: string
+    building?: string
+    apartment?: string
+    email?: string
+}
+
+const contractorNameInput = document.getElementById("contractorName") as HTMLInputElement;
+const contractorSuggestions = document.getElementById("contractorSuggestions") as HTMLDivElement;
+const identifierOptions = document.querySelectorAll<HTMLInputElement>('input[name="contractorIdentifier"]');
+const contractorNip = document.querySelector(".contractor-nip") as HTMLElement;
+const contractorNipInput = document.querySelector("#contractorNip") as HTMLInputElement;
+
+async function initContractorData() {
+    const contractorDataSection = document.getElementById("contractorData") as HTMLDivElement;
+    // Town
+    const contractorTown = contractorDataSection.querySelector("#contractorTown") as HTMLInputElement;
+    const currentLocation = await getCurrentLocation();
+    contractorTown.value = currentLocation.city ?? "";
+    // ZIP code
+    // const zipCode = contractorDataSection.querySelector("#contractorPostalCode") as HTMLInputElement;
+    // zipCode.value = currentLocation.postcode ?? "";
+}
+
+contractorNameInput.addEventListener("input", () => {
+    if (contractorNameInput.value.trim().length < 3) {
+        contractorSuggestions.style.display = "none";
+        return;
+    }
+    searchContractors(contractorNameInput.value);
+});
+
+function searchContractors(nameQuery: string): void {
+    const contractors = [
+        {
+            id: 1,
+            name: "ABC Sp. z o.o.",
+            nip: "1234567890",
+            town: "Kraków",
+            postalCode: "30-001",
+            street: "Floriańska",
+            building: "10",
+            apartment: "2",
+            email: "office@abc.pl"
+        }
+    ];
+    renderContractorNameSuggestions(contractors);
+}
+
+function renderContractorNameSuggestions(contractors: Contractor[]) {
+    contractorSuggestions.innerHTML = "";
+    for (const contractor of contractors) {
+        const item = document.createElement("div");
+        item.className = "contractor-suggestion";
+        item.innerHTML = `
+            <div class="contractor-suggestion-name">
+                ${contractor.name}
+            </div>
+            <div class="contractor-suggestion-details">
+                NIP: ${contractor.nip} · ${contractor.town}
+            </div>
+        `;
+        item.addEventListener("click", () => {
+            contractorNameInput.value = contractor.name;
+            // (document.getElementById("contractorNip") as HTMLInputElement).value = contractor.nip;
+            // (document.getElementById("contractorTown") as HTMLInputElement).value = contractor.town;
+            // (document.getElementById("contractorPostalCode") as HTMLInputElement).value = contractor.postalCode;
+            // (document.getElementById("contractorStreet") as HTMLInputElement).value = contractor.street;
+            // (document.getElementById("contractorBuilding") as HTMLInputElement).value = contractor.building;
+            // (document.getElementById("contractorApartment") as HTMLInputElement).value = contractor.apartment;
+            // (document.getElementById("contractorMail") as HTMLInputElement).value = contractor.email;
+            contractorSuggestions.style.display = "none";
+        });
+        contractorSuggestions.appendChild(item);
+    }
+    contractorSuggestions.style.display = "block";
+}
+
+identifierOptions.forEach((option) => {
+    option.addEventListener("change", () => {
+        const showNip = option.value === "nip";
+        contractorNip.style.display = showNip ? "" : "none";
+        contractorNipInput.required = showNip;
+        if (!showNip)
+            contractorNipInput.value = "";
+    });
+});
+
+// ---------------------------------------------------------------------------------------------------------------------
+// Positions
+// ---------------------------------------------------------------------------------------------------------------------
 
 function calculatePositionsRow(row: Element): void {
     const priceElement = row.querySelector(".price") as HTMLInputElement;
@@ -52,10 +177,6 @@ function calculatePositionsTotals(): void {
     if (totalVatElement) totalVatElement.textContent = totalVat.toFixed(2);
     if (totalGrossElement) totalGrossElement.textContent = totalGross.toFixed(2);
 }
-
-// ---------------------------------------------------------------------------------------------------------------------
-// Input handlers
-// ---------------------------------------------------------------------------------------------------------------------
 
 document.addEventListener("input", (event: Event) => {
     const target = event.target as HTMLElement;
@@ -120,6 +241,10 @@ function updateItemNumber(): void {
     });
 }
 
+// ---------------------------------------------------------------------------------------------------------------------
+// Payment
+// ---------------------------------------------------------------------------------------------------------------------
+
 function updatePaymentDeadline(): void {
     const issueDateInput = document.querySelector('input[type="date"]') as HTMLInputElement | null;
     const daysInput = document.getElementById("paymentDays") as HTMLInputElement | null;
@@ -161,7 +286,10 @@ document.getElementById("savePdf")?.addEventListener("click", () => {
     alert("Invoice saved. PDF preview would open here.");
 });
 
-document.querySelectorAll(".item-row").forEach((row) => {
-    initInvoiceData();
-    calculatePositionsRow(row);
-});
+async function initNew() {
+    await initInvoiceData();
+    await initContractorData();
+    document.querySelectorAll(".item-row").forEach((row) => calculatePositionsRow(row));
+}
+
+void initNew();
