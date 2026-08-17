@@ -33,7 +33,7 @@
 - [x] Post invoice
 - [x] Invoice generator frontend: start  
 - [x] Invoice generator frontend: CSS cleanup  
-- [x] Invoice generator frontend: mobile CSS cleanup
+- [x] Invoice generator frontend: mobile CSS cleanup  
 - [ ] Invoice generator frontend: mobile invoice items table  
 - [ ] Invoice generator frontend: rework payment fields order  
 - [ ] Invoice generator frontend: help hints  

@@ -33,7 +33,6 @@ async function initInvoiceData() {
 // ---------------------------------------------------------------------------------------------------------------------
 
 interface Contractor {
-    id: number
     name: string
     nip?: string
     town?: string
@@ -47,8 +46,14 @@ interface Contractor {
 const contractorNameInput = document.getElementById("contractorName") as HTMLInputElement;
 const contractorSuggestions = document.getElementById("contractorSuggestions") as HTMLDivElement;
 const identifierOptions = document.querySelectorAll<HTMLInputElement>('input[name="contractorIdentifier"]');
-const contractorNip = document.querySelector(".contractor-nip") as HTMLElement;
-const contractorNipInput = document.querySelector("#contractorNip") as HTMLInputElement;
+const contractorNip = document.querySelector(".contractorNip") as HTMLElement;
+const contractorNipInput = document.querySelector("#contractorNipInput") as HTMLInputElement;
+const contractorTown = document.getElementById("contractorTown") as HTMLInputElement;
+const contractorPostalCode = document.getElementById("contractorPostalCode") as HTMLInputElement;
+const contractorStreet = document.getElementById("contractorStreet") as HTMLInputElement;
+const contractorBuilding = document.getElementById("contractorBuilding") as HTMLInputElement;
+const contractorApartment = document.getElementById("contractorApartment") as HTMLInputElement;
+const contractorMail = document.getElementById("contractorMail") as HTMLInputElement;
 
 async function initContractorData() {
     const contractorDataSection = document.getElementById("contractorData") as HTMLDivElement;
@@ -61,7 +66,10 @@ async function initContractorData() {
     // zipCode.value = currentLocation.postcode ?? "";
 }
 
+let selectedContractorIndex = -1;
+
 contractorNameInput.addEventListener("input", () => {
+    selectedContractorIndex = -1;
     if (contractorNameInput.value.trim().length < 3) {
         contractorSuggestions.style.display = "none";
         return;
@@ -69,18 +77,65 @@ contractorNameInput.addEventListener("input", () => {
     searchContractors(contractorNameInput.value);
 });
 
+contractorNameInput.addEventListener("keydown", (event) => {
+    const suggestions = Array.from(contractorSuggestions.querySelectorAll<HTMLElement>(".contractor-suggestion"));
+    if (contractorSuggestions.style.display === "none" || suggestions.length === 0)
+        return;
+    switch (event.key) {
+        case "ArrowDown":
+            event.preventDefault();
+            selectedContractorIndex++;
+            if (selectedContractorIndex >= suggestions.length)
+                selectedContractorIndex = 0;
+            updateSelectedSuggestion(suggestions);
+            break;
+        case "ArrowUp":
+            event.preventDefault();
+            selectedContractorIndex--;
+            if (selectedContractorIndex < 0)
+                selectedContractorIndex = suggestions.length - 1;
+            updateSelectedSuggestion(suggestions);
+            break;
+        case "Enter":
+            event.preventDefault();
+            if (selectedContractorIndex >= 0)
+                suggestions[selectedContractorIndex].click();
+            break;
+        case "Escape":
+            event.preventDefault();
+            contractorSuggestions.style.display = "none";
+            selectedContractorIndex = -1;
+            break;
+    }
+});
+
+function updateSelectedSuggestion(suggestions: HTMLElement[]): void {
+    suggestions.forEach((suggestion, index) => suggestion.classList.toggle("selected", index === selectedContractorIndex));
+}
+
 function searchContractors(nameQuery: string): void {
     const contractors = [
         {
             id: 1,
             name: "ABC Sp. z o.o.",
             nip: "1234567890",
-            town: "Kraków",
+            town: undefined,
             postalCode: "30-001",
             street: "Floriańska",
             building: "10",
             apartment: "2",
-            email: "office@abc.pl"
+            email: "office1@abc.pl"
+        },
+        {
+            id: 2,
+            name: "ABC Sp. z o.o.",
+            nip: "1234567890",
+            town: "Pollas",
+            postalCode: "30-001",
+            street: "Floriańska",
+            building: undefined,
+            apartment: "2",
+            email: "office2@abc.pl"
         }
     ];
     renderContractorNameSuggestions(contractors);
@@ -92,22 +147,23 @@ function renderContractorNameSuggestions(contractors: Contractor[]) {
         const item = document.createElement("div");
         item.className = "contractor-suggestion";
         item.innerHTML = `
-            <div class="contractor-suggestion-name">
+            <div class="contractor-suggestion-name fw-bold">
                 ${contractor.name}
             </div>
             <div class="contractor-suggestion-details">
-                NIP: ${contractor.nip} · ${contractor.town}
+                NIP: ${contractor.nip}
             </div>
         `;
         item.addEventListener("click", () => {
             contractorNameInput.value = contractor.name;
-            // (document.getElementById("contractorNip") as HTMLInputElement).value = contractor.nip;
-            // (document.getElementById("contractorTown") as HTMLInputElement).value = contractor.town;
-            // (document.getElementById("contractorPostalCode") as HTMLInputElement).value = contractor.postalCode;
-            // (document.getElementById("contractorStreet") as HTMLInputElement).value = contractor.street;
-            // (document.getElementById("contractorBuilding") as HTMLInputElement).value = contractor.building;
-            // (document.getElementById("contractorApartment") as HTMLInputElement).value = contractor.apartment;
-            // (document.getElementById("contractorMail") as HTMLInputElement).value = contractor.email;
+            contractorNipInput.value = contractor.nip ?? "";
+            contractorTown.value = contractor.town ?? "";
+            contractorPostalCode.value = contractor.postalCode ?? "";
+            contractorStreet.value = contractor.street ?? "";
+            contractorBuilding.value = contractor.building ?? "";
+            contractorApartment.value = contractor.apartment ?? "";
+            contractorMail.value = contractor.email ?? "";
+            // Hide suggestions
             contractorSuggestions.style.display = "none";
         });
         contractorSuggestions.appendChild(item);
