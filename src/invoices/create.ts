@@ -4,6 +4,7 @@ import {getCurrentLocation} from "../location";
 // Invoice data
 // ---------------------------------------------------------------------------------------------------------------------
 
+/// Prefilled values for the Invoice Data section
 async function initInvoiceData() {
     const invoiceDataSection = document.getElementById("invoiceData") as HTMLDivElement;
     const now = new Date();
@@ -55,6 +56,7 @@ const contractorBuilding = document.getElementById("contractorBuilding") as HTML
 const contractorApartment = document.getElementById("contractorApartment") as HTMLInputElement;
 const contractorMail = document.getElementById("contractorMail") as HTMLInputElement;
 
+/// Prefilled values for the Contractor Data section
 async function initContractorData() {
     const contractorDataSection = document.getElementById("contractorData") as HTMLDivElement;
     // Town
@@ -66,8 +68,8 @@ async function initContractorData() {
     // zipCode.value = currentLocation.postcode ?? "";
 }
 
+/// Autocomplete by contractor name
 let selectedContractorIndex = -1;
-
 contractorNameInput.addEventListener("input", () => {
     selectedContractorIndex = -1;
     if (contractorNameInput.value.trim().length < 3) {
@@ -171,13 +173,15 @@ function renderContractorNameSuggestions(contractors: Contractor[]) {
     contractorSuggestions.style.display = "block";
 }
 
+/// TODO: Autocomplete by contractor id
+
+/// Show/hide NIP
 identifierOptions.forEach((option) => {
     option.addEventListener("change", () => {
         const showNip = option.value === "nip";
         contractorNip.style.display = showNip ? "" : "none";
         contractorNipInput.required = showNip;
-        if (!showNip)
-            contractorNipInput.value = "";
+        if (!showNip) contractorNipInput.value = "";
     });
 });
 
@@ -185,85 +189,86 @@ identifierOptions.forEach((option) => {
 // Positions
 // ---------------------------------------------------------------------------------------------------------------------
 
+/// Calculate net, VAT and gross per invoice position
 function calculatePositionsRow(row: Element): void {
-    const priceElement = row.querySelector(".price") as HTMLInputElement;
-    const quantityElement = row.querySelector(".quantity") as HTMLInputElement;
-    const vatRateElement = row.querySelector(".vat-rate") as HTMLSelectElement | null;
+    const rowIndex = row.querySelector<HTMLSpanElement>("#rowIndex") as HTMLSpanElement;
 
-    const price = parseFloat(priceElement?.value) || 0;
-    const quantity = parseFloat(quantityElement?.value) || 0;
-    const vatRate = vatRateElement?.value ?? "";
+    const itemPrice = row.querySelector<HTMLInputElement>(`#itemPrice${rowIndex.textContent}`)!;
+    const itemQuantity = row.querySelector<HTMLInputElement>(`#itemQuantity${rowIndex.textContent}`)!;
+    const itemVATrate = row.querySelector(`#itemVAT${rowIndex.textContent}`) as unknown as HTMLSelectElement;
 
-    const net = price * quantity;
-    let vat = 0;
-    if (vatRate !== "zw") vat = net * (parseFloat(vatRate) || 0) / 100;
-    const gross = net + vat;
+    const grossUnitPrice = parseFloat(itemPrice?.value) || 0;
+    const quantity = parseFloat(itemQuantity?.value) || 0;
+    const VATrate = itemVATrate?.value || "23";
 
-    const netInput = row.querySelector(".net") as HTMLInputElement | null;
-    const vatInput = row.querySelector(".vat") as HTMLInputElement | null;
-    const grossInput = row.querySelector(".gross") as HTMLInputElement | null;
+    const gross = grossUnitPrice * quantity;
+    let VAT = 0;
+    let net = gross;
+    if (VATrate !== "ZW") {
+        const rate = parseFloat(VATrate) / 100;
+        net = gross / (1 + rate);
+        VAT = gross - net;
+    }
 
-    if (netInput) netInput.value = net.toFixed(2);
-    if (vatInput) vatInput.value = vat.toFixed(2);
-    if (grossInput) grossInput.value = gross.toFixed(2);
+    const netInput = row.querySelector<HTMLInputElement>(`#itemNet${rowIndex.textContent}`)!;
+    const VATInput = row.querySelector<HTMLInputElement>(`#itemVATamount${rowIndex.textContent}`)!;
+    const grossInput = row.querySelector<HTMLInputElement>(`#itemGross${rowIndex.textContent}`)!;
+
+    netInput.value = net.toFixed(2);
+    VATInput.value = VAT.toFixed(2);
+    grossInput.value = gross.toFixed(2);
 
     calculatePositionsTotals();
 }
 
+/// Recalculate net, VAT and gross per on change of price, quantity or VAT
+document.addEventListener("input", (event: Event) => {
+    const target = event.target as HTMLElement;
+    if (target.id.startsWith("itemPrice") || target.id.startsWith("itemQuantity") || target.id.startsWith("itemVAT")) {
+        const row = target.closest(".item-row")!;
+        calculatePositionsRow(row);
+    }
+});
+
+/// Calculate totals for net, VAT and gross
 function calculatePositionsTotals(): void {
     let totalNet = 0;
-    let totalVat = 0;
+    let totalVAT = 0;
     let totalGross = 0;
 
     document.querySelectorAll(".item-row").forEach((row) => {
-        const net = parseFloat((row.querySelector(".net") as HTMLInputElement)?.value) || 0;
-        const vat = parseFloat((row.querySelector(".vat") as HTMLInputElement)?.value) || 0;
-        const gross = parseFloat((row.querySelector(".gross") as HTMLInputElement)?.value) || 0;
-
-        totalNet += net;
-        totalVat += vat;
-        totalGross += gross;
+        const rowIndex = row.querySelector<HTMLSpanElement>("#rowIndex") as HTMLSpanElement;
+        const rowNet = row.querySelector<HTMLInputElement>(`#itemNet${rowIndex.textContent}`)!;
+        const rowVAT = row.querySelector<HTMLInputElement>(`#itemVATamount${rowIndex.textContent}`)!;
+        const rowGross = row.querySelector<HTMLInputElement>(`#itemGross${rowIndex.textContent}`)!;
+        totalNet += parseFloat(rowNet.value);
+        totalVAT += parseFloat(rowVAT.value);
+        totalGross += parseFloat(rowGross.value);
     });
 
-    const totalNetElement = document.getElementById("totalNet");
-    const totalVatElement = document.getElementById("totalVat");
-    const totalGrossElement = document.getElementById("totalGross");
+    const totalNetElement = document.getElementById("totalNet")!;
+    const totalVATElement = document.getElementById("totalVAT")!;
+    const totalGrossElement = document.getElementById("totalGross")!;
 
-    if (totalNetElement) totalNetElement.textContent = totalNet.toFixed(2);
-    if (totalVatElement) totalVatElement.textContent = totalVat.toFixed(2);
-    if (totalGrossElement) totalGrossElement.textContent = totalGross.toFixed(2);
+    totalNetElement.textContent = totalNet.toFixed(2);
+    totalVATElement.textContent = totalVAT.toFixed(2);
+    totalGrossElement.textContent = totalGross.toFixed(2);
 }
 
-document.addEventListener("input", (event: Event) => {
+/// Remove invoice position
+document.addEventListener("click", (event: Event) => {
     const target = event.target as HTMLElement;
-    if (target.classList.contains("price") || target.classList.contains("quantity")) {
-        const row = target.closest(".item-row");
-        if (row)
-            calculatePositionsRow(row);
-    }
-    if (target.id === "notes") {
-        const notesCount = document.getElementById("notesCount");
-
-        if (notesCount) {
-            notesCount.textContent = (target as HTMLTextAreaElement).value.length.toString();
-        }
+    if (target.ariaLabel?.startsWith("Remove item")) {
+        target.closest(".item-row")?.remove();
+        updateItemNumber();
+        calculatePositionsTotals();
     }
 });
 
-document.addEventListener("change", (event: Event) => {
-    const target = event.target as HTMLElement;
-    if (target.classList.contains("vat-rate")) {
-        const row = target.closest(".item-row");
-        if (row) calculatePositionsRow(row);
-    }
-});
-
-const addItem = document.getElementById("addItem");
-addItem?.addEventListener("click", () => {
-    const tbody = document.getElementById("itemsBody");
-    if (!tbody) return;
-    const firstRow = tbody.querySelector(".item-row");
-    if (!firstRow) return;
+/// Add invoice position
+document.getElementById("addItem")!.addEventListener("click", () => {
+    const tbody = document.getElementById("itemsBody")!;
+    const firstRow = tbody.querySelector(".item-row")!;
     const newRow = firstRow.cloneNode(true) as HTMLElement;
     newRow.querySelectorAll("input").forEach((input) => {
         if (input.classList.contains("quantity"))
@@ -271,29 +276,17 @@ addItem?.addEventListener("click", () => {
         else
             (input as HTMLInputElement).value = "";
     });
-    const vatRate = newRow.querySelector(".vat-rate") as HTMLSelectElement | null;
-    if (vatRate) vatRate.value = "23";
+    const VATrate = newRow.querySelector(".VATrate") as unknown as HTMLSelectElement;
+    if (VATrate) VATrate.value = "23";
     tbody.appendChild(newRow);
     updateItemNumber();
     calculatePositionsRow(newRow);
 });
 
-document.addEventListener("click", (event: Event) => {
-    const target = event.target as HTMLElement;
-    if (target.classList.contains("remove-item")) {
-        const rows = document.querySelectorAll(".item-row");
-        if (rows.length > 1) {
-            target.closest(".item-row")?.remove();
-            updateItemNumber();
-            calculatePositionsTotals();
-        }
-    }
-});
-
 function updateItemNumber(): void {
     document.querySelectorAll(".item-row").forEach((row, index) => {
-        const numberElement = row.querySelector(".item-number");
-        if (numberElement) numberElement.textContent = String(index + 1);
+        const rowIndex = row.querySelector<HTMLSpanElement>("#rowIndex") as HTMLSpanElement;
+        if (rowIndex) rowIndex.textContent = String(index + 1);
     });
 }
 
@@ -345,7 +338,7 @@ document.getElementById("savePdf")?.addEventListener("click", () => {
 async function initNew() {
     await initInvoiceData();
     await initContractorData();
-    document.querySelectorAll(".item-row").forEach((row) => calculatePositionsRow(row));
+    document.querySelectorAll(".item-row").forEach(calculatePositionsRow);
 }
 
 void initNew();

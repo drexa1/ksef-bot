@@ -43,7 +43,7 @@
         <div class="header">
             <div class="header-content">
                 <button type="button" class="d-none btn btn-secondary" id="backButton">← Back</button>
-                <h1 class="mx-auto">New Sales Invoice (KSeF)</h1>
+                <h1 class="mx-auto">New sales e-Invoice (KSeF)</h1>
             </div>
         </div>
         <div class="text-muted small mb-3"><span class="text-danger ps-1">*</span> Required field</div>
@@ -153,7 +153,7 @@
                                 <input id="contractorNipInput" type="text" class="form-control" maxlength="10" inputmode="numeric" placeholder="Enter NIP (10 digits)" required>
                                 <div class="help-text">
                                     <i class="bi bi-info-circle ps-2"></i>
-                                    Start typing the number to display suggestions from the contractor database
+                                    Start typing the number to display suggestions from the customers database
                                 </div>
                             </div>
 
@@ -276,7 +276,7 @@
                                     <tr class="item-row">
                                         <td class="item-number">
                                             <button type="button" class="btn btn-danger btn-sm" aria-label="Remove item">×</button>
-                                            <span>1</span>
+                                            <span id="rowIndex">1</span>
                                         </td>
                                         <td>
                                             <label class="d-none" for="itemName1">Item name</label>
@@ -284,25 +284,24 @@
                                         </td>
                                         <td>
                                             <label class="d-none" for="itemPrice1">Unit net price</label>
-                                            <input id="itemPrice1" type="number" step="0.01" min="0" class="form-control" placeholder="Enter amount">
+                                            <input id="itemPrice1" type="number" step="10" min="0" class="form-control" placeholder="Enter amount">
                                         </td>
                                         <td>
                                             <label class="d-none" for="itemQuantity1">Quantity</label>
-                                            <input id="itemQuantity1" type="number" step="0.01" min="0" value="1" class="form-control" placeholder="Enter quantity">
+                                            <input id="itemQuantity1" type="number" step="1" min="1" value="1" class="form-control" placeholder="Enter quantity">
                                         </td>
                                         <td>
                                             <label class="d-none" for="itemUnit1">Unit of measurement</label>
-                                            <input id="itemUnit1" type="text" class="form-control" placeholder="Enter unit">
+                                            <input id="itemUnit1" type="text" class="form-control" value="szt" placeholder="Enter unit">
                                         </td>
                                         <td>
-                                            <label class="d-none" for="itemVat1">VAT rate</label>
-                                            <select id="itemVat1" class="form-select">
-                                                <option value="">Select</option>
-                                                <option value="23">23%</option>
+                                            <label class="d-none" for="itemVAT1">VAT rate</label>
+                                            <select id="itemVAT1" class="form-select">
+                                                <option value="23" selected>23%</option>
                                                 <option value="8">8%</option>
                                                 <option value="5">5%</option>
                                                 <option value="0">0%</option>
-                                                <option value="zw">Exempt</option>
+                                                <option value="ZW">Exempt</option>
                                             </select>
                                         </td>
                                         <td>
@@ -310,8 +309,8 @@
                                             <input id="itemNet1" type="number" step="0.01" class="form-control" readonly>
                                         </td>
                                         <td>
-                                            <label class="d-none" for="itemVatAmount1">VAT amount</label>
-                                            <input id="itemVatAmount1" type="number" step="0.01" class="form-control" readonly>
+                                            <label class="d-none" for="itemVATamount1">VAT amount</label>
+                                            <input id="itemVATamount1" type="number" step="0.01" class="form-control" readonly>
                                         </td>
                                         <td>
                                             <label class="d-none" for="itemGross1">Gross amount</label>
@@ -339,7 +338,7 @@
                                         <td></td>
                                         <td colspan="5" class="text-end">Total</td>
                                         <td><span id="totalNet">0.00</span></td>
-                                        <td><span id="totalVat">0.00</span></td>
+                                        <td><span id="totalVAT">0.00</span></td>
                                         <td><span id="totalGross">0.00</span></td>
                                     </tr>
                                 </tfoot>
