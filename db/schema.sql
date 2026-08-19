@@ -46,10 +46,10 @@ INSERT INTO users VALUES (
     NULL,
     0,
     -- KSeF integration
-    NULL,
+    '20260804-EC-4716384000-AD6886D9B2-BB|nip-6751577878|ca23b48587d545ad8e7fed96420e4dbe6d78e7cf72844981ac702fe2aeb8a145',
     -- Banking integration
     'PKO Bank Polski',
-    '20260804-EC-4716384000-AD6886D9B2-BB|nip-6751577878|ca23b48587d545ad8e7fed96420e4dbe6d78e7cf72844981ac702fe2aeb8a145',
+    NULL,
      -- Identification data
     '6751577878',
     NULL,
