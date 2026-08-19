@@ -35,12 +35,12 @@
 - [x] Invoice generator frontend: CSS cleanup  
 - [x] Invoice generator frontend: mobile CSS cleanup  
 - [x] Invoice generator frontend: rework payment fields order  
-- [ ] Invoice generator frontend: invoice checkboxes  
-- [ ] Invoice generator frontend: mobile invoice items table  
+- [ ] Invoice generator frontend: invoice checkboxes
 - [ ] Invoice generator frontend: invoice additional column selects  
-- [ ] Invoice generator frontend: invoice autocomplete API  
+- [ ] Invoice generator frontend: invoice autocomplete API
 - [ ] Invoice generator frontend: invoice remove positions  
 - [ ] Invoice generator frontend: invoice add another  
+- [ ] Invoice generator frontend: mobile invoice items table  
 - [ ] Invoice generator frontend: invoice additional data  
 - [ ] Invoice generator frontend: invoice payment review select options  
 - [ ] Encrypt KSeF/Baking keys 
