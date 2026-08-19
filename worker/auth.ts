@@ -59,10 +59,10 @@ export async function getAuthUser(req: Request, env: Env): Promise<AppUser> {
     }
     // TODO: Could come via Cloudflare session or could come by other means (ie: application SSO)
     const whoamiResponse = await whoami(req, env);
-    const authUser = (await whoamiResponse.json()) as AuthUser;
-    const appUser = await getRepo(env).get<AppUser>("users", { email: authUser.email });
+    const cfUser = await whoamiResponse.json() as AuthUser;
+    const appUser = await getRepo(env).get<AppUser>("users", { email: cfUser.email });
     // This should not happen, we have to enrol users for those who we give access to Cloudflare
-    if (!appUser) throw new AuthError("Authenticated user not found in app", 404, { authUser });
+    if (!appUser) throw new AuthError("Authenticated user not found in app", 404, { cfUser });
     return appUser;
 }
 

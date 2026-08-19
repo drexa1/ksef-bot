@@ -50,9 +50,12 @@
 - [ ] Invoice generator frontend: generate actions logic  
 - [ ] Review mobile sizing  
 - [ ] Review dark theme  
-- [ ] Generate next invoice XML
-- [ ] Rest test for posting an invoice  
 - [ ] Create user frontend  
+- [ ] First time frontend workflow  
+- [ ] Admin contractors frontend  
+- [ ] Login frontend  
+- [ ] Generate next invoice XML  
+- [ ] Rest test for posting an invoice
 - [ ] Bank client PoC
 - [ ] WhatsApp bot  
 - [ ] Review security architecture  
