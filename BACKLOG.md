@@ -43,7 +43,7 @@
 - [ ] Invoice generator frontend: mobile invoice items table  
 - [ ] Invoice generator frontend: invoice additional data  
 - [ ] Invoice generator frontend: invoice payment review select options  
-- [ ] Encrypt KSeF/Baking keys 
+- [ ] Encrypt KSeF/Baking keys  
 - [ ] Invoice generator frontend: help hints  
 - [ ] Invoice generator frontend: create logic  
 - [ ] Invoice generator frontend: import logic  
