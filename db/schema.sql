@@ -40,6 +40,7 @@ CREATE TABLE users (
     updatedAt TEXT
 );
 -- Create admin user
+-- TODO: delete this and create via frontend workflow
 INSERT INTO users VALUES (
     'drexa1@hotmail.com',
     -- Application
