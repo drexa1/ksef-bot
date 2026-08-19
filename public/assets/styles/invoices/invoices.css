@@ -359,6 +359,6 @@ tr.total-row.small td:nth-child(5) {
     padding: .5rem 0 2rem;
 }
 .footer-actions button {
-    flex: 0 0 10rem;
+    flex: 0 0 12rem;
     box-sizing: border-box !important;
 }
