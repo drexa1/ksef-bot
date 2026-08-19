@@ -4,6 +4,11 @@ export type AppUser = {
     // Application
     apiKey?: string
     tier?: number
+    // KSeF integration
+    ksefApiToken?: string
+    // Banking integration
+    bankName?: string
+    bankApiToken?: string
     // Identification data
     nip: string
     regon?: string

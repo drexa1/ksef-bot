@@ -15,10 +15,10 @@ import {invoiceFromXml} from "../db/invoices";
 class KsefClientBase {
     token?: string;
 
-    constructor(protected env: Env, protected user: KsefIdentifiable) {}
+    constructor(protected env: Env) {}
 
-    protected async authenticate(): Promise<void> {
-        this.token = await this.getKsefToken(this.env, this.user);
+    protected async authenticate(appUser: AppUser): Promise<void> {
+        this.token = await this.getKsefToken(this.env, appUser);
         console.info("🪪 KSeF token acquired")
     }
 
@@ -29,13 +29,13 @@ class KsefClientBase {
         return { certificate: ksefTokenEncryption.certificate, publicKeyId: ksefTokenEncryption.publicKeyId };
     }
 
-    private async getKsefToken(env: Env, user: KsefIdentifiable): Promise<string> {
+    private async getKsefToken(env: Env, user: AppUser): Promise<string> {
         console.info("1️⃣️ Requesting KSeF auth challenge...");
         const ksefChallenge = await this.getKsefChallenge(env);
         console.info("2️⃣️ Requesting KSeF public key certificates...");
         const ksefCertificate = await this.getKsefEncryptionCertificate(env);
         console.info("3️⃣️ Encrypting token...");
-        const encryptedToken = await this.encryptKsefToken(env.KSEF_TOKEN, ksefChallenge.timestamp, ksefCertificate.certificate);
+        const encryptedToken = await this.encryptKsefToken(user.ksefApiToken!, ksefChallenge.timestamp, ksefCertificate.certificate);
         console.info("4️⃣️ Requesting KSeF authentication...");
         const auth = await this.startKsefAuthentication(env, user, ksefChallenge.challenge, encryptedToken, ksefCertificate.publicKeyId);
         await this.waitForKsefAuthentication(env, auth.referenceNumber, auth.authenticationToken);
@@ -258,15 +258,14 @@ class KsefClientBase {
 export class Client extends KsefClientBase {
 
     async queryPurchaseInvoices(env: Env, appUser: AppUser, subjectType: "Subject1" | "Subject2", from?: Date, to?: Date) {
-        const client = new Client(env, appUser);
         // Authentication
-        await client.authenticate();
+        await super.authenticate(appUser);
         // Query invoice metadata
-        const metadataResult = await client.queryInvoiceMetadata(subjectType, from, to);
+        const metadataResult = await this.queryInvoiceMetadata(subjectType, from, to);
         console.info("📋️️ Downloaded invoices metadata...");
         // Download invoice XML files
         return await Promise.all(metadataResult.invoices.map(async (invoiceMetadata) => {
-            const xmlContent = await client.downloadInvoice(invoiceMetadata.ksefNumber);
+            const xmlContent = await this.downloadInvoice(invoiceMetadata.ksefNumber);
             console.info(`${subjectType === "Subject1" ? "💵" : "💳" }`+ "️ Downloaded invoice:", invoiceMetadata.invoiceNumber);
             return await invoiceFromXml(env, xmlContent, appUser, "Downloaded from KSeF");
         }));
@@ -305,8 +304,8 @@ export class Client extends KsefClientBase {
         return await response.text();
     }
 
-    async postInvoice(xmlContent: string): Promise<{ referenceNumber: string }> {
-        await this.authenticate();
+    async postInvoice(appUser: AppUser, xmlContent: string): Promise<{ referenceNumber: string }> {
+        await this.authenticate(appUser);
         const { certificate, publicKeyId } = await this.getKsefEncryptionCertificate(this.env);
         const publicKey = await this.importKsefPublicKey(certificate);
         const encryption = await this.createInvoiceEncryptionData(publicKey);

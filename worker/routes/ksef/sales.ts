@@ -27,7 +27,7 @@ export async function post(req: Request, env: Env): Promise<Response> {
 }
 
 async function submitKsefInvoices(env: Env, appUser: AppUser, xmlContent: string) {
-    const client = new Client(env, appUser);
-    const { referenceNumber } = await client.postInvoice(xmlContent);
+    const client = new Client(env);
+    const { referenceNumber } = await client.postInvoice(appUser, xmlContent);
     return referenceNumber;
 }

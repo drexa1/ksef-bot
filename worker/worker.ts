@@ -9,7 +9,6 @@ export interface Env {
     KSEF_INVOICE_SCHEMA: string
     KSEF_MIN_TIMEOUT: number
     KSEF_MAX_TIMEOUT: number
-    KSEF_TOKEN: string
     DEFAULT_VAT_PERCENTAGE: number
     DEFAULT_TAX_RATE: number
     DEFAULT_HEALTH_INSURANCE_BASE: number

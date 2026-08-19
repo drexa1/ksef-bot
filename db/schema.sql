@@ -4,6 +4,11 @@ CREATE TABLE users (
     -- Application
     apiKey TEXT UNIQUE,
     tier INTEGER NOT NULL,
+    -- KSeF integration
+    ksefApiToken TEXT UNIQUE,
+    -- Banking integration
+    bankName TEXT,
+    bankApiToken TEXT UNIQUE,
     -- Identification data
     nip TEXT NOT NULL CHECK (length(nip) = 10 AND nip NOT GLOB '*[^0-9]*'),
     regon TEXT CHECK (regon IS NULL OR (length(regon) = 9 AND regon NOT GLOB '*[^0-9]*')),
@@ -40,6 +45,11 @@ INSERT INTO users VALUES (
     -- Application
     NULL,
     0,
+    -- KSeF integration
+    NULL,
+    -- Banking integration
+    'PKO Bank Polski',
+    '20260804-EC-4716384000-AD6886D9B2-BB|nip-6751577878|ca23b48587d545ad8e7fed96420e4dbe6d78e7cf72844981ac702fe2aeb8a145',
      -- Identification data
     '6751577878',
     NULL,
