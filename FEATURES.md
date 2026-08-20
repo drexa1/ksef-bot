@@ -2,6 +2,7 @@
 -[x] Retrieve sales invoices from KSeF
 -[x] Retrieve purchase/expenses invoices from KSeF
 -[x] Cache accessed KSeF record on application storage layer
+-[ ] Automatic retrieval of company details
 -[ ] Notification to submit invoices
 -[ ] Automated execution of invoicing
 -[ ] Automated compute and payment of taxes

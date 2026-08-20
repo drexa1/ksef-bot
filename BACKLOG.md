@@ -51,6 +51,7 @@
 - [ ] Review mobile sizing  
 - [ ] Review dark theme  
 - [ ] Create user frontend  
+- [ ] Retrieve user details programmatically  
 - [ ] First time frontend workflow  
 - [ ] Admin contractors frontend  
 - [ ] Login frontend  
@@ -59,8 +60,7 @@
 - [ ] Bank client PoC
 - [ ] WhatsApp bot  
 - [ ] Review security architecture  
-- [ ] Scheduling  
-- [ ] Ultra simple frontend  
+- [ ] Scheduling
 - [ ] SSO/Enrolment  
 - [ ] GIT-version on deploy  
 - [ ] Transparency disclaimer / no Ai  

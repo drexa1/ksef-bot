@@ -4,12 +4,12 @@
 @from = 2026/06/01
 @to = 2026/08/01
 
-### list for non-existing dates
+### List for non-existing dates
 GET {{baseUrl}}/ksef/sales?from=missing&to=missing
 Content-Type: application/json
 X-API-Key: {{apiKey}}
 
-### list for existing dates
+### List for existing dates
 GET {{baseUrl}}/ksef/sales?from={{from}}&to={{to}}
 Content-Type: application/json
 X-API-Key: {{apiKey}}
