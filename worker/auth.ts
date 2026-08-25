@@ -22,6 +22,9 @@ export const withCors = ( res: Response) => {
     return new Response(res.body, { status: res.status, statusText: res.statusText, headers });
 };
 
+/**
+ * Potential client made it through Zero Trust.
+ */
 export async function auth(req: Request, env: Env): Promise<boolean> {
     const url = new URL(req.url);
     switch (url.pathname) {
@@ -41,7 +44,6 @@ export async function auth(req: Request, env: Env): Promise<boolean> {
         case "/app/invoices/pii":
         case "/app/counterparties":
         case "/app/taxes":
-            // Potential client made it through Zero Trust
             return req.headers.get("X-API-Key") === env.API_KEY;
         // Default
         default:
