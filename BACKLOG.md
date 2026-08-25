@@ -36,7 +36,8 @@
 - [x] Invoice generator frontend: CSS cleanup  
 - [x] Invoice generator frontend: mobile CSS cleanup  
 - [x] Invoice generator frontend: rework payment fields order  
-- [ ] CLI client  
+- [x] CLI client start  
+- [x] CLI client dialogue  
 - [ ] Invoice generator frontend: invoice checkboxes
 - [ ] Invoice generator frontend: invoice additional column selects  
 - [ ] Invoice generator frontend: invoice autocomplete API
