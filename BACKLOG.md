@@ -30,11 +30,13 @@
 - [x] Test collection for tax record  
 - [x] Test invoices PII  
 - [x] Fix running bruno tests on CI  
-- [x] Post invoice
+- [x] Post invoice  
+- [x] Review security architecture  
 - [x] Invoice generator frontend: start  
 - [x] Invoice generator frontend: CSS cleanup  
 - [x] Invoice generator frontend: mobile CSS cleanup  
 - [x] Invoice generator frontend: rework payment fields order  
+- [ ] CLI client  
 - [ ] Invoice generator frontend: invoice checkboxes
 - [ ] Invoice generator frontend: invoice additional column selects  
 - [ ] Invoice generator frontend: invoice autocomplete API
@@ -51,15 +53,14 @@
 - [ ] Review mobile sizing  
 - [ ] Review dark theme  
 - [ ] Create user frontend  
-- [ ] Retrieve user details programmatically  
+- [ ] Retrieve user details programmatically
 - [ ] First time frontend workflow  
 - [ ] Admin contractors frontend  
 - [ ] Login frontend  
 - [ ] Generate next invoice XML  
 - [ ] Rest test for posting an invoice
 - [ ] Bank client PoC
-- [ ] WhatsApp bot  
-- [ ] Review security architecture  
+- [ ] WhatsApp bot
 - [ ] Scheduling
 - [ ] SSO/Enrolment  
 - [ ] GIT-version on deploy  

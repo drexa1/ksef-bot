@@ -3,6 +3,14 @@
 @apiKey = test
 @userEmail = user@mail.com
 
+### TEST PROD
+GET https://ksef-bot.druizbarbero.workers.dev/app/users
+Content-Type: application/json
+CF-Access-Client-Id: ec663ac850bcfb511f8439df52635f55.access
+CF-Access-Client-Secret: c7a9fa6e563c9e290cb941b39de135a48878653d9e64476e3970fbd8466816a1
+X-API-Key: 55oUrQjUlwlZYCS30WGfpMMZCiQkfKpt
+X-User-Id: drexa1@hotmail.com
+
 ### List all should always return the admin user
 GET {{baseUrl}}/app/users
 Content-Type: application/json
