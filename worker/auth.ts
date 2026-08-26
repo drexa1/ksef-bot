@@ -73,7 +73,8 @@ export async function whoami(req: Request, env: Env): Promise<Response> {
         return Response.json(adminUser[0].email);
     }
     const userId = req.headers.get("X-User-Id");
-    if (!userId) throw new Response("Unknown user");
+    if (!userId)
+        throw new AuthError("Missing userId", 401);
     console.info("[Whoami] requester:", userId);
     return Response.json(userId);
 }
