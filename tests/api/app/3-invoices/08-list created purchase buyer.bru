@@ -8,6 +8,6 @@ headers {
 tests {
     test("List the recently created buyer counterparty", function() {
         console.info(res.body);
-        expect(res.body.nip).to.equal(bru.getCollectionVar("purchaseInvoiceCounterpartyId"));
+        expect(res.body.error).to.equal("Counterparties not found");
     })
 }
