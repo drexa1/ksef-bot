@@ -25,7 +25,7 @@ export async function getKsefInvoices(req: Request, env: Env, subjectType: "Subj
         return Response.json({
             success: result.length > 0,
             result,
-            ...(result.length === 0 && { message: "No invoices found for the specified date range." })
+            ...(result.length === 0 && { error: "No invoices found for the specified date range." })
         }, { status: 200 });
     } catch (error: any) {
         if (String(error).includes("Too Many Requests"))

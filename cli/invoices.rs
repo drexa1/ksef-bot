@@ -28,24 +28,25 @@ pub async fn list_purchase_invoices() -> anyhow::Result<()> {
         .send().await?.json().await?;
 
     if json["success"].as_bool() != Some(true) {
-        println!("[API] Response: {}", json["message"].as_str().unwrap());
+        println!("  API Response: {}", json["error"].as_str().unwrap());
         return Ok(());
     }
 
     let invoices = json["result"].as_array().unwrap();
-    if invoices.is_empty() {
-        println!("[API] Response: {}", json["message"].as_str().unwrap());
-        return Ok(());
-    }
+    println!("  API Response: {} invoices found", invoices.len());
 
-    println!("[API] Response: {} invoices found.", invoices.len());
-    println!();
+    let max_width = |get: fn(&serde_json::Value) -> &str| {
+        invoices.iter().map(get).map(str::len).max().unwrap()
+    };
+    let invoice_number_width = max_width(|i| i["InvoiceBody"]["InvoiceNumber"].as_str().unwrap());
+    let seller_width = max_width(|i| i["Seller"]["IdentificationData"]["Name"].as_str().unwrap());
+
     for (i, invoice) in invoices.iter().enumerate() {
-        let number = invoice["InvoiceBody"]["InvoiceNumber"].as_str().unwrap_or("Unknown");
-        let seller = invoice["Seller"]["IdentificationData"]["Name"].as_str().unwrap_or("Unknown");
-        let total = invoice["InvoiceBody"]["TotalGrossAmount"].as_f64().unwrap_or(0.0);
-        let currency = invoice["InvoiceBody"]["CurrencyCode"].as_str().unwrap_or("");
-        println!("  {}. {:<30} - {:<50} - {:>10.2} {}", i + 1, number, seller, total, currency);
+        let invoice_number = invoice["InvoiceBody"]["InvoiceNumber"].as_str().unwrap();
+        let seller = invoice["Seller"]["IdentificationData"]["Name"].as_str().unwrap();
+        let total = invoice["InvoiceBody"]["TotalGrossAmount"].as_f64().unwrap();
+        let currency = invoice["InvoiceBody"]["CurrencyCode"].as_str().unwrap();
+        println!("  {}. {:<invoice_number_width$} - {:<seller_width$} - {:.2} {}", i + 1, invoice_number, seller, total, currency);
     }
     Ok(())
 }
