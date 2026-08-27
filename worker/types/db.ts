@@ -76,7 +76,7 @@ export type AppCounterparty = {
     updatedAt?: string
 };
 
-export type AppTaxRecordDb = Omit<AppTaxRecord, "expensesSummary"> & { expensesSummary: string };
+export type AppTaxRecordDb = Omit<AppTaxRecord, "purchasesSummary"> & { purchasesSummary: string };
 export type AppTaxRecord = {
     from: string
     to: string
@@ -91,16 +91,16 @@ export type AppTaxRecord = {
     healthInsuranceBase: number
     healthInsuranceRate: number
     healthContribution: number
-    // Expenses deductions
-    expensesSummary: ExpenseSummary[]
-    // Total after obligations and expenses deductions
+    // Purchases deductions
+    purchasesSummary: PurchaseSummary[]
+    // Total after obligations and purchases deductions
     totalCleanRevenue: number
     notes: string
     // DBA
     createdAt?: string
     updatedAt?: string
 };
-export type ExpenseSummary = { InvoiceNumber: string, TotalGrossAmount: number, TotalVatAmount: number }
+export type PurchaseSummary = { InvoiceNumber: string, TotalGrossAmount: number, TotalVatAmount: number }
 export type TaxRecordObligations = {
     vatPercentage: number
     vatAmount: number
@@ -110,6 +110,6 @@ export type TaxRecordObligations = {
     healthInsuranceBase: number
     healthInsuranceRate: number
     healthContribution: number
-    expensesDeductions: number
-    expensesSummary: ExpenseSummary[]
+    purchasesDeductions: number
+    purchasesSummary: PurchaseSummary[]
 }

@@ -25,7 +25,7 @@ enum MainMenuAction {
 
 #[tokio::main]
 async fn main() -> Result<()> {
-    dotenvy::dotenv().ok();
+    dotenvy::from_filename("cli/.env").ok();
     auth::login_loop()?;
     main_loop().await?;
     Ok(())

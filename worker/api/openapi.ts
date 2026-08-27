@@ -300,10 +300,10 @@ export const getOpenApiSpec = (env: Env) => ({
                         default: 9,
                         description: "PL health insurance law: 9% of the contribution base."
                     },
-                    expensesSummary: {
+                    purchaseSummary: {
                         type: "array",
                         items: {
-                            $ref: "#/components/schemas/ExpenseSummary"
+                            $ref: "#/components/purchases/PurchasesSummary"
                         }
                     },
                     totalCleanRevenue: {
@@ -315,7 +315,7 @@ export const getOpenApiSpec = (env: Env) => ({
                     }
                 }
             },
-            ExpenseSummary: {
+            PurchasesSummary: {
                 type: "object",
                 properties: {
                     InvoiceNumber: { type: "string" },
@@ -428,9 +428,9 @@ export const getOpenApiSpec = (env: Env) => ({
                 }
             }
         },
-        "/ksef/expenses": {
+        "/ksef/purchases": {
             get: {
-                summary: "List expenses invoices at KSeF - Restricted to resources owned by the authenticated user.",
+                summary: "List purchase invoices at KSeF - Restricted to resources owned by the authenticated user.",
                 tags: ["KSeF"],
                 security: [{ ApiKeyAuth: [] }],
                 parameters: [

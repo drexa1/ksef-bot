@@ -33,8 +33,8 @@ export async function get(req: Request, env: Env): Promise<Response> {
     if (!rows)
         return Response.json({ success: false, error: "Tax records not found", from: from, to: to }, { status: 404 });
     const result = Array.isArray(rows)
-        ? rows.map(row => ({ ...row, expensesSummary: JSON.parse(row.expensesSummary) }))
-        : { ...rows, expensesSummary: JSON.parse(rows.expensesSummary) };
+        ? rows.map(row => ({ ...row, purchasesSummary: JSON.parse(row.purchasesSummary) }))
+        : { ...rows, purchasesSummary: JSON.parse(rows.purchasesSummary) };
     return Response.json(result, { status: 200 });
 }
 
@@ -61,8 +61,8 @@ export async function post(req: Request, env: Env): Promise<Response> {
         healthInsuranceBase: obligations.healthInsuranceBase,
         healthInsuranceRate: obligations.healthInsuranceRate,
         healthContribution: obligations.healthContribution,
-        expensesSummary: JSON.stringify(obligations.expensesSummary),
-        totalCleanRevenue: (obligations.netBeforeObligations - obligations.incomeTax - obligations.healthContribution) + obligations.expensesDeductions,
+        purchasesSummary: JSON.stringify(obligations.purchasesSummary),
+        totalCleanRevenue: (obligations.netBeforeObligations - obligations.incomeTax - obligations.healthContribution) + obligations.purchasesDeductions,
         ...(payload.notes && { notes: payload.notes }),
         updatedAt: new Date().toISOString()
     };
@@ -87,15 +87,15 @@ async function computeObligations(env: Env, appUser: AppUser, taxRecord: AppTaxR
     const healthInsuranceBase = taxRecord.healthInsuranceBase ?? env.DEFAULT_HEALTH_INSURANCE_BASE;
     const healthInsuranceRate = taxRecord.healthInsuranceRate ?? env.DEFAULT_HEALTH_INSURANCE_RATE;
     const healthContribution = healthInsuranceBase * healthInsuranceRate / 100;
-    // Expenses deductions
-    const expensesInvoices = env.TEST_MODE ? [] : await fetchKsefInvoices(env, appUser, "Subject2", from, to);
-    const expensesSummary = expensesInvoices.map((invoice) => ({
+    // Puchases deductions
+    const purchasesInvoices = env.TEST_MODE ? [] : await fetchKsefInvoices(env, appUser, "Subject2", from, to);
+    const purchasesSummary = purchasesInvoices.map((invoice) => ({
         InvoiceNumber: invoice.InvoiceBody?.InvoiceNumber,
         TotalGrossAmount: invoice.InvoiceBody?.TotalGrossAmount,
         TotalVatAmount: invoice.InvoiceBody?.TotalVatAmount
     }));
-    const expensesDeductions = expensesInvoices.reduce((sum, invoice) => sum + (invoice.InvoiceBody?.TotalVatAmount ?? 0), 0);
-    // Total after obligations and expenses deductions
+    const purchasesDeductions = purchasesInvoices.reduce((sum, invoice) => sum + (invoice.InvoiceBody?.TotalVatAmount ?? 0), 0);
+    // Total after obligations and purchases deductions
     return {
         vatPercentage,
         vatAmount,
@@ -105,8 +105,8 @@ async function computeObligations(env: Env, appUser: AppUser, taxRecord: AppTaxR
         healthInsuranceBase,
         healthInsuranceRate,
         healthContribution,
-        expensesDeductions,
-        expensesSummary,
+        purchasesDeductions,
+        purchasesSummary,
     };
 }
 

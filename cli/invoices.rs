@@ -17,26 +17,25 @@ pub async fn list_purchase_invoices() -> anyhow::Result<()> {
     let to: DateTime<Utc> = DateSelect::new("To date:").prompt()?.and_hms_opt(23, 59, 59).unwrap().and_utc();
     let client = reqwest::Client::new();
     println!("Fetching invoices...");
-    println!("  [API] GET /ksef/expenses?from={from}&to={to}");
+    println!("  [API] GET /ksef/purchases?from={from}&to={to}");
     let response = client
-        .get("https://ksef-bot.druizbarbero.workers.dev/ksef/expenses").query(&[("from", from.to_rfc3339()), ("to", to.to_rfc3339())])
+        .get("ksef-bot.druizbarbero.workers.dev/ksef/purchase")
+        .query(&[("from", from.to_rfc3339()), ("to", to.to_rfc3339())])
         .header("CF-Access-Client-Id", std::env::var("CF_ACCESS_CLIENT_ID")?)
         .header("CF-Access-Client-Secret", std::env::var("CF_ACCESS_CLIENT_SECRET")?)
         .header("X-API-Key", std::env::var("APP_API_KEY")?)
         .header("X-User-Id", std::env::var("APP_USER_ID")?)
+        .header("Content-Type", "application/json")
         .send()
-        .await?
-        .error_for_status()?;
-    let invoices: Vec<serde_json::Value> = response.json().await?;
-    println!("[API] Response: {} invoices found.", invoices.len());
-    println!();
-    for (i, invoice) in invoices.iter().enumerate() {
-        let number = invoice["InvoiceBody"]["InvoiceNumber"].as_str().unwrap_or("Unknown");
-        let seller = invoice["Seller"]["IdentificationData"]["Name"].as_str().unwrap_or("Unknown");
-        let total = invoice["InvoiceBody"]["TotalGrossAmount"].as_f64().unwrap_or(0.0);
-        let currency = invoice["InvoiceBody"]["CurrencyCode"].as_str().unwrap_or("");
-        println!("  {}. {:<30} - {:<50} - {:>10.2} {}", i + 1, number, seller, total, currency);
+        .await?;
+
+    println!("Status: {}", response.status());
+    for (name, value) in response.headers() {
+        println!("  {}: {:?}", name, value);
     }
+    let body = response.text().await?;
+    println!("Body:\n{}", body);
+
     Ok(())
 }
 

@@ -1,0 +1,12 @@
+delete {
+    url: {{baseUrl}}/app/invoices?id={{purchaseInvoiceId}}
+}
+headers {
+    Content-Type: application/json
+    X-API-Key: {{apiKey}}
+}
+tests {
+    test("Delete a recently created purchases invoice should succeed", function() {
+        expect(res.body.id).to.equal(bru.getCollectionVar("purchaseInvoiceId"));
+    })
+}

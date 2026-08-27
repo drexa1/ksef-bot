@@ -1,0 +1,16 @@
+get {
+    url: {{baseUrl}}/app/invoices?id={{purchaseInvoiceId}}
+}
+headers {
+    Content-Type: application/json
+    X-API-Key: {{apiKey}}
+}
+tests {
+    test("List the recently created purchases invoice", function() {
+        expect(res.body.InvoiceBody.InvoiceNumber).to.equal(bru.getCollectionVar("purchaseInvoiceId"));
+    })
+}
+script:post-response {
+     bru.setCollectionVar("purchaseInvoiceSellerId", res.body.Seller.IdentificationData.NIP);
+     bru.setCollectionVar("purchaseInvoiceBuyerId", res.body.Buyer.IdentificationData.NIP);
+}

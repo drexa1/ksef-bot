@@ -9,10 +9,10 @@ headers {
 }
 script:pre-request {
     const fs = require("fs");
-    const xml = fs.readFileSync("../testresources/ksef-pii/expenses/5272710089-20260714-85064E400000-C7.anonymized.xml", "utf8");
+    const xml = fs.readFileSync("../testresources/ksef-pii/purchases/5272710089-20260714-85064E400000-C7.anonymized.xml", "utf8");
     const body =
         `--ksefInvoice\n` +
-        `Content-Disposition: form-data; name="file"; filename="expenses-invoice-1.xml"\n` +
+        `Content-Disposition: form-data; name="file"; filename="purchases-invoice-1.xml"\n` +
         `Content-Type: application/xml\n` +
         `\n` +
         `${xml}\n` +
@@ -25,10 +25,7 @@ script:pre-request {
     req.setBody(body);
 }
 tests {
-    test("Create an expenses invoice for the first time should succeed", function() {
-        expect(res.status).to.equal(201);
+    test("Second attempt to create an existing purchases invoice should trigger PK violation error", function() {
+        expect(res.status).to.equal(409);
     })
-}
-script:post-response {
-    bru.setCollectionVar("expensesInvoiceId", res.body.id);
 }

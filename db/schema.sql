@@ -140,9 +140,9 @@ CREATE TABLE taxes (
     healthInsuranceBase REAL DEFAULT 5537.18,
     healthInsuranceRate REAL DEFAULT 9,
     healthContribution REAL NOT NULL,
-    -- Expenses deductions
-    expensesSummary TEXT CHECK (json_valid(expensesSummary)),
-    -- Total after obligations and expenses deductions
+    -- Purchases deductions
+    purchasesSummary TEXT CHECK (json_valid(purchasesSummary)),
+    -- Total after obligations and purchases deductions
     totalCleanRevenue REAL NOT NULL,
     notes TEXT,
     -- DBA

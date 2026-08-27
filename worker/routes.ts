@@ -4,7 +4,7 @@ import {scalarHtml} from "./api/scalar";
 import {get as healthGET} from "./routes/health/health";
 import {corsHeaders, whoami as whoamiGET} from "./auth";
 import {get as salesGET, post as salesPOST} from "./routes/ksef/sales";
-import {get as expensesGET} from "./routes/ksef/purchase";
+import {get as purchaseGET} from "./routes/ksef/purchases";
 import {get as usersGET, post as usersPOST, put as usersPUT, del as usersDELETE} from "./routes/db/users";
 import {get as counterpartiesGET, post as counterpartiesPOST, put as counterpartiesPUT, del as counterpartiesDELETE} from "./routes/db/counterparties";
 import {get as invoicesGET, post as invoicesPOST, put as invoicesPUT, del as invoicesDELETE} from "./routes/db/invoices";
@@ -42,7 +42,7 @@ export const routes: Record<string, Routes> =  {
     // Requiring authentication
     "/whoami":             withErrorHandling({ GET: whoamiGET }),
     "/ksef/sales":         withErrorHandling({ GET: salesGET, POST: salesPOST }),
-    "/ksef/expenses":      withErrorHandling({ GET: expensesGET }),
+    "/ksef/purchase":      withErrorHandling({ GET: purchaseGET }),
     "/app/users":          withErrorHandling({ GET: usersGET, POST: usersPOST, PUT: usersPUT, DELETE: usersDELETE }),
     "/app/counterparties": withErrorHandling({ GET: counterpartiesGET, POST: counterpartiesPOST, PUT: counterpartiesPUT, DELETE: counterpartiesDELETE }),
     "/app/invoices":       withErrorHandling({ GET: invoicesGET, POST: invoicesPOST, PUT: invoicesPUT, DELETE: invoicesDELETE }),

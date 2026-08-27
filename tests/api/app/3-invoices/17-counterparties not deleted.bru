@@ -9,8 +9,8 @@ script:pre-request {
     const counterpartyIds = new Set();
     counterpartyIds.add(bru.getCollectionVar("salesInvoiceSellerId"));
     counterpartyIds.add(bru.getCollectionVar("salesInvoiceBuyerId"));
-    counterpartyIds.add(bru.getCollectionVar("expensesInvoiceSellerId"));
-    counterpartyIds.add(bru.getCollectionVar("expensesInvoiceBuyerId"));
+    counterpartyIds.add(bru.getCollectionVar("purchaseInvoiceSellerId"));
+    counterpartyIds.add(bru.getCollectionVar("purchaseInvoiceBuyerId"));
     bru.setCollectionVar("createdCounterparties", JSON.stringify([...counterpartyIds]));
 }
 tests {
