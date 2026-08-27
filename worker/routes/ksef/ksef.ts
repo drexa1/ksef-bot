@@ -18,9 +18,15 @@ export async function getKsefInvoices(req: Request, env: Env, subjectType: "Subj
     const to = new Date(toParam);
     if (isNaN(from.getTime()) || isNaN(to.getTime()) || from > to)
         return Response.json({ success: false, error: "Invalid date parameters" }, { status: 400 });
+    if ((to.getTime() - from.getTime()) / 86_400_000 > 90)
+        return Response.json({ success: false, error: `The maximum date range supported by KSeF is 3 calendar months.` }, { status: 400 });
     try {
         const result = await fetchKsefInvoices(env, appUser, subjectType, from, to);
-        return Response.json({ success: true, result }, { status: 200 });
+        return Response.json({
+            success: result.length > 0,
+            result,
+            ...(result.length === 0 && { message: "No invoices found for the specified date range." })
+        }, { status: 200 });
     } catch (error: any) {
         if (String(error).includes("Too Many Requests"))
             return Response.json({ success: false, error: "The limit of 20 requests per hour has been exceeded." }, { status: 429 });

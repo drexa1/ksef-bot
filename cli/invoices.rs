@@ -16,22 +16,37 @@ pub fn list_sales_invoices() -> anyhow::Result<()> {
 pub async fn list_purchase_invoices() -> anyhow::Result<()> {
     let from: DateTime<Utc> = DateSelect::new("From date:").prompt()?.and_hms_opt(0, 0, 0).unwrap().and_utc();
     let to: DateTime<Utc> = DateSelect::new("To date:").prompt()?.and_hms_opt(23, 59, 59).unwrap().and_utc();
-    let response = reqwest::Client::new()
+
+    let json: serde_json::Value = reqwest::Client::new()
         .get(format!("{}/ksef/purchases", var("CF_WORKER_URL")?))
         .query(&[("from", from.format("%Y/%m/%d").to_string()), ("to", to.format("%Y/%m/%d").to_string())])
         .header("CF-Access-Client-Id", var("CF_ACCESS_CLIENT_ID")?)
         .header("CF-Access-Client-Secret", var("CF_ACCESS_CLIENT_SECRET")?)
         .header("X-API-Key", var("APP_API_KEY")?)
         .header("X-User-Id", var("APP_USER_ID")?)
-        .header("Content-Type", "application/json")
-        .send()
-        .await?;
+        .header("Accept", "application/json")
+        .send().await?.json().await?;
 
-    println!("Status: {}", response.status());
-    println!("Headers: {:#?}", response.headers());
-    let body = response.text().await?;
-    println!("Body:\n{}", body);
+    if json["success"].as_bool() != Some(true) {
+        println!("[API] Response: {}", json["message"].as_str().unwrap());
+        return Ok(());
+    }
 
+    let invoices = json["result"].as_array().unwrap();
+    if invoices.is_empty() {
+        println!("[API] Response: {}", json["message"].as_str().unwrap());
+        return Ok(());
+    }
+
+    println!("[API] Response: {} invoices found.", invoices.len());
+    println!();
+    for (i, invoice) in invoices.iter().enumerate() {
+        let number = invoice["InvoiceBody"]["InvoiceNumber"].as_str().unwrap_or("Unknown");
+        let seller = invoice["Seller"]["IdentificationData"]["Name"].as_str().unwrap_or("Unknown");
+        let total = invoice["InvoiceBody"]["TotalGrossAmount"].as_f64().unwrap_or(0.0);
+        let currency = invoice["InvoiceBody"]["CurrencyCode"].as_str().unwrap_or("");
+        println!("  {}. {:<30} - {:<50} - {:>10.2} {}", i + 1, number, seller, total, currency);
+    }
     Ok(())
 }
 
