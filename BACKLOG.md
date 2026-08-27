@@ -38,6 +38,7 @@
 - [x] Invoice generator frontend: rework payment fields order  
 - [x] CLI client start  
 - [x] CLI client dialogue  
+- [ ] Do not auto store counterparties for purchase invoices  
 - [ ] Invoice generator frontend: invoice checkboxes
 - [ ] Invoice generator frontend: invoice additional column selects  
 - [ ] Invoice generator frontend: invoice autocomplete API

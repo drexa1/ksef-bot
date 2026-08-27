@@ -4,7 +4,7 @@ import {scalarHtml} from "./api/scalar";
 import {get as healthGET} from "./routes/health/health";
 import {corsHeaders, whoami as whoamiGET} from "./auth";
 import {get as salesGET, post as salesPOST} from "./routes/ksef/sales";
-import {get as expensesGET} from "./routes/ksef/expenses";
+import {get as expensesGET} from "./routes/ksef/purchase";
 import {get as usersGET, post as usersPOST, put as usersPUT, del as usersDELETE} from "./routes/db/users";
 import {get as counterpartiesGET, post as counterpartiesPOST, put as counterpartiesPUT, del as counterpartiesDELETE} from "./routes/db/counterparties";
 import {get as invoicesGET, post as invoicesPOST, put as invoicesPUT, del as invoicesDELETE} from "./routes/db/invoices";

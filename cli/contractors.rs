@@ -1,4 +1,4 @@
-use inquire::{Text, ui::RenderConfig};
+use inquire::{Text};
 
 pub fn list_customers() -> anyhow::Result<()> {
     println!("Fetching customers...");
@@ -19,18 +19,15 @@ pub fn list_customers() -> anyhow::Result<()> {
     Ok(())
 }
 
-pub fn create_customer(render_config: &RenderConfig) -> anyhow::Result<()> {
+pub fn create_customer() -> anyhow::Result<()> {
     let name = Text::new("Customer name")
         .with_placeholder("ACME Sp. z o.o.")
-        .with_render_config(render_config.clone())
         .prompt()?;
     let nip = Text::new("NIP")
         .with_placeholder("1234567890")
-        .with_render_config(render_config.clone())
         .prompt()?;
     let email = Text::new("Email")
         .with_placeholder("billing@example.com")
-        .with_render_config(render_config.clone())
         .prompt()?;
     println!();
     println!("Creating customer...");

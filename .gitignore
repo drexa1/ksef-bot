@@ -1,6 +1,7 @@
 .idea
 .wrangler
 build
+cli/.env
 dist
 node_modules
 out

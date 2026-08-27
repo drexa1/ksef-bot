@@ -1,65 +1,58 @@
 use anyhow::Result;
+use inquire::{Select, Text};
+use strum::{Display, EnumIter, IntoEnumIterator};
 use crossterm::{
     cursor::MoveTo,
-    event::{self, Event, KeyEventKind},
     execute,
-    terminal::{Clear, ClearType, disable_raw_mode, enable_raw_mode},
+    terminal::{Clear, ClearType},
 };
-use inquire::{Select, ui::RenderConfig};
-use std::io::{self, Write};
-use std::time::Duration;
+use std::io::{self};
 
 mod auth;
 mod invoices;
 mod contractors;
 mod settings;
 
-fn main() -> Result<()> {
-    auth::login_flow(&RenderConfig::default())?;
-    main_flow(&RenderConfig::default())?;
-    Ok(())
+#[derive(Clone, Display, EnumIter)]
+enum MainMenuAction {
+    #[strum(to_string = "1. Create new [sales] invoice")] CreateSalesInvoice,
+    #[strum(to_string = "2. List [sales] invoices")] ListSalesInvoices,
+    #[strum(to_string = "3. List [purchase] invoices")] ListPurchaseInvoices,
+    #[strum(to_string = "4. Create new contractor")] CreateContractor,
+    #[strum(to_string = "5. List known contractors")] ListContractors,
+    #[strum(to_string = "6. User settings")] UserSettings
 }
 
-fn pause() -> Result<()> {
-    println!();
-    print!("Press any key to go back to the main menu...");
-    io::stdout().flush()?;
-    enable_raw_mode()?;
-    loop {
-        if event::poll(Duration::from_millis(100))? {
-            if let Event::Key(key_event) = event::read()? {
-                if key_event.kind == KeyEventKind::Press {
-                    break;
-                }
-            }
-        }
-    }
-    disable_raw_mode()?;
-    execute!(io::stdout(), Clear(ClearType::All), MoveTo(0, 0))?;
+#[tokio::main]
+async fn main() -> Result<()> {
+    dotenvy::dotenv().ok();
+    auth::login_loop()?;
+    main_loop().await?;
     Ok(())
 }
 
 // -------------------------------------------------------------------------------------------------
 // Main loop
 // -------------------------------------------------------------------------------------------------
-fn main_flow(render_config: &RenderConfig) -> Result<()> {
+async fn main_loop() -> Result<()> {
     loop {
-        let action = Select::new("What shall we do now?", vec![
-            "1. List invoices",
-            "2. Create invoice",
-            "3. List contractors",
-            "4. Create contractors",
-            "5. Edit profile"
-        ]).with_render_config(render_config.clone()).prompt()?;
+        let action = Select::new("What shall we do now?", MainMenuAction::iter().collect()).prompt()?;
         match action {
-            "1. List invoices"      => invoices::list_invoices()?,
-            "2. Create invoice"     => invoices::create_invoice()?,
-            "3. List contractors"   => contractors::list_customers()?,
-            "4. Create contractors" => contractors::create_customer(render_config)?,
-            "5. Edit profile"       => settings::edit_profile()?,
-            _                       => unreachable!()
+            MainMenuAction::CreateSalesInvoice => invoices::create_sales_invoice()?,
+            MainMenuAction::ListSalesInvoices => invoices::list_sales_invoices()?,
+            MainMenuAction::ListPurchaseInvoices => invoices::list_purchase_invoices().await?,
+            MainMenuAction::CreateContractor => contractors::create_customer()?,
+            MainMenuAction::ListContractors => contractors::list_customers()?,
+            MainMenuAction::UserSettings => settings::edit_profile()?
         }
         pause()?
     }
+}
+
+fn pause() -> Result<()> {
+    println!();
+    Text::new("Press [Enter] to go back to the main menu...").prompt()?;
+    execute!(io::stdout(), Clear(ClearType::All), MoveTo(0, 0))?;
+    Ok(())
 }
 

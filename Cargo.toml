@@ -8,5 +8,11 @@ name = "ksef-bot"
 path = "cli/main.rs"
 [dependencies]
 anyhow = "1.0.104"
-inquire = "0.9.4"
+chrono = "0.4.45"
 crossterm = "0.29.0"
+dotenvy = "0.15"
+inquire = { version = "0.9.4", features = ["date"] }
+reqwest = { version = "0.13.4", features = ["json", "query"] }
+serde_json = "1.0.151"
+strum = { version = "0.28.0", features = ["derive"] }
+tokio = { version = "1.53.1", features = ["rt", "rt-multi-thread", "macros"] }
