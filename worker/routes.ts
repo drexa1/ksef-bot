@@ -42,7 +42,7 @@ export const routes: Record<string, Routes> =  {
     // Requiring authentication
     "/whoami":             withErrorHandling({ GET: whoamiGET }),
     "/ksef/sales":         withErrorHandling({ GET: salesGET, POST: salesPOST }),
-    "/ksef/purchase":      withErrorHandling({ GET: purchaseGET }),
+    "/ksef/purchases":      withErrorHandling({ GET: purchaseGET }),
     "/app/users":          withErrorHandling({ GET: usersGET, POST: usersPOST, PUT: usersPUT, DELETE: usersDELETE }),
     "/app/counterparties": withErrorHandling({ GET: counterpartiesGET, POST: counterpartiesPOST, PUT: counterpartiesPUT, DELETE: counterpartiesDELETE }),
     "/app/invoices":       withErrorHandling({ GET: invoicesGET, POST: invoicesPOST, PUT: invoicesPUT, DELETE: invoicesDELETE }),

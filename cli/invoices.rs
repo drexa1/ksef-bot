@@ -1,5 +1,6 @@
 use inquire::DateSelect;
 use chrono::{DateTime, Utc};
+use std::env::var;
 
 pub fn list_sales_invoices() -> anyhow::Result<()> {
     println!("Fetching invoices...");
@@ -15,24 +16,19 @@ pub fn list_sales_invoices() -> anyhow::Result<()> {
 pub async fn list_purchase_invoices() -> anyhow::Result<()> {
     let from: DateTime<Utc> = DateSelect::new("From date:").prompt()?.and_hms_opt(0, 0, 0).unwrap().and_utc();
     let to: DateTime<Utc> = DateSelect::new("To date:").prompt()?.and_hms_opt(23, 59, 59).unwrap().and_utc();
-    let client = reqwest::Client::new();
-    println!("Fetching invoices...");
-    println!("  [API] GET /ksef/purchases?from={from}&to={to}");
-    let response = client
-        .get("ksef-bot.druizbarbero.workers.dev/ksef/purchase")
-        .query(&[("from", from.to_rfc3339()), ("to", to.to_rfc3339())])
-        .header("CF-Access-Client-Id", std::env::var("CF_ACCESS_CLIENT_ID")?)
-        .header("CF-Access-Client-Secret", std::env::var("CF_ACCESS_CLIENT_SECRET")?)
-        .header("X-API-Key", std::env::var("APP_API_KEY")?)
-        .header("X-User-Id", std::env::var("APP_USER_ID")?)
+    let response = reqwest::Client::new()
+        .get(format!("{}/ksef/purchases", var("CF_WORKER_URL")?))
+        .query(&[("from", from.format("%Y/%m/%d").to_string()), ("to", to.format("%Y/%m/%d").to_string())])
+        .header("CF-Access-Client-Id", var("CF_ACCESS_CLIENT_ID")?)
+        .header("CF-Access-Client-Secret", var("CF_ACCESS_CLIENT_SECRET")?)
+        .header("X-API-Key", var("APP_API_KEY")?)
+        .header("X-User-Id", var("APP_USER_ID")?)
         .header("Content-Type", "application/json")
         .send()
         .await?;
 
     println!("Status: {}", response.status());
-    for (name, value) in response.headers() {
-        println!("  {}: {:?}", name, value);
-    }
+    println!("Headers: {:#?}", response.headers());
     let body = response.text().await?;
     println!("Body:\n{}", body);
 

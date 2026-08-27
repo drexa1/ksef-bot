@@ -45,8 +45,7 @@
         "fast-xml-parser": "latest",
         "p-retry": "latest",
         "pkijs": "latest",
-        "vite": "latest",
-        "wrangler": "latest"
+        "vite": "latest"
     },
     "devDependencies": {
         "@cloudflare/workers-types": "latest",
@@ -54,10 +53,11 @@
         "@sentry/tracing": "latest",
         "@types/bootstrap": "latest",
         "@usebruno/cli": "latest",
-        "glob": "^13.0.6",
+        "glob": "latest",
         "typescript": "latest",
         "vitest": "latest",
         "wait-on": "latest",
-        "wasm-pack": "latest"
+        "wasm-pack": "latest",
+        "wrangler": "latest"
     }
 }

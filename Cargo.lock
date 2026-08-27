@@ -777,6 +777,7 @@ dependencies = [
  "dotenvy",
  "inquire",
  "reqwest",
+ "serde_json",
  "strum",
  "tokio",
 ]
