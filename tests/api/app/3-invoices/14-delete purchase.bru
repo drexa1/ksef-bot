@@ -6,7 +6,7 @@ headers {
     X-API-Key: {{apiKey}}
 }
 tests {
-    test("Delete a recently created purchases invoice should succeed", function() {
+    test("Delete a recently created purchase invoice should succeed", function() {
         expect(res.body.id).to.equal(bru.getCollectionVar("purchaseInvoiceId"));
     })
 }
