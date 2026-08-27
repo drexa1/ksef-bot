@@ -11,6 +11,5 @@ tests {
     })
 }
 script:post-response {
-     bru.setCollectionVar("purchaseInvoiceSellerId", res.body.Seller.IdentificationData.NIP);
-     bru.setCollectionVar("purchaseInvoiceBuyerId", res.body.Buyer.IdentificationData.NIP);
+     bru.setCollectionVar("purchaseInvoiceCounterpartyId", res.body.Seller.IdentificationData.NIP);
 }

@@ -35,7 +35,7 @@ export async function post(req: Request, env: Env): Promise<Response> {
     const file = form.get("file");
     if (!(file instanceof File)) return Response.json({ error: "Missing XML file" }, { status: 400 });
     const notes = form.get("notes")?.toString();
-    const record = await invoiceFromXml(env, await file.text(), appUser, notes);
+    const record = await invoiceFromXml(env, await file.text(), appUser, "sales", notes);
     try {
         await getRepo(env).save<AppInvoice>("invoices", record);
         return Response.json({ success: true, id: record.id }, { status: 201 });
@@ -79,31 +79,31 @@ export const xmlParser = new XMLParser({
     parseTagValue: false,
 });
 
-export async function invoiceFromXml(env: Env, xmlContent: string, authUser: AppUser, notes?: string): Promise<AppInvoice & { ownerId: string }> {
+export async function invoiceFromXml(
+    env: Env,
+    xmlContent: string,
+    authUser: AppUser,
+    type: "sales" | "purchase",
+    notes?: string
+): Promise<AppInvoice & { ownerId: string }> {
     // Parse XML
     const invoiceXml = xmlParser.parse(xmlContent).Faktura;
     const ksefInvoiceAvroSchema = await env.assets.fetch(new URL(env.KSEF_INVOICE_SCHEMA)).then((res) => res.json());
     const ksefInvoice = dtoFromAliases(invoiceXml, ksefInvoiceAvroSchema);
-    // Find or create counterparties
-    const sellerId = await getOrCreateCounterparty(env, {
-        ownerId: authUser.email,
-        name: ksefInvoice.Seller.IdentificationData.Name,
-        nip: ksefInvoice.Seller.IdentificationData.NIP,
-        countryCode: ksefInvoice.Seller.Address.CountryCode,
-        addressL1: ksefInvoice.Seller.Address.AddressLine1
-    });
-    const buyerId = await getOrCreateCounterparty(env, {
-        ownerId: authUser.email,
-        name: ksefInvoice.Buyer.IdentificationData.Name,
-        nip: ksefInvoice.Buyer.IdentificationData.NIP,
-        countryCode: ksefInvoice.Buyer.Address.CountryCode,
-        addressL1: ksefInvoice.Buyer.Address.AddressLine1
-    });
     return {
         id: ksefInvoice.InvoiceBody.InvoiceNumber,
         ownerId: authUser.email,
-        sellerId: sellerId,
-        buyerId: buyerId,
+        type: type,
+        // Find or create counterparties
+        ...(type === "sales" && {
+            counterpartyId: await getOrCreateCounterparty(env, {
+                ownerId: authUser.email,
+                name: ksefInvoice.Buyer.IdentificationData.Name,
+                nip: ksefInvoice.Buyer.IdentificationData.NIP,
+                countryCode: ksefInvoice.Buyer.Address.CountryCode,
+                addressL1: ksefInvoice.Buyer.Address.AddressLine1,
+            })
+        }),
         rawXml: xmlContent,
         jsonData: JSON.stringify(ksefInvoice),
         ...(notes && { notes }),

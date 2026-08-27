@@ -87,8 +87,8 @@ CREATE TABLE invoices (
     -- Owner
     ownerId TEXT NOT NULL REFERENCES users(email),
     -- Parties
-    sellerId TEXT NOT NULL REFERENCES counterparties(id),
-    buyerId  TEXT NOT NULL REFERENCES counterparties(id),
+    type TEXT NOT NULL CHECK (type IN ('sales', 'purchase')),
+    counterpartyId TEXT REFERENCES counterparties(id),  -- Nullable if 'purchase'
     -- Raw data
     rawXml  TEXT NOT NULL,
     jsonData TEXT NOT NULL CHECK (json_valid(jsonData)),

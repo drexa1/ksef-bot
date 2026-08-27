@@ -1,5 +1,5 @@
 get {
-    url: {{baseUrl}}/app/counterparties?nip={{purchaseInvoiceBuyerId}}
+    url: {{baseUrl}}/app/counterparties?nip={{salesInvoiceCounterpartyId}}
 }
 headers {
     Content-Type: application/json
@@ -8,6 +8,6 @@ headers {
 tests {
     test("List the recently created buyer counterparty", function() {
         console.info(res.body);
-        expect(res.body.nip).to.equal(bru.getCollectionVar("purchaseInvoiceBuyerId"));
+        expect(res.body.nip).to.equal(bru.getCollectionVar("salesInvoiceCounterpartyId"));
     })
 }

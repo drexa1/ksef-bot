@@ -43,8 +43,8 @@ export type AppUser = {
 export type AppInvoice = {
     id: string
     // Parties
-    sellerId: string
-    buyerId: string
+    type: "sales" | "purchase"
+    counterpartyId?: string
     // Raw data
     rawXml: string
     jsonData: string
