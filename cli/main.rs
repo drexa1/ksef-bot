@@ -7,7 +7,6 @@ use crossterm::{
     terminal::{Clear, ClearType},
 };
 use std::io::{self};
-use crate::invoices::InvoiceType;
 
 mod auth;
 mod invoices;
