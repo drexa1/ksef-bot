@@ -37,6 +37,8 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
         with:
           targets: ${{ matrix.target }}
+      - name: Cache Rust build
+        uses: Swatinem/rust-cache@v2
       - name: Build
         run: cargo build --release --target ${{ matrix.target }}
       - name: Prepare binary
@@ -44,7 +46,6 @@ jobs:
         run: |
           mkdir -p dist
           cp "target/${{ matrix.target }}/release/${BINARY_NAME}${{ matrix.extension }}" "dist/${BINARY_NAME}${{ matrix.extension }}"
-          ls -lah dist
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
