@@ -20,20 +20,12 @@ pub fn list_customers() -> anyhow::Result<()> {
 }
 
 pub fn create_customer() -> anyhow::Result<()> {
-    let name = Text::new("Customer name")
-        .with_placeholder("ACME Sp. z o.o.")
-        .prompt()?;
-    let nip = Text::new("NIP")
-        .with_placeholder("1234567890")
-        .prompt()?;
-    let email = Text::new("Email")
-        .with_placeholder("billing@example.com")
-        .prompt()?;
+    let name = Text::new("Customer name").with_placeholder("ACME Sp. z o.o.").prompt()?;
+    let nip = Text::new("NIP").with_placeholder("1234567890").prompt()?;
+    let email = Text::new("Email").with_placeholder("billing@example.com").prompt()?;
     println!();
-    println!("Creating customer...");
-    println!("  [API] POST /customers");
-    println!("  [API] Customer created successfully.");
-    println!("Customer ID: dummy_001");
+    println!("  API Customer created successfully.");
+    println!("  Customer ID: dummy_001");
     let _ = (name, nip, email);
     Ok(())
 }

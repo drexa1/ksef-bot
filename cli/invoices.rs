@@ -1,43 +1,17 @@
 use inquire::DateSelect;
-use chrono::{DateTime, Utc};
 use std::env::var;
+use strum::{Display};
 
-pub fn list_sales_invoices() -> anyhow::Result<()> {
-    println!("Fetching invoices...");
-    println!("  [API] GET /invoices");
-    println!("  [API] Response: 3 invoices found.");
-    println!();
-    println!("  1. FV/2026/001 - ACME Sp. z o.o. - 1,230.00 PLN");
-    println!("  2. FV/2026/002 - Example Ltd.    - 2,450.00 PLN");
-    println!("  3. FV/2026/003 - Test Company    -   850.00 PLN");
-    Ok(())
+#[derive(Clone, Display)]
+pub enum InvoiceType {
+    #[strum(to_string = "sales")] Sales,
+    #[strum(to_string = "purchases")] Purchases
 }
 
-pub async fn list_purchase_invoices() -> anyhow::Result<()> {
-    let from: DateTime<Utc> = DateSelect::new("From date:").prompt()?.and_hms_opt(0, 0, 0).unwrap().and_utc();
-    let to: DateTime<Utc> = DateSelect::new("To date:").prompt()?.and_hms_opt(23, 59, 59).unwrap().and_utc();
+pub async fn list_sales_invoices() -> anyhow::Result<()> {
+    let invoices = list_invoices(&InvoiceType::Sales).await?;
 
-    let json: serde_json::Value = reqwest::Client::new()
-        .get(format!("{}/ksef/purchases", var("CF_WORKER_URL")?))
-        .query(&[("from", from.format("%Y/%m/%d").to_string()), ("to", to.format("%Y/%m/%d").to_string())])
-        .header("CF-Access-Client-Id", var("CF_ACCESS_CLIENT_ID")?)
-        .header("CF-Access-Client-Secret", var("CF_ACCESS_CLIENT_SECRET")?)
-        .header("X-API-Key", var("APP_API_KEY")?)
-        .header("X-User-Id", var("APP_USER_ID")?)
-        .header("Accept", "application/json")
-        .send().await?.json().await?;
-
-    if json["success"].as_bool() != Some(true) {
-        println!("  API Response: {}", json["error"].as_str().unwrap());
-        return Ok(());
-    }
-
-    let invoices = json["result"].as_array().unwrap();
-    println!("  API Response: {} invoices found", invoices.len());
-
-    let max_width = |get: fn(&serde_json::Value) -> &str| {
-        invoices.iter().map(get).map(str::len).max().unwrap()
-    };
+    let max_width = |get: fn(&serde_json::Value) -> &str| invoices.iter().map(get).map(str::len).max().unwrap_or(0);
     let invoice_number_width = max_width(|i| i["InvoiceBody"]["InvoiceNumber"].as_str().unwrap());
     let seller_width = max_width(|i| i["Seller"]["IdentificationData"]["Name"].as_str().unwrap());
 
@@ -49,6 +23,44 @@ pub async fn list_purchase_invoices() -> anyhow::Result<()> {
         println!("  {}. {:<invoice_number_width$} - {:<seller_width$} - {:.2} {}", i + 1, invoice_number, seller, total, currency);
     }
     Ok(())
+}
+
+pub async fn list_purchase_invoices() -> anyhow::Result<()> {
+    let invoices = list_invoices(&InvoiceType::Purchases).await?;
+
+    let max_width = |get: fn(&serde_json::Value) -> &str| invoices.iter().map(get).map(str::len).max().unwrap_or(0);
+    let invoice_number_width = max_width(|i| i["InvoiceBody"]["InvoiceNumber"].as_str().unwrap());
+    let seller_width = max_width(|i| i["Seller"]["IdentificationData"]["Name"].as_str().unwrap());
+
+    for (i, invoice) in invoices.iter().enumerate() {
+        let invoice_number = invoice["InvoiceBody"]["InvoiceNumber"].as_str().unwrap();
+        let seller = invoice["Seller"]["IdentificationData"]["Name"].as_str().unwrap();
+        let total = invoice["InvoiceBody"]["TotalGrossAmount"].as_f64().unwrap();
+        let currency = invoice["InvoiceBody"]["CurrencyCode"].as_str().unwrap();
+        println!("  {}. {:<invoice_number_width$} - {:<seller_width$} - {:.2} {}", i + 1, invoice_number, seller, total, currency);
+    }
+    Ok(())
+}
+
+async fn list_invoices(endpoint: &InvoiceType) -> anyhow::Result<Vec<serde_json::Value>> {
+    let from = DateSelect::new("From date:").prompt()?.and_hms_opt(0, 0, 0).unwrap().and_utc();
+    let to = DateSelect::new("To date:").prompt()?.and_hms_opt(23, 59, 59).unwrap().and_utc();
+    let json: serde_json::Value = reqwest::Client::new()
+        .get(format!("{}/ksef/{endpoint}", var("CF_WORKER_URL")?))
+        .query(&[("from", from.format("%Y/%m/%d").to_string()), ("to", to.format("%Y/%m/%d").to_string())])
+        .header("CF-Access-Client-Id", var("CF_ACCESS_CLIENT_ID")?)
+        .header("CF-Access-Client-Secret", var("CF_ACCESS_CLIENT_SECRET")?)
+        .header("X-API-Key", var("APP_API_KEY")?)
+        .header("X-User-Id", var("APP_USER_ID")?)
+        .header("Accept", "application/json")
+        .send().await?.json().await?;
+    if json["success"].as_bool() != Some(true) {
+        println!("  API Response: {}", json["error"].as_str().unwrap());
+        return Ok(Vec::new());
+    }
+    let invoices = json["result"].as_array().cloned().unwrap_or_default();
+    println!("  API Response: {} {} invoices found", endpoint, invoices.len());
+    Ok(invoices)
 }
 
 pub fn create_sales_invoice() -> anyhow::Result<()> {

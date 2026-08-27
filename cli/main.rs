@@ -7,6 +7,7 @@ use crossterm::{
     terminal::{Clear, ClearType},
 };
 use std::io::{self};
+use crate::invoices::InvoiceType;
 
 mod auth;
 mod invoices;
@@ -39,7 +40,7 @@ async fn main_loop() -> Result<()> {
         let action = Select::new("What shall we do now?", MainMenuAction::iter().collect()).prompt()?;
         match action {
             MainMenuAction::CreateSalesInvoice => invoices::create_sales_invoice()?,
-            MainMenuAction::ListSalesInvoices => invoices::list_sales_invoices()?,
+            MainMenuAction::ListSalesInvoices => invoices::list_sales_invoices().await?,
             MainMenuAction::ListPurchaseInvoices => invoices::list_purchase_invoices().await?,
             MainMenuAction::CreateContractor => contractors::create_customer()?,
             MainMenuAction::ListContractors => contractors::list_customers()?,

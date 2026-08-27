@@ -30,8 +30,7 @@
 - [x] Test collection for tax record  
 - [x] Test invoices PII  
 - [x] Fix running bruno tests on CI  
-- [x] Post invoice  
-- [x] Review security architecture  
+- [x] Post invoice
 - [x] Invoice generator frontend: start  
 - [x] Invoice generator frontend: CSS cleanup  
 - [x] Invoice generator frontend: mobile CSS cleanup  
@@ -52,10 +51,11 @@
 - [ ] Invoice generator frontend: create logic  
 - [ ] Invoice generator frontend: import logic  
 - [ ] Invoice generator frontend: generate actions logic  
+- [ ] Review security architecture  
 - [ ] Review mobile sizing  
 - [ ] Review dark theme  
 - [ ] Create user frontend  
-- [ ] Retrieve user details programmatically
+- [ ] Retrieve user details programmatically  
 - [ ] First time frontend workflow  
 - [ ] Admin contractors frontend  
 - [ ] Login frontend  
