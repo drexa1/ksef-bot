@@ -58,7 +58,7 @@ async fn list_invoices(endpoint: &InvoiceType) -> anyhow::Result<Vec<serde_json:
         println!("  API Response: {}", json["error"].as_str().unwrap());
         return Ok(Vec::new());
     }
-    let invoices = json["result"].as_array().cloned().unwrap_or_default();
+    let invoices = json["result"].as_array().cloned().unwrap();
     println!("  API Response: {} {} invoices found", endpoint, invoices.len());
     Ok(invoices)
 }
