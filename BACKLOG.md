@@ -41,6 +41,12 @@
 - [ ] CLI: list counterparties  
 - [ ] CLI: adapt sales/purchase invoices summary  
 - [ ] CLI: create counterparty  
+- [ ] CLI: create invoice  
+- [ ] CLI: edit user settings  
+- [ ] CLI: Google SSO  
+- [ ] CLI: Microsoft SSO  
+- [ ] CLI: Facebook SSO  
+- [ ] CLI: login with email  
 - [ ] Invoice generator frontend: invoice checkboxes
 - [ ] Invoice generator frontend: invoice additional column selects  
 - [ ] Invoice generator frontend: invoice autocomplete API
