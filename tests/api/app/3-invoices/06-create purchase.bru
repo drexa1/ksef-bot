@@ -17,6 +17,10 @@ script:pre-request {
         `\n` +
         `${xml}\n` +
         `--ksefInvoice\n` +
+        `Content-Disposition: form-data; name="type"\n` +
+        `\n` +
+        `purchase\n` +
+        `--ksefInvoice\n` +
         `Content-Disposition: form-data; name="notes"\n` +
         `\n` +
         `Test notes\n` +

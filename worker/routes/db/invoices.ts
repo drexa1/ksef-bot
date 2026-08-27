@@ -34,8 +34,9 @@ export async function post(req: Request, env: Env): Promise<Response> {
     const form = await req.formData();
     const file = form.get("file");
     if (!(file instanceof File)) return Response.json({ error: "Missing XML file" }, { status: 400 });
+    const type = form.get("type")!.toString() as "purchase" | "sales";
     const notes = form.get("notes")?.toString();
-    const record = await invoiceFromXml(env, await file.text(), appUser, "sales", notes);
+    const record = await invoiceFromXml(env, await file.text(), appUser, type, notes);
     try {
         await getRepo(env).save<AppInvoice>("invoices", record);
         return Response.json({ success: true, id: record.id }, { status: 201 });
@@ -76,7 +77,7 @@ export const xmlParser = new XMLParser({
     attributeNamePrefix: "",
     removeNSPrefix: true,
     ignoreAttributes: false,
-    parseTagValue: false,
+    parseTagValue: false
 });
 
 export async function invoiceFromXml(
@@ -94,7 +95,7 @@ export async function invoiceFromXml(
         id: ksefInvoice.InvoiceBody.InvoiceNumber,
         ownerId: authUser.email,
         type: type,
-        // Find or create counterparties
+        // Only auto create counterparties for sales invoices
         ...(type === "sales" && {
             counterpartyId: await getOrCreateCounterparty(env, {
                 ownerId: authUser.email,

@@ -536,12 +536,17 @@ export const getOpenApiSpec = (env: Env) => ({
                         "multipart/form-data": {
                             schema: {
                                 type: "object",
-                                required: ["file"],
+                                required: ["file", "type"],
                                 properties: {
                                     file: {
                                         type: "string",
                                         format: "binary",
                                         description: "Invoice XML file"
+                                    },
+                                    type: {
+                                        type: "string",
+                                        enum: ["sales", "purchase"],
+                                        description: "Invoice type"
                                     },
                                     notes: {
                                         type: "string",

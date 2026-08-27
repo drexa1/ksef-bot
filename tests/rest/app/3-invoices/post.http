@@ -13,6 +13,10 @@ Content-Type: application/xml
 
 < ../../../testresources/ksef-pii/sales/6751577878-20260629-514966000000-3F.anonymized.xml
 --ksefInvoice
+Content-Disposition: form-data; name="type"
+
+sales
+--ksefInvoice
 Content-Disposition: form-data; name="notes"
 
 Test notes
@@ -28,4 +32,8 @@ Content-Disposition: form-data; name="file"; filename="invoice-1.xml"
 Content-Type: application/xml
 
 < ../../../testresources/ksef-pii/sales/6751577878-20260629-514966000000-3F.anonymized.xml
+--ksefInvoice
+Content-Disposition: form-data; name="type"
+
+sales
 --ksefInvoice--
