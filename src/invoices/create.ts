@@ -1,5 +1,5 @@
 import {getCurrentLocation} from "../location";
-import {Customer, loadCustomers} from "../api/customers";
+import {Contractor, loadCustomers} from "../api/customers";
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Invoice data
@@ -46,11 +46,11 @@ const contractorBuilding = document.getElementById("contractorBuilding") as HTML
 const contractorApartment = document.getElementById("contractorApartment") as HTMLInputElement;
 const contractorMail = document.getElementById("contractorMail") as HTMLInputElement;
 
-let customers: Customer[] = [];
+let contractors: Contractor[] = [];
 
 /// Prefilled values for the Contractor Data section
 async function initContractorData() {
-    customers = await loadCustomers();
+    contractors = await loadCustomers();
     const currentLocation = await getCurrentLocation();
     contractorTown.value = currentLocation.city ?? "";
     // contractorPostalCode.value = currentLocation.postcode ?? "";
@@ -138,23 +138,17 @@ function setupAutocompleteKeyboardNavigation(
     });
 }
 
-function searchContractorsByName(nameQuery: string): void {
-    const results = customers.filter((contractor) =>
-        contractor.name.toLowerCase().includes(nameQuery.trim().toLowerCase())
-    );
+function searchContractorsByName(name: string): void {
+    const results = contractors.filter((c) => c.name.toLowerCase().includes(name.trim().toLowerCase()));
     renderContractorSuggestions(contractorNameSuggestions, results, fillContractor);
 }
 
-function searchContractorsByNip(nipQuery: string): void {
-    const results = customers.filter((c) => c.nip?.startsWith(nipQuery.trim()));
+function searchContractorsByNip(nip: string): void {
+    const results = contractors.filter((c) => c.nip?.startsWith(nip.trim()));
     renderContractorSuggestions(contractorNipSuggestions, results, fillContractor);
 }
 
-function renderContractorSuggestions(
-    container: HTMLDivElement,
-    contractors: Customer[],
-    onSelect: (contractor: Customer) => void
-): void {
+function renderContractorSuggestions(container: HTMLDivElement, contractors: Contractor[], onSelect: (contractor: Contractor) => void): void {
     container.innerHTML = "";
     for (const contractor of contractors) {
         const item = document.createElement("div");
@@ -176,15 +170,15 @@ function renderContractorSuggestions(
     container.style.display = contractors.length > 0 ? "block" : "none";
 }
 
-function fillContractor(customer: Customer): void {
-    contractorNameInput.value = customer.name;
-    contractorNipInput.value = customer.nip ?? "";
-    contractorTown.value = customer.town ?? "";
-    contractorPostalCode.value = customer.postalCode ?? "";
-    contractorStreet.value = customer.street ?? "";
-    contractorBuilding.value = customer.building ?? "";
-    contractorApartment.value = customer.apartment ?? "";
-    contractorMail.value = customer.email ?? "";
+function fillContractor(contractor: Contractor): void {
+    contractorNameInput.value = contractor.name;
+    contractorNipInput.value = contractor.nip ?? "";
+    contractorTown.value = contractor.town ?? "";
+    contractorPostalCode.value = contractor.postalCode ?? "";
+    contractorStreet.value = contractor.street ?? "";
+    contractorBuilding.value = contractor.building ?? "";
+    contractorApartment.value = contractor.apartment ?? "";
+    contractorMail.value = contractor.email ?? "";
 }
 
 /// Show/hide NIP
@@ -306,22 +300,37 @@ function updateItemNumber(): void {
 // Payment
 // ---------------------------------------------------------------------------------------------------------------------
 
+const paymentTermDeadline = document.getElementById("paymentTermDeadline") as HTMLInputElement;
+const paymentTermDescription = document.getElementById("paymentTermDescription") as HTMLInputElement;
+const deadlineFields = document.getElementById("deadlineFields") as HTMLElement;
+const descriptionFields = document.getElementById("descriptionFields") as HTMLElement;
+const paymentDays = document.getElementById("paymentDays") as HTMLInputElement;
+const paymentDeadline = document.getElementById("paymentDeadline") as HTMLInputElement;
+const issueDate = document.getElementById("issueDate") as HTMLInputElement;
+
+function updatePaymentTerm(): void {
+    deadlineFields.classList.toggle("d-none", !paymentTermDeadline.checked);
+    descriptionFields.classList.toggle("d-none", paymentTermDeadline.checked);
+    if (paymentTermDeadline.checked)
+        updatePaymentDeadline();
+}
+
 function updatePaymentDeadline(): void {
-    const issueDateInput = document.querySelector('input[type="date"]') as HTMLInputElement | null;
-    const daysInput = document.getElementById("paymentDays") as HTMLInputElement | null;
-    const deadlineInput = document.getElementById("paymentDeadline") as HTMLInputElement | null;
-    if (!issueDateInput || !daysInput || !deadlineInput) return;
-    if (!issueDateInput.value) return;
-    const date = new Date(`${issueDateInput.value}T00:00:00`);
-    const days = parseInt(daysInput.value, 10) || 0;
+    const date = new Date(`${issueDate.value}T00:00:00`);
+    const days = parseInt(paymentDays.value, 10) || 0;
     date.setDate(date.getDate() + days);
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, "0");
     const day = String(date.getDate()).padStart(2, "0");
-    deadlineInput.value = `${year}-${month}-${day}`;
+    paymentDeadline.value = `${year}-${month}-${day}`;
 }
 
-document.getElementById("paymentDays")?.addEventListener("input", updatePaymentDeadline);
+paymentTermDeadline.addEventListener("change", updatePaymentTerm);
+paymentTermDescription.addEventListener("change", updatePaymentTerm);
+paymentDays.addEventListener("input", updatePaymentDeadline);
+issueDate.addEventListener("change", updatePaymentDeadline);
+
+updatePaymentTerm();
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Action handlers

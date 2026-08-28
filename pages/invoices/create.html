@@ -421,15 +421,17 @@
                     <div class="section-body">
                         <div class="payment-grid">
                             <div class="field payment-type">
-                                <label class="form-label fw-bold required" for="paymentType">
-                                    Payment type
-                                </label>
+                                <label class="form-label fw-bold required" for="paymentType">Payment type</label>
                                 <select id="paymentType" class="form-select" required>
                                     <option value="">Select</option>
-                                    <option>Bank transfer</option>
-                                    <option>Cash</option>
-                                    <option>Card</option>
-                                    <option>Other</option>
+                                    <option value="1">Cash</option>
+                                    <option value="2">Card</option>
+                                    <option value="3">Bon</option>
+                                    <option value="4">Check</option>
+                                    <option value="5">Loan</option>
+                                    <option value="6">Transfer</option>
+                                    <option value="7">Mobile payment</option>
+                                    <option value="*">Other payment</option>
                                 </select>
                             </div>
 
@@ -457,35 +459,55 @@
                             </div>
 
                             <div class="field payment-term">
-                                <label class="form-label fw-bold required" for="paymentTerm">
-                                    Payment deadline
-                                </label>
-                                <select id="paymentTerm" class="form-select" required>
-                                    <option value="">Deadline</option>
-                                    <option value="contract">According to contract</option>
-                                    <option value="other">Other</option>
-                                </select>
+                                <span class="form-label fw-bold required">Payment deadline</span>
+                                <div class="d-flex gap-4">
+                                    <div class="marking-item">
+                                        <input id="paymentTermDeadline" name="paymentTerm" type="radio" class="form-check-input" value="deadline" checked>
+                                        <label class="form-check-label" for="paymentTermDeadline">Deadline</label>
+                                    </div>
+                                    <div class="marking-item">
+                                        <input id="paymentTermDescription" name="paymentTerm" type="radio" class="form-check-input" value="description">
+                                        <label class="form-check-label" for="paymentTermDescription">Payment term description</label>
+                                    </div>
+                                </div>
                             </div>
 
-                            <div class="field payment-term-description">
-                                <label class="form-label fw-bold" for="paymentTermDescription">
-                                    Payment term description
-                                </label>
-                                <input id="paymentTermDescription" type="text" class="form-control" placeholder="Enter payment term description">
+                            <!-- Deadline fields -->
+                            <div id="deadlineFields" class="payment-term-fields">
+                                <div class="field payment-days">
+                                    <label class="form-label fw-bold required" for="paymentDays">Days to pay</label>
+                                    <input id="paymentDays" type="number" min="0" class="form-control" value="7" placeholder="Enter the number of days" required>
+                                </div>
+
+                                <div class="field payment-deadline">
+                                    <label class="form-label fw-bold required" for="paymentDeadline">
+                                        Payment deadline
+                                    </label>
+                                    <input id="paymentDeadline" type="date" class="form-control" value="2026-08-19" required>
+                                </div>
                             </div>
 
-                            <div class="field payment-days">
-                                <label class="form-label fw-bold required" for="paymentDays">
-                                    Days to pay
-                                </label>
-                                <input id="paymentDays" type="number" min="0" class="form-control" value="7" required>
-                            </div>
+                            <!-- Payment term description fields -->
+                            <div id="descriptionFields"
+                                 class="payment-grid payment-term-fields d-none">
+                                <div class="field">
+                                    <label class="form-label fw-bold required" for="periodLength">Length of period</label>
+                                    <input id="periodLength" type="number" min="0" class="form-control" placeholder="Enter a number">
+                                </div>
 
-                            <div class="field payment-deadline">
-                                <label class="form-label fw-bold required" for="paymentDeadline">
-                                    Payment deadline
-                                </label>
-                                <input id="paymentDeadline" type="date" class="form-control" value="2026-08-19" required>
+                                <div class="field">
+                                    <label class="form-label fw-bold required" for="periodUnit">Unit of time</label>
+                                    <input id="periodUnit" type="text" class="form-control" placeholder="Enter the unit">
+                                </div>
+
+                                <div class="field" style="grid-column: span 2;">
+                                    <label class="form-label fw-bold required" for="startingEvent">Starting Event</label>
+                                    <input id="startingEvent" type="text" class="form-control" maxlength="256" placeholder="Enter information specifying the starting event">
+                                    <div class="help-text">
+                                        The field accepts up to 256 characters
+                                        (<span id="startingEventCount">0</span>/256)
+                                    </div>
+                                </div>
                             </div>
 
                             <div class="field payment-link">

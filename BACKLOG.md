@@ -39,7 +39,7 @@
 - [x] CLI client dialogue  
 - [x] Do not auto store customers for purchase invoices  
 - [x] Invoice generator frontend: invoice checkboxes
-- [ ] Invoice generator frontend: invoice autocomplete API  
+- [x] Invoice generator frontend: invoice autocomplete API  
 - [ ] Invoice generator frontend: invoice payment review select options  
 - [ ] Invoice generator frontend: create logic  
 - [ ] Invoice generator frontend: generate actions logic  
