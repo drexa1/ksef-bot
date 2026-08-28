@@ -19,6 +19,7 @@ chrono = "0.4.45"
 crossterm = "0.29.0"
 dotenvy = "0.15"
 inquire = { version = "0.9.4", features = ["date"] }
+obfstr = "0.4.6"
 reqwest = { version = "0.13.4", features = ["json", "query"] }
 strum = { version = "0.28.0", features = ["derive"] }
 tokio = { version = "1.53.1", features = ["rt", "rt-multi-thread", "macros"] }
