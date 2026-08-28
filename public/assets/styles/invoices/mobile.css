@@ -44,9 +44,7 @@
         gap: 1rem;
     }
     /* Positions ---------------------------------------------------------------------------------------------------- */
-
     /* Items table -------------------------------------------------------------------------------------------------- */
-
     .items-table thead,
     .items-table tbody,
     .items-table thead tr,
@@ -56,12 +54,10 @@
         border-top: none !important;
         border-bottom: none !important;
     }
-
     .items-table thead th,
     .items-table tbody td {
         border-top: 1px solid var(--line) !important;
     }
-
     .items-table thead {
         float: left;
         width: 50%;
@@ -175,17 +171,32 @@
         grid-template-columns: minmax(0, 1fr);
         row-gap: 1rem;
     }
+    .payment-grid .field {
+        grid-column: 1 !important;
+        grid-template-rows: auto !important;
+    }
     .payment-grid .payment-type,
     .payment-grid .bank-account,
     .payment-grid .payment-status,
     .payment-grid .payment-term,
-    .payment-grid .payment-term-description,
-    .payment-grid .payment-days,
-    .payment-grid .payment-deadline,
     .payment-grid .payment-link,
     .payment-grid .ksef-payment-id {
         grid-column: 1;
         grid-row: auto;
+    }
+    #deadlineFields,
+    #descriptionFields {
+        display: contents;
+    }
+    #deadlineFields .payment-days,
+    #deadlineFields .payment-deadline,
+    #descriptionFields .field {
+        grid-column: 1;
+        grid-row: auto;
+    }
+    .payment-term .d-flex {
+        flex-direction: column;
+        gap: 0.5rem !important;
     }
     /* Footer ------------------------------------------------------------------------------------------------------- */
     .footer-actions {

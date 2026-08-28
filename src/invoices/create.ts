@@ -333,6 +333,66 @@ issueDate.addEventListener("change", updatePaymentDeadline);
 updatePaymentTerm();
 
 // ---------------------------------------------------------------------------------------------------------------------
+// Other information
+// ---------------------------------------------------------------------------------------------------------------------
+const footersContainer = document.getElementById("footersContainer") as HTMLElement;
+const addFooter = document.getElementById("addFooter") as HTMLButtonElement;
+const firstFooter = document.getElementById("notes") as HTMLTextAreaElement;
+
+function updateFooterDeleteButtons(): void {
+    const footers = footersContainer.querySelectorAll(".footer-field");
+    footers.forEach((footer) => {
+        const removeButton = footer.querySelector(".remove-footer") as HTMLElement;
+        removeButton.classList.toggle("d-none", footers.length === 1);
+    });
+}
+
+let footerIndex = 1;
+function updateFooterCounter(textarea: HTMLTextAreaElement): void {
+    const counter = textarea.parentElement?.querySelector(".notes-count") as HTMLElement;
+    if (counter)
+        counter.textContent = String(textarea.value.length);
+}
+
+function createFooter(): void {
+    footerIndex++;
+    const footer = document.createElement("div");
+    footer.className = "footer-field";
+    footer.dataset.footerIndex = String(footerIndex);
+    footer.innerHTML = `
+        <label class="form-label fw-bold" for="notes${footerIndex}">
+            Invoice footer<span class="fw-normal"> (optional)</span>
+        </label>
+        <textarea id="notes${footerIndex}"
+                  class="form-control"
+                  rows="5"
+                  maxlength="3500"
+                  placeholder="Enter additional comments (up to 3500 characters)"></textarea>
+        <div class="d-flex justify-content-between align-items-center mt-1">
+            <button type="button" class="btn btn-outline-danger btn-sm remove-footer" aria-label="Delete footer">Delete</button>
+            <div class="help-text text-end">
+                <i class="bi bi-info-circle ps-2"></i>Field accepts up to 3500 characters
+                (<span class="notes-count">0</span>/3500)
+            </div>
+        </div>
+    `;
+    footersContainer.appendChild(footer);
+    const textarea = footer.querySelector("textarea") as HTMLTextAreaElement;
+    textarea.addEventListener("input", () => updateFooterCounter(textarea));
+    const removeButton = footer.querySelector(".remove-footer") as HTMLButtonElement;
+    removeButton.addEventListener("click", () => {
+        footer.remove();
+        updateFooterDeleteButtons();
+    });
+    updateFooterDeleteButtons();
+}
+
+addFooter.addEventListener("click", createFooter);
+firstFooter.addEventListener("input", () => updateFooterCounter(firstFooter));
+
+updateFooterDeleteButtons();
+
+// ---------------------------------------------------------------------------------------------------------------------
 // Action handlers
 // ---------------------------------------------------------------------------------------------------------------------
 document.getElementById("invoiceForm")?.addEventListener("submit", (event: Event) => {

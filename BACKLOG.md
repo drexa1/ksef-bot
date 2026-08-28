@@ -47,7 +47,8 @@
 - [ ] Invoice generator frontend: invoice remove positions  
 - [ ] Invoice generator frontend: invoice add another  
 - [ ] Invoice generator frontend: mobile invoice items table  
-- [ ] Invoice generator frontend: invoice additional data
+- [ ] Invoice generator frontend: invoice additional data  
+- [ ] Invoice generator frontend: smoke mobile  
 - [ ] Encrypt KSeF/Baking keys  
 - [ ] Invoice generator frontend: help hints  
 - [ ] Invoice generator frontend: import logic
@@ -62,7 +63,6 @@
 - [ ] CLI: edit user settings
 - [ ] CLI: first time flow  
 - [ ] Review security architecture  
-- [ ] Review mobile sizing  
 - [ ] Review dark theme  
 - [ ] Create user frontend  
 - [ ] Retrieve user details programmatically  
