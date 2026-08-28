@@ -1,5 +1,6 @@
 import {getCurrentLocation} from "../location";
 import {Contractor, loadCustomers} from "../api/customers";
+import {generateInvoiceXml} from "./invoiceXML";
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Invoice data
@@ -369,7 +370,7 @@ function createFooter(): void {
                   maxlength="3500"
                   placeholder="Enter additional comments (up to 3500 characters)"></textarea>
         <div class="d-flex justify-content-between align-items-center mt-1">
-            <button type="button" class="btn btn-outline-danger btn-sm remove-footer" aria-label="Delete footer">Delete</button>
+            <button type="button" class="btn btn-outline-danger btn-sm remove-footer btn-sm py-0" aria-label="Delete footer">Delete</button>
             <div class="help-text text-end">
                 <i class="bi bi-info-circle ps-2"></i>Field accepts up to 3500 characters
                 (<span class="notes-count">0</span>/3500)
@@ -396,24 +397,13 @@ updateFooterDeleteButtons();
 // Action handlers
 // ---------------------------------------------------------------------------------------------------------------------
 document.getElementById("invoiceForm")?.addEventListener("submit", (event: Event) => {
-        event.preventDefault();
+    event.preventDefault();
+    try {
         const form = event.currentTarget as HTMLFormElement;
-        if (!form.checkValidity()) {
-            event.stopPropagation();
-            form.classList.add("was-validated");
-            return;
-        }
-        alert("Invoice saved successfully.");
-    });
-
-document.getElementById("savePdf")?.addEventListener("click", () => {
-    const form = document.getElementById("invoiceForm") as HTMLFormElement | null;
-    if (!form) return;
-    if (!form.checkValidity()) {
-        form.classList.add("was-validated");
-        return;
+        const invoiceXML = generateInvoiceXml(form);
+    } catch (error) {
+        console.error("Unable to generate invoice XML:", error);
     }
-    alert("Invoice saved. PDF preview would open here.");
 });
 
 async function initNew() {

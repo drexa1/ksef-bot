@@ -361,6 +361,9 @@ tr.total-row.small td:nth-child(5) {
 .footer-field + .footer-field {
     margin-top: 1rem;
 }
+button.remove-footer {
+    margin-left: .5em !important;
+}
 /* Actions ----------------------------------------------------------------------------------------------------------- */
 .footer-actions {
     display: flex;
