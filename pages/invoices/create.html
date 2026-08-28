@@ -48,6 +48,7 @@
         </div>
         <div class="text-muted small mb-3"><span class="text-danger ps-1">*</span> Required field</div>
         <form id="invoiceForm">
+            <div id="invoiceFormError" class="alert alert-danger py-2 px-3 mb-2 small d-none" role="alert"></div>
 
             <!-- Invoice data ----------------------------------------------------------------------------------------->
             <section class="invoice-card">
@@ -476,7 +477,7 @@
                             <div id="deadlineFields" class="payment-term-fields">
                                 <div class="field payment-days">
                                     <label class="form-label fw-bold required" for="paymentDays">Days to pay</label>
-                                    <input id="paymentDays" type="number" min="0" class="form-control" value="7" placeholder="Enter the number of days" required>
+                                    <input id="paymentDays" type="number" min="1" class="form-control" value="7" placeholder="Enter the number of days" required>
                                 </div>
 
                                 <div class="field payment-deadline">
@@ -568,9 +569,9 @@
             <!-- Action buttons --------------------------------------------------------------------------------------->
             <div class="footer-actions">
                 <button type="button" class="btn btn-danger" id="cancelButton">Cancel</button>
-                <button type="submit" class="btn btn-primary">Generate invoice</button>
-                <button type="submit" class="btn btn-primary" disabled>Download XML</button>
-                <button type="submit" class="btn btn-success" disabled>Submit</button>
+                <button type="button" class="btn btn-primary" id="generateInvoiceButton">Generate invoice</button>
+                <button type="button" class="btn btn-primary" id="downloadXmlButton" disabled>Download XML</button>
+                <button type="button" class="btn btn-success" id="submitButton" disabled>Submit</button>
             </div>
         </form>
     </div>

@@ -1,6 +1,7 @@
 import {getCurrentLocation} from "../location";
 import {Contractor, loadCustomers} from "../api/customers";
 import {generateInvoiceXml} from "./invoiceXML";
+import {clearValidationErrors, updateFormError, validateInvoiceForm} from "./validate";
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Invoice data
@@ -180,6 +181,23 @@ function fillContractor(contractor: Contractor): void {
     contractorBuilding.value = contractor.building ?? "";
     contractorApartment.value = contractor.apartment ?? "";
     contractorMail.value = contractor.email ?? "";
+
+    [
+        contractorNameInput,
+        contractorNipInput,
+        contractorTown,
+        contractorPostalCode,
+        contractorStreet,
+        contractorBuilding,
+        contractorApartment,
+        contractorMail
+    ].forEach((field) => {
+        if (field.value.trim())
+            field.classList.remove("is-invalid");
+    });
+
+    if (invoiceForm)
+        updateFormError(invoiceForm);
 }
 
 /// Show/hide NIP
@@ -300,24 +318,23 @@ function updateItemNumber(): void {
 // ---------------------------------------------------------------------------------------------------------------------
 // Payment
 // ---------------------------------------------------------------------------------------------------------------------
-
 const paymentTermDeadline = document.getElementById("paymentTermDeadline") as HTMLInputElement;
 const paymentTermDescription = document.getElementById("paymentTermDescription") as HTMLInputElement;
 const deadlineFields = document.getElementById("deadlineFields") as HTMLElement;
 const descriptionFields = document.getElementById("descriptionFields") as HTMLElement;
 const paymentDays = document.getElementById("paymentDays") as HTMLInputElement;
 const paymentDeadline = document.getElementById("paymentDeadline") as HTMLInputElement;
-const issueDate = document.getElementById("issueDate") as HTMLInputElement;
+const postingDate = document.getElementById("postingDate") as HTMLInputElement;
 
 function updatePaymentTerm(): void {
-    deadlineFields.classList.toggle("d-none", !paymentTermDeadline.checked);
-    descriptionFields.classList.toggle("d-none", paymentTermDeadline.checked);
-    if (paymentTermDeadline.checked)
-        updatePaymentDeadline();
+    const isDeadline = paymentTermDeadline.checked;
+    deadlineFields.classList.toggle("d-none", !isDeadline);
+    descriptionFields.classList.toggle("d-none", isDeadline);
+    if (isDeadline) updatePaymentDeadline();
 }
 
 function updatePaymentDeadline(): void {
-    const date = new Date(`${issueDate.value}T00:00:00`);
+    const date = new Date(`${postingDate.value}T00:00:00`);
     const days = parseInt(paymentDays.value, 10) || 0;
     date.setDate(date.getDate() + days);
     const year = date.getFullYear();
@@ -328,10 +345,9 @@ function updatePaymentDeadline(): void {
 
 paymentTermDeadline.addEventListener("change", updatePaymentTerm);
 paymentTermDescription.addEventListener("change", updatePaymentTerm);
-paymentDays.addEventListener("input", updatePaymentDeadline);
-issueDate.addEventListener("change", updatePaymentDeadline);
 
-updatePaymentTerm();
+paymentDays.addEventListener("input", updatePaymentDeadline);
+postingDate.addEventListener("change", updatePaymentDeadline);
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Other information
@@ -394,21 +410,64 @@ firstFooter.addEventListener("input", () => updateFooterCounter(firstFooter));
 updateFooterDeleteButtons();
 
 // ---------------------------------------------------------------------------------------------------------------------
-// Action handlers
+// Action generate invoice
 // ---------------------------------------------------------------------------------------------------------------------
-document.getElementById("invoiceForm")?.addEventListener("submit", (event: Event) => {
-    event.preventDefault();
+const invoiceForm = document.getElementById("invoiceForm") as HTMLFormElement;
+const generateInvoiceButton = document.getElementById("generateInvoiceButton") as HTMLButtonElement;
+const downloadXmlButton = document.getElementById("downloadXmlButton") as HTMLButtonElement;
+const submitButton = document.getElementById("submitButton") as HTMLButtonElement;
+
+let invoiceXML: string;
+generateInvoiceButton?.addEventListener("click", () => {
+    if (!invoiceForm) return;
+    clearValidationErrors(invoiceForm);
+    if (!validateInvoiceForm(invoiceForm)) return;
     try {
-        const form = event.currentTarget as HTMLFormElement;
-        const invoiceXML = generateInvoiceXml(form);
+        invoiceXML = generateInvoiceXml(invoiceForm);
+        if (downloadXmlButton) downloadXmlButton.disabled = false;
+        if (submitButton) submitButton.disabled = false;
     } catch (error) {
         console.error("Unable to generate invoice XML:", error);
     }
 });
 
+invoiceForm?.addEventListener("input", (event: Event) => {
+    const field = event.target as HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
+    if (field.classList.contains("is-invalid") && field.value.trim())
+        field.classList.remove("is-invalid");
+    updateFormError(invoiceForm);
+});
+
+invoiceForm?.addEventListener("change", (event: Event) => {
+    const field = event.target as HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
+    if (field.classList.contains("is-invalid") && field.value.trim())
+        field.classList.remove("is-invalid");
+    updateFormError(invoiceForm);
+});
+
+// ---------------------------------------------------------------------------------------------------------------------
+// Action download XML
+// ---------------------------------------------------------------------------------------------------------------------
+downloadXmlButton?.addEventListener("click", () => {
+    if (!invoiceXML) return;
+    const blob = new Blob([invoiceXML], { type: "application/xml;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "invoice.xml";
+    link.click();
+    URL.revokeObjectURL(url);
+});
+
+// ---------------------------------------------------------------------------------------------------------------------
+// Action submit invoice
+// ---------------------------------------------------------------------------------------------------------------------
+
+// ---------------------------------------------------------------------------------------------------------------------
 async function initNew() {
     await initInvoiceData();
     await initContractorData();
+    void updatePaymentTerm();
     document.querySelectorAll(".item-row").forEach(calculatePositionsRow);
 }
 

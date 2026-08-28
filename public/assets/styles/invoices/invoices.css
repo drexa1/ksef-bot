@@ -364,6 +364,18 @@ tr.total-row.small td:nth-child(5) {
 button.remove-footer {
     margin-left: .5em !important;
 }
+/* Validation ----------------------------------------------------------------------------------------------------- */
+.form-control.is-invalid,
+.form-select.is-invalid {
+    border-color: var(--danger);
+}
+.invoice-card.has-invalid {
+    /*border-color: var(--danger);*/
+}
+.invoice-card .section-header:has(+ .collapse .is-invalid) {
+    background-color: color-mix(in srgb, var(--danger) 15%, var(--section-header));
+    border-color: var(--danger);
+}
 /* Actions ----------------------------------------------------------------------------------------------------------- */
 .footer-actions {
     display: flex;
