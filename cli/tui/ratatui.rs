@@ -1,4 +1,4 @@
-use crate::{MainMenuAction, auth, contractors, invoices, settings};
+use crate::{MainMenuAction, auth, customers, invoices, settings};
 use anyhow::Result;
 use crossterm::{
     event::{self, Event, KeyCode, KeyEventKind},
@@ -81,8 +81,8 @@ async fn main_loop(terminal: &mut Tui) -> Result<()> {
                     MainMenuAction::CreateSalesInvoice => invoices::create_sales_invoice()?,
                     MainMenuAction::ListSalesInvoices => invoices::list_sales_invoices().await?,
                     MainMenuAction::ListPurchaseInvoices => invoices::list_purchase_invoices().await?,
-                    MainMenuAction::CreateContractor => contractors::create_customer()?,
-                    MainMenuAction::ListContractors => contractors::list_customers()?,
+                    MainMenuAction::CreateContractor => customers::create_customer()?,
+                    MainMenuAction::ListContractors => customers::list_customers()?,
                     MainMenuAction::UserSettings => settings::edit_profile()?,
                     MainMenuAction::Exit => return Ok(())
                 }

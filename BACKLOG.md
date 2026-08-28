@@ -48,7 +48,7 @@
 - [ ] CLI: login with email  
 - [ ] CLI: edit user settings  
 - [ ] CLI: first time flow  
-- [ ] Invoice generator frontend: invoice checkboxes
+- [ ] Invoice generator frontend: invoice checkboxes  
 - [ ] Invoice generator frontend: invoice additional column selects  
 - [ ] Invoice generator frontend: invoice autocomplete API
 - [ ] Invoice generator frontend: invoice remove positions  
