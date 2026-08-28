@@ -61,22 +61,34 @@
 
                         <div class="form-label mb-3">Markings<span class="text-muted"> (optional)</span></div>
                         <div class="markings-list mb-4">
-                            <label class="marking-item" for="markingMpp">
-                                <input id="markingMpp" type="checkbox" class="form-check-input">
-                                <span class="fw-bold">MPP</span><span> - split payment mechanism</span>
-                            </label>
-                            <label class="marking-item" for="markingMk">
-                                <input id="markingMk" type="checkbox" class="form-check-input">
-                                <span class="fw-bold">MK</span><span> - cash method</span>
-                            </label>
-                            <label class="marking-item" for="markingFp">
-                                <input id="markingFp" type="checkbox" class="form-check-input">
-                                <span class="fw-bold">FP</span><span> - invoice referred to in Article 109, paragraph 3d of the Act (invoice for receipt)</span>
-                            </label>
-                            <label class="marking-item" for="markingTp">
-                                <input id="markingTp" type="checkbox" class="form-check-input">
-                                <span class="fw-bold">TP</span><span> - existing relationships referred to in Article 32(2)(1) of the Act</span>
-                            </label>
+                            <div class="marking-item">
+                                <label for="markingMpp" class="d-flex align-items-center">
+                                    <input type="checkbox" id="markingMpp">
+                                </label>
+                                <span class="fw-bold">MPP</span>
+                                <span>— split payment mechanism</span>
+                            </div>
+                            <div class="marking-item">
+                                <label for="markingMk" class="d-flex align-items-center">
+                                    <input type="checkbox" id="markingMk">
+                                </label>
+                                <span class="fw-bold">MK</span>
+                                <span>— cash method</span>
+                            </div>
+                            <div class="marking-item">
+                                <label for="markingFp" class="d-flex align-items-center">
+                                    <input type="checkbox" id="markingFp">
+                                </label>
+                                <span class="fw-bold">FP</span>
+                                <span>— invoice referred to in Article 109, paragraph 3d of the Act (invoice for receipt)</span>
+                            </div>
+                            <div class="marking-item">
+                                <label for="markingTp" class="d-flex align-items-center">
+                                    <input type="checkbox" id="markingTp">
+                                </label>
+                                <span class="fw-bold">TP</span>
+                                <span>— existing relationships referred to in Article 32(2)(1) of the Act</span>
+                            </div>
                         </div>
 
                         <div class="invoice-data-grid">
@@ -126,7 +138,7 @@
 
                                 <div class="contractor-autocomplete">
                                     <input id="contractorName" type="text" class="form-control" placeholder="Contractor name" autocomplete="off" required>
-                                    <div id="contractorSuggestions" class="contractor-suggestions"></div>
+                                    <div id="contractorNameSuggestions" class="contractor-suggestions"></div>
                                 </div>
                                 <div class="help-text">
                                     <i class="bi bi-info-circle ps-2"></i>
@@ -137,20 +149,27 @@
                             <div class="field contractor-identifier">
                                 <span class="form-label fw-bold required">Contractor identifier</span>
                                 <div class="contractor-identifier-options">
-                                    <label class="contractor-identifier-option" for="identifierNip">
-                                        <input id="identifierNip" name="contractorIdentifier" type="radio" class="form-check-input" value="nip" checked>
+                                    <div class="contractor-identifier-option">
+                                        <label for="identifierNip" class="d-flex align-items-center">
+                                            <input id="identifierNip" name="contractorIdentifier" type="radio" class="form-check-input" value="nip" checked>
+                                        </label>
                                         <span>NIP</span>
-                                    </label>
-                                    <label class="contractor-identifier-option" for="identifierNone">
-                                        <input id="identifierNone" name="contractorIdentifier" type="radio" class="form-check-input" value="none">
+                                    </div>
+                                    <div class="marking-item">
+                                        <label for="identifierNone" class="d-flex align-items-center">
+                                            <input id="identifierNone" name="contractorIdentifier" type="radio" class="form-check-input" value="none">
+                                        </label>
                                         <span>None</span>
-                                    </label>
+                                    </div>
                                 </div>
                             </div>
 
                             <div class="field contractorNip">
                                 <label class="form-label fw-bold required" for="contractorNipInput">Contractor NIP</label>
-                                <input id="contractorNipInput" type="text" class="form-control" maxlength="10" inputmode="numeric" placeholder="Enter NIP (10 digits)" required>
+                                <div class="contractor-autocomplete">
+                                    <input id="contractorNipInput" type="text" class="form-control" maxlength="10" inputmode="numeric" placeholder="Enter NIP (10 digits)" required>
+                                    <div id="contractorNipSuggestions" class="contractor-suggestions"></div>
+                                </div>
                                 <div class="help-text">
                                     <i class="bi bi-info-circle ps-2"></i>
                                     Start typing the number to display suggestions from the customers database
@@ -186,22 +205,33 @@
                             <div class="field additional-entity">
                                 <span class="form-label fw-bold required">Additional entity</span>
                                 <div class="additional-entity-options">
-                                    <label for="additionalEntityNone">
-                                        <input id="additionalEntityNone" name="additionalEntity" type="radio" value="none" checked>
+                                    <div class="marking-item">
+                                        <label for="additionalEntityNone" class="d-flex align-items-center">
+                                            <input id="additionalEntityNone" name="additionalEntity" type="radio" value="none" checked>
+                                        </label>
                                         <span class="fw-bold">None</span>
-                                    </label>
-                                    <label for="additionalEntityJst">
-                                        <input id="additionalEntityJst" name="additionalEntity" type="radio" value="jst">
-                                        <span class="fw-bold">JST</span><span> - invoice concerns a subordinate unit of a local government unit</span>
-                                    </label>
-                                    <label for="additionalEntityGv">
-                                        <input id="additionalEntityGv" name="additionalEntity" type="radio" value="gv">
-                                        <span class="fw-bold">GV</span><span> - invoice concerns a member of a VAT group</span>
-                                    </label>
-                                    <label for="additionalEntityOther">
-                                        <input id="additionalEntityOther" name="additionalEntity" type="radio" value="other">
-                                        <span class="fw-bold">Other</span><span> - additional entity other than local government units / municipalities</span>
-                                    </label>
+                                    </div>
+                                    <div class="marking-item">
+                                        <label for="additionalEntityJst" class="d-flex align-items-center">
+                                            <input id="additionalEntityJst" name="additionalEntity" type="radio" value="jst">
+                                        </label>
+                                        <span class="fw-bold">JST</span>
+                                        <span>— invoice concerns a subordinate unit of a local government unit</span>
+                                    </div>
+                                    <div class="marking-item">
+                                        <label for="additionalEntityGv" class="d-flex align-items-center">
+                                            <input id="additionalEntityGv" name="additionalEntity" type="radio" value="gv">
+                                        </label>
+                                        <span class="fw-bold">GV</span>
+                                        <span>— invoice concerns a member of a VAT group</span>
+                                    </div>
+                                    <div class="marking-item">
+                                        <label for="additionalEntityOther" class="d-flex align-items-center">
+                                            <input id="additionalEntityOther" name="additionalEntity" type="radio" value="other">
+                                        </label>
+                                        <span class="fw-bold">Other</span>
+                                        <span>— additional entity other than local government units / municipalities</span>
+                                    </div>
                                 </div>
                             </div>
 
@@ -222,34 +252,43 @@
 
                         <span class="form-label fw-bold required">Invoice issued at prices</span>
                         <div class="invoice-type mb-3">
-                            <label for="priceNet">
-                                <input id="priceNet" type="radio" name="priceType" value="net" checked class="form-check-input">
+                            <div class="marking-item">
+                                <label for="priceNet" class="d-flex align-items-center">
+                                    <input id="priceNet" type="radio" name="priceType" value="net" checked class="form-check-input">
+                                </label>
                                 <span>Net</span>
-                            </label>
-                            <label for="priceGross">
-                                <input id="priceGross" type="radio" name="priceType" value="gross" class="form-check-input">
+                            </div>
+                            <div class="marking-item">
+                                <label for="priceGross" class="d-flex align-items-center">
+                                    <input id="priceGross" type="radio" name="priceType" value="gross" class="form-check-input">
+                                </label>
                                 <span>Gross</span>
-                            </label>
+                            </div>
                         </div>
 
                         <div class="form-label fw-bold mt-4 mb-1">
                             Additional columns<span class="fw-normal"> (optional) - </span>
                             <a class="learn-more fw-bold">Learn more <i class="bi bi-box-arrow-up-right"></i></a>
                         </div>
-
                         <div class="markings-list mb-4">
-                            <label class="additional-column" for="additionalColumnGTU">
-                                <input id="additionalColumnGTU" type="checkbox" class="form-check-input">
+                            <div class="marking-item">
+                                <label for="additionalColumnGTU" class="d-flex align-items-center">
+                                    <input id="additionalColumnGTU" type="checkbox" class="form-check-input">
+                                </label>
                                 <span>GTU</span>
-                            </label>
-                            <label class="marking-item" for="procedureSymbols">
-                                <input id="procedureSymbols" type="checkbox" class="form-check-input">
+                            </div>
+                            <div class="marking-item">
+                                <label for="procedureSymbols" class="d-flex align-items-center">
+                                    <input id="procedureSymbols" type="checkbox" class="form-check-input">
+                                </label>
                                 <span>Procedure symbols</span>
-                            </label>
-                            <label class="marking-item" for="additionalInformation">
-                                <input id="additionalInformation" type="checkbox" class="form-check-input">
+                            </div>
+                            <div class="marking-item">
+                                <label for="additionalInformation" class="d-flex align-items-center">
+                                    <input id="additionalInformation" type="checkbox" class="form-check-input">
+                                </label>
                                 <span>Additional information</span>
-                            </label>
+                            </div>
                         </div>
 
                         <div class="table-responsive">
@@ -352,14 +391,18 @@
                         <div class="mt-4">
                             <span class="form-label fw-bold required">Additional data on the invoice</span>
                             <div class="invoice-type">
-                                <label for="additionalDataYes">
-                                    <input id="additionalDataYes" type="radio" name="additionalData" value="yes" class="form-check-input">
+                                <div class="marking-item">
+                                    <label for="additionalDataYes" class="d-flex align-items-center">
+                                        <input id="additionalDataYes" type="radio" name="additionalData" value="yes" class="form-check-input">
+                                    </label>
                                     <span>Yes</span>
-                                </label>
-                                <label for="additionalDataNo">
-                                    <input id="additionalDataNo" type="radio" name="additionalData" value="no" class="form-check-input">
+                                </div>
+                                <div class="marking-item">
+                                    <label for="additionalDataNo" class="d-flex align-items-center">
+                                        <input id="additionalDataNo" type="radio" name="additionalData" value="no" class="form-check-input">
+                                    </label>
                                     <span>No</span>
-                                </label>
+                                </div>
                             </div>
                         </div>
 
@@ -405,11 +448,11 @@
                                 <span class="form-label fw-bold">
                                     Invoice status<span class="fw-normal"> (optional)</span>
                                 </span>
-                                <div class="form-check">
-                                    <label class="marking-item" for="invoicePaid">
+                                <div class="marking-item">
+                                    <label for="invoicePaid" class="d-flex align-items-center">
                                         <input id="invoicePaid" type="checkbox" class="form-check-input">
-                                        <span>Invoice paid</span>
                                     </label>
+                                    <span>Invoice paid</span>
                                 </div>
                             </div>
 

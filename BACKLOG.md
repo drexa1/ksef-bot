@@ -14,7 +14,7 @@
 - [x] Post db invoice should be XML upload  
 - [x] Schema not loading as avro  
 - [x] Review REST users tests after refactor
-- [x] Review REST counterparties tests after refactor  
+- [x] Review REST customers tests after refactor  
 - [x] Review REST invoices tests after refactor  
 - [x] Retrieve invoice from KSeF  
 - [x] REST tests for KSef
@@ -25,7 +25,7 @@
 - [x] Review taxes REST tests  
 - [x] Run tests suites as collection  
 - [x] Test collection for users  
-- [x] Test collection for counterparties  
+- [x] Test collection for customers  
 - [x] Test collection for application invoices  
 - [x] Test collection for tax record  
 - [x] Test invoices PII  
@@ -37,20 +37,10 @@
 - [x] Invoice generator frontend: rework payment fields order  
 - [x] CLI client start  
 - [x] CLI client dialogue  
-- [x] Do not auto store counterparties for purchase invoices  
-- [ ] CLI: list counterparties  
-- [ ] CLI: adapt sales/purchase invoices summary  
-- [ ] CLI: create counterparty  
-- [ ] CLI: create invoice  
-- [ ] CLI: Google SSO  
-- [ ] CLI: Microsoft SSO  
-- [ ] CLI: Facebook SSO  
-- [ ] CLI: login with email  
-- [ ] CLI: edit user settings  
-- [ ] CLI: first time flow  
-- [ ] Invoice generator frontend: invoice checkboxes  
-- [ ] Invoice generator frontend: invoice additional column selects  
-- [ ] Invoice generator frontend: invoice autocomplete API
+- [x] Do not auto store customers for purchase invoices  
+- [x] Invoice generator frontend: invoice checkboxes
+- [ ] Invoice generator frontend: invoice autocomplete API  
+- [ ] Invoice generator frontend: invoice additional column selects
 - [ ] Invoice generator frontend: invoice remove positions  
 - [ ] Invoice generator frontend: invoice add another  
 - [ ] Invoice generator frontend: mobile invoice items table  
@@ -61,6 +51,16 @@
 - [ ] Invoice generator frontend: create logic  
 - [ ] Invoice generator frontend: import logic  
 - [ ] Invoice generator frontend: generate actions logic  
+- [ ] CLI: list customers
+- [ ] CLI: adapt sales/purchase invoices summary
+- [ ] CLI: create customer
+- [ ] CLI: create invoice
+- [ ] CLI: Google SSO
+- [ ] CLI: Microsoft SSO
+- [ ] CLI: Facebook SSO
+- [ ] CLI: login with email
+- [ ] CLI: edit user settings
+- [ ] CLI: first time flow  
 - [ ] Review security architecture  
 - [ ] Review mobile sizing  
 - [ ] Review dark theme  

@@ -88,7 +88,7 @@ CREATE TABLE invoices (
     ownerId TEXT NOT NULL REFERENCES users(email),
     -- Parties
     type TEXT NOT NULL CHECK (type IN ('sales', 'purchase')),
-    counterpartyId TEXT REFERENCES counterparties(id),  -- Nullable if 'purchase'
+    customerId TEXT REFERENCES customers(id),  -- Nullable if 'purchase'
     -- Raw data
     rawXml  TEXT NOT NULL,
     jsonData TEXT NOT NULL CHECK (json_valid(jsonData)),
@@ -98,12 +98,12 @@ CREATE TABLE invoices (
     updatedAt TEXT
 );
 
-DROP TABLE IF EXISTS counterparties;
-CREATE TABLE counterparties (
+DROP TABLE IF EXISTS customers;
+CREATE TABLE customers (
     id TEXT PRIMARY KEY,
     -- Owner
     ownerId TEXT NOT NULL REFERENCES users(email),
-    -- Counterparty data
+    -- Customer data
     name TEXT NOT NULL,
     nip TEXT UNIQUE,
     pesel TEXT UNIQUE,
@@ -113,7 +113,7 @@ CREATE TABLE counterparties (
     countryCode TEXT DEFAULT 'PL',
     addressL1 TEXT NOT NULL,
     addressL2 TEXT,
-    -- Counterparty metadata
+    -- Customer metadata
     localGovernmentUnit INTEGER,
     vatGroup INTEGER,
     notes TEXT,

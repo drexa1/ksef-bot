@@ -6,7 +6,7 @@ import {corsHeaders, whoami as whoamiGET} from "./auth";
 import {get as salesGET, post as salesPOST} from "./routes/ksef/sales";
 import {get as purchaseGET} from "./routes/ksef/purchases";
 import {get as usersGET, post as usersPOST, put as usersPUT, del as usersDELETE} from "./routes/db/users";
-import {get as counterpartiesGET, post as counterpartiesPOST, put as counterpartiesPUT, del as counterpartiesDELETE} from "./routes/db/counterparties";
+import {get as customersGET, post as customersPOST, put as customersPUT, del as customersDELETE} from "./routes/db/customers";
 import {get as invoicesGET, post as invoicesPOST, put as invoicesPUT, del as invoicesDELETE} from "./routes/db/invoices";
 import {post as piiPOST} from "./routes/db/invoices-pii";
 import {del as taxesDELETE, get as taxesGET, post as taxesPOST, put as taxesPUT} from "./routes/db/taxes";
@@ -42,9 +42,9 @@ export const routes: Record<string, Routes> =  {
     // Requiring authentication
     "/whoami":             withErrorHandling({ GET: whoamiGET }),
     "/ksef/sales":         withErrorHandling({ GET: salesGET, POST: salesPOST }),
-    "/ksef/purchases":      withErrorHandling({ GET: purchaseGET }),
+    "/ksef/purchases":     withErrorHandling({ GET: purchaseGET }),
     "/app/users":          withErrorHandling({ GET: usersGET, POST: usersPOST, PUT: usersPUT, DELETE: usersDELETE }),
-    "/app/counterparties": withErrorHandling({ GET: counterpartiesGET, POST: counterpartiesPOST, PUT: counterpartiesPUT, DELETE: counterpartiesDELETE }),
+    "/app/customers":      withErrorHandling({ GET: customersGET, POST: customersPOST, PUT: customersPUT, DELETE: customersDELETE }),
     "/app/invoices":       withErrorHandling({ GET: invoicesGET, POST: invoicesPOST, PUT: invoicesPUT, DELETE: invoicesDELETE }),
     "/app/invoices/pii":   withErrorHandling({ POST: piiPOST }),
     "/app/taxes":          withErrorHandling({ GET: taxesGET, POST: taxesPOST, PUT: taxesPUT, DELETE: taxesDELETE })

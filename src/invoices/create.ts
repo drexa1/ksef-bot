@@ -4,7 +4,7 @@ import {getCurrentLocation} from "../location";
 // Invoice data
 // ---------------------------------------------------------------------------------------------------------------------
 
-/// Prefilled values for the Invoice Data section
+/// TODO: prefill from user settings
 async function initInvoiceData() {
     const invoiceDataSection = document.getElementById("invoiceData") as HTMLDivElement;
     const now = new Date();
@@ -45,10 +45,11 @@ interface Contractor {
 }
 
 const contractorNameInput = document.getElementById("contractorName") as HTMLInputElement;
-const contractorSuggestions = document.getElementById("contractorSuggestions") as HTMLDivElement;
+const contractorNameSuggestions = document.getElementById("contractorNameSuggestions") as HTMLDivElement;
 const identifierOptions = document.querySelectorAll<HTMLInputElement>('input[name="contractorIdentifier"]');
-const contractorNip = document.querySelector(".contractorNip") as HTMLElement;
-const contractorNipInput = document.querySelector("#contractorNipInput") as HTMLInputElement;
+const contractorNip = document.getElementById("contractorNip") as HTMLElement;
+const contractorNipInput = document.getElementById("contractorNipInput") as HTMLInputElement;
+const contractorNipSuggestions = document.getElementById("contractorNipSuggestions") as HTMLDivElement;
 const contractorTown = document.getElementById("contractorTown") as HTMLInputElement;
 const contractorPostalCode = document.getElementById("contractorPostalCode") as HTMLInputElement;
 const contractorStreet = document.getElementById("contractorStreet") as HTMLInputElement;
@@ -68,20 +69,20 @@ async function initContractorData() {
     // zipCode.value = currentLocation.postcode ?? "";
 }
 
-/// Autocomplete by contractor name
+/// Autocomplete by contractor name ------------------------------------------------------------------------------------
 let selectedContractorIndex = -1;
 contractorNameInput.addEventListener("input", () => {
     selectedContractorIndex = -1;
     if (contractorNameInput.value.trim().length < 3) {
-        contractorSuggestions.style.display = "none";
+        contractorNameSuggestions.style.display = "none";
         return;
     }
     searchContractors(contractorNameInput.value);
 });
 
 contractorNameInput.addEventListener("keydown", (event) => {
-    const suggestions = Array.from(contractorSuggestions.querySelectorAll<HTMLElement>(".contractor-suggestion"));
-    if (contractorSuggestions.style.display === "none" || suggestions.length === 0)
+    const suggestions = Array.from(contractorNameSuggestions.querySelectorAll<HTMLElement>(".contractor-suggestion"));
+    if (contractorNameSuggestions.style.display === "none" || suggestions.length === 0)
         return;
     switch (event.key) {
         case "ArrowDown":
@@ -105,7 +106,7 @@ contractorNameInput.addEventListener("keydown", (event) => {
             break;
         case "Escape":
             event.preventDefault();
-            contractorSuggestions.style.display = "none";
+            contractorNameSuggestions.style.display = "none";
             selectedContractorIndex = -1;
             break;
     }
@@ -119,37 +120,40 @@ function searchContractors(nameQuery: string): void {
     const contractors = [
         {
             id: 1,
-            name: "ABC Sp. z o.o.",
-            nip: "1234567890",
+            name: "Pollas1 Sp. z o.o.",
+            nip: "1111111111",
             town: undefined,
             postalCode: "30-001",
-            street: "Floriańska",
+            street: "Floriańska1",
             building: "10",
-            apartment: "2",
+            apartment: "1",
             email: "office1@abc.pl"
         },
         {
             id: 2,
-            name: "ABC Sp. z o.o.",
-            nip: "1234567890",
-            town: "Pollas",
-            postalCode: "30-001",
-            street: "Floriańska",
+            name: "Pollas2 Sp. z o.o.",
+            nip: "2222222222",
+            town: "Kraków",
+            postalCode: "30-002",
+            street: "Floriańska2",
             building: undefined,
             apartment: "2",
             email: "office2@abc.pl"
         }
     ];
-    renderContractorNameSuggestions(contractors);
+    const results = contractors.filter((c) =>
+        c.name.toLowerCase().includes(nameQuery.trim().toLowerCase())
+    );
+    renderContractorNameSuggestions(results);
 }
 
 function renderContractorNameSuggestions(contractors: Contractor[]) {
-    contractorSuggestions.innerHTML = "";
+    contractorNameSuggestions.innerHTML = "";
     for (const contractor of contractors) {
         const item = document.createElement("div");
         item.className = "contractor-suggestion";
         item.innerHTML = `
-            <div class="contractor-suggestion-name fw-bold">
+            <div class="form-label fw-bold">
                 ${contractor.name}
             </div>
             <div class="contractor-suggestion-details">
@@ -166,14 +170,116 @@ function renderContractorNameSuggestions(contractors: Contractor[]) {
             contractorApartment.value = contractor.apartment ?? "";
             contractorMail.value = contractor.email ?? "";
             // Hide suggestions
-            contractorSuggestions.style.display = "none";
+            contractorNameSuggestions.style.display = "none";
         });
-        contractorSuggestions.appendChild(item);
+        contractorNameSuggestions.appendChild(item);
     }
-    contractorSuggestions.style.display = "block";
+    contractorNameSuggestions.style.display = "block";
 }
 
-/// TODO: Autocomplete by contractor id
+/// Autocomplete by contractor NIP ------------------------------------------------------------------------------------
+let selectedContractorNipIndex = -1;
+contractorNipInput.addEventListener("input", () => {
+    selectedContractorNipIndex = -1;
+    if (contractorNipInput.value.trim().length < 3) {
+        contractorNipSuggestions.style.display = "none";
+        return;
+    }
+    searchContractorsByNip(contractorNipInput.value);
+});
+
+contractorNipInput.addEventListener("keydown", (event) => {
+    const suggestions = Array.from(contractorNipSuggestions.querySelectorAll<HTMLElement>(".contractor-suggestion"));
+    if (contractorNipSuggestions.style.display === "none" || suggestions.length === 0)
+        return;
+    switch (event.key) {
+        case "ArrowDown":
+            event.preventDefault();
+            selectedContractorNipIndex++;
+            if (selectedContractorNipIndex >= suggestions.length)
+                selectedContractorNipIndex = 0;
+            updateSelectedNipSuggestion(suggestions);
+            break;
+        case "ArrowUp":
+            event.preventDefault();
+            selectedContractorNipIndex--;
+            if (selectedContractorNipIndex < 0)
+                selectedContractorNipIndex = suggestions.length - 1;
+            updateSelectedNipSuggestion(suggestions);
+            break;
+        case "Enter":
+            event.preventDefault();
+            if (selectedContractorNipIndex >= 0)
+                suggestions[selectedContractorNipIndex].click();
+            break;
+        case "Escape":
+            event.preventDefault();
+            contractorNipSuggestions.style.display = "none";
+            selectedContractorNipIndex = -1;
+            break;
+    }
+});
+
+function updateSelectedNipSuggestion(suggestions: HTMLElement[]): void {
+    suggestions.forEach((suggestion, index) => suggestion.classList.toggle("selected", index === selectedContractorNipIndex));
+}
+
+function searchContractorsByNip(nipQuery: string): void {
+    const contractors: Contractor[] = [
+        {
+            name: "Pollas1 Sp. z o.o.",
+            nip: "1111111111",
+            town: undefined,
+            postalCode: "30-001",
+            street: "Floriańska1",
+            building: "10",
+            apartment: "1",
+            email: "office1@abc.pl"
+        },
+        {
+            name: "Pollas2 Sp. z o.o.",
+            nip: "2222222222",
+            town: "Kraków",
+            postalCode: "30-002",
+            street: "Floriańska2",
+            building: undefined,
+            apartment: "2",
+            email: "office2@abc.pl"
+        }
+    ];
+    const results = contractors.filter((c) => c.nip?.startsWith(nipQuery.trim()));
+    renderContractorNipSuggestions(results);
+}
+
+function renderContractorNipSuggestions(contractors: Contractor[]): void {
+    contractorNipSuggestions.innerHTML = "";
+    for (const contractor of contractors) {
+        const item = document.createElement("div");
+        item.className = "contractor-suggestion";
+        item.innerHTML = `
+            <div class="form-label fw-bold">
+                ${contractor.name}
+            </div>
+            <div class="contractor-suggestion-details">
+                NIP: ${contractor.nip}
+            </div>
+        `;
+        item.addEventListener("click", () => {
+            contractorNameInput.value = contractor.name;
+            contractorNipInput.value = contractor.nip ?? "";
+            contractorTown.value = contractor.town ?? "";
+            contractorPostalCode.value = contractor.postalCode ?? "";
+            contractorStreet.value = contractor.street ?? "";
+            contractorBuilding.value = contractor.building ?? "";
+            contractorApartment.value = contractor.apartment ?? "";
+            contractorMail.value = contractor.email ?? "";
+            contractorNipSuggestions.style.display = "none";
+            selectedContractorNipIndex = -1;
+        });
+        contractorNipSuggestions.appendChild(item);
+    }
+    contractorNipSuggestions.style.display = contractors.length > 0 ? "block" : "none";
+}
 
 /// Show/hide NIP
 identifierOptions.forEach((option) => {

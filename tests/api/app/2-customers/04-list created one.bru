@@ -1,0 +1,13 @@
+get {
+    url: {{baseUrl}}/app/customers?id={{customer1Id}}
+}
+headers {
+    Content-Type: application/json
+    X-API-Key: {{apiKey}}
+}
+tests {
+    test("List the recently created customer one", function() {
+        console.info(res.body);
+        expect(res.body.id).to.equal(bru.getCollectionVar("customer1Id"));
+    })
+}

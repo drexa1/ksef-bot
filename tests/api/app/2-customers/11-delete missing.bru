@@ -1,12 +1,12 @@
 delete {
-    url: {{baseUrl}}/app/users?id=missing
+    url: {{baseUrl}}/app/customers?id=missing
 }
 headers {
     Content-Type: application/json
     X-API-Key: {{apiKey}}
 }
 tests {
-    test("Delete a non-existing counterpary should fail", function() {
+    test("Delete a non-existing customer should fail", function() {
         expect(res.status).to.equal(404);
     })
 }

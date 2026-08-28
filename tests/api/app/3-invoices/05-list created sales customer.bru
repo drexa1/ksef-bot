@@ -1,0 +1,13 @@
+get {
+    url: {{baseUrl}}/app/customers?nip={{salesInvoiceCustomerId}}
+}
+headers {
+    Content-Type: application/json
+    X-API-Key: {{apiKey}}
+}
+tests {
+    test("List the recently created buyer customer", function() {
+        console.info(res.body);
+        expect(res.body.nip).to.equal(bru.getCollectionVar("salesInvoiceCustomerId"));
+    })
+}

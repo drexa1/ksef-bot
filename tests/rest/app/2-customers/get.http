@@ -1,0 +1,19 @@
+#@no-redirect
+@baseUrl = http://localhost:3001
+@apiKey = test
+@customerId = JP4t96R8FD___z60VX84r
+
+### List all
+GET {{baseUrl}}/app/customers
+Content-Type: application/json
+X-API-Key: {{apiKey}}
+
+### List non-existing customer
+GET {{baseUrl}}/app/customers?id=missing
+Content-Type: application/json
+X-API-Key: {{apiKey}}
+
+### List existing customer
+GET {{baseUrl}}/app/customers?id={{customerId}}
+Content-Type: application/json
+X-API-Key: {{apiKey}}

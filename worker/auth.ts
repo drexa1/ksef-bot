@@ -42,7 +42,7 @@ export async function auth(req: Request, env: Env): Promise<boolean> {
         case "/app/users":
         case "/app/invoices":
         case "/app/invoices/pii":
-        case "/app/counterparties":
+        case "/app/customers":
         case "/app/taxes":
             return req.headers.get("X-API-Key") === env.API_KEY;
         // Default

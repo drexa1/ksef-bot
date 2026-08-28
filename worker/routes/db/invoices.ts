@@ -1,7 +1,7 @@
 import {Env} from "../../worker";
 import {D1Driver, Repository} from "../../repository/d1";
 import {XMLParser} from "fast-xml-parser";
-import {AppCounterparty, AppInvoice, AppUser} from "../../types/db";
+import {AppCustomer, AppInvoice, AppUser} from "../../types/db";
 import {KsefIdentifiable} from "../../types/ksef";
 import {getAuthUser} from "../../auth";
 import {dtoFromAliases} from "../../avro/invoice";
@@ -95,9 +95,9 @@ export async function invoiceFromXml(
         id: ksefInvoice.InvoiceBody.InvoiceNumber,
         ownerId: authUser.email,
         type: type,
-        // Only auto create counterparties for sales invoices
+        // Only auto create customers for sales invoices
         ...(type === "sales" && {
-            counterpartyId: await getOrCreateCounterparty(env, {
+            customerId: await getOrCreateCustomer(env, {
                 ownerId: authUser.email,
                 name: ksefInvoice.Buyer.IdentificationData.Name,
                 nip: ksefInvoice.Buyer.IdentificationData.NIP,
@@ -112,7 +112,7 @@ export async function invoiceFromXml(
     };
 }
 
-async function getOrCreateCounterparty(env: Env, counterpartyParts: {
+async function getOrCreateCustomer(env: Env, customerParts: {
     ownerId: string
     name: string
     nip?: string
@@ -121,30 +121,30 @@ async function getOrCreateCounterparty(env: Env, counterpartyParts: {
     countryCode?: string
     addressL1?: string
 }): Promise<string> {
-    const { idField, idValue } = getCounterpartyIdentifier(counterpartyParts);
-    const existing = await getRepo(env).get<AppCounterparty>("counterparties", { [idField]: idValue });
+    const { idField, idValue } = getCustomerIdentifier(customerParts);
+    const existing = await getRepo(env).get<AppCustomer>("customers", { [idField]: idValue });
     if (existing) return existing.id!;
-    const counterparty: AppCounterparty = {
+    const customer: AppCustomer = {
         id: nanoid(),
-        ...({ ownerId: counterpartyParts.ownerId }),
-        name: counterpartyParts.name,
-        ...(counterpartyParts.nip   && { nip:   counterpartyParts.nip }),
-        ...(counterpartyParts.pesel && { pesel: counterpartyParts.pesel }),
-        ...(counterpartyParts.regon && { regon: counterpartyParts.regon }),
-        countryCode: counterpartyParts.countryCode ?? "PL",
-        addressL1: counterpartyParts.addressL1 ?? "",
+        ...({ ownerId: customerParts.ownerId }),
+        name: customerParts.name,
+        ...(customerParts.nip   && { nip:   customerParts.nip }),
+        ...(customerParts.pesel && { pesel: customerParts.pesel }),
+        ...(customerParts.regon && { regon: customerParts.regon }),
+        countryCode: customerParts.countryCode ?? "PL",
+        addressL1: customerParts.addressL1 ?? "",
         createdAt: new Date().toISOString(),
     };
-    await getRepo(env).save("counterparties", counterparty);
-    return counterparty.id!;
+    await getRepo(env).save("customers", customer);
+    return customer.id!;
 }
 
-function getCounterpartyIdentifier(counterpartyParts: KsefIdentifiable): { idField: "nip" | "pesel" | "regon", idValue: string } {
-    if (counterpartyParts.nip)
-        return { idField: "nip", idValue: counterpartyParts.nip };
-    if (counterpartyParts.pesel)
-        return { idField: "pesel", idValue: counterpartyParts.pesel };
-    if (counterpartyParts.regon)
-        return { idField: "regon", idValue: counterpartyParts.regon };
-    throw new Error("Counterparty has no supported fiscal identifier");
+function getCustomerIdentifier(customerParts: KsefIdentifiable): { idField: "nip" | "pesel" | "regon", idValue: string } {
+    if (customerParts.nip)
+        return { idField: "nip", idValue: customerParts.nip };
+    if (customerParts.pesel)
+        return { idField: "pesel", idValue: customerParts.pesel };
+    if (customerParts.regon)
+        return { idField: "regon", idValue: customerParts.regon };
+    throw new Error("Customer with no supported fiscal identifier");
 }

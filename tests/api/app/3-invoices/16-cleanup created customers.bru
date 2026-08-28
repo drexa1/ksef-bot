@@ -1,0 +1,14 @@
+delete {
+    url: {{baseUrl}}/app/customers
+}
+headers {
+    Content-Type: application/json
+    X-API-Key: {{apiKey}}
+}
+tests {
+    test("Delete all customers", function() {
+        console.info(res.body);
+        const createdCustomers = JSON.parse(bru.getCollectionVar("createdCustomers"));
+        expect(res.body.changes).to.equal(createdCustomers.length);
+    })
+}

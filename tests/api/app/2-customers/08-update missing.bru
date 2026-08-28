@@ -1,5 +1,5 @@
 put {
-    url: {{baseUrl}}/app/counterparties
+    url: {{baseUrl}}/app/customers
 }
 headers {
     Content-Type: application/json
@@ -9,7 +9,7 @@ script:pre-request {
     req.setBody(JSON.stringify({ id: "missing", name: "nevermind" }));
 }
 tests {
-    test("Update a missing counterparty should fail", function() {
+    test("Update a missing customer should fail", function() {
         expect(res.status).to.equal(404);
     })
 }

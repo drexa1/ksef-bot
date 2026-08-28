@@ -201,7 +201,7 @@ export const getOpenApiSpec = (env: Env) => ({
                     }
                 }
             },
-            Counterparty: {
+            Customer: {
                 type: "object",
                 additionalProperties: false,
                 required: [
@@ -331,7 +331,7 @@ export const getOpenApiSpec = (env: Env) => ({
         { name: "KSeF" },
         { name: "Users" },
         { name: "Invoices" },
-        { name: "Counterparties" },
+        { name: "Customers" },
         { name: "Taxes" },
     ],
     paths: {
@@ -635,62 +635,62 @@ export const getOpenApiSpec = (env: Env) => ({
                 }
             }
         } : {}),
-        "/app/counterparties": {
+        "/app/customers": {
             get: {
-                summary: "List counterparties - Restricted to resources owned by the authenticated user.",
-                tags: ["Counterparties"],
+                summary: "List customers - Restricted to resources owned by the authenticated user.",
+                tags: ["Customers"],
                 security: [{ ApiKeyAuth: [] }],
                 parameters: [{ name: "id", in: "query", required: false, schema: { type: "string" } }],
                 responses: {
-                    "200": { description: "Counterparty records" },
+                    "200": { description: "Customer records" },
                     "401": { description: "Unauthorized" },
-                    "404": { description: "Counterparty not found" }
+                    "404": { description: "Customer not found" }
                 }
             },
             post: {
-                summary: "Create a counterparty - Restricted to resources owned by the authenticated user.",
-                tags: ["Counterparties"],
+                summary: "Create a customer - Restricted to resources owned by the authenticated user.",
+                tags: ["Customers"],
                 security: [{ ApiKeyAuth: [] }],
                 requestBody: {
                     required: true,
                     content: {
                         "application/json": {
-                            schema: { $ref: "#/components/schemas/Counterparty" }
+                            schema: { $ref: "#/components/schemas/Customer" }
                         }
                     }
                 },
                 responses: {
-                    "200": { description: "Counterparty stored" },
+                    "200": { description: "Customer stored" },
                     "401": { description: "Unauthorized" }
                 }
             },
             put: {
-                summary: "Update a counterparty - Restricted to resources owned by the authenticated user.",
-                tags: ["Counterparties"],
+                summary: "Update a customer - Restricted to resources owned by the authenticated user.",
+                tags: ["Customers"],
                 security: [{ ApiKeyAuth: [] }],
                 requestBody: {
                     required: true,
                     content: {
                         "application/json": {
-                            schema: { $ref: "#/components/schemas/Counterparty" }
+                            schema: { $ref: "#/components/schemas/Customer" }
                         }
                     }
                 },
                 responses: {
-                    "200": { description: "Counterparty updated" },
+                    "200": { description: "Customer updated" },
                     "400": { description: "Bad request" },
                     "401": { description: "Unauthorized" }
                 }
             },
             delete: {
-                summary: "Delete a counterparty - Restricted to resources owned by the authenticated user.",
-                tags: ["Counterparties"],
+                summary: "Delete a customer - Restricted to resources owned by the authenticated user.",
+                tags: ["Customers"],
                 security: [{ ApiKeyAuth: [] }],
                 parameters: [{ name: "id", in: "query", required: true, schema: { type: "string" } }],
                 responses: {
-                    "200": { description: "Counterparty deleted" },
+                    "200": { description: "Customer deleted" },
                     "401": { description: "Unauthorized" },
-                    "404": { description: "Counterparty not found" }
+                    "404": { description: "Customer not found" }
                 }
             }
         },

@@ -1,0 +1,14 @@
+#@no-redirect
+@baseUrl = http://localhost:3001
+@apiKey = test
+@customersId = JP4t96R8FD___z60VX84r
+
+### Delete non-existing customers
+DELETE {{baseUrl}}/app/customers?id=missing
+Content-Type: application/json
+X-API-Key: {{apiKey}}
+
+### Delete existing customers
+DELETE {{baseUrl}}/app/customers?id={{customersId}}
+Content-Type: application/json
+X-API-Key: {{apiKey}}

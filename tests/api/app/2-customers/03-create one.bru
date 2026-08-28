@@ -1,0 +1,20 @@
+post {
+    url: {{baseUrl}}/app/customers
+}
+headers {
+    Content-Type: application/json
+    X-API-Key: {{apiKey}}
+}
+script:pre-request {
+    const fs = require("fs");
+    const body = fs.readFileSync("../testresources/customers/customer-1.json", "utf8");
+    req.setBody(JSON.parse(body));
+}
+tests {
+    test("Create a customer for the first time should succeed", function() {
+        expect(res.status).to.equal(201);
+    })
+}
+script:post-response {
+    bru.setCollectionVar("customer1Id", res.body.id);
+}

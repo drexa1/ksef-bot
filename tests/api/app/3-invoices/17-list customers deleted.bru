@@ -1,12 +1,12 @@
 get {
-    url: {{baseUrl}}/app/counterparties
+    url: {{baseUrl}}/app/customers
 }
 headers {
     Content-Type: application/json
     X-API-Key: {{apiKey}}
 }
 tests {
-    test("List all counterparties created should have been cleaned up", function() {
+    test("List all customers created should have been cleaned up", function() {
         expect(res.body).to.be.an("array").that.is.empty;
     })
 }

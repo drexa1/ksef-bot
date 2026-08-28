@@ -1,0 +1,12 @@
+delete {
+    url: {{baseUrl}}/app/customers?id={{customer2Id}}
+}
+headers {
+    Content-Type: application/json
+    X-API-Key: {{apiKey}}
+}
+tests {
+    test("Delete a recently created user customer should succeed", function() {
+        expect(res.body.id).to.equal(bru.getCollectionVar("customer2Id"));
+    })
+}

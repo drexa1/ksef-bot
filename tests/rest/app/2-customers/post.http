@@ -1,0 +1,24 @@
+#@no-redirect
+@baseUrl = http://localhost:3001
+@apiKey = test
+
+### Create customer #1 for the first time
+POST {{baseUrl}}/app/customers
+Content-Type: application/json
+X-API-Key: {{apiKey}}
+
+< ../../../testresources/customers/customer-1.json
+
+### Create customer #2 for the first time
+POST {{baseUrl}}/app/customers
+Content-Type: application/json
+X-API-Key: {{apiKey}}
+
+< ../../../testresources/customers/customer-2.json
+
+### Second create attempt whould trigger PK violation error
+POST {{baseUrl}}/app/customer
+Content-Type: application/json
+X-API-Key: {{apiKey}}
+
+< ../../../testresources/customers/customer-2.json

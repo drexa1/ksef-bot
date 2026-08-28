@@ -1,0 +1,18 @@
+#@no-redirect
+@baseUrl = http://localhost:3001
+@apiKey = test
+@customerId = JP4t96R8FD___z60VX84r
+
+### Update a missing customer
+PUT {{baseUrl}}/app/customers
+Content-Type: application/json
+X-API-Key: {{apiKey}}
+
+{ "id": "missing", "name": "nevermind" }
+
+### Update existing customer
+PUT {{baseUrl}}/app/customers
+Content-Type: application/json
+X-API-Key: {{apiKey}}
+
+{ "id": "{{customerId}}", "name": "edited" }

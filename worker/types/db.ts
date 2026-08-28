@@ -44,7 +44,7 @@ export type AppInvoice = {
     id: string
     // Parties
     type: "sales" | "purchase"
-    counterpartyId?: string
+    customerId?: string
     // Raw data
     rawXml: string
     jsonData: string
@@ -54,10 +54,10 @@ export type AppInvoice = {
     updatedAt?: string
 };
 
-export type AppCounterpartyUpdate = Partial<Omit<AppCounterparty, "id">>;
-export type AppCounterparty = {
+export type AppCustomerUpdate = Partial<Omit<AppCustomer, "id">>;
+export type AppCustomer = {
     id: string
-    // Counterparty data
+    // Customer data
     name: string
     nip?: string
     pesel?: string
@@ -67,7 +67,7 @@ export type AppCounterparty = {
     countryCode: string
     addressL1: string
     addressL2?: string
-    // Counterparty metadata
+    // Customer metadata
     localGovernmentUnit?: number
     vatGroup?: number
     notes?: string
