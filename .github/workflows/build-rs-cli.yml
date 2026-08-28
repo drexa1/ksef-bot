@@ -9,9 +9,11 @@ env:
   BINARY_NAME: ksef-bot
 
 jobs:
+
   build:
     name: Build ${{ matrix.name }}
     runs-on: ${{ matrix.os }}
+
     strategy:
       matrix:
         include:
@@ -19,18 +21,22 @@ jobs:
             os: ubuntu-latest
             target: x86_64-unknown-linux-gnu
             extension: ""
+
           - name: macOS x86_64
             os: macos-latest
             target: x86_64-apple-darwin
             extension: ""
+
           - name: macOS ARM64
             os: macos-latest
             target: aarch64-apple-darwin
             extension: ""
+
           - name: Windows x86_64
             os: windows-latest
             target: x86_64-pc-windows-msvc
             extension: ".exe"
+
     steps:
       - uses: actions/checkout@v5
       - name: Install Rust
@@ -45,9 +51,30 @@ jobs:
         shell: bash
         run: |
           mkdir -p dist
-          cp "target/${{ matrix.target }}/release/${BINARY_NAME}${{ matrix.extension }}" "dist/${BINARY_NAME}${{ matrix.extension }}"
+          cp "target/${{ matrix.target }}/release/${BINARY_NAME}${{ matrix.extension }}" \
+             "dist/${BINARY_NAME}-${{ matrix.target }}${{ matrix.extension }}"
       - name: Upload artifact
         uses: actions/upload-artifact@v5
         with:
           name: ${{ env.BINARY_NAME }}-${{ matrix.target }}
-          path: dist/${{ env.BINARY_NAME }}${{ matrix.extension }}
+          path: dist/${{ env.BINARY_NAME }}-${{ matrix.target }}${{ matrix.extension }}
+
+  release:
+    name: Publish latest release
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v5
+        with:
+          path: dist
+          pattern: ${{ env.BINARY_NAME }}-*
+          merge-multiple: true
+      - name: Publish latest release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release delete latest --yes --cleanup-tag || true
+          gh release create latest --title "Latest" --prerelease dist/*
