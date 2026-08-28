@@ -40,17 +40,17 @@
 - [x] Do not auto store customers for purchase invoices  
 - [x] Invoice generator frontend: invoice checkboxes
 - [ ] Invoice generator frontend: invoice autocomplete API  
-- [ ] Invoice generator frontend: invoice additional column selects
+- [ ] Invoice generator frontend: invoice payment review select options  
+- [ ] Invoice generator frontend: create logic  
+- [ ] Invoice generator frontend: generate actions logic  
+- [ ] Invoice generator frontend: invoice additional column selects  
 - [ ] Invoice generator frontend: invoice remove positions  
 - [ ] Invoice generator frontend: invoice add another  
 - [ ] Invoice generator frontend: mobile invoice items table  
-- [ ] Invoice generator frontend: invoice additional data  
-- [ ] Invoice generator frontend: invoice payment review select options  
+- [ ] Invoice generator frontend: invoice additional data
 - [ ] Encrypt KSeF/Baking keys  
 - [ ] Invoice generator frontend: help hints  
-- [ ] Invoice generator frontend: create logic  
-- [ ] Invoice generator frontend: import logic  
-- [ ] Invoice generator frontend: generate actions logic  
+- [ ] Invoice generator frontend: import logic
 - [ ] CLI: list customers
 - [ ] CLI: adapt sales/purchase invoices summary
 - [ ] CLI: create customer
