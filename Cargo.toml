@@ -15,7 +15,6 @@ codegen-units = 1
 
 [dependencies]
 anyhow = "1.0.104"
-chrono = "0.4.45"
 crossterm = "0.29.0"
 dotenvy = "0.15"
 inquire = { version = "0.9.4", features = ["date"] }

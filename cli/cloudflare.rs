@@ -16,6 +16,7 @@ macro_rules! client_secret {
     };
 }
 
+// FIXME: return this after user login
 #[macro_export]
 macro_rules! api_key {
     () => {
