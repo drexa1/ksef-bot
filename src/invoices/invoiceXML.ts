@@ -79,7 +79,7 @@ export function generateInvoiceXml(form: HTMLFormElement): string {
             <KodFormularza kodSystemowy="FA (3)" wersjaSchemy="1-0E">FA</KodFormularza>
             <WariantFormularza>3</WariantFormularza>
             <DataWytworzeniaFa>${escapeXml(new Date().toISOString())}</DataWytworzeniaFa>
-            <SystemInfo>KSeF Bot</SystemInfo>
+            <SystemInfo>KSeF-Bot</SystemInfo>
           </Naglowek>
           <Podmiot1>
             <DaneIdentyfikacyjne>

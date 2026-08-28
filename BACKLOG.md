@@ -41,7 +41,8 @@
 - [x] Invoice generator frontend: invoice checkboxes
 - [x] Invoice generator frontend: invoice autocomplete API  
 - [x] Invoice generator frontend: invoice payment review select options  
-- [ ] Invoice generator frontend: create logic  
+- [x] Invoice generator frontend: form validation  
+- [x] Invoice generator frontend: create logic  
 - [ ] Invoice generator frontend: generate actions logic  
 - [ ] Invoice generator frontend: invoice additional column selects  
 - [ ] Invoice generator frontend: invoice remove positions  
