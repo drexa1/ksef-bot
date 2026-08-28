@@ -1,4 +1,5 @@
 import {getCurrentLocation} from "../location";
+import {Customer, loadCustomers} from "../api/customers";
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Invoice data
@@ -32,18 +33,6 @@ async function initInvoiceData() {
 // ---------------------------------------------------------------------------------------------------------------------
 // Contractor data
 // ---------------------------------------------------------------------------------------------------------------------
-
-interface Contractor {
-    name: string
-    nip?: string
-    town?: string
-    postalCode?: string
-    street?: string
-    building?: string
-    apartment?: string
-    email?: string
-}
-
 const contractorNameInput = document.getElementById("contractorName") as HTMLInputElement;
 const contractorNameSuggestions = document.getElementById("contractorNameSuggestions") as HTMLDivElement;
 const identifierOptions = document.querySelectorAll<HTMLInputElement>('input[name="contractorIdentifier"]');
@@ -57,128 +46,47 @@ const contractorBuilding = document.getElementById("contractorBuilding") as HTML
 const contractorApartment = document.getElementById("contractorApartment") as HTMLInputElement;
 const contractorMail = document.getElementById("contractorMail") as HTMLInputElement;
 
+let customers: Customer[] = [];
+
 /// Prefilled values for the Contractor Data section
 async function initContractorData() {
-    const contractorDataSection = document.getElementById("contractorData") as HTMLDivElement;
-    // Town
-    const contractorTown = contractorDataSection.querySelector("#contractorTown") as HTMLInputElement;
+    customers = await loadCustomers();
     const currentLocation = await getCurrentLocation();
     contractorTown.value = currentLocation.city ?? "";
-    // ZIP code
-    // const zipCode = contractorDataSection.querySelector("#contractorPostalCode") as HTMLInputElement;
-    // zipCode.value = currentLocation.postcode ?? "";
+    // contractorPostalCode.value = currentLocation.postcode ?? "";
 }
 
 /// Autocomplete by contractor name ------------------------------------------------------------------------------------
 let selectedContractorIndex = -1;
+setupAutocompleteKeyboardNavigation(
+    contractorNameInput,
+    contractorNameSuggestions,
+    () => selectedContractorIndex,
+    (index) => {
+        selectedContractorIndex = index;
+    }
+);
+
 contractorNameInput.addEventListener("input", () => {
     selectedContractorIndex = -1;
     if (contractorNameInput.value.trim().length < 3) {
         contractorNameSuggestions.style.display = "none";
         return;
     }
-    searchContractors(contractorNameInput.value);
+    searchContractorsByName(contractorNameInput.value);
 });
-
-contractorNameInput.addEventListener("keydown", (event) => {
-    const suggestions = Array.from(contractorNameSuggestions.querySelectorAll<HTMLElement>(".contractor-suggestion"));
-    if (contractorNameSuggestions.style.display === "none" || suggestions.length === 0)
-        return;
-    switch (event.key) {
-        case "ArrowDown":
-            event.preventDefault();
-            selectedContractorIndex++;
-            if (selectedContractorIndex >= suggestions.length)
-                selectedContractorIndex = 0;
-            updateSelectedSuggestion(suggestions);
-            break;
-        case "ArrowUp":
-            event.preventDefault();
-            selectedContractorIndex--;
-            if (selectedContractorIndex < 0)
-                selectedContractorIndex = suggestions.length - 1;
-            updateSelectedSuggestion(suggestions);
-            break;
-        case "Enter":
-            event.preventDefault();
-            if (selectedContractorIndex >= 0)
-                suggestions[selectedContractorIndex].click();
-            break;
-        case "Escape":
-            event.preventDefault();
-            contractorNameSuggestions.style.display = "none";
-            selectedContractorIndex = -1;
-            break;
-    }
-});
-
-function updateSelectedSuggestion(suggestions: HTMLElement[]): void {
-    suggestions.forEach((suggestion, index) => suggestion.classList.toggle("selected", index === selectedContractorIndex));
-}
-
-function searchContractors(nameQuery: string): void {
-    const contractors = [
-        {
-            id: 1,
-            name: "Pollas1 Sp. z o.o.",
-            nip: "1111111111",
-            town: undefined,
-            postalCode: "30-001",
-            street: "Floriańska1",
-            building: "10",
-            apartment: "1",
-            email: "office1@abc.pl"
-        },
-        {
-            id: 2,
-            name: "Pollas2 Sp. z o.o.",
-            nip: "2222222222",
-            town: "Kraków",
-            postalCode: "30-002",
-            street: "Floriańska2",
-            building: undefined,
-            apartment: "2",
-            email: "office2@abc.pl"
-        }
-    ];
-    const results = contractors.filter((c) =>
-        c.name.toLowerCase().includes(nameQuery.trim().toLowerCase())
-    );
-    renderContractorNameSuggestions(results);
-}
-
-function renderContractorNameSuggestions(contractors: Contractor[]) {
-    contractorNameSuggestions.innerHTML = "";
-    for (const contractor of contractors) {
-        const item = document.createElement("div");
-        item.className = "contractor-suggestion";
-        item.innerHTML = `
-            <div class="form-label fw-bold">
-                ${contractor.name}
-            </div>
-            <div class="contractor-suggestion-details">
-                NIP: ${contractor.nip}
-            </div>
-        `;
-        item.addEventListener("click", () => {
-            contractorNameInput.value = contractor.name;
-            contractorNipInput.value = contractor.nip ?? "";
-            contractorTown.value = contractor.town ?? "";
-            contractorPostalCode.value = contractor.postalCode ?? "";
-            contractorStreet.value = contractor.street ?? "";
-            contractorBuilding.value = contractor.building ?? "";
-            contractorApartment.value = contractor.apartment ?? "";
-            contractorMail.value = contractor.email ?? "";
-            // Hide suggestions
-            contractorNameSuggestions.style.display = "none";
-        });
-        contractorNameSuggestions.appendChild(item);
-    }
-    contractorNameSuggestions.style.display = "block";
-}
 
 /// Autocomplete by contractor NIP ------------------------------------------------------------------------------------
 let selectedContractorNipIndex = -1;
+setupAutocompleteKeyboardNavigation(
+    contractorNipInput,
+    contractorNipSuggestions,
+    () => selectedContractorNipIndex,
+    (index) => {
+        selectedContractorNipIndex = index;
+    }
+);
+
 contractorNipInput.addEventListener("input", () => {
     selectedContractorNipIndex = -1;
     if (contractorNipInput.value.trim().length < 3) {
@@ -188,71 +96,66 @@ contractorNipInput.addEventListener("input", () => {
     searchContractorsByNip(contractorNipInput.value);
 });
 
-contractorNipInput.addEventListener("keydown", (event) => {
-    const suggestions = Array.from(contractorNipSuggestions.querySelectorAll<HTMLElement>(".contractor-suggestion"));
-    if (contractorNipSuggestions.style.display === "none" || suggestions.length === 0)
-        return;
-    switch (event.key) {
-        case "ArrowDown":
-            event.preventDefault();
-            selectedContractorNipIndex++;
-            if (selectedContractorNipIndex >= suggestions.length)
-                selectedContractorNipIndex = 0;
-            updateSelectedNipSuggestion(suggestions);
-            break;
-        case "ArrowUp":
-            event.preventDefault();
-            selectedContractorNipIndex--;
-            if (selectedContractorNipIndex < 0)
-                selectedContractorNipIndex = suggestions.length - 1;
-            updateSelectedNipSuggestion(suggestions);
-            break;
-        case "Enter":
-            event.preventDefault();
-            if (selectedContractorNipIndex >= 0)
-                suggestions[selectedContractorNipIndex].click();
-            break;
-        case "Escape":
-            event.preventDefault();
-            contractorNipSuggestions.style.display = "none";
-            selectedContractorNipIndex = -1;
-            break;
-    }
-});
+function setupAutocompleteKeyboardNavigation(
+    input: HTMLInputElement,
+    suggestionsContainer: HTMLDivElement,
+    getSelectedIndex: () => number,
+    setSelectedIndex: (index: number) => void
+): void {
+    input.addEventListener("keydown", (event) => {
+        const suggestions = Array.from(suggestionsContainer.querySelectorAll<HTMLElement>(".contractor-suggestion"));
+        if (suggestionsContainer.style.display === "none" || suggestions.length === 0)
+            return;
+        let selectedIndex = getSelectedIndex();
+        switch (event.key) {
+            case "ArrowDown":
+                event.preventDefault();
+                selectedIndex++;
+                if (selectedIndex >= suggestions.length)
+                    selectedIndex = 0;
+                setSelectedIndex(selectedIndex);
+                suggestions.forEach((suggestion, index) => suggestion.classList.toggle("selected", index === selectedIndex));
+                break;
+            case "ArrowUp":
+                event.preventDefault();
+                selectedIndex--;
+                if (selectedIndex < 0)
+                    selectedIndex = suggestions.length - 1;
+                setSelectedIndex(selectedIndex);
+                suggestions.forEach((suggestion, index) => suggestion.classList.toggle("selected", index === selectedIndex));
+                break;
+            case "Enter":
+                event.preventDefault();
+                if (selectedIndex >= 0)
+                    suggestions[selectedIndex].click();
+                break;
+            case "Escape":
+                event.preventDefault();
+                suggestionsContainer.style.display = "none";
+                setSelectedIndex(-1);
+                break;
+        }
+    });
+}
 
-function updateSelectedNipSuggestion(suggestions: HTMLElement[]): void {
-    suggestions.forEach((suggestion, index) => suggestion.classList.toggle("selected", index === selectedContractorNipIndex));
+function searchContractorsByName(nameQuery: string): void {
+    const results = customers.filter((contractor) =>
+        contractor.name.toLowerCase().includes(nameQuery.trim().toLowerCase())
+    );
+    renderContractorSuggestions(contractorNameSuggestions, results, fillContractor);
 }
 
 function searchContractorsByNip(nipQuery: string): void {
-    const contractors: Contractor[] = [
-        {
-            name: "Pollas1 Sp. z o.o.",
-            nip: "1111111111",
-            town: undefined,
-            postalCode: "30-001",
-            street: "Floriańska1",
-            building: "10",
-            apartment: "1",
-            email: "office1@abc.pl"
-        },
-        {
-            name: "Pollas2 Sp. z o.o.",
-            nip: "2222222222",
-            town: "Kraków",
-            postalCode: "30-002",
-            street: "Floriańska2",
-            building: undefined,
-            apartment: "2",
-            email: "office2@abc.pl"
-        }
-    ];
-    const results = contractors.filter((c) => c.nip?.startsWith(nipQuery.trim()));
-    renderContractorNipSuggestions(results);
+    const results = customers.filter((c) => c.nip?.startsWith(nipQuery.trim()));
+    renderContractorSuggestions(contractorNipSuggestions, results, fillContractor);
 }
 
-function renderContractorNipSuggestions(contractors: Contractor[]): void {
-    contractorNipSuggestions.innerHTML = "";
+function renderContractorSuggestions(
+    container: HTMLDivElement,
+    contractors: Customer[],
+    onSelect: (contractor: Customer) => void
+): void {
+    container.innerHTML = "";
     for (const contractor of contractors) {
         const item = document.createElement("div");
         item.className = "contractor-suggestion";
@@ -261,24 +164,27 @@ function renderContractorNipSuggestions(contractors: Contractor[]): void {
                 ${contractor.name}
             </div>
             <div class="contractor-suggestion-details">
-                NIP: ${contractor.nip}
+                NIP: ${contractor.nip ?? ""}
             </div>
         `;
         item.addEventListener("click", () => {
-            contractorNameInput.value = contractor.name;
-            contractorNipInput.value = contractor.nip ?? "";
-            contractorTown.value = contractor.town ?? "";
-            contractorPostalCode.value = contractor.postalCode ?? "";
-            contractorStreet.value = contractor.street ?? "";
-            contractorBuilding.value = contractor.building ?? "";
-            contractorApartment.value = contractor.apartment ?? "";
-            contractorMail.value = contractor.email ?? "";
-            contractorNipSuggestions.style.display = "none";
-            selectedContractorNipIndex = -1;
+            onSelect(contractor);
+            container.style.display = "none";
         });
-        contractorNipSuggestions.appendChild(item);
+        container.appendChild(item);
     }
-    contractorNipSuggestions.style.display = contractors.length > 0 ? "block" : "none";
+    container.style.display = contractors.length > 0 ? "block" : "none";
+}
+
+function fillContractor(customer: Customer): void {
+    contractorNameInput.value = customer.name;
+    contractorNipInput.value = customer.nip ?? "";
+    contractorTown.value = customer.town ?? "";
+    contractorPostalCode.value = customer.postalCode ?? "";
+    contractorStreet.value = customer.street ?? "";
+    contractorBuilding.value = customer.building ?? "";
+    contractorApartment.value = customer.apartment ?? "";
+    contractorMail.value = customer.email ?? "";
 }
 
 /// Show/hide NIP

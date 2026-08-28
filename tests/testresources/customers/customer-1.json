@@ -1,6 +1,8 @@
 {
-  "name": "Diego Ruiz Barbero",
-  "NIP": "6751577878",
-  "addressL1": "Kraków, 30-638, 15/32",
-  "notes": "seller"
+  "name": "Virtus Lab sp. z o.o.",
+  "NIP": "5170312965",
+  "addressL1": "Kraków, 31-153, Szlak 49",
+  "localGovernmentUnit": 2,
+  "vatGroup": 2,
+  "notes": "buyer"
 }
