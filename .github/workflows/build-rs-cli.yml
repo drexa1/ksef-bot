@@ -66,6 +66,10 @@ jobs:
     permissions:
       contents: write
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
       - name: Download artifacts
         uses: actions/download-artifact@v5
         with:
