@@ -1,6 +1,7 @@
 use inquire::DateSelect;
 use std::env::var;
 use strum::{Display};
+use crate::client_id;
 
 #[derive(Clone, Display)]
 pub enum InvoiceType {
@@ -43,21 +44,16 @@ pub async fn list_purchase_invoices() -> anyhow::Result<()> {
 }
 
 async fn list_invoices(endpoint: &InvoiceType) -> anyhow::Result<Vec<serde_json::Value>> {
-    let from = DateSelect::new("From date:").prompt()?.and_hms_opt(0, 0, 0).unwrap().and_utc().format("%Y/%m/%d").to_string();
-    let to = DateSelect::new("To date:").prompt()?.and_hms_opt(23, 59, 59).unwrap().and_utc().format("%Y/%m/%d").to_string();
+    let from = DateSelect::new("From date:").prompt()?.and_hms_opt(0, 0, 0).unwrap().and_utc();
+    let to = DateSelect::new("To date:").prompt()?.and_hms_opt(23, 59, 59).unwrap().and_utc();
 
-    let client_id = obfstr::obfstr!("CF_ACCESS_CLIENT_ID");
-    let client_secret = obfstr::obfstr!("CF_ACCESS_CLIENT_SECRET");
-    let api_key = obfstr::obfstr!("APP_API_KEY");
-    let user_id = obfstr::obfstr!("drexa1@hotmail.com");
-    
     let json: serde_json::Value = reqwest::Client::new()
         .get(format!("{}/ksef/{endpoint}", var("CF_WORKER_URL")?))
-        .query(&[("from", from), ("to", to)])
-        .header("CF-Access-Client-Id", obfstr::obfstr!("CF_ACCESS_CLIENT_ID"))
-        .header("CF-Access-Client-Secret", obfstr::obfstr!("CF_ACCESS_CLIENT_SECRET"))
-        .header("X-API-Key", obfstr::obfstr!("APP_API_KEY"))
-        .header("X-User-Id", obfstr::obfstr!("drexa1@hotmail.com"))
+        .query(&[("from", from.format("%Y/%m/%d").to_string()), ("to", to.format("%Y/%m/%d").to_string())])
+        .header("CF-Access-Client-Id",  client_id!())
+        .header("CF-Access-Client-Secret", var("CF_ACCESS_CLIENT_SECRET")?)
+        .header("X-API-Key", var("APP_API_KEY")?)
+        .header("X-User-Id", var("APP_USER_ID")?)
         .header("Accept", "application/json")
         .send().await?.json().await?;
     if json["success"].as_bool() != Some(true) {

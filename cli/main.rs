@@ -12,6 +12,7 @@ mod auth;
 mod invoices;
 mod contractors;
 mod settings;
+mod cloudflare;
 
 #[derive(Clone, Display, EnumIter)]
 enum MainMenuAction {
