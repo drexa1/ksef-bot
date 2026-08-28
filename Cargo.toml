@@ -6,6 +6,13 @@ edition = "2024"
 [[bin]]
 name = "ksef-bot"
 path = "cli/main.rs"
+
+[profile.release]
+strip = true
+lto = true
+opt-level = 3
+codegen-units = 1
+
 [dependencies]
 anyhow = "1.0.104"
 chrono = "0.4.45"
