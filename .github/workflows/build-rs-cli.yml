@@ -55,7 +55,7 @@ jobs:
           cp "target/${{ matrix.target }}/release/${BINARY_NAME}${{ matrix.extension }}" \
              "dist/${BINARY_NAME}-${{ matrix.target }}${{ matrix.extension }}"
       - name: Upload artifact
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ env.BINARY_NAME }}-${{ matrix.target }}
           path: dist/${{ env.BINARY_NAME }}-${{ matrix.target }}${{ matrix.extension }}
@@ -68,11 +68,11 @@ jobs:
       contents: write
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
       - name: Download artifacts
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v8
         with:
           path: dist
           pattern: ${{ env.BINARY_NAME }}-*
