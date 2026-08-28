@@ -1,49 +1,32 @@
 use anyhow::Result;
-use inquire::{Confirm, Password, Select, Text};
-use strum::{Display, EnumIter, IntoEnumIterator};
+use inquire::{Confirm, Password, Text};
+use strum::{Display, EnumIter};
 
 #[derive(Clone, Display, EnumIter)]
-enum LoginMethod {
+pub enum LoginMethod {
     #[strum(to_string = "Google")] Google,
     #[strum(to_string = "Microsoft")] Microsoft,
     #[strum(to_string = "Facebook")] Facebook,
     #[strum(to_string = "Email")] Email
 }
 
-pub fn login_loop() -> Result<()> {
-    loop {
-        let method = Select::new("Welcome to KSeF-bot. How would you like to log in?", LoginMethod::iter().collect()).prompt()?;
-        let logged_in = match method {
-            LoginMethod::Google => login_with_google()?,
-            LoginMethod::Microsoft => login_with_microsoft()?,
-            LoginMethod::Facebook => login_with_facebook()?,
-            LoginMethod::Email => login_with_email_loop()?
-        };
-        if logged_in {
-            println!("Login successful.");
-            println!();
-            return Ok(())
-        }
-    }
-}
-
 // -------------------------------------------------------------------------------------------------
 // Login with SSO
 // -------------------------------------------------------------------------------------------------
 
-fn login_with_google() -> Result<bool> {
+pub(crate) fn login_with_google() -> Result<bool> {
     println!("Opening Google authentication...");
     println!("Waiting for Google OAuth callback...");
     Ok(true)
 }
 
-fn login_with_microsoft() -> Result<bool> {
+pub(crate) fn login_with_microsoft() -> Result<bool> {
     println!("Opening Microsoft authentication...");
     println!("Waiting for Microsoft OAuth callback...");
     Ok(true)
 }
 
-fn login_with_facebook() -> Result<bool> {
+pub(crate) fn login_with_facebook() -> Result<bool> {
     println!("Opening Facebook authentication...");
     println!("Waiting for Facebook OAuth callback...");
     Ok(true)
@@ -53,7 +36,7 @@ fn login_with_facebook() -> Result<bool> {
 // Login with email
 // -------------------------------------------------------------------------------------------------
 
-fn login_with_email_loop() -> Result<bool> {
+pub(crate) fn login_with_email_loop() -> Result<bool> {
     let email = Text::new("Email address").with_placeholder("you@example.com").prompt()?;
     if account_exists(&email)? {
         println!("Account found.");
