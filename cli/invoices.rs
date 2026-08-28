@@ -54,10 +54,10 @@ async fn list_invoices(endpoint: &InvoiceType) -> anyhow::Result<Vec<serde_json:
     let json: serde_json::Value = reqwest::Client::new()
         .get(format!("{}/ksef/{endpoint}", var("CF_WORKER_URL")?))
         .query(&[("from", from), ("to", to)])
-        .header("CF-Access-Client-Id", client_id)
-        .header("CF-Access-Client-Secret", client_secret)
-        .header("X-API-Key", api_key)
-        .header("X-User-Id", user_id)
+        .header("CF-Access-Client-Id", obfstr::obfstr!("CF_ACCESS_CLIENT_ID").as_ref())
+        .header("CF-Access-Client-Secret", obfstr::obfstr!("CF_ACCESS_CLIENT_SECRET").as_ref())
+        .header("X-API-Key", obfstr::obfstr!("APP_API_KEY").as_ref())
+        .header("X-User-Id", obfstr::obfstr!("drexa1@hotmail.com").as_ref())
         .header("Accept", "application/json")
         .send().await?.json().await?;
     if json["success"].as_bool() != Some(true) {
