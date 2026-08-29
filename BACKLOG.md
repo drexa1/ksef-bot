@@ -43,7 +43,8 @@
 - [x] Invoice generator frontend: invoice payment review select options  
 - [x] Invoice generator frontend: form validation  
 - [x] Invoice generator frontend: create logic  
-- [ ] Invoice generator frontend: generate actions logic  
+- [x] Invoice generator frontend: review generated XML  
+- [ ] Invoice generator frontend: submit action logic  
 - [ ] Invoice generator frontend: invoice additional column selects  
 - [ ] Invoice generator frontend: invoice remove positions  
 - [ ] Invoice generator frontend: invoice add another  
