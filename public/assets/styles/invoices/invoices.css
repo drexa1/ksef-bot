@@ -259,10 +259,15 @@
     justify-content: center;
 }
 /* Items table ------------------------------------------------------------------------------------------------------ */
+.items-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+}
 .items-table th {
     background-color: var(--accent-soft);
+    color: var(--text-1);
     padding: .5rem;
-    color: var(--text-label);
     font-size: .75rem;
     font-weight: 600;
     white-space: nowrap;
@@ -270,8 +275,10 @@
     border-bottom: 1px solid var(--line) !important;
 }
 .items-table td {
-    padding: .5rem;
+    background-color: var(--surface);
+    color: var(--text-1);
     border-bottom: 1px solid var(--line);
+    padding: .5rem;
     vertical-align: middle;
 }
 .item-number {
