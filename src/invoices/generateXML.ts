@@ -4,13 +4,20 @@
 const KSEF_NAMESPACE = "http://crd.gov.pl/wzor/2025/06/25/13775/";
 
 export function generateInvoiceXml(form: HTMLFormElement): string {
-    //
+    // Optional markings
+    const mpp = isChecked(form, "markingMpp");
+    const mk = isChecked(form, "markingMk");
+    const fp = isChecked(form, "markingFp");
+    const tp = isChecked(form, "markingTp");
+
+    // Invoice data
+    const invoiceNumber = getInputValue(form, "invoiceNumber");
     const issueDate = getInputValue(form, "issueDate");
     const issuePlace = getInputValue(form, "issuePlace");
-    const invoiceNumber = getInputValue(form, "invoiceNumber");
+    const postingDate = getInputValue(form, "postingDate");
     const deliveryDate = getInputValue(form, "deliveryDate");
 
-    //
+    // Contractor section
     const contractorName = getInputValue(form, "contractorName");
     const contractorNip = getInputValue(form, "contractorNipInput");
     const contractorTown = getInputValue(form, "contractorTown");
@@ -18,8 +25,9 @@ export function generateInvoiceXml(form: HTMLFormElement): string {
     const contractorStreet = getInputValue(form, "contractorStreet");
     const contractorBuilding = getInputValue(form, "contractorBuilding");
     const contractorApartment = getInputValue(form, "contractorApartment");
+    const countryCode = "PL";
 
-    const address = [
+    const addressLine = [
         contractorTown,
         contractorPostalCode,
         [
@@ -28,25 +36,26 @@ export function generateInvoiceXml(form: HTMLFormElement): string {
         ].filter(Boolean).join(" ")
     ].filter(Boolean).join(", ");
 
-    //
-    const paymentType = getSelectValue(form, "paymentType");
-    const paymentDeadline = getInputValue(form, "paymentDeadline");
-    const bankAccount = getInputValue(form, "bankAccount");
+    // Additional entity
     const additionalEntity = getCheckedValue(form, "additionalEntity");
     const jst = additionalEntity === "jst";
     const gv = additionalEntity === "gv";
+    const other = additionalEntity === "other";
 
-    //
+    const jstXml = jst ? `<JST>1</JST>` : "";
+    const gvXml = gv ? `<GV>1</GV>` : "";
+
+    // Invoice positions
     const lines = Array.from(form.querySelectorAll(".item-row")) as HTMLTableRowElement[];
     const invoiceLines = lines.map((row, index) => {
         const number = index + 1;
-        const description = (row.querySelector(`#itemName${number}`) as HTMLInputElement | null)?.value.trim() ?? "";
-        const unit = (row.querySelector(`#itemUnit${number}`) as HTMLInputElement | null)?.value.trim() ?? "";
-        const quantity = parseFloat((row.querySelector(`#itemQuantity${number}`) as HTMLInputElement | null)?.value ?? "0") || 0;
-        const unitPrice = parseFloat((row.querySelector(`#itemPrice${number}`) as HTMLInputElement | null)?.value ?? "0") || 0;
-        const net = parseFloat((row.querySelector(`#itemNet${number}`) as HTMLInputElement | null)?.value ?? "0") || 0;
-        const vat = parseFloat((row.querySelector(`#itemVATamount${number}`) as HTMLInputElement | null)?.value ?? "0") || 0;
-        const vatRate = (row.querySelector(`#itemVAT${number}`) as HTMLSelectElement | null)?.value ?? "23";
+        const description = row.querySelector<HTMLInputElement>(`#itemName${number}`)!.value.trim() ?? "";
+        const unit = row.querySelector<HTMLInputElement>(`#itemUnit${number}`)!.value.trim() ?? "";
+        const quantity = parseFloat(row.querySelector<HTMLInputElement>(`#itemQuantity${number}`)!.value ?? "0");
+        const unitPrice = parseFloat(row.querySelector<HTMLInputElement>(`#itemPrice${number}`)!.value ?? "0");
+        const net = parseFloat(row.querySelector<HTMLInputElement>(`#itemNet${number}`)!.value ?? "0");
+        const vat = parseFloat(row.querySelector<HTMLInputElement>(`#itemVATamount${number}`)!.value ?? "0");
+        const vatRate = (row.querySelector(`#itemVAT${number}`) as unknown as HTMLSelectElement)!.value ?? "23";
         return `<FaWiersz>
             <NrWierszaFa>${number}</NrWierszaFa>
             <P_7>${escapeXml(description)}</P_7>
@@ -59,20 +68,15 @@ export function generateInvoiceXml(form: HTMLFormElement): string {
         </FaWiersz>`;
     }).join("\n");
 
-    //
-    const totalNet = parseFloat((form.querySelector("#totalNet") as HTMLElement | null)?.textContent ?? "0") || 0;
-    const totalVat = parseFloat((form.querySelector("#totalVAT") as HTMLElement | null)?.textContent ?? "0") || 0;
-    const totalGross = parseFloat((form.querySelector("#totalGross") as HTMLElement | null)?.textContent ?? "0") || 0;
+    // Position totals
+    const totalNet = parseFloat((form.querySelector("#totalNet") as HTMLElement).textContent ?? "0");
+    const totalVat = parseFloat((form.querySelector("#totalVAT") as HTMLElement).textContent ?? "0");
+    const totalGross = parseFloat((form.querySelector("#totalGross") as HTMLElement).textContent ?? "0");
 
-    //
-    const mk = isChecked(form, "markingMk");
-    const mpp = isChecked(form, "markingMpp");
-
-    //
-    const jstXml = jst ? `<JST>1</JST>` : "";
-    const gvXml = gv ? `<GV>1</GV>` : "";
-
-    //
+    // Payment section
+    const paymentType = getSelectValue(form, "paymentType");
+    const paymentDeadline = getInputValue(form, "paymentDeadline");
+    const bankAccount = getInputValue(form, "bankAccount");
     const bankAccountXml = bankAccount ? `
         <RachunekBankowy>
           <NrRB>${escapeXml(bankAccount)}</NrRB>
@@ -104,8 +108,8 @@ export function generateInvoiceXml(form: HTMLFormElement): string {
               <Nazwa>${escapeXml(contractorName)}</Nazwa>
             </DaneIdentyfikacyjne>
             <Adres>
-              <KodKraju>PL</KodKraju>
-              <AdresL1>${escapeXml(address)}</AdresL1>
+              <KodKraju>${escapeXml(countryCode)}</KodKraju>
+              <AdresL1>${escapeXml(addressLine)}</AdresL1>
             </Adres>${jstXml}${gvXml}
           </Podmiot2>
           <Fa>

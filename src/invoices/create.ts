@@ -1,6 +1,6 @@
 import {getCurrentLocation} from "../location";
 import {CustomerUI, loadCustomers} from "../api/customers";
-import {generateInvoiceXml} from "./invoiceXML";
+import {generateInvoiceXml} from "./generateXML";
 import {clearValidationErrors, updateFormError, validateInvoiceForm} from "./validate";
 import {loadUserProfile} from "../api/users";
 import {AppUser} from "../../worker/types/db";
@@ -298,8 +298,6 @@ function addPosition(userProfile: AppUser) {
         tbody.appendChild(newRow);
         // Update index
         updateItemNumber();
-        // Update element id's
-        const rowIndex = newRow.querySelector<HTMLSpanElement>("#rowIndex")!.textContent!;
         calculatePositionLine(newRow, userProfile);
     });
 }

@@ -46,6 +46,7 @@
 - [x] Invoice generator frontend: review generated XML  
 - [x] Invoice generator frontend: invoice remove positions  
 - [x] Invoice generator frontend: invoice add position  
+- [ ] Invoice generator frontend: contractor additional entity  
 - [ ] Invoice generator frontend: submit action logic  
 - [ ] Invoice generator frontend: invoice additional column selects  
 - [ ] Invoice generator frontend: mobile invoice items table  
