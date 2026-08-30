@@ -46,7 +46,7 @@
 - [x] Invoice generator frontend: review generated XML  
 - [x] Invoice generator frontend: invoice remove positions  
 - [x] Invoice generator frontend: invoice add position  
-- [ ] Finish dark theme  
+- [x] Finish dark theme  
 - [ ] Invoice generator frontend: submit action logic  
 - [ ] Invoice generator frontend: mobile invoice items table  
 - [ ] Invoice generator frontend: smoke mobile
