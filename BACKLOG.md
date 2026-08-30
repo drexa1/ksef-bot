@@ -47,8 +47,9 @@
 - [x] Invoice generator frontend: invoice remove positions  
 - [x] Invoice generator frontend: invoice add position  
 - [x] Finish dark theme  
+- [x] Invoice generator frontend: mobile invoice items table  
 - [ ] Invoice generator frontend: submit action logic  
-- [ ] Invoice generator frontend: mobile invoice items table  
+- [ ] Invoice generator frontend: wrangle up CSS  
 - [ ] Invoice generator frontend: smoke mobile
 - [ ] Invoice generator frontend: contractor additional entity  
 - [ ] Invoice generator frontend: invoice additional column selects  
