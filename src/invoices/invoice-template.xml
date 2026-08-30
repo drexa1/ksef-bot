@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Faktura xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+         xmlns="http://crd.gov.pl/wzor/2025/06/25/13775/">
+    <Naglowek>
+        <KodFormularza kodSystemowy="FA (3)" wersjaSchemy="1-0E">FA</KodFormularza>
+        <WariantFormularza>3</WariantFormularza>
+        <DataWytworzeniaFa>{{DATA_WYTWORZENIA}}</DataWytworzeniaFa>
+        <SystemInfo>{{SYSTEM_INFO}}</SystemInfo>
+    </Naglowek>
+    <Podmiot1>
+        <DaneIdentyfikacyjne>
+            <NIP>{{CONTRACTOR_NIP}}</NIP>
+            <Nazwa>{{CONTRACTOR_NAME}}</Nazwa>
+        </DaneIdentyfikacyjne>
+        <Adres>
+            <KodKraju>{{COUNTRY_CODE}}</KodKraju>
+            <AdresL1>{{CONTRACTOR_ADDRESS}}</AdresL1>
+        </Adres>
+        <DaneKontaktowe />
+    </Podmiot1>
+    <Podmiot2>
+        <DaneIdentyfikacyjne>
+            <NIP>{{CUSTOMER_NIP}}</NIP>
+            <Nazwa>{{CUSTOMER_NAME}}</Nazwa>
+        </DaneIdentyfikacyjne>
+        <Adres>
+            <KodKraju>{{COUNTRY_CODE}}</KodKraju>
+            <AdresL1>{{CUSTOMER_ADDRESS}}</AdresL1>
+        </Adres>
+        {{ADDITIONAL_ENTITY}}
+    </Podmiot2>
+    <Fa>
+        <KodWaluty>{{CURRENCY_CODE}}</KodWaluty>
+        <P_1>{{ISSUE_DATE}}</P_1>
+        <P_1M>{{ISSUE_PLACE}}</P_1M>
+        <P_2>{{INVOICE_NUMBER}}</P_2>
+        <P_6>{{DELIVERY_DATE}}</P_6>
+        <P_13_1>{{TOTAL_NET}}</P_13_1>
+        <P_14_1>{{TOTAL_VAT}}</P_14_1>
+        <P_15>{{TOTAL_GROSS}}</P_15>
+        {{ANNOTATIONS}}
+        <RodzajFaktury>VAT</RodzajFaktury>
+        {{INVOICE_LINES}}
+        <Platnosc>
+            <TerminPlatnosci>
+                <Termin>{{PAYMENT_DEADLINE}}</Termin>
+            </TerminPlatnosci>
+            <FormaPlatnosci>{{PAYMENT_TYPE}}</FormaPlatnosci>
+            {{BANK_ACCOUNT}}
+        </Platnosc>
+    </Fa>
+</Faktura>

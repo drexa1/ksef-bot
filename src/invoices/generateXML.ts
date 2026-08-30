@@ -80,8 +80,7 @@ export function generateInvoiceXml(form: HTMLFormElement): string {
     const bankAccountXml = bankAccount ? `
         <RachunekBankowy>
           <NrRB>${escapeXml(bankAccount)}</NrRB>
-        </RachunekBankowy>
-    ` : "";
+        </RachunekBankowy>` : "";
 
     return `<?xml version="1.0" encoding="utf-8"?>
         <Faktura xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="${KSEF_NAMESPACE}">
