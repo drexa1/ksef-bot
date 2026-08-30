@@ -72,9 +72,9 @@ export async function whoami(req: Request, env: Env): Promise<Response> {
         const adminUser =  await getRepo(env).getAll<AppUser>("users", { tier: 0 });
         return Response.json(adminUser[0].email);
     }
-    // User identifier/email from client that made it through Zero Trust
-    const jwt = req.headers.get("Cf-Access-Jwt-Assertion");
     // Zero trust logged user
+    const jwt = req.headers.get("Cf-Access-Jwt-Assertion");
+    // User identifier/email from client that made it through Zero Trust
     const userId = jwt ? decodeJWT(jwt).email : req.headers.get("X-User-Id");
     if (!userId) throw new AuthError("Unauthenticated user", 401);
     console.info("[Whoami] requester:", userId);
