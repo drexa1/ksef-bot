@@ -7,7 +7,7 @@
         --text-label: #808080;
         --line: #333333;
         --accent: #64b5f6;
-        --accent-soft: #1a1a1a;
+        --accent-soft: var(--section-header);
     }
     .form-control,
     .form-select,

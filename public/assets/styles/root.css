@@ -32,7 +32,7 @@ body {
         --text-label: #666666;
         --line: #cccccc;
         --accent: #003399;
-        --accent-soft: #e5ebf5;
+        --accent-soft: var(--section-header);
     }
 }
 

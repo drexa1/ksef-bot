@@ -313,29 +313,29 @@
 
                                 <tbody id="itemsBody">
                                     <tr class="item-row">
-                                        <td class="item-number">
+                                        <td class="item-number" data-label="No.">
                                             <button id="removePosition1" type="button" class="btn btn-danger btn-sm removePosition" aria-label="Remove item">
                                                 <i class="bi bi-x-lg"></i>
                                             </button>
                                             <span id="rowIndex">1</span>
                                         </td>
-                                        <td>
+                                        <td data-label="Name">
                                             <label class="d-none" for="itemName1">Item name</label>
                                             <input id="itemName1" type="text" class="form-control" placeholder="Enter name">
                                         </td>
-                                        <td>
+                                        <td data-label="Unit net price">
                                             <label class="d-none" for="itemPrice1">Unit net price</label>
                                             <input id="itemPrice1" type="number" step="10" min="0" class="form-control" placeholder="Enter amount">
                                         </td>
-                                        <td>
+                                        <td data-label="Quantity">
                                             <label class="d-none" for="itemQuantity1">Quantity</label>
                                             <input id="itemQuantity1" type="number" step="1" min="1" value="1" class="form-control" placeholder="Enter quantity">
                                         </td>
-                                        <td>
+                                        <td data-label="Unit of measurement">
                                             <label class="d-none" for="itemUnit1">Unit of measurement</label>
                                             <input id="itemUnit1" type="text" class="form-control" value="szt" placeholder="Enter unit">
                                         </td>
-                                        <td>
+                                        <td data-label="VAT rate">
                                             <label class="d-none" for="itemVAT1">VAT rate</label>
                                             <select id="itemVAT1" class="form-select">
                                                 <option value="23" selected>23%</option>
@@ -345,29 +345,29 @@
                                                 <option value="ZW">Exempt</option>
                                             </select>
                                         </td>
-                                        <td>
+                                        <td data-label="Net amount">
                                             <label class="d-none" for="itemNet1">Net amount</label>
                                             <input id="itemNet1" type="number" step="0.01" class="form-control" value="0.00" disabled>
                                         </td>
-                                        <td>
+                                        <td data-label="VAT amount">
                                             <label class="d-none" for="itemVATamount1">VAT amount</label>
                                             <input id="itemVATamount1" type="number" step="0.01" class="form-control" value="0.00" disabled>
                                         </td>
-                                        <td>
+                                        <td data-label="Gross amount">
                                             <label class="d-none" for="itemGross1">Gross amount</label>
                                             <input id="itemGross1" type="number" step="0.01" class="form-control" value="0.00" disabled>
                                         </td>
 
                                         <!-- Additional columns-->
-                                        <td class="d-none">
+                                        <td class="d-none" data-label="GTU">
                                             <label class="d-none" for="itemGTU1">GTU</label>
                                             <input id="itemGTU1" type="text" class="form-control" placeholder="GTU">
                                         </td>
-                                        <td class="d-none">
+                                        <td class="d-none" data-label="Procedure symbols">
                                             <label class="d-none" for="itemProcedureSymbols1">Procedure symbols</label>
                                             <input id="itemProcedureSymbols1" type="text" class="form-control" placeholder="SYMBOL">
                                         </td>
-                                        <td class="d-none">
+                                        <td class="d-none" data-label="Additional information">
                                             <label class="d-none" for="itemAdditionalInformation1">Additional information</label>
                                             <input id="itemAdditionalInformation1" type="text" class="form-control" placeholder="Additional information">
                                         </td>
