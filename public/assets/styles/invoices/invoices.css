@@ -277,6 +277,8 @@
 .items-table td {
     background-color: var(--surface);
     color: var(--text-1);
+    border-left: 1px solid var(--line) !important;
+    border-right: 1px solid var(--line) !important;
     border-bottom: 1px solid var(--line);
     padding: .5rem;
     vertical-align: middle;
