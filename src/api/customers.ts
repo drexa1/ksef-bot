@@ -1,7 +1,7 @@
 /// <reference types="vite/client"/>
 
 /// UI model
-export interface Contractor {
+export interface CustomerUI {
     name: string;
     nip: string;
     town: string;
@@ -31,7 +31,7 @@ interface Customer {
     updatedAt: string;
 }
 
-export async function loadCustomers(): Promise<Contractor[]> {
+export async function loadCustomers(): Promise<CustomerUI[]> {
     const url = `${import.meta.env.VITE_WORKER_URL}/app/customers`;
     const response = await fetch(url, {
         method: "GET",
@@ -44,7 +44,7 @@ export async function loadCustomers(): Promise<Contractor[]> {
     return customers.map(customerToUI);
 }
 
-function customerToUI(customer: Customer): Contractor {
+function customerToUI(customer: Customer): CustomerUI {
     const [town = "", postalCode = "", streetAndBuilding = ""] = customer.addressL1.split(", ");
     const match = streetAndBuilding.match(/^(.+?)\s+(\S+)$/);
     return {

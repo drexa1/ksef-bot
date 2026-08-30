@@ -1,5 +1,5 @@
 import {getCurrentLocation} from "../location";
-import {Contractor, loadCustomers} from "../api/customers";
+import {CustomerUI, loadCustomers} from "../api/customers";
 import {generateInvoiceXml} from "./invoiceXML";
 import {clearValidationErrors, updateFormError, validateInvoiceForm} from "./validate";
 
@@ -48,7 +48,7 @@ const contractorBuilding = document.getElementById("contractorBuilding") as HTML
 const contractorApartment = document.getElementById("contractorApartment") as HTMLInputElement;
 const contractorMail = document.getElementById("contractorMail") as HTMLInputElement;
 
-let contractors: Contractor[] = [];
+let contractors: CustomerUI[] = [];
 
 /// Prefilled values for the Contractor Data section
 async function initContractorData() {
@@ -150,7 +150,7 @@ function searchContractorsByNip(nip: string): void {
     renderContractorSuggestions(contractorNipSuggestions, results, fillContractor);
 }
 
-function renderContractorSuggestions(container: HTMLDivElement, contractors: Contractor[], onSelect: (contractor: Contractor) => void): void {
+function renderContractorSuggestions(container: HTMLDivElement, contractors: CustomerUI[], onSelect: (contractor: CustomerUI) => void): void {
     container.innerHTML = "";
     for (const contractor of contractors) {
         const item = document.createElement("div");
@@ -172,7 +172,7 @@ function renderContractorSuggestions(container: HTMLDivElement, contractors: Con
     container.style.display = contractors.length > 0 ? "block" : "none";
 }
 
-function fillContractor(contractor: Contractor): void {
+function fillContractor(contractor: CustomerUI): void {
     contractorNameInput.value = contractor.name;
     contractorNipInput.value = contractor.nip ?? "";
     contractorTown.value = contractor.town ?? "";
