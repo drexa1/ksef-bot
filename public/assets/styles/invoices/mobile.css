@@ -44,125 +44,125 @@
         gap: 1rem;
     }
     /* Positions ---------------------------------------------------------------------------------------------------- */
-    /* Items table -------------------------------------------------------------------------------------------------- */
-    .items-table thead,
-    .items-table tbody,
-    .items-table thead tr,
-    .items-table tbody tr,
-    .items-table thead th + th,
-    .items-table tbody td + td {
-        border-top: none !important;
-        border-bottom: none !important;
-    }
-    .items-table thead th,
-    .items-table tbody td {
-        border-top: 1px solid var(--line) !important;
-    }
     .items-table thead {
-        float: left;
-        width: 50%;
-        background-color: var(--accent-soft);
+        display: none;
     }
-    .items-table thead tr {
-        display: flex;
-        flex-direction: column;
-    }
-    .items-table thead th:first-child {
-        border-bottom: 1px solid var(--line) !important;
-    }
-    .items-table thead th:nth-child(6),
-    .items-table thead th:nth-child(9) {
-        border-bottom: 1px solid var(--line) !important;
-    }
-    .items-table thead th {
-        display: flex;
-        align-items: center;
-        min-height: 2.5rem;
-        font-weight: 600;
-        background-color: transparent;
-        color: var(--text-1);
-        border-bottom: 1px solid transparent !important;
-    }
-    thead.table-light th {
-        border-left: 1px solid var(--line) !important;
-        border-right: 1px solid var(--line) !important;
-    }
-    /* -------------------------------------------------------------------------------------------------------------- */
     .items-table tbody {
         display: block;
-        width: 50%;
-        margin-left: 50%;
+        width: 100%;
+        margin: 0;
     }
-    .item-number {
-        padding-left: 1rem !important;
-        padding-right: .5rem !important;
+    .items-table tbody .item-row {
+        display: block;
+        width: 100%;
+        margin-bottom: 1rem;
+        border: 1px solid var(--line);
+    }
+    .items-table tbody .item-row td {
+        display: flex !important;
+        align-items: stretch;
+        width: 100%;
+        min-height: 2.5rem;
+        padding: 0 !important;
+        background-color: var(--surface) !important;
+        color: var(--text-1);
+        border: 0 !important;
         border-bottom: 1px solid var(--line) !important;
-        background-color: var(--accent-soft) !important;
     }
-    #itemsTable td {
-        border: 1px solid transparent;
+    .items-table tbody .item-row td::before {
+        content: attr(data-label);
+        flex: 0 0 50%;
+        display: flex;
+        align-items: center;
+        padding: .5rem;
+        background-color: var(--accent-soft);
+        color: var(--text-1);
+        font-size: .75rem;
+        font-weight: 600;
         border-right: 1px solid var(--line);
     }
-    .items-table tbody tr:not(.total-row) td {
-        display: flex;
-        min-height: 2.5rem;
-        align-items: center;
-        padding: 3px;
-        background-color: var(--surface) !important;
-        border-bottom: 1px solid var(--line) !important;
-    }
-    .items-table tbody tr:not(.total-row) td input,
-    .items-table tbody tr:not(.total-row) td select {
-        border: none;
-        background-color: var(--surface) !important;
-        color: var(--text-1) !important;
+    .items-table tbody .item-row td > input,
+    .items-table tbody .item-row td > select {
+        flex: 1;
+        min-width: 0;
+        margin: 0;
+        padding: .375rem .5rem;
         border: 0 !important;
         box-shadow: none !important;
+        background-color: var(--surface) !important;
+        color: var(--text-1) !important;
     }
-    .items-table tbody tr:not(.total-row) td.item-number {
-        justify-content: center;
-        background-color: var(--accent-soft) !important;
+    .items-table tbody .item-row td.item-number {
+        justify-content: flex-start;
+        align-items: center;
+        background-color: var(--surface) !important;
         color: var(--text-2);
     }
-    .items-table tbody tr:not(.total-row) td:nth-child(6),
-    .items-table tbody tr:not(.total-row) td:nth-child(9) {
-        border-bottom: 1px solid var(--line) !important;
+    td.item-number {
+        display: flex !important;
+        align-items: stretch !important;
+        padding: 0 !important;
+        height: auto !important;
+        min-height: 2.5rem !important;
     }
-    .items-table tbody tr:not(.total-row) td:nth-child(7),
-    .items-table tbody tr:not(.total-row) td:nth-child(8),
-    .items-table tbody tr:not(.total-row) td:nth-child(9),
-    .items-table tbody tr:not(.total-row) td:nth-child(7) input,
-    .items-table tbody tr:not(.total-row) td:nth-child(8) input,
-    .items-table tbody tr:not(.total-row) td:nth-child(9) input {
-        background-color: var(--surface) !important;
+    td.item-number::before {
+        content: attr(data-label);
+        display: flex;
+        align-items: center;
+        height: auto !important;
+        align-self: stretch !important;
+        background-color: var(--accent-soft) !important;
+        padding: 0 1rem;
+        margin: 0 !important;
     }
-    .items-table td:nth-child(7) input,
-    .items-table td:nth-child(8) input,
-    .items-table td:nth-child(9) input {
+    td.item-number button,
+    td.item-number span#rowIndex {
+        align-self: center;
+        margin-left: 0.625rem;
+    }
+    td.item-number span#rowIndex {
+        margin-right: 1rem;
+    }
+    .items-table tbody .item-row td.item-number span {
+        flex: 1;
+        margin-left: 0;
+        padding: .5rem;
+        text-align: left;
+    }
+    .items-table tbody .item-row td.item-number button {
+        order: 2;
+        flex: 0 0 auto;
+        margin: 0 .5rem 0 0 !important;
+    }
+    .items-table tbody .item-row td:last-child {
+        border-bottom: 0 !important;
+    }
+    .items-table tbody .item-row td:nth-child(7) input,
+    .items-table tbody .item-row td:nth-child(8) input,
+    .items-table tbody .item-row td:nth-child(9) input {
         text-align: right !important;
     }
-    /* -------------------------------------------------------------------------------------------------------------- */
     .items-table .total-row {
         display: block;
         margin-top: 1rem;
         font-weight: 600;
         border-top: 1px solid var(--line) !important;
-        border-bottom: 1px solid var(--line) !important;
+    }
+    tr.total-row {
+        border-bottom: none !important;
     }
     .items-table .total-row td:first-child {
         display: none !important;
-    }
-    .items-table .total-row td:nth-child(2) {
-        border-bottom: 1px solid var(--line) !important;
     }
     .items-table .total-row td {
         display: flex;
         background-color: var(--surface) !important;
         border-left: 1px solid var(--line) !important;
+        border-right: 1px solid var(--line) !important;
     }
     td.text-end {
         justify-content: flex-end !important;
-        padding-right: 0.5rem !important;
+        padding-right: .5rem !important;
     }
     span#totalNet,
     span#totalVAT,
