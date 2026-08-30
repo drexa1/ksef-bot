@@ -44,10 +44,10 @@
 - [x] Invoice generator frontend: form validation  
 - [x] Invoice generator frontend: create logic  
 - [x] Invoice generator frontend: review generated XML  
+- [x] Invoice generator frontend: invoice remove positions  
+- [x] Invoice generator frontend: invoice add position  
 - [ ] Invoice generator frontend: submit action logic  
 - [ ] Invoice generator frontend: invoice additional column selects  
-- [ ] Invoice generator frontend: invoice remove positions  
-- [ ] Invoice generator frontend: invoice add another  
 - [ ] Invoice generator frontend: mobile invoice items table  
 - [ ] Invoice generator frontend: invoice additional data  
 - [ ] Invoice generator frontend: smoke mobile  

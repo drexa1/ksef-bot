@@ -2,12 +2,12 @@ import {getCurrentLocation} from "../location";
 import {CustomerUI, loadCustomers} from "../api/customers";
 import {generateInvoiceXml} from "./invoiceXML";
 import {clearValidationErrors, updateFormError, validateInvoiceForm} from "./validate";
+import {loadUserProfile} from "../api/users";
+import {AppUser} from "../../worker/types/db";
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Invoice data
 // ---------------------------------------------------------------------------------------------------------------------
-
-/// TODO: prefill from user settings
 async function initInvoiceData() {
     const invoiceDataSection = document.getElementById("invoiceData") as HTMLDivElement;
     const now = new Date();
@@ -214,30 +214,48 @@ identifierOptions.forEach((option) => {
 // Positions
 // ---------------------------------------------------------------------------------------------------------------------
 
+/// Recalculate net, VAT and gross per on change of price, quantity or VAT
+function initializePositions(userProfile: AppUser): void {
+    document.addEventListener("input", (event: Event) => {
+        const target = event.target as HTMLElement;
+        if (
+            target.id.startsWith("itemPrice") ||
+            target.id.startsWith("itemQuantity") ||
+            target.id.startsWith("itemVAT")
+        ) {
+            calculatePositionLine(target.closest(".item-row")!, userProfile);
+        }
+    });
+    addPosition(userProfile);
+    document.querySelectorAll(".item-row").forEach((row) => calculatePositionLine(row, userProfile));
+}
+
 /// Calculate net, VAT and gross per invoice position
-function calculatePositionsRow(row: Element): void {
-    const rowIndex = row.querySelector<HTMLSpanElement>("#rowIndex") as HTMLSpanElement;
+function calculatePositionLine(row: Element, userProfile?: AppUser): void {
+    const itemName = row.querySelector<HTMLInputElement>('input[id^="itemName"]')!;
+    const itemPrice = row.querySelector<HTMLInputElement>('input[id^="itemPrice"]')!;
+    const itemQuantity = row.querySelector<HTMLInputElement>('input[id^="itemQuantity"]')!;
+    const itemVATrate = row.querySelector('select[id^="itemVAT"]') as unknown as HTMLSelectElement;
+    const netInput = row.querySelector<HTMLInputElement>('input[id^="itemNet"]')!;
+    const VATInput = row.querySelector<HTMLInputElement>('input[id^="itemVATamount"]')!;
+    const grossInput = row.querySelector<HTMLInputElement>('input[id^="itemGross"]')!;
 
-    const itemPrice = row.querySelector<HTMLInputElement>(`#itemPrice${rowIndex.textContent}`)!;
-    const itemQuantity = row.querySelector<HTMLInputElement>(`#itemQuantity${rowIndex.textContent}`)!;
-    const itemVATrate = row.querySelector(`#itemVAT${rowIndex.textContent}`) as unknown as HTMLSelectElement;
+    if (userProfile?.defaultItemName) itemName.value = userProfile.defaultItemName;
+    if (userProfile?.defaultHourlyRate) itemPrice.value = String(userProfile.defaultHourlyRate);
 
-    const grossUnitPrice = parseFloat(itemPrice?.value) || 0;
-    const quantity = parseFloat(itemQuantity?.value) || 0;
-    const VATrate = itemVATrate?.value || "23";
+    const grossUnitPrice = parseFloat(itemPrice.value) || 0;
+    const quantity = parseFloat(itemQuantity.value) || 0;
+    const VATrate = itemVATrate.value || "23";
 
     const gross = grossUnitPrice * quantity;
     let VAT = 0;
     let net = gross;
+
     if (VATrate !== "ZW") {
         const rate = parseFloat(VATrate) / 100;
         net = gross / (1 + rate);
         VAT = gross - net;
     }
-
-    const netInput = row.querySelector<HTMLInputElement>(`#itemNet${rowIndex.textContent}`)!;
-    const VATInput = row.querySelector<HTMLInputElement>(`#itemVATamount${rowIndex.textContent}`)!;
-    const grossInput = row.querySelector<HTMLInputElement>(`#itemGross${rowIndex.textContent}`)!;
 
     netInput.value = net.toFixed(2);
     VATInput.value = VAT.toFixed(2);
@@ -246,79 +264,82 @@ function calculatePositionsRow(row: Element): void {
     calculatePositionsTotals();
 }
 
-/// Recalculate net, VAT and gross per on change of price, quantity or VAT
-document.addEventListener("input", (event: Event) => {
-    const target = event.target as HTMLElement;
-    if (target.id.startsWith("itemPrice") || target.id.startsWith("itemQuantity") || target.id.startsWith("itemVAT")) {
-        const row = target.closest(".item-row")!;
-        calculatePositionsRow(row);
-    }
-});
-
 /// Calculate totals for net, VAT and gross
 function calculatePositionsTotals(): void {
     let totalNet = 0;
     let totalVAT = 0;
     let totalGross = 0;
 
-    document.querySelectorAll(".item-row").forEach((row) => {
-        const rowIndex = row.querySelector<HTMLSpanElement>("#rowIndex") as HTMLSpanElement;
-        const rowNet = row.querySelector<HTMLInputElement>(`#itemNet${rowIndex.textContent}`)!;
-        const rowVAT = row.querySelector<HTMLInputElement>(`#itemVATamount${rowIndex.textContent}`)!;
-        const rowGross = row.querySelector<HTMLInputElement>(`#itemGross${rowIndex.textContent}`)!;
-        totalNet += parseFloat(rowNet.value);
-        totalVAT += parseFloat(rowVAT.value);
-        totalGross += parseFloat(rowGross.value);
+    document.querySelectorAll<HTMLElement>(".item-row").forEach((row) => {
+        const rowNet = row.querySelector<HTMLInputElement>('input[id^="itemNet"]')!;
+        const rowVAT = row.querySelector<HTMLInputElement>('input[id^="itemVATamount"]')!;
+        const rowGross = row.querySelector<HTMLInputElement>('input[id^="itemGross"]')!;
+
+        totalNet += parseFloat(rowNet.value) || 0;
+        totalVAT += parseFloat(rowVAT.value) || 0;
+        totalGross += parseFloat(rowGross.value) || 0;
     });
 
-    const totalNetElement = document.getElementById("totalNet")!;
-    const totalVATElement = document.getElementById("totalVAT")!;
-    const totalGrossElement = document.getElementById("totalGross")!;
-
-    totalNetElement.textContent = totalNet.toFixed(2);
-    totalVATElement.textContent = totalVAT.toFixed(2);
-    totalGrossElement.textContent = totalGross.toFixed(2);
+    document.getElementById("totalNet")!.textContent = totalNet.toFixed(2);
+    document.getElementById("totalVAT")!.textContent = totalVAT.toFixed(2);
+    document.getElementById("totalGross")!.textContent = totalGross.toFixed(2);
 }
 
-/// Remove invoice position
+/// Add position handler
+function addPosition(userProfile: AppUser) {
+    document.getElementById("addItem")!.addEventListener("click", () => {
+        const tbody = document.getElementById("itemsBody")!;
+        const firstRow = tbody.querySelector(".item-row")!;
+        const newRow = firstRow.cloneNode(true) as HTMLElement;
+        newRow.querySelectorAll("input").forEach((input) => {
+            if (input.classList.contains("quantity"))
+                (input as HTMLInputElement).value = "1";
+        });
+        tbody.appendChild(newRow);
+        // Update index
+        updateItemNumber();
+        // Update element id's
+        const rowIndex = newRow.querySelector<HTMLSpanElement>("#rowIndex")!.textContent!;
+        calculatePositionLine(newRow, userProfile);
+    });
+}
+
+/// Remove position handler
 document.addEventListener("click", (event: Event) => {
     const target = event.target as HTMLElement;
-    if (target.id.startsWith("removePosition")) {
-        target.closest(".item-row")?.remove();
-        updateItemNumber();
-        calculatePositionsTotals();
-    }
-});
-
-/// Add invoice position
-document.getElementById("addItem")!.addEventListener("click", () => {
-    const tbody = document.getElementById("itemsBody")!;
-    const firstRow = tbody.querySelector(".item-row")!;
-    const newRow = firstRow.cloneNode(true) as HTMLElement;
-    newRow.querySelectorAll("input").forEach((input) => {
-        if (input.classList.contains("quantity"))
-            (input as HTMLInputElement).value = "1";
-        else
-            (input as HTMLInputElement).value = "";
-    });
-    const VATrate = newRow.querySelector(".VATrate") as unknown as HTMLSelectElement;
-    if (VATrate) VATrate.value = "23";
-    tbody.appendChild(newRow);
+    const removeButton = target.closest<HTMLButtonElement>('[id^="removePosition"]');
+    if (!removeButton)
+        return;
+    if (document.querySelectorAll(".item-row").length <= 1)
+        return;
+    removeButton.closest(".item-row")?.remove();
     updateItemNumber();
-    calculatePositionsRow(newRow);
+    calculatePositionsTotals();
 });
 
 function updateItemNumber(): void {
-    document.querySelectorAll(".item-row").forEach((row, index) => {
-        const rowIndex = row.querySelector<HTMLSpanElement>("#rowIndex") as HTMLSpanElement;
-        if (rowIndex) rowIndex.textContent = String(index + 1);
+    document.querySelectorAll<HTMLElement>(".item-row").forEach((row, index) => {
+        const newIndex = String(index + 1);
+        const rowIndex = row.querySelector<HTMLSpanElement>("#rowIndex")!;
+        rowIndex.textContent = newIndex;
+        // Update id's
+        row.querySelectorAll<HTMLElement>("[id]").forEach((el) => el.id = el.id.replace(/\d+$/, newIndex));
+        row.querySelectorAll<HTMLLabelElement>("label[for]").forEach((l) => l.htmlFor = l.htmlFor.replace(/\d+$/, newIndex));
     });
+    updateRemoveButtons();
+}
+
+function updateRemoveButtons(): void {
+    const rows = document.querySelectorAll<HTMLElement>(".item-row");
+    const removeButtons = document.querySelectorAll<HTMLButtonElement>('[id^="removePosition"]');
+    removeButtons.forEach((button) => button.disabled = rows.length <= 1);
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Payment
 // ---------------------------------------------------------------------------------------------------------------------
 const paymentTermDeadline = document.getElementById("paymentTermDeadline") as HTMLInputElement;
+const bankAccount = document.getElementById("bankAccount") as HTMLInputElement;
 const paymentTermDescription = document.getElementById("paymentTermDescription") as HTMLInputElement;
 const deadlineFields = document.getElementById("deadlineFields") as HTMLElement;
 const descriptionFields = document.getElementById("descriptionFields") as HTMLElement;
@@ -326,26 +347,29 @@ const paymentDays = document.getElementById("paymentDays") as HTMLInputElement;
 const paymentDeadline = document.getElementById("paymentDeadline") as HTMLInputElement;
 const postingDate = document.getElementById("postingDate") as HTMLInputElement;
 
-function updatePaymentTerm(): void {
-    const isDeadline = paymentTermDeadline.checked;
-    deadlineFields.classList.toggle("d-none", !isDeadline);
-    descriptionFields.classList.toggle("d-none", isDeadline);
-    if (isDeadline) updatePaymentDeadline();
+function initializePayment(userProfile: AppUser): void {
+    if (userProfile.bankAccountNumber)
+        bankAccount.value = userProfile.bankAccountNumber;
+    updatePaymentDeadline();
 }
 
 function updatePaymentDeadline(): void {
-    const date = new Date(`${postingDate.value}T00:00:00`);
-    const days = parseInt(paymentDays.value, 10) || 0;
-    date.setDate(date.getDate() + days);
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
-    paymentDeadline.value = `${year}-${month}-${day}`;
+    const isDeadline = paymentTermDeadline.checked;
+    deadlineFields.classList.toggle("d-none", !isDeadline);
+    descriptionFields.classList.toggle("d-none", isDeadline);
+    if (isDeadline) {
+        const date = new Date(`${postingDate.value}T00:00:00`);
+        const days = parseInt(paymentDays.value, 10) || 0;
+        date.setDate(date.getDate() + days);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const day = String(date.getDate()).padStart(2, "0");
+        paymentDeadline.value = `${year}-${month}-${day}`;
+    }
 }
 
-paymentTermDeadline.addEventListener("change", updatePaymentTerm);
-paymentTermDescription.addEventListener("change", updatePaymentTerm);
-
+paymentTermDeadline.addEventListener("change", updatePaymentDeadline);
+paymentTermDescription.addEventListener("change", updatePaymentDeadline);
 paymentDays.addEventListener("input", updatePaymentDeadline);
 postingDate.addEventListener("change", updatePaymentDeadline);
 
@@ -463,12 +487,15 @@ downloadXmlButton?.addEventListener("click", () => {
 // Action submit invoice
 // ---------------------------------------------------------------------------------------------------------------------
 
-// ---------------------------------------------------------------------------------------------------------------------
+// Init ----------------------------------------------------------------------------------------------------------------
 async function initNew() {
+    // TODO: fetch userId from login
+    const userProfile = await loadUserProfile("drexa1@hotmail.com");
     await initInvoiceData();
     await initContractorData();
-    void updatePaymentTerm();
-    document.querySelectorAll(".item-row").forEach(calculatePositionsRow);
+    initializePositions(userProfile);
+    document.querySelectorAll(".item-row").forEach((row) => calculatePositionLine(row, userProfile));
+    void initializePayment(userProfile);
 }
 
 void initNew();

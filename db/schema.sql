@@ -9,6 +9,9 @@ CREATE TABLE users (
     -- Banking integration
     bankName TEXT,
     bankApiToken TEXT UNIQUE,
+    -- Invoicing defaults,
+    defaultItemName TEXT,
+    defaultHourlyRate INTEGER,
     -- Identification data
     nip TEXT NOT NULL CHECK (length(nip) = 10 AND nip NOT GLOB '*[^0-9]*'),
     regon TEXT CHECK (regon IS NULL OR (length(regon) = 9 AND regon NOT GLOB '*[^0-9]*')),
@@ -51,6 +54,9 @@ INSERT INTO users VALUES (
     -- Banking integration
     'PKO Bank Polski',
     NULL,
+     -- Invoicing defaults,
+    'Usługi informatyczne',
+160,
      -- Identification data
     '6751577878',
     NULL,
@@ -74,7 +80,7 @@ INSERT INTO users VALUES (
      -- Billing data
     'monthly',
     FALSE,
-    NULL,
+    '80102028920000550210154088',
     'URZĄD SKARBOWY KRAKÓW-PODGÓRZE (1210)',
      -- DBA
     CURRENT_TIMESTAMP,

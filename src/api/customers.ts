@@ -1,8 +1,7 @@
 /// <reference types="vite/client"/>
-
-/// UI model
 import {AppCustomer} from "../../worker/types/db";
 
+/// UI model
 export interface CustomerUI {
     name: string;
     nip: string;
@@ -23,7 +22,9 @@ export async function loadCustomers(): Promise<CustomerUI[]> {
     if (!response.ok)
         throw new Error(`Failed to fetch existing contractors: ${response.status}`);
     const customers: AppCustomer[] = await response.json();
-    console.info(`${customers.length} contractor(s) found in the DB`);
+    customers.length
+        ? console.info(`${customers.length} contractor(s) found in the DB`)
+        : console.warn(`No contractors found in the DB`);
     return customers.map(customerToUI);
 }
 

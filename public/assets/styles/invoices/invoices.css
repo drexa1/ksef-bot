@@ -249,7 +249,7 @@
     font-weight: 500;
     cursor: pointer;
 }
-button#removePosition {
+.removePosition {
     padding: 2px 5px !important;
     font-size: 11px !important;
     width: auto !important;

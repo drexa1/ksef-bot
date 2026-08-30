@@ -9,6 +9,9 @@ export type AppUser = {
     // Banking integration
     bankName?: string
     bankApiToken?: string
+    // Invoicing defaults
+    defaultItemName?: string,
+    defaultHourlyRate?: number,
     // Identification data
     nip: string
     regon?: string
