@@ -264,9 +264,6 @@
     border-collapse: separate;
     border-spacing: 0;
 }
-.items-table thead {
-    border-top: 1px solid var(--line);
-}
 .items-table th {
     background-color: var(--accent-soft);
     color: var(--text-1);
@@ -275,9 +272,13 @@
     font-weight: 600;
     white-space: nowrap;
     vertical-align: middle;
+    border-top: 1px solid var(--line);
     border-left: 1px solid var(--line);
     border-right: none;
     border-bottom: 1px solid var(--line);
+}
+.items-table th[data-header="Gross amount"] {
+    border-right: 1px solid var(--line);
 }
 .items-table td {
     background-color: var(--surface);
