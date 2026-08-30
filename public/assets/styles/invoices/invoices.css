@@ -288,6 +288,9 @@
     padding: .5rem;
     vertical-align: middle;
 }
+.items-table td[data-label="Gross amount"] {
+    border-right: 1px solid var(--line);
+}
 .items-table td:last-child {
     border-right: 1px solid var(--line);
 }
