@@ -272,6 +272,8 @@
     font-weight: 600;
     white-space: nowrap;
     vertical-align: middle;
+    border-left: 1px solid var(--line) !important;
+    border-right: 1px solid var(--line) !important;
     border-bottom: 1px solid var(--line) !important;
 }
 .items-table td {
