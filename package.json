@@ -21,15 +21,15 @@
         "⚠ db:prod:teardown": "wrangler d1 execute ksef-bot --remote --file=db/teardown.sql",
         "⚠ db:prod:create": "wrangler d1 execute ksef-bot  --remote --file=db/schema.sql",
 
-        "client:dev:build": "vite build --mode development",
-        "client:dev:run": "npm run client:dev:build && vite --port 3000",
-        "client:dev:test": "vitest",
-        "client:prod:build": "vite build --mode production",
-
         "api:tests:wait": "wait-on http://localhost:3001 && npm run api:tests:bruno",
         "api:tests:bruno": "cd tests/api && bru run -r --env dev --sandbox dev",
         "api:dev:tests": "npm run db:dev:recreate && concurrently -k npm:worker:dev npm:api:tests:wait",
         "api:ci:tests": "bash .github/scripts/api-tests-ci.sh",
+
+        "client:dev:build": "vite build --mode development",
+        "client:dev:run": "npm run client:dev:build && vite --port 3000",
+        "client:dev:test": "vitest",
+        "client:prod:build": "vite build --mode production",
 
         "worker:dev:run": "npm run client:dev:build && wrangler dev --config wrangler.worker.toml --local --port 3001 --inspector-port 9999",
         "worker:prod:deploy": "npm run client:prod:build && wrangler deploy --config wrangler.worker.toml",
