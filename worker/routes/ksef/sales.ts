@@ -2,6 +2,7 @@ import {Env} from "../../worker";
 import {getKsefInvoices} from "./ksef";
 import {getAuthUser} from "../../auth";
 import {Client} from "./client";
+import { XMLParser } from "fast-xml-parser";
 
 /**
  * Invoices where the user is the issuer.
@@ -41,6 +42,10 @@ export async function invoiceStatus(req: Request, env: Env): Promise<Response> {
     return Response.json(result);
 }
 
+const parser = new XMLParser({
+    ignoreAttributes: false,
+    attributeNamePrefix: "@_",
+});
 export async function downloadReceipt(req: Request, env: Env): Promise<Response> {
     const appUser = await getAuthUser(req, env);
     const url = new URL(req.url);
@@ -64,9 +69,10 @@ export async function downloadReceipt(req: Request, env: Env): Promise<Response>
         }});
     }
     const text = new TextDecoder().decode(body);
-    return new Response(JSON.stringify({ sessionReferenceNumber, invoiceReferenceNumber, upo: text }), { status: 200, headers: {
+    const json = parser.parse(text);
+    return new Response(JSON.stringify(json, null, 2), { status: 200, headers: {
         "Content-Type": "application/json; charset=utf-8",
         "Content-Disposition": "inline",
-        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Origin": "*"
     }});
 }
