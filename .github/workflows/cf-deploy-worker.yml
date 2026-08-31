@@ -34,4 +34,4 @@ jobs:
       - name: Run API collections
         run: npm run api:tests:ci
       - name: Deploy worker
-        run: npm run worker:deploy
+        run: npm run worker:prod:deploy
