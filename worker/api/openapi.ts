@@ -517,6 +517,13 @@ export const getOpenApiSpec = (env: Env) => ({
                         required: true,
                         description: "KSeF invoice submission reference number.",
                         schema: { type: "string" }
+                    },
+                    {
+                        name: "format",
+                        in: "query",
+                        required: false,
+                        description: "Response format.",
+                        schema: { type: "string", enum: ["xml", "json"], default: "xml" }
                     }
                 ],
                 responses: {

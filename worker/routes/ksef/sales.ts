@@ -46,6 +46,7 @@ export async function downloadReceipt(req: Request, env: Env): Promise<Response>
     const url = new URL(req.url);
     const sessionReferenceNumber = url.searchParams.get("sessionReferenceNumber");
     const invoiceReferenceNumber = url.searchParams.get("invoiceReferenceNumber");
+    const format = url.searchParams.get("format") ?? "xml";
     if (!sessionReferenceNumber || !invoiceReferenceNumber)
         return new Response("Missing parameters", { status: 400 });
     const client = new Client(env);
@@ -55,9 +56,17 @@ export async function downloadReceipt(req: Request, env: Env): Promise<Response>
     if (!upoResponse.ok)
         return new Response(`KSeF UPO download failed: ${upoResponse.status}`, { status: 502 });
     const body = await upoResponse.arrayBuffer();
-    return new Response(body, { status: 200, headers: {
-        "Content-Type": "application/xml; charset=utf-8",
-        "Content-Disposition": 'attachment; filename="upo.xml"',
-        "Access-Control-Allow-Origin": "*"
+    if (format === "xml") {
+        return new Response(body, { status: 200, headers: {
+            "Content-Type": "application/xml; charset=utf-8",
+            "Content-Disposition": 'attachment; filename="upo.xml"',
+            "Access-Control-Allow-Origin": "*"
+        }});
+    }
+    const text = new TextDecoder().decode(body);
+    return new Response(JSON.stringify({ sessionReferenceNumber, invoiceReferenceNumber, upo: text }), { status: 200, headers: {
+        "Content-Type": "application/json; charset=utf-8",
+        "Content-Disposition": "inline",
+        "Access-Control-Allow-Origin": "*",
     }});
 }
