@@ -195,6 +195,13 @@ class KsefClientBase {
         const encryptedInvoice = await this.encryptInvoiceXml(invoiceBytes, encryption.cipherKey, encryption.cipherIv);
         const invoiceHash = await this.sha256Base64(invoiceBytes);
         const encryptedInvoiceHash = await this.sha256Base64(encryptedInvoice);
+        console.info("⚖️ KSeF invoice payload:", {
+            sessionReferenceNumber,
+            invoiceSize: invoiceBytes.length,
+            invoiceHash,
+            encryptedInvoiceSize: encryptedInvoice.length,
+            encryptedInvoiceHash,
+        });
         const response = await fetch(`${this.env.KSEF_URL}/sessions/online/${sessionReferenceNumber}/invoices`, {
             method: "POST",
             headers: { Authorization: `Bearer ${this.token}`, "Content-Type": "application/json"},
@@ -214,14 +221,19 @@ class KsefClientBase {
     }
 
     private async encryptInvoiceXml(invoiceBytes: Uint8Array, cipherKey: Uint8Array, cipherIv: Uint8Array): Promise<Uint8Array> {
-        const key = await crypto.subtle.importKey("raw", this.toArrayBuffer(cipherKey), { name: "AES-CBC" }, false, ["encrypt"]);
-        const paddingLength = 16 - (invoiceBytes.length % 16);
-        const padded = new Uint8Array(invoiceBytes.length + paddingLength);
-        padded.set(invoiceBytes);
-        padded.fill(paddingLength, invoiceBytes.length);
-        const ciphertext = new Uint8Array(await crypto.subtle.encrypt({ name: "AES-CBC", iv: this.toArrayBuffer(cipherIv) }, key, padded));
+        const key = await crypto.subtle.importKey(
+            "raw",
+            this.toArrayBuffer(cipherKey),
+            { name: "AES-CBC" },
+            false,
+            ["encrypt"]
+        );
+        // Web Crypto applies PKCS#7 padding automatically.
+        const encryptedInvoice = await crypto.subtle.encrypt({name: "AES-CBC", iv: this.toArrayBuffer(cipherIv)}, key, this.toArrayBuffer(invoiceBytes));
+        const ciphertext = new Uint8Array(encryptedInvoice);
+        // KSeF requirement: IV + ciphertext
         const result = new Uint8Array(cipherIv.length + ciphertext.length);
-        result.set(cipherIv);
+        result.set(cipherIv, 0);
         result.set(ciphertext, cipherIv.length);
         return result;
     }
@@ -329,9 +341,9 @@ export class Client extends KsefClientBase {
             console.info("KSeF initial session status:", JSON.stringify(status));
             if (status.status?.code !== 100)
                 throw new Error(`KSeF session entered unexpected status: ${ status.status?.code } ${status.status?.description ?? ""}`);
-            console.info("📤 Sending invoice...");
+            console.info("🚀 Sending invoice...");
             const invoice = await this.sendOnlineInvoice(session.referenceNumber, invoiceBytes, encryption);
-            console.info("📨 Invoice accepted for processing:", invoice.referenceNumber);
+            console.info("📥 Invoice accepted for processing:", invoice.referenceNumber);
             return { sessionReferenceNumber: session.referenceNumber, invoiceReferenceNumber: invoice.referenceNumber };
         } finally {
             try {
@@ -343,12 +355,24 @@ export class Client extends KsefClientBase {
         }
     }
 
-    async getSessionStatus(sessionReferenceNumber: string) {
-        const response = await fetch(`${this.env.KSEF_URL}/sessions/${sessionReferenceNumber}`, {
-            headers: { Authorization: `Bearer ${this.token}` }
-        });
+    async getSessionStatus(sessionReferenceNumber?: string) {
+        const url = sessionReferenceNumber
+            ? `${this.env.KSEF_URL}/sessions/${sessionReferenceNumber}`
+            : `${this.env.KSEF_URL}/sessions?pageSize=100&sessionType=Online`;
+        const response = await fetch(url, { headers: { Authorization: `Bearer ${this.token}` }});
         const body = await response.text();
-        return JSON.parse(body) as { status: { code: number, description: string }};
+        if (!response.ok)
+            throw new Error(`KSeF session status failed ${response.status}: ${body}`);
+        return JSON.parse(body);
+    }
+
+    async getSessionInvoices(sessionReferenceNumber: string) {
+        const url = `${this.env.KSEF_URL}/sessions/${sessionReferenceNumber}/invoices`;
+        const response = await fetch(url, { headers: { Authorization: `Bearer ${this.token}` }});
+        const body = await response.text();
+        if (!response.ok)
+            throw new Error(`KSeF session invoices failed ${response.status}: ${body}`);
+        return JSON.parse(body);
     }
 
     async getInvoiceStatus(sessionReferenceNumber: string, invoiceReferenceNumber: string) {

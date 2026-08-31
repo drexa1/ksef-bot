@@ -17,8 +17,10 @@ export async function post(req: Request, env: Env): Promise<Response> {
     const file = form.get("file");
     if (!(file instanceof File)) return Response.json({ error: "Missing XML file" }, { status: 400 });
     try {
-        const xmlContent = await file.arrayBuffer();
-        const result = await submitKsefInvoices(env, appUser, new Uint8Array(xmlContent));
+        const invoiceBytes = new Uint8Array(await file.arrayBuffer());
+        console.info("⚖️ Input file:", { size: invoiceBytes.length });
+        const client = new Client(env);
+        const result = await client.postInvoice(appUser, invoiceBytes);
         return Response.json({ success: true, result }, { status: 200 });
     } catch (error) {
         if (String(error).includes("Too Many Requests"))
@@ -27,20 +29,24 @@ export async function post(req: Request, env: Env): Promise<Response> {
     }
 }
 
-async function submitKsefInvoices(env: Env, appUser: AppUser, invoice: Uint8Array) {
+export async function session(req: Request, env: Env): Promise<Response> {
+    const appUser = await getAuthUser(req, env);
+    const url = new URL(req.url);
     const client = new Client(env);
-    const { referenceNumber } = await client.postInvoice(appUser, invoice);
-    return referenceNumber;
+    await client.authenticate(appUser);
+    const sessionReferenceNumber= url.searchParams.get("sessionReferenceNumber") ?? undefined
+    const result = await client.getSessionStatus(sessionReferenceNumber);
+    return Response.json(result);
 }
 
-export async function session(req: Request, env: Env): Promise<Response> {
+export async function sessionInvoices(req: Request, env: Env): Promise<Response> {
     const appUser = await getAuthUser(req, env);
     const sessionReferenceNumber = new URL(req.url).searchParams.get("sessionReferenceNumber");
     if (!sessionReferenceNumber)
         return Response.json({ error: "Missing sessionReferenceNumber" }, { status: 400 });
     const client = new Client(env);
     await client.authenticate(appUser);
-    return Response.json(await client.getSessionStatus(sessionReferenceNumber));
+    return Response.json(await client.getSessionInvoices(sessionReferenceNumber));
 }
 
 export async function status(req: Request, env: Env): Promise<Response> {

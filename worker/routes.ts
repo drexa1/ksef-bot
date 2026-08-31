@@ -3,7 +3,13 @@ import {swaggerHtml, getOpenApiSpec} from "./api/openapi";
 import {scalarHtml} from "./api/scalar";
 import {get as healthGET} from "./routes/health/health";
 import {corsHeaders, whoami as whoamiGET} from "./auth";
-import {get as salesGET, post as salesPOST, status as statusGET, session as sessionGET} from "./routes/ksef/sales";
+import {
+    get as salesGET,
+    post as salesPOST,
+    status as statusGET,
+    sessionInvoices as sessionInvoicesGET,
+    session as sessionGET
+} from "./routes/ksef/sales";
 import {get as purchaseGET} from "./routes/ksef/purchases";
 import {get as usersGET, post as usersPOST, put as usersPUT, del as usersDELETE} from "./routes/db/users";
 import {get as customersGET, post as customersPOST, put as customersPUT, del as customersDELETE} from "./routes/db/customers";
@@ -35,21 +41,22 @@ const withErrorHandling = (routes: Routes): Routes => {
 
 export const routes: Record<string, Routes> =  {
     // Don't use redirection at root, in this case we serve the static assets
-    "/openapi.json":       { GET: async (_, env) => Response.json(getOpenApiSpec(env)) },
-    "/swagger":            { GET: async () => new Response(swaggerHtml, { headers: { "Content-Type": "text/html" }}) },
-    "/docs":               { GET: async () => new Response(scalarHtml, { headers: { "Content-Type": "text/html" }}) },
-    "/health":             { GET: healthGET },
+    "/openapi.json":        { GET: async (_, env) => Response.json(getOpenApiSpec(env)) },
+    "/swagger":             { GET: async () => new Response(swaggerHtml, { headers: { "Content-Type": "text/html" }}) },
+    "/docs":                { GET: async () => new Response(scalarHtml, { headers: { "Content-Type": "text/html" }}) },
+    "/health":              { GET: healthGET },
     // Requiring authentication
-    "/whoami":             withErrorHandling({ GET: whoamiGET }),
-    "/ksef/sales":         withErrorHandling({ GET: salesGET, POST: salesPOST }),
-    "/ksef/sales/session": withErrorHandling({ GET: sessionGET }),
-    "/ksef/sales/status":  withErrorHandling({ GET: statusGET }),
-    "/ksef/purchases":     withErrorHandling({ GET: purchaseGET }),
-    "/app/users":          withErrorHandling({ GET: usersGET, POST: usersPOST, PUT: usersPUT, DELETE: usersDELETE }),
-    "/app/customers":      withErrorHandling({ GET: customersGET, POST: customersPOST, PUT: customersPUT, DELETE: customersDELETE }),
-    "/app/invoices":       withErrorHandling({ GET: invoicesGET, POST: invoicesPOST, PUT: invoicesPUT, DELETE: invoicesDELETE }),
-    "/app/invoices/pii":   withErrorHandling({ POST: piiPOST }),
-    "/app/taxes":          withErrorHandling({ GET: taxesGET, POST: taxesPOST, PUT: taxesPUT, DELETE: taxesDELETE })
+    "/whoami":                      withErrorHandling({ GET: whoamiGET }),
+    "/ksef/sales":                  withErrorHandling({ GET: salesGET, POST: salesPOST }),
+    "/ksef/sales/session":          withErrorHandling({ GET: sessionGET }),
+    "/ksef/sales/session/invoices": withErrorHandling({ GET: sessionInvoicesGET }),
+    "/ksef/sales/status":           withErrorHandling({ GET: statusGET }),
+    "/ksef/purchases":              withErrorHandling({ GET: purchaseGET }),
+    "/app/users":                   withErrorHandling({ GET: usersGET, POST: usersPOST, PUT: usersPUT, DELETE: usersDELETE }),
+    "/app/customers":               withErrorHandling({ GET: customersGET, POST: customersPOST, PUT: customersPUT, DELETE: customersDELETE }),
+    "/app/invoices":                withErrorHandling({ GET: invoicesGET, POST: invoicesPOST, PUT: invoicesPUT, DELETE: invoicesDELETE }),
+    "/app/invoices/pii":            withErrorHandling({ POST: piiPOST }),
+    "/app/taxes":                   withErrorHandling({ GET: taxesGET, POST: taxesPOST, PUT: taxesPUT, DELETE: taxesDELETE })
 };
 
 

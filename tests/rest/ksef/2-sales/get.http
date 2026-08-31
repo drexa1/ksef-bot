@@ -3,8 +3,8 @@
 @apiKey = test
 @from = 2026/06/01
 @to = 2026/08/01
-@sessionReferenceNumber = 20260831-SO-41C0CF4000-44E9109AB4-C0
-@invoiceReferenceNumber = 20260831-EE-40841FF000-3FD2C75D72-27
+@sessionReferenceNumber = 20260831-SO-44903E2000-41B64A23DD-FD
+@invoiceReferenceNumber = 20260831-EE-4490442000-44E1DE3B85-91
 
 ### List for non-existing dates
 GET {{baseUrl}}/ksef/sales?from=missing&to=missing
@@ -16,8 +16,16 @@ GET {{baseUrl}}/ksef/sales?from={{from}}&to={{to}}
 Content-Type: application/json
 X-API-Key: {{apiKey}}
 
-### Check session status
+### List all sessions
+GET {{baseUrl}}/ksef/sales/session
+X-API-Key: {{apiKey}}
+
+### List specific session status
 GET {{baseUrl}}/ksef/sales/session?sessionReferenceNumber={{sessionReferenceNumber}}
+X-API-Key: {{apiKey}}
+
+### List session invoices
+GET {{baseUrl}}/ksef/sales/session/invoices?sessionReferenceNumber={{sessionReferenceNumber}}
 X-API-Key: {{apiKey}}
 
 ### Check submission status

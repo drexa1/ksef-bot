@@ -39,6 +39,7 @@ export async function auth(req: Request, env: Env): Promise<boolean> {
         case "/whoami":
         case "/ksef/sales":
         case "/ksef/sales/session":
+        case "/ksef/sales/session/invoices":
         case "/ksef/sales/status":
         case "/ksef/purchases":
         case "/app/users":

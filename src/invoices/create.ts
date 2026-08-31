@@ -245,23 +245,25 @@ function calculatePositionLine(row: Element): void {
     const itemPrice = row.querySelector<HTMLInputElement>('input[id^="itemPrice"]')!;
     const itemQuantity = row.querySelector<HTMLInputElement>('input[id^="itemQuantity"]')!;
     const itemVATrate = row.querySelector('select[id^="itemVAT"]')! as unknown as HTMLSelectElement;
+
     const netInput = row.querySelector<HTMLInputElement>('input[id^="itemNet"]')!;
     const VATInput = row.querySelector<HTMLInputElement>('input[id^="itemVATamount"]')!;
     const grossInput = row.querySelector<HTMLInputElement>('input[id^="itemGross"]')!;
 
-    const grossUnitPrice = parseFloat(itemPrice.value) || 0;
+    const netUnitPrice = parseFloat(itemPrice.value) || 0;
     const quantity = parseFloat(itemQuantity.value) || 0;
     const VATrate = itemVATrate.value || "23";
 
-    const gross = grossUnitPrice * quantity;
+    // Cena jednostkowa jest ceną NETTO
+    const net = netUnitPrice * quantity;
 
     let VAT = 0;
-    let net = gross;
+    let gross = net;
 
     if (VATrate !== "ZW") {
         const rate = parseFloat(VATrate) / 100;
-        net = gross / (1 + rate);
-        VAT = gross - net;
+        VAT = net * rate;
+        gross = net + VAT;
     }
 
     netInput.value = net.toFixed(2);

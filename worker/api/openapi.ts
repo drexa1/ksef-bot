@@ -374,41 +374,6 @@ export const getOpenApiSpec = (env: Env) => ({
                 }
             }
         },
-        "/ksef/sales/status": {
-            get: {
-                summary: "Get KSeF sales invoice processing status.",
-                tags: ["KSeF"],
-                security: [{ ApiKeyAuth: [] }],
-                parameters: [
-                    {
-                        name: "sessionReferenceNumber",
-                        in: "query",
-                        required: true,
-                        description: "KSeF online session reference number.",
-                        schema: {
-                            type: "string",
-                            example: "20260831-SO-408208E001-18649EBA65-49"
-                        }
-                    },
-                    {
-                        name: "invoiceReferenceNumber",
-                        in: "query",
-                        required: true,
-                        description: "KSeF invoice submission reference number.",
-                        schema: {
-                            type: "string",
-                            example: "20260831-EE-40841FF000-3FD2C75D72-27"
-                        }
-                    }
-                ],
-                responses: {
-                    "200": { description: "KSeF invoice processing status." },
-                    "400": { description: "Missing or invalid reference numbers." },
-                    "401": { description: "Unauthorized." },
-                    "404": { description: "Invoice not found." }
-                }
-            }
-        },
         "/ksef/sales": {
             get: {
                 summary: "List sales invoices at KSeF - Restricted to resources owned by the authenticated user.",
