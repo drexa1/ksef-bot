@@ -1,6 +1,6 @@
 import {getCurrentLocation} from "../location";
 import {CustomerUI, loadCustomers} from "../api/customers";
-import {generateInvoiceXml} from "./generateXML";
+import {generateInvoiceXml} from "./generateXml";
 import {clearValidationErrors, updateFormError, validateInvoiceForm} from "./validate";
 import {loadUserProfile} from "../api/users";
 import {AppUser} from "../../worker/types/db";

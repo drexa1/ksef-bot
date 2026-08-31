@@ -1,10 +1,8 @@
 import {AppUser} from "../../worker/types/db";
 
-const TEMPLATE_URL = "/assets/invoice-template.xml";
-
 export async function generateInvoiceXml(userProfile: AppUser, form: HTMLFormElement): Promise<string> {
 
-    const response = await fetch(TEMPLATE_URL);
+    const response = await fetch("/assets/schemas/invoice-template.xml");
     const templateXml = await response.text();
     const xmlDocument = new DOMParser().parseFromString(templateXml, "application/xml");
     const root = xmlDocument.documentElement;
