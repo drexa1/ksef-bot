@@ -426,20 +426,14 @@ export const getOpenApiSpec = (env: Env) => ({
                         in: "query",
                         required: true,
                         description: "KSeF online session reference number.",
-                        schema: {
-                            type: "string",
-                            example: "20260821-SO-408208E001-18649EBA65-49"
-                        }
+                        schema: { type: "string" }
                     },
                     {
                         name: "invoiceReferenceNumber",
                         in: "query",
                         required: true,
                         description: "KSeF invoice submission reference number.",
-                        schema: {
-                            type: "string",
-                            example: "20360831-EE-40811FF000-3FD2C75D72-27"
-                        }
+                        schema: { type: "string" }
                     }
                 ],
                 responses: {
@@ -515,20 +509,14 @@ export const getOpenApiSpec = (env: Env) => ({
                         in: "query",
                         required: true,
                         description: "KSeF online session reference number.",
-                        schema: {
-                            type: "string",
-                            example: "20263831-SO-408208E001-18649EBA65-49"
-                        }
+                        schema: { type: "string" }
                     },
                     {
                         name: "invoiceReferenceNumber",
                         in: "query",
                         required: true,
                         description: "KSeF invoice submission reference number.",
-                        schema: {
-                            type: "string",
-                            example: "20260831-EE-40841FF0040-3FD2C75D732-27"
-                        }
+                        schema: { type: "string" }
                     }
                 ],
                 responses: {
