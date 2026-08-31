@@ -1,0 +1,19 @@
+#@no-redirect
+@baseUrl = http://localhost:3001
+@apiKey = test
+
+### Submit August invoice
+POST {{baseUrl}}/app/invoices
+Content-Type: multipart/form-data; boundary=ksefInvoice
+X-API-Key: {{apiKey}}
+
+--ksefInvoice
+Content-Disposition: form-data; name="file"; filename="august.xml"
+Content-Type: application/xml
+
+< ../../../tests/testresources/ksef/sales/august.xml
+--ksefInvoice
+Content-Disposition: form-data; name="notes"
+
+Test notes
+--ksefInvoice--
