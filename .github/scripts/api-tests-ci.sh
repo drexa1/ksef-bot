@@ -2,7 +2,7 @@
 set -e
 
 echo "Recreating local database..."
-npm run db:local:recreate
+npm run db:dev:recreate
 
 echo "Starting worker..."
 npm run worker:dev > worker.log 2>&1 &
