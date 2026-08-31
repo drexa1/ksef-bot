@@ -4,6 +4,7 @@ import {generateInvoiceXml} from "./generateXml";
 import {clearValidationErrors, updateFormError, validateInvoiceForm} from "./validate";
 import {loadUserProfile} from "../api/users";
 import {AppUser} from "../../worker/types/db";
+import {submitInvoice} from "../api/ksef";
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Invoice data
@@ -432,15 +433,17 @@ firstFooter.addEventListener("input", () => updateFooterCounter(firstFooter));
 updateFooterDeleteButtons();
 
 // ---------------------------------------------------------------------------------------------------------------------
-// Action generate invoice
+// Action handlers
 // ---------------------------------------------------------------------------------------------------------------------
 const invoiceForm = document.getElementById("invoiceForm") as HTMLFormElement;
 const generateInvoiceButton = document.getElementById("generateInvoiceButton") as HTMLButtonElement;
 const downloadXmlButton = document.getElementById("downloadXmlButton") as HTMLButtonElement;
 const submitButton = document.getElementById("submitButton") as HTMLButtonElement;
 
-let invoiceXML: string;
 async function initActions(userProfile: AppUser) {
+    let invoiceXML: string;
+
+    // Action generate invoice -----------------------------------------------------------------------------------------
     generateInvoiceButton?.addEventListener("click", async() => {
         clearValidationErrors(invoiceForm);
         if (!validateInvoiceForm(invoiceForm)) return;
@@ -454,38 +457,50 @@ async function initActions(userProfile: AppUser) {
     });
     // After everything is initialized
     generateInvoiceButton.disabled = false;
+
+    invoiceForm?.addEventListener("input", (event: Event) => {
+        const field = event.target as HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
+        if (field.classList.contains("is-invalid") && field.value.trim())
+            field.classList.remove("is-invalid");
+        updateFormError(invoiceForm);
+    });
+
+    invoiceForm?.addEventListener("change", (event: Event) => {
+        const field = event.target as HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
+        if (field.classList.contains("is-invalid") && field.value.trim())
+            field.classList.remove("is-invalid");
+        updateFormError(invoiceForm);
+    });
+
+    // Action download XML ---------------------------------------------------------------------------------------------
+    downloadXmlButton?.addEventListener("click", () => {
+        const blob = new Blob([invoiceXML], { type: "application/xml;charset=utf-8" });
+        const url = URL.createObjectURL(blob);
+        const month = new Intl.DateTimeFormat("en-US", { month: "long" }).format(new Date()).toLowerCase();
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = `${month}.xml`;
+        link.click();
+        URL.revokeObjectURL(url);
+    });
+
+    // Action submit invoice -------------------------------------------------------------------------------------------
+    submitButton?.addEventListener("click", async() => {
+        try {
+            const now = new Date();
+            const month = new Intl.DateTimeFormat("en-US", { month: "long" }).format(now);
+            const year = now.getFullYear();
+            const notes = `${userProfile.email} invoice for ${month}, ${year}`;
+            const referenceNumber = await submitInvoice(invoiceXML, notes);
+            console.info(`Invoice submitted successfully: ${referenceNumber}`);
+        } catch (error) {
+            console.error("Unable to submit invoice:", error);
+        }
+    });
 }
 
-invoiceForm?.addEventListener("input", (event: Event) => {
-    const field = event.target as HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
-    if (field.classList.contains("is-invalid") && field.value.trim())
-        field.classList.remove("is-invalid");
-    updateFormError(invoiceForm);
-});
-
-invoiceForm?.addEventListener("change", (event: Event) => {
-    const field = event.target as HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
-    if (field.classList.contains("is-invalid") && field.value.trim())
-        field.classList.remove("is-invalid");
-    updateFormError(invoiceForm);
-});
-
 // ---------------------------------------------------------------------------------------------------------------------
-// Action download XML
-// ---------------------------------------------------------------------------------------------------------------------
-downloadXmlButton?.addEventListener("click", () => {
-    const blob = new Blob([invoiceXML], { type: "application/xml;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    const month = new Intl.DateTimeFormat("en-US", { month: "long" }).format(new Date()).toLowerCase();
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = `${month}.xml`;
-    link.click();
-    URL.revokeObjectURL(url);
-});
-
-// ---------------------------------------------------------------------------------------------------------------------
-// Action submit invoice
+// Initialize
 // ---------------------------------------------------------------------------------------------------------------------
 
 async function initNew() {
