@@ -119,25 +119,33 @@ export async function generateInvoiceXml(userProfile: AppUser, form: HTMLFormEle
             element.textContent = value;
             invoiceRow.appendChild(element);
         });
-        fa.insertBefore(invoiceRow, invoiceLinesPlaceholder!);
+        invoiceRow.appendChild(xmlDocument.createTextNode("\n" + " ".repeat(8)));
+        fa.insertBefore(xmlDocument.createTextNode("\n" + " ".repeat(8)), invoiceLinesPlaceholder);
+        fa.insertBefore(invoiceRow, invoiceLinesPlaceholder);
     });
-    invoiceLinesPlaceholder!.remove();
+    invoiceLinesPlaceholder.remove();
+    payment.parentNode!.insertBefore(xmlDocument.createTextNode("\n" + " ".repeat(8)), payment);
 
     // Payment
     payment.querySelector("Termin")!.textContent = form.querySelector<HTMLInputElement>("#paymentDeadline")?.value.trim() ?? "";
     payment.querySelector("FormaPlatnosci")!.textContent = (form.querySelector("#paymentType") as unknown as HTMLSelectElement)?.value ?? "";
-
     const bankAccountPlaceholder = Array.from(payment.childNodes).find(node => node.textContent?.includes("{{BANK_ACCOUNT}}"))!;
     const bankAccount = form.querySelector<HTMLInputElement>("#bankAccount")?.value.trim() ?? "";
     if (bankAccount) {
         const bankAccountElement = xmlDocument.createElementNS(root.namespaceURI, "RachunekBankowy");
         const nrRb = xmlDocument.createElementNS(root.namespaceURI, "NrRB");
         nrRb.textContent = bankAccount;
+        bankAccountElement.appendChild(xmlDocument.createTextNode("\n" + " ".repeat(16)));
         bankAccountElement.appendChild(nrRb);
+        bankAccountElement.appendChild(xmlDocument.createTextNode("\n" + " ".repeat(12)));
         payment.insertBefore(xmlDocument.createTextNode("\n" + " ".repeat(12)), bankAccountPlaceholder);
-        payment.insertBefore(bankAccountElement, bankAccountPlaceholder!);
+        payment.insertBefore(bankAccountElement, bankAccountPlaceholder);
+        payment.insertBefore(xmlDocument.createTextNode("\n" + " ".repeat(8)), bankAccountPlaceholder);
     }
-    bankAccountPlaceholder!.remove();
+    bankAccountPlaceholder.remove();
 
-    return new XMLSerializer().serializeToString(xmlDocument);
+    // Formatting with spacing 2
+    return new XMLSerializer().serializeToString(xmlDocument)
+        .replace(/^ +/gm, spaces => ' '.repeat(spaces.length / 2))
+        .replace('<?xml version="1.0" encoding="utf-8"?>', '<?xml version="1.0" encoding="utf-8"?>\n');
 }
