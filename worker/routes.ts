@@ -3,7 +3,7 @@ import {swaggerHtml, getOpenApiSpec} from "./api/openapi";
 import {scalarHtml} from "./api/scalar";
 import {get as healthGET} from "./routes/health/health";
 import {corsHeaders, whoami as whoamiGET} from "./auth";
-import {get as salesGET, post as salesPOST} from "./routes/ksef/sales";
+import {get as salesGET, post as salesPOST, status as statusGET, session as sessionGET} from "./routes/ksef/sales";
 import {get as purchaseGET} from "./routes/ksef/purchases";
 import {get as usersGET, post as usersPOST, put as usersPUT, del as usersDELETE} from "./routes/db/users";
 import {get as customersGET, post as customersPOST, put as customersPUT, del as customersDELETE} from "./routes/db/customers";
@@ -42,6 +42,8 @@ export const routes: Record<string, Routes> =  {
     // Requiring authentication
     "/whoami":             withErrorHandling({ GET: whoamiGET }),
     "/ksef/sales":         withErrorHandling({ GET: salesGET, POST: salesPOST }),
+    "/ksef/sales/session": withErrorHandling({ GET: sessionGET }),
+    "/ksef/sales/status":  withErrorHandling({ GET: statusGET }),
     "/ksef/purchases":     withErrorHandling({ GET: purchaseGET }),
     "/app/users":          withErrorHandling({ GET: usersGET, POST: usersPOST, PUT: usersPUT, DELETE: usersDELETE }),
     "/app/customers":      withErrorHandling({ GET: customersGET, POST: customersPOST, PUT: customersPUT, DELETE: customersDELETE }),

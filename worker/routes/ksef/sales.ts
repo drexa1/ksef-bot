@@ -17,7 +17,8 @@ export async function post(req: Request, env: Env): Promise<Response> {
     const file = form.get("file");
     if (!(file instanceof File)) return Response.json({ error: "Missing XML file" }, { status: 400 });
     try {
-        const result = await submitKsefInvoices(env, appUser, await file.text());
+        const xmlContent = await file.arrayBuffer();
+        const result = await submitKsefInvoices(env, appUser, new Uint8Array(xmlContent));
         return Response.json({ success: true, result }, { status: 200 });
     } catch (error) {
         if (String(error).includes("Too Many Requests"))
@@ -26,8 +27,31 @@ export async function post(req: Request, env: Env): Promise<Response> {
     }
 }
 
-async function submitKsefInvoices(env: Env, appUser: AppUser, xmlContent: string) {
+async function submitKsefInvoices(env: Env, appUser: AppUser, invoice: Uint8Array) {
     const client = new Client(env);
-    const { referenceNumber } = await client.postInvoice(appUser, xmlContent);
+    const { referenceNumber } = await client.postInvoice(appUser, invoice);
     return referenceNumber;
+}
+
+export async function session(req: Request, env: Env): Promise<Response> {
+    const appUser = await getAuthUser(req, env);
+    const sessionReferenceNumber = new URL(req.url).searchParams.get("sessionReferenceNumber");
+    if (!sessionReferenceNumber)
+        return Response.json({ error: "Missing sessionReferenceNumber" }, { status: 400 });
+    const client = new Client(env);
+    await client.authenticate(appUser);
+    return Response.json(await client.getSessionStatus(sessionReferenceNumber));
+}
+
+export async function status(req: Request, env: Env): Promise<Response> {
+    const appUser = await getAuthUser(req, env);
+    const url = new URL(req.url);
+    const sessionReferenceNumber = url.searchParams.get("sessionReferenceNumber");
+    const invoiceReferenceNumber = url.searchParams.get("invoiceReferenceNumber");
+    if (!sessionReferenceNumber || !invoiceReferenceNumber)
+        return Response.json({ error: "Missing reference numbers" }, { status: 400 });
+    const client = new Client(env);
+    await client.authenticate(appUser);
+    const result = await client.getInvoiceStatus(sessionReferenceNumber, invoiceReferenceNumber);
+    return Response.json(result);
 }
