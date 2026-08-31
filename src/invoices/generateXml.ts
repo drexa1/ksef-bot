@@ -114,7 +114,7 @@ export async function generateInvoiceXml(userProfile: AppUser, form: HTMLFormEle
             P_11Vat: String(vat),
             P_12: vatRate === "ZW" ? "0" : vatRate
         }).forEach(([name, value]) => {
-            invoiceRow.appendChild(xmlDocument.createTextNode("\n            "));
+            invoiceRow.appendChild(xmlDocument.createTextNode("\n" + " ".repeat(12)));
             const element = xmlDocument.createElementNS(root.namespaceURI, name);
             element.textContent = value;
             invoiceRow.appendChild(element);
@@ -134,6 +134,7 @@ export async function generateInvoiceXml(userProfile: AppUser, form: HTMLFormEle
         const nrRb = xmlDocument.createElementNS(root.namespaceURI, "NrRB");
         nrRb.textContent = bankAccount;
         bankAccountElement.appendChild(nrRb);
+        payment.insertBefore(xmlDocument.createTextNode("\n" + " ".repeat(12)), bankAccountPlaceholder);
         payment.insertBefore(bankAccountElement, bankAccountPlaceholder!);
     }
     bankAccountPlaceholder!.remove();
