@@ -454,6 +454,7 @@ async function initActions(userProfile: AppUser) {
     });
     // After everything is initialized
     generateInvoiceButton.disabled = false;
+    beep();
 }
 
 invoiceForm?.addEventListener("input", (event: Event) => {
@@ -486,6 +487,9 @@ downloadXmlButton?.addEventListener("click", () => {
 // ---------------------------------------------------------------------------------------------------------------------
 // Action submit invoice
 // ---------------------------------------------------------------------------------------------------------------------
+function beep() {
+    new Audio("data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=").play();
+}
 
 // Init ----------------------------------------------------------------------------------------------------------------
 async function initNew() {

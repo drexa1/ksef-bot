@@ -45,16 +45,10 @@ export async function generateInvoiceXml(userProfile: AppUser, form: HTMLFormEle
 
     // Additional entity
     const additionalEntity = form.querySelector<HTMLInputElement>("input[name=\"additionalEntity\"]:checked")?.value ?? "";
-    if (additionalEntity === "jst") {
-        contractor2.querySelector("JST")!.textContent = "1";
-        contractor2.querySelector("GV")!.textContent = "2";
-    } else if (additionalEntity === "gv") {
-        contractor2.querySelector("JST")!.textContent = "2";
-        contractor2.querySelector("GV")!.textContent = "1";
-    } else {
-        contractor2.querySelector("JST")!.textContent = "2";
-        contractor2.querySelector("GV")!.textContent = "2";
-    }
+    const jst = contractor2.querySelector("JST");
+    const gv = contractor2.querySelector("GV");
+    if (jst) jst.textContent = additionalEntity === "jst" ? "1" : "2";
+    if (gv) gv.textContent = additionalEntity === "gv" ? "1" : "2";
 
     // Invoice
     fa.querySelector("P_1")!.textContent = form.querySelector<HTMLInputElement>("#issueDate")?.value.trim() ?? "";
@@ -68,9 +62,10 @@ export async function generateInvoiceXml(userProfile: AppUser, form: HTMLFormEle
     // Optional markings
     const markingMpp = form.querySelector<HTMLInputElement>("#markingMpp")?.checked ?? false;
     const markingMk = form.querySelector<HTMLInputElement>("#markingMk")?.checked ?? false;
-
-    annotations.querySelector("P_16")!.textContent = markingMk ? "1" : "2";
-    annotations.querySelector("P_18A")!.textContent = markingMpp ? "1" : "2";
+    const p16 = annotations.querySelector("P_16");
+    const p18a = annotations.querySelector("P_18A");
+    if (p16) p16.textContent = markingMk ? "1" : "2";
+    if (p18a) p18a.textContent = markingMpp ? "1" : "2";
 
     // Invoice positions
     const templateRow = fa.querySelector("FaWiersz")!;
