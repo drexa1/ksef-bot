@@ -96,13 +96,13 @@ export async function generateInvoiceXml(userProfile: AppUser, form: HTMLFormEle
         const number = index + 1;
         const invoiceRow = xmlDocument.createElementNS(root.namespaceURI, "FaWiersz");
 
-        const description = row.querySelector<HTMLInputElement>(`#itemName${number}`)?.value.trim() ?? "";
-        const unit = row.querySelector<HTMLInputElement>(`#itemUnit${number}`)?.value.trim() ?? "";
-        const quantity = parseFloat(row.querySelector<HTMLInputElement>(`#itemQuantity${number}`)?.value ?? "0") || 0;
-        const unitPrice = parseFloat(row.querySelector<HTMLInputElement>(`#itemPrice${number}`)?.value ?? "0") || 0;
-        const net = parseFloat(row.querySelector<HTMLInputElement>(`#itemNet${number}`)?.value ?? "0") || 0;
-        const vat = parseFloat(row.querySelector<HTMLInputElement>(`#itemVATamount${number}`)?.value ?? "0") || 0;
-        const vatRate = (row.querySelector(`#itemVAT${number}`) as unknown as HTMLSelectElement)?.value ?? "23";
+        const description = row.querySelector<HTMLInputElement>('input[id^="itemName"]')?.value.trim() ?? "";
+        const unit = row.querySelector<HTMLInputElement>('input[id^="itemUnit"]')?.value.trim() ?? "";
+        const quantity = parseFloat(row.querySelector<HTMLInputElement>('input[id^="itemQuantity"]')?.value ?? "0") || 0;
+        const unitPrice = parseFloat(row.querySelector<HTMLInputElement>('input[id^="itemPrice"]')?.value ?? "0") || 0;
+        const net = parseFloat(row.querySelector<HTMLInputElement>('input[id^="itemNet"]')?.value ?? "0") || 0;
+        const vat = parseFloat(row.querySelector<HTMLInputElement>('input[id^="itemVATamount"]')?.value ?? "0") || 0;
+        const vatRate = (row.querySelector('select[id^="itemVAT"]') as unknown as HTMLSelectElement)?.value ?? "23";
 
         Object.entries({
             NrWierszaFa: String(number),

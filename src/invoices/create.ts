@@ -476,9 +476,10 @@ invoiceForm?.addEventListener("change", (event: Event) => {
 downloadXmlButton?.addEventListener("click", () => {
     const blob = new Blob([invoiceXML], { type: "application/xml;charset=utf-8" });
     const url = URL.createObjectURL(blob);
+    const month = new Intl.DateTimeFormat("en-US", { month: "long" }).format(new Date()).toLowerCase();
     const link = document.createElement("a");
     link.href = url;
-    link.download = "invoice.xml";
+    link.download = `${month}.xml`;
     link.click();
     URL.revokeObjectURL(url);
 });

@@ -1,578 +1,578 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta charset="UTF-8">
-    <meta name="author" content="diegoruiz.dev"/>
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-title" content="KSeF Bot">
-    <meta name="keywords" content="
-            KSeF,
-            Invoicing,
-            Automated invoicing,
-            B2B,
-            Automated taxes,
-            B2B taxes,
-            Automation,
-            Poland"
-    />
-    <title>New KSeF sales invoice</title>
-    <link rel="icon" type="image/png" href="/assets/favicon/favicon.png"/>
-    <link rel="apple-touch-icon" href="../../public/assets/favicon/favicon-mobile.png">
-    <link rel="manifest" href="/assets/favicon/android.webmanifest" crossorigin="use-credentials">
-    <link rel="icon" type="image/png" href="/assets/favicon/favicon.png">
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta charset="UTF-8">
+        <meta name="author" content="diegoruiz.dev"/>
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-title" content="KSeF Bot">
+        <meta name="keywords" content="
+                KSeF,
+                Invoicing,
+                Automated invoicing,
+                B2B,
+                Automated taxes,
+                B2B taxes,
+                Automation,
+                Poland"
+        />
+        <title>New KSeF sales invoice</title>
+        <link rel="icon" type="image/png" href="/assets/favicon/favicon.png"/>
+        <link rel="apple-touch-icon" href="../../public/assets/favicon/favicon-mobile.png">
+        <link rel="manifest" href="/assets/favicon/android.webmanifest" crossorigin="use-credentials">
+        <link rel="icon" type="image/png" href="/assets/favicon/favicon.png">
 
-    <!-- Bootstrap -->
-    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css" crossorigin="anonymous">
+        <!-- Bootstrap -->
+        <script defer src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css" crossorigin="anonymous">
 
-    <!-- Custom scripts -->
-    <script type="module" src="/src/invoices/create.ts"></script>
+        <!-- Custom scripts -->
+        <script type="module" src="/src/invoices/create.ts"></script>
 
-    <link rel="stylesheet" href="/assets/styles/root.css">
-    <link rel="stylesheet" href="/assets/styles/dark-theme.css">
-    <link rel="stylesheet" href="/assets/styles/invoices/invoices.css">
-    <link rel="stylesheet" href="/assets/styles/invoices/mobile.css">
-</head>
+        <link rel="stylesheet" href="/assets/styles/root.css">
+        <link rel="stylesheet" href="/assets/styles/dark-theme.css">
+        <link rel="stylesheet" href="/assets/styles/invoices/invoices.css">
+        <link rel="stylesheet" href="/assets/styles/invoices/mobile.css">
+    </head>
 
-<body>
-    <div class="page-container">
-        <!-- Header --------------------------------------------------------------------------------------------------->
-        <div class="header">
-            <div class="header-content">
-                <button type="button" class="d-none btn btn-secondary" id="backButton">← Back</button>
-                <h1 class="mx-auto">New sales e-Invoice (KSeF)</h1>
+    <body>
+        <div class="page-container">
+            <!-- Header --------------------------------------------------------------------------------------------------->
+            <div class="header">
+                <div class="header-content">
+                    <button type="button" class="d-none btn btn-secondary" id="backButton">← Back</button>
+                    <h1 class="mx-auto">New sales e-Invoice (KSeF)</h1>
+                </div>
             </div>
-        </div>
-        <div class="text-muted small mb-3"><span class="text-danger ps-1">*</span> Required field</div>
-        <form id="invoiceForm">
-            <div id="invoiceFormError" class="alert alert-danger py-2 px-3 mb-2 small d-none" role="alert"></div>
+            <div class="text-muted small mb-3"><span class="text-danger ps-1">*</span> Required field</div>
+            <form id="invoiceForm">
+                <div id="invoiceFormError" class="alert alert-danger py-2 px-3 mb-2 small d-none" role="alert"></div>
 
-            <!-- Invoice data ----------------------------------------------------------------------------------------->
-            <section class="invoice-card">
-                <div class="section-header" data-bs-toggle="collapse" data-bs-target="#invoiceData" role="button">
-                    <span>Invoice data</span>
-                    <i class="bi bi-chevron-down ms-3"></i>
-                </div>
-
-                <div id="invoiceData" class="collapse">
-                    <div class="section-body">
-
-                        <div class="form-label mb-3">Markings<span class="text-muted"> (optional)</span></div>
-                        <div class="markings-list mb-4">
-                            <div class="marking-item">
-                                <label for="markingMpp" class="d-flex align-items-center">
-                                    <input type="checkbox" id="markingMpp">
-                                </label>
-                                <span class="fw-bold">MPP</span>
-                                <span>— split payment mechanism</span>
-                            </div>
-                            <div class="marking-item">
-                                <label for="markingMk" class="d-flex align-items-center">
-                                    <input type="checkbox" id="markingMk">
-                                </label>
-                                <span class="fw-bold">MK</span>
-                                <span>— cash method</span>
-                            </div>
-                            <div class="marking-item">
-                                <label for="markingFp" class="d-flex align-items-center">
-                                    <input type="checkbox" id="markingFp">
-                                </label>
-                                <span class="fw-bold">FP</span>
-                                <span>— invoice referred to in Article 109, paragraph 3d of the Act (invoice for receipt)</span>
-                            </div>
-                            <div class="marking-item">
-                                <label for="markingTp" class="d-flex align-items-center">
-                                    <input type="checkbox" id="markingTp">
-                                </label>
-                                <span class="fw-bold">TP</span>
-                                <span>— existing relationships referred to in Article 32(2)(1) of the Act</span>
-                            </div>
-                        </div>
-
-                        <div class="invoice-data-grid">
-                            <div class="field invoice-number">
-                                <label class="form-label fw-bold required" for="invoiceNumber">Invoice number</label>
-                                <input id="invoiceNumber" type="text" class="form-control" required>
-                            </div>
-                            <div class="field issue-date">
-                                <label class="form-label fw-bold required" for="issueDate">Date of issue</label>
-                                <input id="issueDate" type="date" class="form-control" required>
-                            </div>
-                            <div class="field issue-place">
-                                <label class="form-label fw-bold" for="issuePlace">Place of issue<span class="fw-normal"> (optional)</span></label>
-                                <input id="issuePlace" type="text" class="form-control" value="Kraków">
-                            </div>
-                            <div class="field accounting-date">
-                                <label class="form-label fw-bold required" for="postingDate">Posting date</label>
-                                <input id="postingDate" type="date" class="form-control" required>
-                                <div class="help-text">
-                                    <i class="bi bi-info-circle ps-2"></i>
-                                    The posting date is the date on which the invoice is assigned to the billing period.
-                                </div>
-                            </div>
-                            <div class="field delivery-date">
-                                <label class="form-label fw-bold required" for="deliveryDate">Delivery / service date</label>
-                                <input id="deliveryDate" type="date" class="form-control" required>
-                            </div>
-                        </div>
-
+                <!-- Invoice data ----------------------------------------------------------------------------------------->
+                <section class="invoice-card">
+                    <div class="section-header" data-bs-toggle="collapse" data-bs-target="#invoiceData" role="button">
+                        <span>Invoice data</span>
+                        <i class="bi bi-chevron-down ms-3"></i>
                     </div>
-                </div>
-            </section>
 
-            <!-- Contractor ------------------------------------------------------------------------------------------->
-            <section class="invoice-card">
-                <div class="section-header" data-bs-toggle="collapse" data-bs-target="#contractorData" role="button">
-                    <span>Contractor</span>
-                    <i class="bi bi-chevron-down ms-3"></i>
-                </div>
+                    <div id="invoiceData" class="collapse">
+                        <div class="section-body">
 
-                <div id="contractorData" class="collapse show">
-                    <div class="section-body">
-                        <div class="contractor-grid">
-
-                            <div class="field contractor-name">
-                                <label class="form-label fw-bold required" for="contractorName">Contractor name</label>
-
-                                <div class="contractor-autocomplete">
-                                    <input id="contractorName" type="text" class="form-control" placeholder="Contractor name" autocomplete="off" required>
-                                    <div id="contractorNameSuggestions" class="contractor-suggestions"></div>
-                                </div>
-                                <div class="help-text">
-                                    <i class="bi bi-info-circle ps-2"></i>
-                                    Start typing the name to display suggestions from the contractor database
-                                </div>
-                            </div>
-
-                            <div class="field contractor-identifier">
-                                <span class="form-label fw-bold required">Contractor identifier</span>
-                                <div class="contractor-identifier-options">
-                                    <div class="contractor-identifier-option">
-                                        <label for="identifierNip" class="d-flex align-items-center">
-                                            <input id="identifierNip" name="contractorIdentifier" type="radio" class="form-check-input" value="nip" checked>
-                                        </label>
-                                        <span>NIP</span>
-                                    </div>
-                                    <div class="marking-item">
-                                        <label for="identifierNone" class="d-flex align-items-center">
-                                            <input id="identifierNone" name="contractorIdentifier" type="radio" class="form-check-input" value="none">
-                                        </label>
-                                        <span>None</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="field contractorNip">
-                                <label class="form-label fw-bold required" for="contractorNipInput">Contractor NIP</label>
-                                <div class="contractor-autocomplete">
-                                    <input id="contractorNipInput" type="text" class="form-control" maxlength="10" inputmode="numeric" placeholder="Enter NIP (10 digits)" required>
-                                    <div id="contractorNipSuggestions" class="contractor-suggestions"></div>
-                                </div>
-                                <div class="help-text">
-                                    <i class="bi bi-info-circle ps-2"></i>
-                                    Start typing the number to display suggestions from the customers database
-                                </div>
-                            </div>
-
-                            <div class="field town">
-                                <label class="form-label fw-bold required" for="contractorTown">Town</label>
-                                <input id="contractorTown" type="text" class="form-control" placeholder="Enter town name" required>
-                            </div>
-                            <div class="field postal-code">
-                                <label class="form-label fw-bold required" for="contractorPostalCode">ZIP code</label>
-                                <input id="contractorPostalCode" type="text" class="form-control" placeholder="Enter postal code" required>
-                            </div>
-                            <div class="field post-office">
-                                <label class="form-label fw-bold" for="contractorMail">Mail<span class="fw-normal"> (optional)</span></label>
-                                <input id="contractorMail" type="text" class="form-control" placeholder="Enter your email address">
-                            </div>
-
-                            <div class="field street">
-                                <label class="form-label fw-bold" for="contractorStreet">Street<span class="fw-normal"> (optional)</span></label>
-                                <input id="contractorStreet" type="text" class="form-control" placeholder="Enter street">
-                            </div>
-                            <div class="field building">
-                                <label class="form-label fw-bold required" for="contractorBuilding">Building number</label>
-                                <input id="contractorBuilding" type="text" class="form-control" placeholder="Enter the building number" required>
-                            </div>
-                            <div class="field apartment">
-                                <label class="form-label fw-bold" for="contractorApartment">Apartment number<span class="fw-normal"> (optional)</span></label>
-                                <input id="contractorApartment" type="text" class="form-control" placeholder="Enter the apartment number">
-                            </div>
-
-                            <div class="field additional-entity">
-                                <span class="form-label fw-bold required">Additional entity</span>
-                                <div class="additional-entity-options">
-                                    <div class="marking-item">
-                                        <label for="additionalEntityNone" class="d-flex align-items-center">
-                                            <input id="additionalEntityNone" name="additionalEntity" type="radio" value="none" checked>
-                                        </label>
-                                        <span class="fw-bold">None</span>
-                                    </div>
-                                    <div class="marking-item">
-                                        <label for="additionalEntityJst" class="d-flex align-items-center">
-                                            <input id="additionalEntityJst" name="additionalEntity" type="radio" value="jst">
-                                        </label>
-                                        <span class="fw-bold">JST</span>
-                                        <span>— invoice concerns a subordinate unit of a local government unit</span>
-                                    </div>
-                                    <div class="marking-item">
-                                        <label for="additionalEntityGv" class="d-flex align-items-center">
-                                            <input id="additionalEntityGv" name="additionalEntity" type="radio" value="gv">
-                                        </label>
-                                        <span class="fw-bold">GV</span>
-                                        <span>— invoice concerns a member of a VAT group</span>
-                                    </div>
-                                    <div class="marking-item">
-                                        <label for="additionalEntityOther" class="d-flex align-items-center">
-                                            <input id="additionalEntityOther" name="additionalEntity" type="radio" value="other">
-                                        </label>
-                                        <span class="fw-bold">Other</span>
-                                        <span>— additional entity other than local government units / municipalities</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Positions ---------------------------------------------------------------------------------------->
-            <section class="invoice-card">
-                <div class="section-header" data-bs-toggle="collapse" data-bs-target="#itemsData" role="button">
-                    <span>Positions</span>
-                    <i class="bi bi-chevron-down ms-3"></i>
-                </div>
-
-                <div id="itemsData" class="collapse">
-                    <div class="section-body">
-
-                        <span class="form-label fw-bold required">Invoice issued at prices</span>
-                        <div class="invoice-type mb-3">
-                            <div class="marking-item">
-                                <label for="priceNet" class="d-flex align-items-center">
-                                    <input id="priceNet" type="radio" name="priceType" value="net" checked class="form-check-input">
-                                </label>
-                                <span>Net</span>
-                            </div>
-                            <div class="marking-item">
-                                <label for="priceGross" class="d-flex align-items-center">
-                                    <input id="priceGross" type="radio" name="priceType" value="gross" class="form-check-input">
-                                </label>
-                                <span>Gross</span>
-                            </div>
-                        </div>
-
-                        <div class="form-label fw-bold mt-4 mb-1">
-                            Additional columns<span class="fw-normal"> (optional) - </span>
-                            <a class="learn-more fw-bold">Learn more <i class="bi bi-box-arrow-up-right"></i></a>
-                        </div>
-                        <div class="markings-list mb-4">
-                            <div class="marking-item">
-                                <label for="additionalColumnGTU" class="d-flex align-items-center">
-                                    <input id="additionalColumnGTU" type="checkbox" class="form-check-input">
-                                </label>
-                                <span>GTU</span>
-                            </div>
-                            <div class="marking-item">
-                                <label for="procedureSymbols" class="d-flex align-items-center">
-                                    <input id="procedureSymbols" type="checkbox" class="form-check-input">
-                                </label>
-                                <span>Procedure symbols</span>
-                            </div>
-                            <div class="marking-item">
-                                <label for="additionalInformation" class="d-flex align-items-center">
-                                    <input id="additionalInformation" type="checkbox" class="form-check-input">
-                                </label>
-                                <span>Additional information</span>
-                            </div>
-                        </div>
-
-                        <div class="table-responsive">
-                            <table class="table table-bordered items-table" id="itemsTable">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th scope="col" data-header="No.">No.</th>
-                                        <th scope="col" data-header="Name">Name</th>
-                                        <th scope="col" data-header="Unit net price">Unit net price</th>
-                                        <th scope="col" data-header="Quantity">Quantity</th>
-                                        <th scope="col" data-header="Gross amount">Unit of measurement</th>
-                                        <th scope="col" data-header="VAT rate">VAT rate</th>
-                                        <th scope="col" data-header="Net amount">Net (PLN)</th>
-                                        <th scope="col" data-header="VAT amount">VAT (PLN)</th>
-                                        <th scope="col" data-header="Gross amount">Gross (PLN)</th>
-                                        <!-- Additional columns-->
-                                        <th scope="col" data-header="GTU" class="d-none">GTU</th>
-                                        <th scope="col" data-header="Procedure symbols" class="d-none">Procedure symbols</th>
-                                        <th scope="col" data-header="Additional" class="d-none">Additional information</th>
-                                    </tr>
-                                </thead>
-
-                                <tbody id="itemsBody">
-                                    <tr class="item-row">
-                                        <td class="item-number" data-label="No.">
-                                            <button id="removePosition1" type="button" class="btn btn-danger btn-sm removePosition" aria-label="Remove item">
-                                                <i class="bi bi-x-lg"></i>
-                                            </button>
-                                            <span id="rowIndex">1</span>
-                                        </td>
-                                        <td data-label="Name">
-                                            <label class="d-none" for="itemName1">Item name</label>
-                                            <input id="itemName1" type="text" class="form-control" placeholder="Enter name">
-                                        </td>
-                                        <td data-label="Unit net price">
-                                            <label class="d-none" for="itemPrice1">Unit net price</label>
-                                            <input id="itemPrice1" type="number" step="10" min="0" class="form-control" placeholder="Enter amount">
-                                        </td>
-                                        <td data-label="Quantity">
-                                            <label class="d-none" for="itemQuantity1">Quantity</label>
-                                            <input id="itemQuantity1" type="number" step="1" min="1" value="1" class="form-control" placeholder="Enter quantity">
-                                        </td>
-                                        <td data-label="Unit of measurement">
-                                            <label class="d-none" for="itemUnit1">Unit of measurement</label>
-                                            <input id="itemUnit1" type="text" class="form-control" value="szt" placeholder="Enter unit">
-                                        </td>
-                                        <td data-label="VAT rate">
-                                            <label class="d-none" for="itemVAT1">VAT rate</label>
-                                            <select id="itemVAT1" class="form-select">
-                                                <option value="23" selected>23%</option>
-                                                <option value="8">8%</option>
-                                                <option value="5">5%</option>
-                                                <option value="0">0%</option>
-                                                <option value="ZW">Exempt</option>
-                                            </select>
-                                        </td>
-                                        <td data-label="Net amount">
-                                            <label class="d-none" for="itemNet1">Net amount</label>
-                                            <input id="itemNet1" type="number" step="0.01" class="form-control" value="0.00" disabled>
-                                        </td>
-                                        <td data-label="VAT amount">
-                                            <label class="d-none" for="itemVATamount1">VAT amount</label>
-                                            <input id="itemVATamount1" type="number" step="0.01" class="form-control" value="0.00" disabled>
-                                        </td>
-                                        <td data-label="Gross amount">
-                                            <label class="d-none" for="itemGross1">Gross amount</label>
-                                            <input id="itemGross1" type="number" step="0.01" class="form-control" value="0.00" disabled>
-                                        </td>
-
-                                        <!-- Additional columns-->
-                                        <td class="d-none" data-label="GTU">
-                                            <label class="d-none" for="itemGTU1">GTU</label>
-                                            <input id="itemGTU1" type="text" class="form-control" placeholder="GTU">
-                                        </td>
-                                        <td class="d-none" data-label="Procedure symbols">
-                                            <label class="d-none" for="itemProcedureSymbols1">Procedure symbols</label>
-                                            <input id="itemProcedureSymbols1" type="text" class="form-control" placeholder="SYMBOL">
-                                        </td>
-                                        <td class="d-none" data-label="Additional">
-                                            <label class="d-none" for="itemAdditionalInformation1">Additional information</label>
-                                            <input id="itemAdditionalInformation1" type="text" class="form-control" placeholder="Additional information">
-                                        </td>
-                                    </tr>
-                                </tbody>
-
-                                <tfoot>
-                                    <tr class="total-row small">
-                                        <td></td>
-                                        <td colspan="5" class="text-end">Total</td>
-                                        <td><span id="totalNet">0.00</span></td>
-                                        <td><span id="totalVAT">0.00</span></td>
-                                        <td><span id="totalGross">0.00</span></td>
-                                    </tr>
-                                </tfoot>
-                            </table>
-                        </div>
-
-                        <button type="button" class="btn btn-outline-primary btn-sm" id="addItem">+ Add another item</button>
-
-                        <div class="mt-4">
-                            <span class="form-label fw-bold required">Additional data on the invoice</span>
-                            <div class="invoice-type">
+                            <div class="form-label mb-3">Markings<span class="text-muted"> (optional)</span></div>
+                            <div class="markings-list mb-4">
                                 <div class="marking-item">
-                                    <label for="additionalDataYes" class="d-flex align-items-center">
-                                        <input id="additionalDataYes" type="radio" name="additionalData" value="yes" class="form-check-input">
+                                    <label for="markingMpp" class="d-flex align-items-center">
+                                        <input type="checkbox" id="markingMpp">
                                     </label>
-                                    <span>Yes</span>
+                                    <span class="fw-bold">MPP</span>
+                                    <span>— split payment mechanism</span>
                                 </div>
                                 <div class="marking-item">
-                                    <label for="additionalDataNo" class="d-flex align-items-center">
-                                        <input id="additionalDataNo" type="radio" name="additionalData" value="no" class="form-check-input">
+                                    <label for="markingMk" class="d-flex align-items-center">
+                                        <input type="checkbox" id="markingMk">
                                     </label>
-                                    <span>No</span>
+                                    <span class="fw-bold">MK</span>
+                                    <span>— cash method</span>
                                 </div>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-            </section>
-
-            <!-- Payment ---------------------------------------------------------------------------------------------->
-            <section class="invoice-card">
-                <div class="section-header" data-bs-toggle="collapse" data-bs-target="#paymentData" role="button">
-                    <span>Payment</span>
-                    <i class="bi bi-chevron-down ms-3"></i>
-                </div>
-
-                <div id="paymentData" class="collapse">
-                    <div class="section-body">
-                        <div class="payment-grid">
-                            <div class="field payment-type">
-                                <label class="form-label fw-bold required" for="paymentType">Payment type</label>
-                                <select id="paymentType" class="form-select" required>
-                                    <option value="">Select</option>
-                                    <option value="1">Cash</option>
-                                    <option value="2">Card</option>
-                                    <option value="3">Bon</option>
-                                    <option value="4">Check</option>
-                                    <option value="5">Loan</option>
-                                    <option value="6">Transfer</option>
-                                    <option value="7">Mobile payment</option>
-                                    <option value="*">Other payment</option>
-                                </select>
-                            </div>
-
-                            <div class="field bank-account">
-                                <label class="form-label fw-bold" for="bankAccount">
-                                    Bank account number<span class="fw-normal"> (optional)</span>
-                                </label>
-                                <input id="bankAccount" type="text" class="form-control" maxlength="26" placeholder="Enter bank account number (26 digits)">
-                                <div class="help-text">
-                                    <i class="bi bi-info-circle ps-2"></i>
-                                    The information will appear on the invoice
-                                </div>
-                            </div>
-
-                            <div class="field payment-status">
-                                <span class="form-label fw-bold">
-                                    Invoice status<span class="fw-normal"> (optional)</span>
-                                </span>
                                 <div class="marking-item">
-                                    <label for="invoicePaid" class="d-flex align-items-center">
-                                        <input id="invoicePaid" type="checkbox" class="form-check-input">
+                                    <label for="markingFp" class="d-flex align-items-center">
+                                        <input type="checkbox" id="markingFp">
                                     </label>
-                                    <span>Invoice paid</span>
+                                    <span class="fw-bold">FP</span>
+                                    <span>— invoice referred to in Article 109, paragraph 3d of the Act (invoice for receipt)</span>
                                 </div>
-                            </div>
-
-                            <div class="field payment-term">
-                                <span class="form-label fw-bold required">Payment deadline</span>
-                                <div class="d-flex gap-4">
-                                    <div class="marking-item">
-                                        <input id="paymentTermDeadline" name="paymentTerm" type="radio" class="form-check-input" value="deadline" checked>
-                                        <label class="form-check-label" for="paymentTermDeadline">Deadline</label>
-                                    </div>
-                                    <div class="marking-item">
-                                        <input id="paymentTermDescription" name="paymentTerm" type="radio" class="form-check-input" value="description">
-                                        <label class="form-check-label" for="paymentTermDescription">Payment term description</label>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Deadline fields -->
-                            <div id="deadlineFields" class="payment-term-fields">
-                                <div class="field payment-days">
-                                    <label class="form-label fw-bold required" for="paymentDays">Days to pay</label>
-                                    <input id="paymentDays" type="number" min="1" class="form-control" value="7" placeholder="Enter the number of days" required>
-                                </div>
-
-                                <div class="field payment-deadline">
-                                    <label class="form-label fw-bold required" for="paymentDeadline">
-                                        Payment deadline
+                                <div class="marking-item">
+                                    <label for="markingTp" class="d-flex align-items-center">
+                                        <input type="checkbox" id="markingTp">
                                     </label>
-                                    <input id="paymentDeadline" type="date" class="form-control" value="2026-08-19" required>
+                                    <span class="fw-bold">TP</span>
+                                    <span>— existing relationships referred to in Article 32(2)(1) of the Act</span>
                                 </div>
                             </div>
 
-                            <!-- Payment term description fields -->
-                            <div id="descriptionFields"
-                                 class="payment-grid payment-term-fields d-none">
-                                <div class="field">
-                                    <label class="form-label fw-bold required" for="periodLength">Length of period</label>
-                                    <input id="periodLength" type="number" min="0" class="form-control" placeholder="Enter a number">
+                            <div class="invoice-data-grid">
+                                <div class="field invoice-number">
+                                    <label class="form-label fw-bold required" for="invoiceNumber">Invoice number</label>
+                                    <input id="invoiceNumber" type="text" class="form-control" required>
                                 </div>
-
-                                <div class="field">
-                                    <label class="form-label fw-bold required" for="periodUnit">Unit of time</label>
-                                    <input id="periodUnit" type="text" class="form-control" placeholder="Enter the unit">
+                                <div class="field issue-date">
+                                    <label class="form-label fw-bold required" for="issueDate">Date of issue</label>
+                                    <input id="issueDate" type="date" class="form-control" required>
                                 </div>
-
-                                <div class="field" style="grid-column: span 2;">
-                                    <label class="form-label fw-bold required" for="startingEvent">Starting Event</label>
-                                    <input id="startingEvent" type="text" class="form-control" maxlength="256" placeholder="Enter information specifying the starting event">
+                                <div class="field issue-place">
+                                    <label class="form-label fw-bold" for="issuePlace">Place of issue<span class="fw-normal"> (optional)</span></label>
+                                    <input id="issuePlace" type="text" class="form-control" value="Kraków">
+                                </div>
+                                <div class="field accounting-date">
+                                    <label class="form-label fw-bold required" for="postingDate">Posting date</label>
+                                    <input id="postingDate" type="date" class="form-control" required>
                                     <div class="help-text">
-                                        The field accepts up to 256 characters
-                                        (<span id="startingEventCount">0</span>/256)
+                                        <i class="bi bi-info-circle ps-2"></i>
+                                        The posting date is the date on which the invoice is assigned to the billing period.
+                                    </div>
+                                </div>
+                                <div class="field delivery-date">
+                                    <label class="form-label fw-bold required" for="deliveryDate">Delivery / service date</label>
+                                    <input id="deliveryDate" type="date" class="form-control" required>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Contractor ------------------------------------------------------------------------------------------->
+                <section class="invoice-card">
+                    <div class="section-header" data-bs-toggle="collapse" data-bs-target="#contractorData" role="button">
+                        <span>Contractor</span>
+                        <i class="bi bi-chevron-down ms-3"></i>
+                    </div>
+
+                    <div id="contractorData" class="collapse show">
+                        <div class="section-body">
+                            <div class="contractor-grid">
+
+                                <div class="field contractor-name">
+                                    <label class="form-label fw-bold required" for="contractorName">Contractor name</label>
+
+                                    <div class="contractor-autocomplete">
+                                        <input id="contractorName" type="text" class="form-control" placeholder="Contractor name" autocomplete="off" required>
+                                        <div id="contractorNameSuggestions" class="contractor-suggestions"></div>
+                                    </div>
+                                    <div class="help-text">
+                                        <i class="bi bi-info-circle ps-2"></i>
+                                        Start typing the name to display suggestions from the contractor database
+                                    </div>
+                                </div>
+
+                                <div class="field contractor-identifier">
+                                    <span class="form-label fw-bold required">Contractor identifier</span>
+                                    <div class="contractor-identifier-options">
+                                        <div class="contractor-identifier-option">
+                                            <label for="identifierNip" class="d-flex align-items-center">
+                                                <input id="identifierNip" name="contractorIdentifier" type="radio" class="form-check-input" value="nip" checked>
+                                            </label>
+                                            <span>NIP</span>
+                                        </div>
+                                        <div class="marking-item">
+                                            <label for="identifierNone" class="d-flex align-items-center">
+                                                <input id="identifierNone" name="contractorIdentifier" type="radio" class="form-check-input" value="none">
+                                            </label>
+                                            <span>None</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="field contractorNip">
+                                    <label class="form-label fw-bold required" for="contractorNipInput">Contractor NIP</label>
+                                    <div class="contractor-autocomplete">
+                                        <input id="contractorNipInput" type="text" class="form-control" maxlength="10" inputmode="numeric" placeholder="Enter NIP (10 digits)" required>
+                                        <div id="contractorNipSuggestions" class="contractor-suggestions"></div>
+                                    </div>
+                                    <div class="help-text">
+                                        <i class="bi bi-info-circle ps-2"></i>
+                                        Start typing the number to display suggestions from the customers database
+                                    </div>
+                                </div>
+
+                                <div class="field town">
+                                    <label class="form-label fw-bold required" for="contractorTown">Town</label>
+                                    <input id="contractorTown" type="text" class="form-control" placeholder="Enter town name" required>
+                                </div>
+                                <div class="field postal-code">
+                                    <label class="form-label fw-bold required" for="contractorPostalCode">ZIP code</label>
+                                    <input id="contractorPostalCode" type="text" class="form-control" placeholder="Enter postal code" required>
+                                </div>
+                                <div class="field post-office">
+                                    <label class="form-label fw-bold" for="contractorMail">Mail<span class="fw-normal"> (optional)</span></label>
+                                    <input id="contractorMail" type="text" class="form-control" placeholder="Enter your email address">
+                                </div>
+
+                                <div class="field street">
+                                    <label class="form-label fw-bold" for="contractorStreet">Street<span class="fw-normal"> (optional)</span></label>
+                                    <input id="contractorStreet" type="text" class="form-control" placeholder="Enter street">
+                                </div>
+                                <div class="field building">
+                                    <label class="form-label fw-bold required" for="contractorBuilding">Building number</label>
+                                    <input id="contractorBuilding" type="text" class="form-control" placeholder="Enter the building number" required>
+                                </div>
+                                <div class="field apartment">
+                                    <label class="form-label fw-bold" for="contractorApartment">Apartment number<span class="fw-normal"> (optional)</span></label>
+                                    <input id="contractorApartment" type="text" class="form-control" placeholder="Enter the apartment number">
+                                </div>
+
+                                <div class="field additional-entity">
+                                    <span class="form-label fw-bold required">Additional entity</span>
+                                    <div class="additional-entity-options">
+                                        <div class="marking-item">
+                                            <label for="additionalEntityNone" class="d-flex align-items-center">
+                                                <input id="additionalEntityNone" name="additionalEntity" type="radio" value="none" checked>
+                                            </label>
+                                            <span class="fw-bold">None</span>
+                                        </div>
+                                        <div class="marking-item">
+                                            <label for="additionalEntityJst" class="d-flex align-items-center">
+                                                <input id="additionalEntityJst" name="additionalEntity" type="radio" value="jst">
+                                            </label>
+                                            <span class="fw-bold">JST</span>
+                                            <span>— invoice concerns a subordinate unit of a local government unit</span>
+                                        </div>
+                                        <div class="marking-item">
+                                            <label for="additionalEntityGv" class="d-flex align-items-center">
+                                                <input id="additionalEntityGv" name="additionalEntity" type="radio" value="gv">
+                                            </label>
+                                            <span class="fw-bold">GV</span>
+                                            <span>— invoice concerns a member of a VAT group</span>
+                                        </div>
+                                        <div class="marking-item">
+                                            <label for="additionalEntityOther" class="d-flex align-items-center">
+                                                <input id="additionalEntityOther" name="additionalEntity" type="radio" value="other">
+                                            </label>
+                                            <span class="fw-bold">Other</span>
+                                            <span>— additional entity other than local government units / municipalities</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Positions ---------------------------------------------------------------------------------------->
+                <section class="invoice-card">
+                    <div class="section-header" data-bs-toggle="collapse" data-bs-target="#itemsData" role="button">
+                        <span>Positions</span>
+                        <i class="bi bi-chevron-down ms-3"></i>
+                    </div>
+
+                    <div id="itemsData" class="collapse">
+                        <div class="section-body">
+
+                            <span class="form-label fw-bold required">Invoice issued at prices</span>
+                            <div class="invoice-type mb-3">
+                                <div class="marking-item">
+                                    <label for="priceNet" class="d-flex align-items-center">
+                                        <input id="priceNet" type="radio" name="priceType" value="net" checked class="form-check-input">
+                                    </label>
+                                    <span>Net</span>
+                                </div>
+                                <div class="marking-item">
+                                    <label for="priceGross" class="d-flex align-items-center">
+                                        <input id="priceGross" type="radio" name="priceType" value="gross" class="form-check-input">
+                                    </label>
+                                    <span>Gross</span>
+                                </div>
+                            </div>
+
+                            <div class="form-label fw-bold mt-4 mb-1">
+                                Additional columns<span class="fw-normal"> (optional) - </span>
+                                <a class="learn-more fw-bold">Learn more <i class="bi bi-box-arrow-up-right"></i></a>
+                            </div>
+                            <div class="markings-list mb-4">
+                                <div class="marking-item">
+                                    <label for="additionalColumnGTU" class="d-flex align-items-center">
+                                        <input id="additionalColumnGTU" type="checkbox" class="form-check-input">
+                                    </label>
+                                    <span>GTU</span>
+                                </div>
+                                <div class="marking-item">
+                                    <label for="procedureSymbols" class="d-flex align-items-center">
+                                        <input id="procedureSymbols" type="checkbox" class="form-check-input">
+                                    </label>
+                                    <span>Procedure symbols</span>
+                                </div>
+                                <div class="marking-item">
+                                    <label for="additionalInformation" class="d-flex align-items-center">
+                                        <input id="additionalInformation" type="checkbox" class="form-check-input">
+                                    </label>
+                                    <span>Additional information</span>
+                                </div>
+                            </div>
+
+                            <div class="table-responsive">
+                                <table class="table table-bordered items-table" id="itemsTable">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th scope="col" data-header="No.">No.</th>
+                                            <th scope="col" data-header="Name">Name</th>
+                                            <th scope="col" data-header="Unit net price">Unit net price</th>
+                                            <th scope="col" data-header="Quantity">Quantity</th>
+                                            <th scope="col" data-header="Gross amount">Unit of measurement</th>
+                                            <th scope="col" data-header="VAT rate">VAT rate</th>
+                                            <th scope="col" data-header="Net amount">Net (PLN)</th>
+                                            <th scope="col" data-header="VAT amount">VAT (PLN)</th>
+                                            <th scope="col" data-header="Gross amount">Gross (PLN)</th>
+                                            <!-- Additional columns-->
+                                            <th scope="col" data-header="GTU" class="d-none">GTU</th>
+                                            <th scope="col" data-header="Procedure symbols" class="d-none">Procedure symbols</th>
+                                            <th scope="col" data-header="Additional" class="d-none">Additional information</th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody id="itemsBody">
+                                        <tr class="item-row">
+                                            <td class="item-number" data-label="No.">
+                                                <button id="removePosition1" type="button" class="btn btn-danger btn-sm removePosition" aria-label="Remove item">
+                                                    <i class="bi bi-x-lg"></i>
+                                                </button>
+                                                <span id="rowIndex">1</span>
+                                            </td>
+                                            <td data-label="Name">
+                                                <label class="d-none" for="itemName1">Item name</label>
+                                                <input id="itemName1" type="text" class="form-control" placeholder="Enter name">
+                                            </td>
+                                            <td data-label="Unit net price">
+                                                <label class="d-none" for="itemPrice1">Unit net price</label>
+                                                <input id="itemPrice1" type="number" step="10" min="0" class="form-control" placeholder="Enter amount">
+                                            </td>
+                                            <td data-label="Quantity">
+                                                <label class="d-none" for="itemQuantity1">Quantity</label>
+                                                <input id="itemQuantity1" type="number" step="1" min="1" value="1" class="form-control" placeholder="Enter quantity">
+                                            </td>
+                                            <td data-label="Unit of measurement">
+                                                <label class="d-none" for="itemUnit1">Unit of measurement</label>
+                                                <input id="itemUnit1" type="text" class="form-control" value="szt" placeholder="Enter unit">
+                                            </td>
+                                            <td data-label="VAT rate">
+                                                <label class="d-none" for="itemVAT1">VAT rate</label>
+                                                <select id="itemVAT1" class="form-select">
+                                                    <option value="23" selected>23%</option>
+                                                    <option value="8">8%</option>
+                                                    <option value="5">5%</option>
+                                                    <option value="0">0%</option>
+                                                    <option value="ZW">Exempt</option>
+                                                </select>
+                                            </td>
+                                            <td data-label="Net amount">
+                                                <label class="d-none" for="itemNet1">Net amount</label>
+                                                <input id="itemNet1" type="number" step="0.01" class="form-control" value="0.00" disabled>
+                                            </td>
+                                            <td data-label="VAT amount">
+                                                <label class="d-none" for="itemVATamount1">VAT amount</label>
+                                                <input id="itemVATamount1" type="number" step="0.01" class="form-control" value="0.00" disabled>
+                                            </td>
+                                            <td data-label="Gross amount">
+                                                <label class="d-none" for="itemGross1">Gross amount</label>
+                                                <input id="itemGross1" type="number" step="0.01" class="form-control" value="0.00" disabled>
+                                            </td>
+
+                                            <!-- Additional columns-->
+                                            <td class="d-none" data-label="GTU">
+                                                <label class="d-none" for="itemGTU1">GTU</label>
+                                                <input id="itemGTU1" type="text" class="form-control" placeholder="GTU">
+                                            </td>
+                                            <td class="d-none" data-label="Procedure symbols">
+                                                <label class="d-none" for="itemProcedureSymbols1">Procedure symbols</label>
+                                                <input id="itemProcedureSymbols1" type="text" class="form-control" placeholder="SYMBOL">
+                                            </td>
+                                            <td class="d-none" data-label="Additional">
+                                                <label class="d-none" for="itemAdditionalInformation1">Additional information</label>
+                                                <input id="itemAdditionalInformation1" type="text" class="form-control" placeholder="Additional information">
+                                            </td>
+                                        </tr>
+                                    </tbody>
+
+                                    <tfoot>
+                                        <tr class="total-row small">
+                                            <td></td>
+                                            <td colspan="5" class="text-end">Total</td>
+                                            <td><span id="totalNet">0.00</span></td>
+                                            <td><span id="totalVAT">0.00</span></td>
+                                            <td><span id="totalGross">0.00</span></td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+
+                            <button type="button" class="btn btn-outline-primary btn-sm" id="addItem">+ Add another item</button>
+
+                            <div class="mt-4">
+                                <span class="form-label fw-bold required">Additional data on the invoice</span>
+                                <div class="invoice-type">
+                                    <div class="marking-item">
+                                        <label for="additionalDataYes" class="d-flex align-items-center">
+                                            <input id="additionalDataYes" type="radio" name="additionalData" value="yes" class="form-check-input">
+                                        </label>
+                                        <span>Yes</span>
+                                    </div>
+                                    <div class="marking-item">
+                                        <label for="additionalDataNo" class="d-flex align-items-center">
+                                            <input id="additionalDataNo" type="radio" name="additionalData" value="no" class="form-check-input">
+                                        </label>
+                                        <span>No</span>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="field payment-link">
-                                <label class="form-label fw-bold" for="paymentLink">
-                                    Cashless payment link<span class="fw-normal"> (optional)</span>
-                                </label>
-                                <input id="paymentLink" type="url" class="form-control" placeholder="Enter payment link">
-                            </div>
-
-                            <div class="field ksef-payment-id">
-                                <label class="form-label fw-bold" for="ksefPaymentId">
-                                    KSeF Payment ID<span class="fw-normal"> (optional)</span>
-                                </label>
-                                <input id="ksefPaymentId" type="text" class="form-control" placeholder="Enter identifier">
-                            </div>
                         </div>
                     </div>
+                </section>
 
-                </div>
-            </section>
+                <!-- Payment ---------------------------------------------------------------------------------------------->
+                <section class="invoice-card">
+                    <div class="section-header" data-bs-toggle="collapse" data-bs-target="#paymentData" role="button">
+                        <span>Payment</span>
+                        <i class="bi bi-chevron-down ms-3"></i>
+                    </div>
 
-            <!-- Other ------------------------------------------------------------------------------------------------>
-            <section class="invoice-card">
-                <div class="section-header" data-bs-toggle="collapse" data-bs-target="#additionalInfo" role="button">
-                    <span>Other information on the invoice</span>
-                    <i class="bi bi-chevron-down ms-3"></i>
-                </div>
+                    <div id="paymentData" class="collapse">
+                        <div class="section-body">
+                            <div class="payment-grid">
+                                <div class="field payment-type">
+                                    <label class="form-label fw-bold required" for="paymentType">Payment type</label>
+                                    <select id="paymentType" class="form-select" required>
+                                        <option value="">Select</option>
+                                        <option value="1">Cash</option>
+                                        <option value="2">Card</option>
+                                        <option value="3">Bon</option>
+                                        <option value="4">Check</option>
+                                        <option value="5">Loan</option>
+                                        <option value="6">Transfer</option>
+                                        <option value="7">Mobile payment</option>
+                                        <option value="*">Other payment</option>
+                                    </select>
+                                </div>
 
-                <div id="additionalInfo" class="collapse">
-                    <div class="section-body">
-                        <div id="footersContainer">
-                            <div class="footer-field" data-footer-index="1">
-                                <label class="form-label fw-bold" for="notes">
-                                    Invoice footer<span class="fw-normal"> (optional)</span>
-                                </label>
-                                <textarea id="notes"
-                                          class="form-control"
-                                          rows="5"
-                                          maxlength="3500"
-                                          placeholder="Enter additional comments (up to 3500 characters)"></textarea>
-
-                                <div class="d-flex justify-content-between align-items-center mt-1">
-                                    <button type="button" class="btn btn-outline-danger remove-footer btn-sm py-0" aria-label="Delete footer">
-                                        Delete
-                                    </button>
-                                    <div class="help-text text-end ms-auto">
-                                        <i class="bi bi-info-circle me-1"></i>Field accepts up to 3500 characters
-                                        (<span class="notes-count">0</span>/3500)
+                                <div class="field bank-account">
+                                    <label class="form-label fw-bold" for="bankAccount">
+                                        Bank account number<span class="fw-normal"> (optional)</span>
+                                    </label>
+                                    <input id="bankAccount" type="text" class="form-control" maxlength="26" placeholder="Enter bank account number (26 digits)">
+                                    <div class="help-text">
+                                        <i class="bi bi-info-circle ps-2"></i>
+                                        The information will appear on the invoice
                                     </div>
+                                </div>
+
+                                <div class="field payment-status">
+                                    <span class="form-label fw-bold">
+                                        Invoice status<span class="fw-normal"> (optional)</span>
+                                    </span>
+                                    <div class="marking-item">
+                                        <label for="invoicePaid" class="d-flex align-items-center">
+                                            <input id="invoicePaid" type="checkbox" class="form-check-input">
+                                        </label>
+                                        <span>Invoice paid</span>
+                                    </div>
+                                </div>
+
+                                <div class="field payment-term">
+                                    <span class="form-label fw-bold required">Payment deadline</span>
+                                    <div class="d-flex gap-4">
+                                        <div class="marking-item">
+                                            <input id="paymentTermDeadline" name="paymentTerm" type="radio" class="form-check-input" value="deadline" checked>
+                                            <label class="form-check-label" for="paymentTermDeadline">Deadline</label>
+                                        </div>
+                                        <div class="marking-item">
+                                            <input id="paymentTermDescription" name="paymentTerm" type="radio" class="form-check-input" value="description">
+                                            <label class="form-check-label" for="paymentTermDescription">Payment term description</label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Deadline fields -->
+                                <div id="deadlineFields" class="payment-term-fields">
+                                    <div class="field payment-days">
+                                        <label class="form-label fw-bold required" for="paymentDays">Days to pay</label>
+                                        <input id="paymentDays" type="number" min="1" class="form-control" value="7" placeholder="Enter the number of days" required>
+                                    </div>
+
+                                    <div class="field payment-deadline">
+                                        <label class="form-label fw-bold required" for="paymentDeadline">
+                                            Payment deadline
+                                        </label>
+                                        <input id="paymentDeadline" type="date" class="form-control" value="2026-08-19" required>
+                                    </div>
+                                </div>
+
+                                <!-- Payment term description fields -->
+                                <div id="descriptionFields"
+                                     class="payment-grid payment-term-fields d-none">
+                                    <div class="field">
+                                        <label class="form-label fw-bold required" for="periodLength">Length of period</label>
+                                        <input id="periodLength" type="number" min="0" class="form-control" placeholder="Enter a number">
+                                    </div>
+
+                                    <div class="field">
+                                        <label class="form-label fw-bold required" for="periodUnit">Unit of time</label>
+                                        <input id="periodUnit" type="text" class="form-control" placeholder="Enter the unit">
+                                    </div>
+
+                                    <div class="field" style="grid-column: span 2;">
+                                        <label class="form-label fw-bold required" for="startingEvent">Starting Event</label>
+                                        <input id="startingEvent" type="text" class="form-control" maxlength="256" placeholder="Enter information specifying the starting event">
+                                        <div class="help-text">
+                                            The field accepts up to 256 characters
+                                            (<span id="startingEventCount">0</span>/256)
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="field payment-link">
+                                    <label class="form-label fw-bold" for="paymentLink">
+                                        Cashless payment link<span class="fw-normal"> (optional)</span>
+                                    </label>
+                                    <input id="paymentLink" type="url" class="form-control" placeholder="Enter payment link">
+                                </div>
+
+                                <div class="field ksef-payment-id">
+                                    <label class="form-label fw-bold" for="ksefPaymentId">
+                                        KSeF Payment ID<span class="fw-normal"> (optional)</span>
+                                    </label>
+                                    <input id="ksefPaymentId" type="text" class="form-control" placeholder="Enter identifier">
                                 </div>
                             </div>
                         </div>
-                        <button id="addFooter" type="button" class="btn btn-outline-primary btn-sm mt-3">+ Add another footer</button>
-                    </div>
-                </div>
-            </section>
 
-            <!-- Action buttons --------------------------------------------------------------------------------------->
-            <div class="footer-actions">
-                <button type="button" class="btn btn-danger" id="cancelButton">Cancel</button>
-                <button type="button" class="btn btn-primary" id="generateInvoiceButton" disabled>Generate invoice</button>
-                <button type="button" class="btn btn-primary" id="downloadXmlButton" disabled>Download XML</button>
-                <button type="button" class="btn btn-success" id="submitButton" disabled>Submit</button>
-            </div>
-        </form>
-    </div>
-</body>
+                    </div>
+                </section>
+
+                <!-- Other ------------------------------------------------------------------------------------------------>
+                <section class="invoice-card">
+                    <div class="section-header" data-bs-toggle="collapse" data-bs-target="#additionalInfo" role="button">
+                        <span>Other information on the invoice</span>
+                        <i class="bi bi-chevron-down ms-3"></i>
+                    </div>
+
+                    <div id="additionalInfo" class="collapse">
+                        <div class="section-body">
+                            <div id="footersContainer">
+                                <div class="footer-field" data-footer-index="1">
+                                    <label class="form-label fw-bold" for="notes">
+                                        Invoice footer<span class="fw-normal"> (optional)</span>
+                                    </label>
+                                    <textarea id="notes"
+                                              class="form-control"
+                                              rows="5"
+                                              maxlength="3500"
+                                              placeholder="Enter additional comments (up to 3500 characters)"></textarea>
+
+                                    <div class="d-flex justify-content-between align-items-center mt-1">
+                                        <button type="button" class="btn btn-outline-danger remove-footer btn-sm py-0" aria-label="Delete footer">
+                                            Delete
+                                        </button>
+                                        <div class="help-text text-end ms-auto">
+                                            <i class="bi bi-info-circle me-1"></i>Field accepts up to 3500 characters
+                                            (<span class="notes-count">0</span>/3500)
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <button id="addFooter" type="button" class="btn btn-outline-primary btn-sm mt-3">+ Add another footer</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Action buttons --------------------------------------------------------------------------------------->
+                <div class="footer-actions">
+                    <button type="button" class="btn btn-danger" id="cancelButton">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="generateInvoiceButton" disabled>Generate invoice</button>
+                    <button type="button" class="btn btn-primary" id="downloadXmlButton" disabled>Download XML</button>
+                    <button type="button" class="btn btn-success" id="submitButton" disabled>Submit</button>
+                </div>
+            </form>
+        </div>
+    </body>
 </html>
