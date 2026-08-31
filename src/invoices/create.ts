@@ -217,6 +217,14 @@ identifierOptions.forEach((option) => {
 
 /// Recalculate net, VAT and gross per on change of price, quantity or VAT
 function initPositions(userProfile: AppUser): void {
+    const firstRow = document.querySelector<HTMLElement>(".item-row");
+    if (firstRow) {
+        const itemName = firstRow.querySelector<HTMLInputElement>('input[id^="itemName"]');
+        const itemPrice = firstRow.querySelector<HTMLInputElement>('input[id^="itemPrice"]');
+        if (itemName && userProfile.defaultItemName) itemName.value = userProfile.defaultItemName;
+        if (itemPrice && userProfile.defaultHourlyRate) itemPrice.value = String(userProfile.defaultHourlyRate);
+        calculatePositionLine(firstRow);
+    }
     document.addEventListener("input", (event: Event) => {
         const target = event.target as HTMLElement;
         if (
@@ -224,31 +232,29 @@ function initPositions(userProfile: AppUser): void {
             target.id.startsWith("itemQuantity") ||
             target.id.startsWith("itemVAT")
         ) {
-            calculatePositionLine(target.closest(".item-row")!, userProfile);
+            const row = target.closest(".item-row");
+            if (row)
+                calculatePositionLine(row);
         }
     });
-    addPosition(userProfile);
-    document.querySelectorAll(".item-row").forEach((row) => calculatePositionLine(row, userProfile));
+    addPosition();
 }
 
 /// Calculate net, VAT and gross per invoice position
-function calculatePositionLine(row: Element, userProfile?: AppUser): void {
-    const itemName = row.querySelector<HTMLInputElement>('input[id^="itemName"]')!;
+function calculatePositionLine(row: Element): void {
     const itemPrice = row.querySelector<HTMLInputElement>('input[id^="itemPrice"]')!;
     const itemQuantity = row.querySelector<HTMLInputElement>('input[id^="itemQuantity"]')!;
-    const itemVATrate = row.querySelector('select[id^="itemVAT"]') as unknown as HTMLSelectElement;
+    const itemVATrate = row.querySelector('select[id^="itemVAT"]')! as unknown as HTMLSelectElement;
     const netInput = row.querySelector<HTMLInputElement>('input[id^="itemNet"]')!;
     const VATInput = row.querySelector<HTMLInputElement>('input[id^="itemVATamount"]')!;
     const grossInput = row.querySelector<HTMLInputElement>('input[id^="itemGross"]')!;
-
-    if (userProfile?.defaultItemName) itemName.value = userProfile.defaultItemName;
-    if (userProfile?.defaultHourlyRate) itemPrice.value = String(userProfile.defaultHourlyRate);
 
     const grossUnitPrice = parseFloat(itemPrice.value) || 0;
     const quantity = parseFloat(itemQuantity.value) || 0;
     const VATrate = itemVATrate.value || "23";
 
     const gross = grossUnitPrice * quantity;
+
     let VAT = 0;
     let net = gross;
 
@@ -287,19 +293,24 @@ function calculatePositionsTotals(): void {
 }
 
 /// Add position handler
-function addPosition(userProfile: AppUser) {
+function addPosition() {
     document.getElementById("addItem")!.addEventListener("click", () => {
         const tbody = document.getElementById("itemsBody")!;
         const firstRow = tbody.querySelector(".item-row")!;
         const newRow = firstRow.cloneNode(true) as HTMLElement;
-        newRow.querySelectorAll("input").forEach((input) => {
-            if (input.classList.contains("quantity"))
-                (input as HTMLInputElement).value = "1";
+        newRow.querySelectorAll<HTMLInputElement>("input").forEach((input) => {
+            if (input.id.startsWith("itemQuantity"))
+                input.value = "1";
+            if (
+                input.id.startsWith("itemNet") ||
+                input.id.startsWith("itemVATamount") ||
+                input.id.startsWith("itemGross")
+            )
+                input.value = "";
         });
         tbody.appendChild(newRow);
-        // Update index
         updateItemNumber();
-        calculatePositionLine(newRow, userProfile);
+        calculatePositionLine(newRow);
     });
 }
 
@@ -508,7 +519,7 @@ async function initNew() {
     await initInvoiceData();
     await initContractorData();
     initPositions(userProfile);
-    document.querySelectorAll(".item-row").forEach((row) => calculatePositionLine(row, userProfile));
+    document.querySelectorAll(".item-row").forEach((row) => calculatePositionLine(row));
     void initPayment(userProfile);
     await initActions(userProfile);
 }
