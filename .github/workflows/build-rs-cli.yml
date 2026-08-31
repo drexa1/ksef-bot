@@ -2,7 +2,22 @@ name: Build CLI
 
 on:
   push:
-    branches: ["main"]
+    branches: [ "main" ]
+    paths-ignore:
+      - '.github/**'
+      - 'pages/**'
+      - 'public/**'
+      - 'src/**'
+      - 'worker/**'
+      - '.gitignore'
+      - 'BACKLOG.md'
+      - 'index.html'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'README.md'
+      - 'tsconfig.json'
+      - 'vite.config.js'
+      - 'wrangler.worker.toml'
   workflow_dispatch:
 
 env:
