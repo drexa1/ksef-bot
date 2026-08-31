@@ -29,26 +29,6 @@ export async function post(req: Request, env: Env): Promise<Response> {
     }
 }
 
-export async function session(req: Request, env: Env): Promise<Response> {
-    const appUser = await getAuthUser(req, env);
-    const url = new URL(req.url);
-    const client = new Client(env);
-    await client.authenticate(appUser);
-    const sessionReferenceNumber= url.searchParams.get("sessionReferenceNumber") ?? undefined
-    const result = await client.getSessionStatus(sessionReferenceNumber);
-    return Response.json(result);
-}
-
-export async function sessionInvoices(req: Request, env: Env): Promise<Response> {
-    const appUser = await getAuthUser(req, env);
-    const sessionReferenceNumber = new URL(req.url).searchParams.get("sessionReferenceNumber");
-    if (!sessionReferenceNumber)
-        return Response.json({ error: "Missing sessionReferenceNumber" }, { status: 400 });
-    const client = new Client(env);
-    await client.authenticate(appUser);
-    return Response.json(await client.getSessionInvoices(sessionReferenceNumber));
-}
-
 export async function status(req: Request, env: Env): Promise<Response> {
     const appUser = await getAuthUser(req, env);
     const url = new URL(req.url);

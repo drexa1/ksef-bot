@@ -16,7 +16,7 @@ export async function generateInvoiceXml(userProfile: AppUser, form: HTMLFormEle
     // Header
     root.querySelector("KodFormularza")!.textContent = "FA";
     root.querySelector("WariantFormularza")!.textContent = "3";
-    root.querySelector("SystemInfo")!.textContent = "KSeF Bot";
+    root.querySelector("SystemInfo")!.textContent = "e-mikrofirma";
     root.querySelector("DataWytworzeniaFa")!.textContent = new Date().toISOString();
 
     // Seller

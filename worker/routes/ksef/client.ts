@@ -193,6 +193,11 @@ class KsefClientBase {
         encryption: InvoiceEncryptionData
     ): Promise<{ referenceNumber: string }> {
         const encryptedInvoice = await this.encryptInvoiceXml(invoiceBytes, encryption.cipherKey, encryption.cipherIv);
+        console.info("⚖️ Raw invoice bytes:", {
+            length: invoiceBytes.length,
+            firstBytes: Array.from(invoiceBytes.slice(0, 10)),
+            lastBytes: Array.from(invoiceBytes.slice(-10)),
+        });
         const invoiceHash = await this.sha256Base64(invoiceBytes);
         const encryptedInvoiceHash = await this.sha256Base64(encryptedInvoice);
         console.info("⚖️ KSeF invoice payload:", {
@@ -229,13 +234,17 @@ class KsefClientBase {
             ["encrypt"]
         );
         // Web Crypto applies PKCS#7 padding automatically.
-        const encryptedInvoice = await crypto.subtle.encrypt({name: "AES-CBC", iv: this.toArrayBuffer(cipherIv)}, key, this.toArrayBuffer(invoiceBytes));
-        const ciphertext = new Uint8Array(encryptedInvoice);
-        // KSeF requirement: IV + ciphertext
-        const result = new Uint8Array(cipherIv.length + ciphertext.length);
-        result.set(cipherIv, 0);
-        result.set(ciphertext, cipherIv.length);
-        return result;
+        const encrypted = new Uint8Array( await crypto.subtle.encrypt(
+            { name: "AES-CBC", iv: this.toArrayBuffer(cipherIv) },
+            key,
+            this.toArrayBuffer(invoiceBytes)
+        ));
+        console.info("AFTER AES:", {
+            plaintextLength: invoiceBytes.byteLength,
+            ciphertextLength: encrypted.byteLength,
+            expectedCiphertextLength: Math.ceil((invoiceBytes.byteLength + 1) / 16) * 16
+        });
+        return encrypted;
     }
 
     private async sha256Base64(data: Uint8Array): Promise<string> {

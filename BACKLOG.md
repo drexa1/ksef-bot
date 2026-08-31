@@ -48,7 +48,9 @@
 - [x] Invoice generator frontend: invoice add position  
 - [x] Finish dark theme  
 - [x] Invoice generator frontend: mobile invoice items table  
-- [ ] Invoice generator frontend: submit action logic  
+- [x] Invoice generator frontend: submit action logic  
+- [x] Generate next invoice XML  
+- [x] Rest test for posting an invoice  
 - [ ] Invoice generator frontend: wrangle up CSS  
 - [ ] Invoice generator frontend: smoke mobile
 - [ ] Invoice generator frontend: contractor additional entity  
@@ -72,9 +74,7 @@
 - [ ] Retrieve user details programmatically  
 - [ ] First time frontend workflow  
 - [ ] Admin contractors frontend  
-- [ ] Login frontend  
-- [ ] Generate next invoice XML  
-- [ ] Rest test for posting an invoice
+- [ ] Login frontend
 - [ ] Bank client PoC
 - [ ] WhatsApp bot
 - [ ] Scheduling
