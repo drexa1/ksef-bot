@@ -2,7 +2,7 @@ import {AppUser} from "../../worker/types/db";
 
 export async function generateInvoiceXml(userProfile: AppUser, form: HTMLFormElement): Promise<string> {
 
-    const response = await fetch("/assets/schemas/invoice-template.xml");
+    const response = await fetch("schemas/invoice-template.xml");
     const templateXml = await response.text();
     const xmlDocument = new DOMParser().parseFromString(templateXml, "application/xml");
     const root = xmlDocument.documentElement;

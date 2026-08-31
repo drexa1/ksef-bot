@@ -1,3 +1,5 @@
+const errorElement = document.getElementById("invoiceFormError")!;
+
 export function validateInvoiceForm(form: HTMLFormElement): boolean {
     const invalidFields: HTMLInputElement[] = [];
     form.querySelectorAll("input, select, textarea").forEach((element) => {
@@ -12,11 +14,8 @@ export function validateInvoiceForm(form: HTMLFormElement): boolean {
     }
     invalidFields.forEach((field) => field.classList.add("is-invalid"));
     updateInvalidSections(form);
-    const errorElement = document.getElementById("invoiceFormError");
-    if (errorElement) {
-        errorElement.textContent = `Please complete ${invalidFields.length} required field${invalidFields.length === 1 ? "" : "s"}.`;
-        errorElement.classList.remove("d-none");
-    }
+    errorElement.textContent = `${invalidFields.length} required field${invalidFields.length === 1 ? "" : "s"}.`;
+    errorElement.classList.remove("d-none");
     invalidFields[0].focus();
     return false;
 }
@@ -24,11 +23,8 @@ export function validateInvoiceForm(form: HTMLFormElement): boolean {
 export function clearValidationErrors(form: HTMLFormElement): void {
     form.querySelectorAll(".is-invalid").forEach((element) => element.classList.remove("is-invalid"));
     form.querySelectorAll(".invoice-card.has-invalid").forEach((section) => section.classList.remove("has-invalid"));
-    const errorElement = document.getElementById("invoiceFormError");
-    if (errorElement) {
-        errorElement.textContent = "";
-        errorElement.classList.add("d-none");
-    }
+    errorElement.textContent = "";
+    errorElement.classList.add("d-none");
 }
 
 function updateInvalidSections(form: HTMLFormElement): void {
@@ -41,17 +37,11 @@ function updateInvalidSections(form: HTMLFormElement): void {
 export function updateFormError(form: HTMLFormElement): void {
     updateInvalidSections(form);
     const invalidFields = form.querySelectorAll(".is-invalid");
-    const errorElement = document.getElementById("invoiceFormError");
-    if (!errorElement) return;
     if (invalidFields.length === 0) {
         errorElement.textContent = "";
         errorElement.classList.add("d-none");
     } else {
-        errorElement.textContent = `Please complete ${invalidFields.length} required field${invalidFields.length === 1 ? "" : "s"}.`;
+        errorElement.textContent = `${invalidFields.length} required field${invalidFields.length === 1 ? "" : "s"}.`;
         errorElement.classList.remove("d-none");
     }
-}
-
-export function clearFieldValidation(field: HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement): void {
-    if (field.value.trim()) field.classList.remove("is-invalid");
 }

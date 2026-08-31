@@ -452,6 +452,8 @@ async function initActions(userProfile: AppUser) {
             console.error("Unable to generate invoice XML:", error);
         }
     });
+    // After everything is initialized
+    generateInvoiceButton.disabled = false;
 }
 
 invoiceForm?.addEventListener("input", (event: Event) => {
