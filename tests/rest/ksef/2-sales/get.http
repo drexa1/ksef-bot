@@ -32,3 +32,8 @@ X-API-Key: {{apiKey}}
 GET {{baseUrl}}/ksef/sales/status?sessionReferenceNumber={{sessionReferenceNumber}}&invoiceReferenceNumber={{invoiceReferenceNumber}}
 X-API-Key: {{apiKey}}
 Accept: application/json
+
+### Download submission receipt
+GET {{baseUrl}}/ksef/sales/receipt?sessionReferenceNumber={{sessionReferenceNumber}}&invoiceReferenceNumber={{invoiceReferenceNumber}}
+X-API-Key: {{apiKey}}
+Accept: application/json

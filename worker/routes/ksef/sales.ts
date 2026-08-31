@@ -1,7 +1,6 @@
 import {Env} from "../../worker";
 import {getKsefInvoices} from "./ksef";
 import {getAuthUser} from "../../auth";
-import {AppUser} from "../../types/db";
 import {Client} from "./client";
 
 /**
@@ -29,7 +28,7 @@ export async function post(req: Request, env: Env): Promise<Response> {
     }
 }
 
-export async function status(req: Request, env: Env): Promise<Response> {
+export async function invoiceStatus(req: Request, env: Env): Promise<Response> {
     const appUser = await getAuthUser(req, env);
     const url = new URL(req.url);
     const sessionReferenceNumber = url.searchParams.get("sessionReferenceNumber");
@@ -40,4 +39,25 @@ export async function status(req: Request, env: Env): Promise<Response> {
     await client.authenticate(appUser);
     const result = await client.getInvoiceStatus(sessionReferenceNumber, invoiceReferenceNumber);
     return Response.json(result);
+}
+
+export async function downloadReceipt(req: Request, env: Env): Promise<Response> {
+    const appUser = await getAuthUser(req, env);
+    const url = new URL(req.url);
+    const sessionReferenceNumber = url.searchParams.get("sessionReferenceNumber");
+    const invoiceReferenceNumber = url.searchParams.get("invoiceReferenceNumber");
+    if (!sessionReferenceNumber || !invoiceReferenceNumber)
+        return new Response("Missing parameters", { status: 400 });
+    const client = new Client(env);
+    await client.authenticate(appUser);
+    const result = await client.getInvoiceStatus(sessionReferenceNumber, invoiceReferenceNumber);
+    const upoResponse = await fetch(result.upoDownloadUrl);
+    if (!upoResponse.ok)
+        return new Response(`KSeF UPO download failed: ${upoResponse.status}`, { status: 502 });
+    const body = await upoResponse.arrayBuffer();
+    return new Response(body, { status: 200, headers: {
+        "Content-Type": "application/xml; charset=utf-8",
+        "Content-Disposition": 'attachment; filename="upo.xml"',
+        "Access-Control-Allow-Origin": "*"
+    }});
 }

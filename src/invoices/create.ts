@@ -4,7 +4,7 @@ import {generateInvoiceXml} from "./generateXml";
 import {clearValidationErrors, updateFormError, validateInvoiceForm} from "./validate";
 import {loadUserProfile} from "../api/users";
 import {AppUser} from "../../worker/types/db";
-import {submitInvoice} from "../api/ksef";
+import {submitInvoice, downloadReceipt} from "../api/ksef";
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Invoice data
@@ -452,9 +452,11 @@ const invoiceForm = document.getElementById("invoiceForm") as HTMLFormElement;
 const generateInvoiceButton = document.getElementById("generateInvoiceButton") as HTMLButtonElement;
 const downloadXmlButton = document.getElementById("downloadXmlButton") as HTMLButtonElement;
 const submitButton = document.getElementById("submitButton") as HTMLButtonElement;
+const downloadReceiptButton = document.getElementById("downloadReceipt") as HTMLButtonElement;
 
 async function initActions(userProfile: AppUser) {
     let invoiceXML: string;
+    let submittedInvoice: { sessionReferenceNumber: string, invoiceReferenceNumber: string };
 
     // Action generate invoice -----------------------------------------------------------------------------------------
     generateInvoiceButton?.addEventListener("click", async() => {
@@ -487,12 +489,12 @@ async function initActions(userProfile: AppUser) {
 
     // Action download XML ---------------------------------------------------------------------------------------------
     downloadXmlButton?.addEventListener("click", () => {
+        const {month, year} = getInvoiceFilename();
         const blob = new Blob([invoiceXML], { type: "application/xml;charset=utf-8" });
         const url = URL.createObjectURL(blob);
-        const month = new Intl.DateTimeFormat("en-US", { month: "long" }).format(new Date()).toLowerCase();
         const link = document.createElement("a");
         link.href = url;
-        link.download = `${month}.xml`;
+        link.download = `${month}-${year}.xml`;
         link.click();
         URL.revokeObjectURL(url);
     });
@@ -500,16 +502,50 @@ async function initActions(userProfile: AppUser) {
     // Action submit invoice -------------------------------------------------------------------------------------------
     submitButton?.addEventListener("click", async() => {
         try {
-            const now = new Date();
-            const month = new Intl.DateTimeFormat("en-US", { month: "long" }).format(now);
-            const year = now.getFullYear();
+            const {month, year} = getInvoiceFilename();
             const notes = `${userProfile.email} invoice for ${month}, ${year}`;
-            const referenceNumber = await submitInvoice(invoiceXML, notes);
-            console.info(`Invoice submitted successfully: ${referenceNumber}`);
+            submittedInvoice = await submitInvoice(invoiceXML, notes);
+            console.info(
+                `Invoice submitted successfully: ${submittedInvoice.invoiceReferenceNumber} ` +
+                `(KSeF session: ${submittedInvoice.sessionReferenceNumber})`
+            );
+            generateInvoiceButton.disabled = true;
+            submitButton.disabled = true;
+            downloadReceiptButton.disabled = false;
         } catch (error) {
             console.error("Unable to submit invoice:", error);
         }
     });
+
+    // Action download receipt -------------------------------------------------------------------------------------------
+    downloadReceiptButton?.addEventListener("click", async () => {
+        try {
+            if (!submittedInvoice.invoiceReferenceNumber || !submittedInvoice.sessionReferenceNumber)return;
+            const status = await downloadReceipt(submittedInvoice.invoiceReferenceNumber, submittedInvoice.sessionReferenceNumber);
+            const response = await fetch(status.upoDownloadUrl);
+            const {month, year} = getInvoiceFilename();
+            const blob = await response.blob();
+            const downloadUrl = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.href = downloadUrl;
+            link.download = `${month}-${year}-UPO.xml`;
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            URL.revokeObjectURL(downloadUrl);
+        } catch (error) {
+            console.error("Unable to download invoice receipt:", error);
+        } finally {
+            downloadReceiptButton.disabled = false;
+        }
+    });
+}
+
+function getInvoiceFilename() {
+    const now = new Date();
+    const month = new Intl.DateTimeFormat("en-US", { month: "long" }).format(now);
+    const year = now.getFullYear();
+    return {month, year}
 }
 
 // ---------------------------------------------------------------------------------------------------------------------

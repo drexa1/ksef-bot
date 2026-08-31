@@ -322,6 +322,47 @@ export const getOpenApiSpec = (env: Env) => ({
                     TotalGrossAmount: { type: "number" },
                     TotalVatAmount: { type: "number" }
                 }
+            },
+            SubmissionStatus: {
+                type: "object",
+                required: [
+                    "ordinalNumber",
+                    "invoiceNumber",
+                    "ksefNumber",
+                    "referenceNumber",
+                    "invoiceHash",
+                    "acquisitionDate",
+                    "invoicingDate",
+                    "permanentStorageDate",
+                    "upoDownloadUrl",
+                    "upoDownloadUrlExpirationDate",
+                    "invoicingMode",
+                    "status"
+                ],
+                properties: {
+                    ordinalNumber: { type: "integer", example: 1},
+                    invoiceNumber: { type: "string", example: "eFA/2026/08/1" },
+                    ksefNumber: { type: "string", example: "6751577878-20260831-9D7775400302-21" },
+                    referenceNumber: { type: "string", example: "20260831-EE-4605526000-FC449AC181-66" },
+                    invoiceHash: { type: "string",  example: "F+gfritqI2++TQY5r6syevndpSWrn056nfZWycmbDSY=" },
+                    acquisitionDate: { type: "string",  format: "date-time", example: "2026-08-31T20:23:42.2734442+00:00" },
+                    invoicingDate: { type: "string", format: "date-time", example: "2026-08-31T20:23:42.1984545+00:00"},
+                    permanentStorageDate: { type: "string", format: "date-time", example: "2026-08-31T20:23:44.555602+00:00" },
+                    upoDownloadUrl: { type: "string", format: "uri", example: "https://api.ksef.mf.gov.pl/storage/..."},
+                    upoDownloadUrlExpirationDate: { type: "string", format: "date-time", example: "2026-09-03T20:32:45.67823+00:00" },
+                    invoicingMode: { type: "string", example: "Online" },
+                    status: {
+                        type: "object",
+                        required: [
+                            "code",
+                            "description"
+                        ],
+                        properties: {
+                            code: { type: "integer", example: 200 },
+                            description: { type: "string", example: "Success" }
+                        }
+                    }
+                }
             }
         }
     },
@@ -371,6 +412,41 @@ export const getOpenApiSpec = (env: Env) => ({
                     },
                     "401": { description: "Unauthorized" },
                     "500": { description: "Failed to decode JWT" }
+                }
+            }
+        },
+        "/ksef/sales/status": {
+            get: {
+                summary: "Get KSeF sales invoice processing status.",
+                tags: ["KSeF"],
+                security: [{ ApiKeyAuth: [] }],
+                parameters: [
+                    {
+                        name: "sessionReferenceNumber",
+                        in: "query",
+                        required: true,
+                        description: "KSeF online session reference number.",
+                        schema: {
+                            type: "string",
+                            example: "20260821-SO-408208E001-18649EBA65-49"
+                        }
+                    },
+                    {
+                        name: "invoiceReferenceNumber",
+                        in: "query",
+                        required: true,
+                        description: "KSeF invoice submission reference number.",
+                        schema: {
+                            type: "string",
+                            example: "20360831-EE-40811FF000-3FD2C75D72-27"
+                        }
+                    }
+                ],
+                responses: {
+                    "200": { description: "KSeF invoice processing status." },
+                    "400": { description: "Missing or invalid reference numbers." },
+                    "401": { description: "Unauthorized." },
+                    "404": { description: "Invoice not found." }
                 }
             }
         },
@@ -425,6 +501,51 @@ export const getOpenApiSpec = (env: Env) => ({
                     "200": { description: "Invoice submitted" },
                     "400": { description: "Invalid invoice" },
                     "401": { description: "Unauthorized" }
+                }
+            }
+        },
+        "/ksef/sales/receipt": {
+            get: {
+                summary: "Download KSeF sales invoice submission receipt.",
+                tags: ["KSeF"],
+                security: [{ ApiKeyAuth: [] }],
+                parameters: [
+                    {
+                        name: "sessionReferenceNumber",
+                        in: "query",
+                        required: true,
+                        description: "KSeF online session reference number.",
+                        schema: {
+                            type: "string",
+                            example: "20263831-SO-408208E001-18649EBA65-49"
+                        }
+                    },
+                    {
+                        name: "invoiceReferenceNumber",
+                        in: "query",
+                        required: true,
+                        description: "KSeF invoice submission reference number.",
+                        schema: {
+                            type: "string",
+                            example: "20260831-EE-40841FF0040-3FD2C75D732-27"
+                        }
+                    }
+                ],
+                responses: {
+                    "200": {
+                        description: "KSeF invoice submission receipt.",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    $ref: "#/components/schemas/InvoiceSubmissionStatus"
+                                }
+                            }
+                        }
+                    },
+                    "400": { description: "Missing or invalid reference numbers." },
+                    "401": { description: "Unauthorized." },
+                    "404": { description: "Invoice or submission receipt not found." },
+                    "502": { description: "Failed to retrieve submission receipt from KSeF." }
                 }
             }
         },
