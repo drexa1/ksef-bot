@@ -1,30 +1,30 @@
 import {AppUser} from "../../worker/types/db";
 
 export async function generateInvoiceXml(userProfile: AppUser, form: HTMLFormElement): Promise<string> {
-
     const response = await fetch("/schemas/invoice-template.xml");
     const templateXml = await response.text();
     const xmlDocument = new DOMParser().parseFromString(templateXml, "application/xml");
     const root = xmlDocument.documentElement;
 
+    // Invoice sections
     const fa = root.querySelector("Fa")!;
-    const seller = root.querySelector("Podmiot1")!;
-    const buyer = root.querySelector("Podmiot2")!;
-    const annotations = fa.querySelector("Adnotacje")!;
+    const contractor1 = root.querySelector("Podmiot1")!;
+    const contractor2 = root.querySelector("Podmiot2")!;
     const payment = fa.querySelector("Platnosc")!;
+    const annotations = fa.querySelector("Adnotacje")!;
 
     // Header
     root.querySelector("SystemInfo")!.textContent = "KSeF Bot";
     root.querySelector("DataWytworzeniaFa")!.textContent = new Date().toISOString();
 
     // Seller
-    const sellerAddress = `${userProfile.town}, ${userProfile.zipCode}, ${userProfile.buildingNumber}/${userProfile.apartmentNumber}`;
-    seller.querySelector("NIP")!.textContent = userProfile.nip;
-    seller.querySelector("Nazwa")!.textContent = `${userProfile.firstName} ${userProfile.lastName}`;
-    seller.querySelector("AdresL1")!.textContent = sellerAddress;
-    seller.querySelector("KodKraju")!.textContent = "PL";
+    const contractor1Address = `${userProfile.town}, ${userProfile.zipCode}, ${userProfile.buildingNumber}/${userProfile.apartmentNumber}`;
+    contractor1.querySelector("NIP")!.textContent = userProfile.nip;
+    contractor1.querySelector("Nazwa")!.textContent = `${userProfile.firstName} ${userProfile.lastName}`;
+    contractor1.querySelector("AdresL1")!.textContent = contractor1Address;
+    contractor1.querySelector("KodKraju")!.textContent = "PL";
 
-    // Contractor
+    // Buyer
     const customerName = form.querySelector<HTMLInputElement>("#contractorName")?.value.trim() ?? "";
     const customerNip = form.querySelector<HTMLInputElement>("#contractorNipInput")?.value.trim() ?? "";
     const customerTown = form.querySelector<HTMLInputElement>("#contractorTown")?.value.trim() ?? "";
@@ -32,29 +32,28 @@ export async function generateInvoiceXml(userProfile: AppUser, form: HTMLFormEle
     const customerStreet = form.querySelector<HTMLInputElement>("#contractorStreet")?.value.trim() ?? "";
     const customerBuilding = form.querySelector<HTMLInputElement>("#contractorBuilding")?.value.trim() ?? "";
     const customerApartment = form.querySelector<HTMLInputElement>("#contractorApartment")?.value.trim() ?? "";
-
     const customerAddress = [
         customerTown,
         customerPostalCode,
         [customerStreet, customerBuilding ? `${customerBuilding}${customerApartment ? `/${customerApartment}` : ""}` : ""].filter(Boolean).join(" ")
     ].filter(Boolean).join(", ");
 
-    buyer.querySelector("NIP")!.textContent = customerNip;
-    buyer.querySelector("Nazwa")!.textContent = customerName;
-    buyer.querySelector("AdresL1")!.textContent = customerAddress;
-    buyer.querySelector("KodKraju")!.textContent = "PL";
+    contractor2.querySelector("NIP")!.textContent = customerNip;
+    contractor2.querySelector("Nazwa")!.textContent = customerName;
+    contractor2.querySelector("AdresL1")!.textContent = customerAddress;
+    contractor2.querySelector("KodKraju")!.textContent = "PL";
 
     // Additional entity
     const additionalEntity = form.querySelector<HTMLInputElement>("input[name=\"additionalEntity\"]:checked")?.value ?? "";
     if (additionalEntity === "jst") {
-        buyer.querySelector("JST")!.textContent = "1";
-        buyer.querySelector("GV")!.textContent = "2";
+        contractor2.querySelector("JST")!.textContent = "1";
+        contractor2.querySelector("GV")!.textContent = "2";
     } else if (additionalEntity === "gv") {
-        buyer.querySelector("JST")!.textContent = "2";
-        buyer.querySelector("GV")!.textContent = "1";
+        contractor2.querySelector("JST")!.textContent = "2";
+        contractor2.querySelector("GV")!.textContent = "1";
     } else {
-        buyer.querySelector("JST")!.textContent = "2";
-        buyer.querySelector("GV")!.textContent = "2";
+        contractor2.querySelector("JST")!.textContent = "2";
+        contractor2.querySelector("GV")!.textContent = "2";
     }
 
     // Invoice
@@ -79,7 +78,7 @@ export async function generateInvoiceXml(userProfile: AppUser, form: HTMLFormEle
     fa.querySelectorAll("FaWiersz").forEach(row => row.remove());
     rows.forEach((row, index) => {
         const number = index + 1;
-        const invoiceRow = templateRow.cloneNode(true) as Element;
+        const invoiceItem = templateRow.cloneNode(true) as Element;
 
         const description = row.querySelector<HTMLInputElement>(`#itemName${number}`)?.value.trim() ?? "";
         const unit = row.querySelector<HTMLInputElement>(`#itemUnit${number}`)?.value.trim() ?? "";
@@ -89,16 +88,16 @@ export async function generateInvoiceXml(userProfile: AppUser, form: HTMLFormEle
         const vat = parseFloat(row.querySelector<HTMLInputElement>(`#itemVATamount${number}`)?.value ?? "0") || 0;
         const vatRate = (row.querySelector(`#itemVAT${number}`) as unknown as HTMLSelectElement)?.value ?? "23";
 
-        invoiceRow.querySelector("NrWierszaFa")!.textContent = String(number);
-        invoiceRow.querySelector("P_7")!.textContent = description;
-        invoiceRow.querySelector("P_8A")!.textContent = unit;
-        invoiceRow.querySelector("P_8B")!.textContent = String(quantity);
-        invoiceRow.querySelector("P_9A")!.textContent = String(unitPrice);
-        invoiceRow.querySelector("P_11")!.textContent = String(net);
-        invoiceRow.querySelector("P_11Vat")!.textContent = String(vat);
-        invoiceRow.querySelector("P_12")!.textContent = vatRate === "ZW" ? "0" : vatRate;
+        invoiceItem.querySelector("NrWierszaFa")!.textContent = String(number);
+        invoiceItem.querySelector("P_7")!.textContent = description;
+        invoiceItem.querySelector("P_8A")!.textContent = unit;
+        invoiceItem.querySelector("P_8B")!.textContent = String(quantity);
+        invoiceItem.querySelector("P_9A")!.textContent = String(unitPrice);
+        invoiceItem.querySelector("P_11")!.textContent = String(net);
+        invoiceItem.querySelector("P_11Vat")!.textContent = String(vat);
+        invoiceItem.querySelector("P_12")!.textContent = vatRate === "ZW" ? "0" : vatRate;
 
-        fa.insertBefore(invoiceRow, payment);
+        fa.insertBefore(invoiceItem, payment);
     });
 
     // Payment
@@ -116,8 +115,6 @@ export async function generateInvoiceXml(userProfile: AppUser, form: HTMLFormEle
             bankAccountElement.appendChild(nrRb);
             payment.appendChild(bankAccountElement);
         }
-    } else {
-        existingBankAccount?.remove();
     }
 
     return new XMLSerializer().serializeToString(xmlDocument);
