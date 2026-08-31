@@ -215,7 +215,7 @@ identifierOptions.forEach((option) => {
 // ---------------------------------------------------------------------------------------------------------------------
 
 /// Recalculate net, VAT and gross per on change of price, quantity or VAT
-function initializePositions(userProfile: AppUser): void {
+function initPositions(userProfile: AppUser): void {
     document.addEventListener("input", (event: Event) => {
         const target = event.target as HTMLElement;
         if (
@@ -345,7 +345,7 @@ const paymentDays = document.getElementById("paymentDays") as HTMLInputElement;
 const paymentDeadline = document.getElementById("paymentDeadline") as HTMLInputElement;
 const postingDate = document.getElementById("postingDate") as HTMLInputElement;
 
-function initializePayment(userProfile: AppUser): void {
+function initPayment(userProfile: AppUser): void {
     if (userProfile.bankAccountNumber)
         bankAccount.value = userProfile.bankAccountNumber;
     updatePaymentDeadline();
@@ -440,18 +440,19 @@ const downloadXmlButton = document.getElementById("downloadXmlButton") as HTMLBu
 const submitButton = document.getElementById("submitButton") as HTMLButtonElement;
 
 let invoiceXML: string;
-generateInvoiceButton?.addEventListener("click", () => {
-    if (!invoiceForm) return;
-    clearValidationErrors(invoiceForm);
-    if (!validateInvoiceForm(invoiceForm)) return;
-    try {
-        invoiceXML = generateInvoiceXml(invoiceForm);
-        if (downloadXmlButton) downloadXmlButton.disabled = false;
-        if (submitButton) submitButton.disabled = false;
-    } catch (error) {
-        console.error("Unable to generate invoice XML:", error);
-    }
-});
+async function initActions(userProfile: AppUser) {
+    generateInvoiceButton?.addEventListener("click", async() => {
+        clearValidationErrors(invoiceForm);
+        if (!validateInvoiceForm(invoiceForm)) return;
+        try {
+            invoiceXML = await generateInvoiceXml(userProfile, invoiceForm);
+            if (downloadXmlButton) downloadXmlButton.disabled = false;
+            if (submitButton) submitButton.disabled = false;
+        } catch (error) {
+            console.error("Unable to generate invoice XML:", error);
+        }
+    });
+}
 
 invoiceForm?.addEventListener("input", (event: Event) => {
     const field = event.target as HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
@@ -471,7 +472,6 @@ invoiceForm?.addEventListener("change", (event: Event) => {
 // Action download XML
 // ---------------------------------------------------------------------------------------------------------------------
 downloadXmlButton?.addEventListener("click", () => {
-    if (!invoiceXML) return;
     const blob = new Blob([invoiceXML], { type: "application/xml;charset=utf-8" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
@@ -487,13 +487,13 @@ downloadXmlButton?.addEventListener("click", () => {
 
 // Init ----------------------------------------------------------------------------------------------------------------
 async function initNew() {
-    // TODO: fetch userId from login
     const userProfile = await loadUserProfile("drexa1@hotmail.com");
     await initInvoiceData();
     await initContractorData();
-    initializePositions(userProfile);
+    initPositions(userProfile);
     document.querySelectorAll(".item-row").forEach((row) => calculatePositionLine(row, userProfile));
-    void initializePayment(userProfile);
+    void initPayment(userProfile);
+    await initActions(userProfile);
 }
 
 void initNew();

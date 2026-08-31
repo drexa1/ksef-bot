@@ -3,9 +3,9 @@
          xmlns:xsd="http://www.w3.org/2001/XMLSchema"
          xmlns="http://crd.gov.pl/wzor/2025/06/25/13775/">
     <Naglowek>
-        <KodFormularza kodSystemowy="FA (3)" wersjaSchemy="1-0E">FA</KodFormularza>
-        <WariantFormularza>3</WariantFormularza>
-        <DataWytworzeniaFa>{{DATA_WYTWORZENIA}}</DataWytworzeniaFa>
+        <KodFormularza kodSystemowy="FA (3)" wersjaSchemy="1-0E">{{FORM_CODE}}</KodFormularza>
+        <WariantFormularza>{{FORM_VARIANT}}</WariantFormularza>
+        <DataWytworzeniaFa>{{GENERATION_DATE}}</DataWytworzeniaFa>
         <SystemInfo>{{SYSTEM_INFO}}</SystemInfo>
     </Naglowek>
     <Podmiot1>
@@ -40,7 +40,7 @@
         <P_14_1>{{TOTAL_VAT}}</P_14_1>
         <P_15>{{TOTAL_GROSS}}</P_15>
         {{ANNOTATIONS}}
-        <RodzajFaktury>VAT</RodzajFaktury>
+        <RodzajFaktury>{{INVOICE_TYPE}}</RodzajFaktury>
         {{INVOICE_LINES}}
         <Platnosc>
             <TerminPlatnosci>

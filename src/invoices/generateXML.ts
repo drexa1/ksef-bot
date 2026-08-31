@@ -1,177 +1,126 @@
-// ---------------------------------------------------------------------------------------------------------------------
-// KSeF FA(3) invoice XML
-// ---------------------------------------------------------------------------------------------------------------------
-const KSEF_NAMESPACE = "http://crd.gov.pl/wzor/2025/06/25/13775/";
+import {AppUser} from "../../worker/types/db";
 
-export function generateInvoiceXml(form: HTMLFormElement): string {
-    // Optional markings
-    const mpp = isChecked(form, "markingMpp");
-    const mk = isChecked(form, "markingMk");
-    const fp = isChecked(form, "markingFp");
-    const tp = isChecked(form, "markingTp");
+const TEMPLATE_URL = "/assets/invoice-template.xml";
 
-    // Invoice data
-    const invoiceNumber = getInputValue(form, "invoiceNumber");
-    const issueDate = getInputValue(form, "issueDate");
-    const issuePlace = getInputValue(form, "issuePlace");
-    const postingDate = getInputValue(form, "postingDate");
-    const deliveryDate = getInputValue(form, "deliveryDate");
+export async function generateInvoiceXml(userProfile: AppUser, form: HTMLFormElement): Promise<string> {
 
-    // Contractor section
-    const contractorName = getInputValue(form, "contractorName");
-    const contractorNip = getInputValue(form, "contractorNipInput");
-    const contractorTown = getInputValue(form, "contractorTown");
-    const contractorPostalCode = getInputValue(form, "contractorPostalCode");
-    const contractorStreet = getInputValue(form, "contractorStreet");
-    const contractorBuilding = getInputValue(form, "contractorBuilding");
-    const contractorApartment = getInputValue(form, "contractorApartment");
-    const countryCode = "PL";
+    const response = await fetch(TEMPLATE_URL);
+    const templateXml = await response.text();
+    const xmlDocument = new DOMParser().parseFromString(templateXml, "application/xml");
+    const root = xmlDocument.documentElement;
 
-    const addressLine = [
-        contractorTown,
-        contractorPostalCode,
-        [
-            contractorStreet,
-            contractorBuilding ? `${contractorBuilding}${contractorApartment ? `/${contractorApartment}` : ""}` : ""
-        ].filter(Boolean).join(" ")
+    const fa = root.querySelector("Fa")!;
+    const seller = root.querySelector("Podmiot1")!;
+    const buyer = root.querySelector("Podmiot2")!;
+    const annotations = fa.querySelector("Adnotacje")!;
+    const payment = fa.querySelector("Platnosc")!;
+
+    // Header
+    root.querySelector("SystemInfo")!.textContent = "KSeF Bot";
+    root.querySelector("DataWytworzeniaFa")!.textContent = new Date().toISOString();
+
+    // Seller
+    const sellerAddress = `${userProfile.town}, ${userProfile.zipCode}, ${userProfile.buildingNumber}/${userProfile.apartmentNumber}`;
+    seller.querySelector("NIP")!.textContent = userProfile.nip;
+    seller.querySelector("Nazwa")!.textContent = `${userProfile.firstName} ${userProfile.lastName}`;
+    seller.querySelector("AdresL1")!.textContent = sellerAddress;
+    seller.querySelector("KodKraju")!.textContent = "PL";
+
+    // Contractor
+    const customerName = form.querySelector<HTMLInputElement>("#contractorName")?.value.trim() ?? "";
+    const customerNip = form.querySelector<HTMLInputElement>("#contractorNipInput")?.value.trim() ?? "";
+    const customerTown = form.querySelector<HTMLInputElement>("#contractorTown")?.value.trim() ?? "";
+    const customerPostalCode = form.querySelector<HTMLInputElement>("#contractorPostalCode")?.value.trim() ?? "";
+    const customerStreet = form.querySelector<HTMLInputElement>("#contractorStreet")?.value.trim() ?? "";
+    const customerBuilding = form.querySelector<HTMLInputElement>("#contractorBuilding")?.value.trim() ?? "";
+    const customerApartment = form.querySelector<HTMLInputElement>("#contractorApartment")?.value.trim() ?? "";
+
+    const customerAddress = [
+        customerTown,
+        customerPostalCode,
+        [customerStreet, customerBuilding ? `${customerBuilding}${customerApartment ? `/${customerApartment}` : ""}` : ""].filter(Boolean).join(" ")
     ].filter(Boolean).join(", ");
 
-    // Additional entity
-    const additionalEntity = getCheckedValue(form, "additionalEntity");
-    const jst = additionalEntity === "jst";
-    const gv = additionalEntity === "gv";
-    const other = additionalEntity === "other";
+    buyer.querySelector("NIP")!.textContent = customerNip;
+    buyer.querySelector("Nazwa")!.textContent = customerName;
+    buyer.querySelector("AdresL1")!.textContent = customerAddress;
+    buyer.querySelector("KodKraju")!.textContent = "PL";
 
-    const jstXml = jst ? `<JST>1</JST>` : "";
-    const gvXml = gv ? `<GV>1</GV>` : "";
+    // Additional entity
+    const additionalEntity = form.querySelector<HTMLInputElement>("input[name=\"additionalEntity\"]:checked")?.value ?? "";
+    if (additionalEntity === "jst") {
+        buyer.querySelector("JST")!.textContent = "1";
+        buyer.querySelector("GV")!.textContent = "2";
+    } else if (additionalEntity === "gv") {
+        buyer.querySelector("JST")!.textContent = "2";
+        buyer.querySelector("GV")!.textContent = "1";
+    } else {
+        buyer.querySelector("JST")!.textContent = "2";
+        buyer.querySelector("GV")!.textContent = "2";
+    }
+
+    // Invoice
+    fa.querySelector("P_1")!.textContent = form.querySelector<HTMLInputElement>("#issueDate")?.value.trim() ?? "";
+    fa.querySelector("P_1M")!.textContent = form.querySelector<HTMLInputElement>("#issuePlace")?.value.trim() ?? "";
+    fa.querySelector("P_2")!.textContent = form.querySelector<HTMLInputElement>("#invoiceNumber")?.value.trim() ?? "";
+    fa.querySelector("P_6")!.textContent = form.querySelector<HTMLInputElement>("#deliveryDate")?.value.trim() ?? "";
+    fa.querySelector("P_13_1")!.textContent = String(parseFloat(form.querySelector<HTMLElement>("#totalNet")?.textContent ?? "0") || 0);
+    fa.querySelector("P_14_1")!.textContent = String(parseFloat(form.querySelector<HTMLElement>("#totalVAT")?.textContent ?? "0") || 0);
+    fa.querySelector("P_15")!.textContent = String(parseFloat(form.querySelector<HTMLElement>("#totalGross")?.textContent ?? "0") || 0);
+
+    // Optional markings
+    const markingMpp = form.querySelector<HTMLInputElement>("#markingMpp")?.checked ?? false;
+    const markingMk = form.querySelector<HTMLInputElement>("#markingMk")?.checked ?? false;
+
+    annotations.querySelector("P_16")!.textContent = markingMk ? "1" : "2";
+    annotations.querySelector("P_18A")!.textContent = markingMpp ? "1" : "2";
 
     // Invoice positions
-    const lines = Array.from(form.querySelectorAll(".item-row")) as HTMLTableRowElement[];
-    const invoiceLines = lines.map((row, index) => {
+    const templateRow = fa.querySelector("FaWiersz")!;
+    const rows = Array.from(form.querySelectorAll(".item-row")) as HTMLTableRowElement[];
+    fa.querySelectorAll("FaWiersz").forEach(row => row.remove());
+    rows.forEach((row, index) => {
         const number = index + 1;
-        const description = row.querySelector<HTMLInputElement>(`#itemName${number}`)!.value.trim() ?? "";
-        const unit = row.querySelector<HTMLInputElement>(`#itemUnit${number}`)!.value.trim() ?? "";
-        const quantity = parseFloat(row.querySelector<HTMLInputElement>(`#itemQuantity${number}`)!.value ?? "0");
-        const unitPrice = parseFloat(row.querySelector<HTMLInputElement>(`#itemPrice${number}`)!.value ?? "0");
-        const net = parseFloat(row.querySelector<HTMLInputElement>(`#itemNet${number}`)!.value ?? "0");
-        const vat = parseFloat(row.querySelector<HTMLInputElement>(`#itemVATamount${number}`)!.value ?? "0");
-        const vatRate = (row.querySelector(`#itemVAT${number}`) as unknown as HTMLSelectElement)!.value ?? "23";
-        return `<FaWiersz>
-            <NrWierszaFa>${number}</NrWierszaFa>
-            <P_7>${escapeXml(description)}</P_7>
-            <P_8A>${escapeXml(unit)}</P_8A>
-            <P_8B>${quantity}</P_8B>
-            <P_9A>${unitPrice}</P_9A>
-            <P_11>${net}</P_11>
-            <P_11Vat>${vat}</P_11Vat>
-            <P_12>${vatRate === "ZW" ? 0 : vatRate}</P_12>
-        </FaWiersz>`;
-    }).join("\n");
+        const invoiceRow = templateRow.cloneNode(true) as Element;
 
-    // Position totals
-    const totalNet = parseFloat((form.querySelector("#totalNet") as HTMLElement).textContent ?? "0");
-    const totalVat = parseFloat((form.querySelector("#totalVAT") as HTMLElement).textContent ?? "0");
-    const totalGross = parseFloat((form.querySelector("#totalGross") as HTMLElement).textContent ?? "0");
+        const description = row.querySelector<HTMLInputElement>(`#itemName${number}`)?.value.trim() ?? "";
+        const unit = row.querySelector<HTMLInputElement>(`#itemUnit${number}`)?.value.trim() ?? "";
+        const quantity = parseFloat(row.querySelector<HTMLInputElement>(`#itemQuantity${number}`)?.value ?? "0") || 0;
+        const unitPrice = parseFloat(row.querySelector<HTMLInputElement>(`#itemPrice${number}`)?.value ?? "0") || 0;
+        const net = parseFloat(row.querySelector<HTMLInputElement>(`#itemNet${number}`)?.value ?? "0") || 0;
+        const vat = parseFloat(row.querySelector<HTMLInputElement>(`#itemVATamount${number}`)?.value ?? "0") || 0;
+        const vatRate = (row.querySelector(`#itemVAT${number}`) as unknown as HTMLSelectElement)?.value ?? "23";
 
-    // Payment section
-    const paymentType = getSelectValue(form, "paymentType");
-    const paymentDeadline = getInputValue(form, "paymentDeadline");
-    const bankAccount = getInputValue(form, "bankAccount");
-    const bankAccountXml = bankAccount ? `
-        <RachunekBankowy>
-          <NrRB>${escapeXml(bankAccount)}</NrRB>
-        </RachunekBankowy>` : "";
+        invoiceRow.querySelector("NrWierszaFa")!.textContent = String(number);
+        invoiceRow.querySelector("P_7")!.textContent = description;
+        invoiceRow.querySelector("P_8A")!.textContent = unit;
+        invoiceRow.querySelector("P_8B")!.textContent = String(quantity);
+        invoiceRow.querySelector("P_9A")!.textContent = String(unitPrice);
+        invoiceRow.querySelector("P_11")!.textContent = String(net);
+        invoiceRow.querySelector("P_11Vat")!.textContent = String(vat);
+        invoiceRow.querySelector("P_12")!.textContent = vatRate === "ZW" ? "0" : vatRate;
 
-    return `<?xml version="1.0" encoding="utf-8"?>
-        <Faktura xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="${KSEF_NAMESPACE}">
-          <Naglowek>
-            <KodFormularza kodSystemowy="FA (3)" wersjaSchemy="1-0E">FA</KodFormularza>
-            <WariantFormularza>3</WariantFormularza>
-            <DataWytworzeniaFa>${escapeXml(new Date().toISOString())}</DataWytworzeniaFa>
-            <SystemInfo>KSeF-Bot</SystemInfo>
-          </Naglowek>
-          <Podmiot1>
-            <DaneIdentyfikacyjne>
-              <NIP>6751577878</NIP>
-              <Nazwa>Diego Ruiz Barbero</Nazwa>
-            </DaneIdentyfikacyjne>
-            <Adres>
-              <KodKraju>PL</KodKraju>
-              <AdresL1>Kraków, 30-638, 15/32</AdresL1>
-            </Adres>
-            <DaneKontaktowe />
-          </Podmiot1>
-          <Podmiot2>
-            <DaneIdentyfikacyjne>
-              <NIP>${escapeXml(contractorNip)}</NIP>
-              <Nazwa>${escapeXml(contractorName)}</Nazwa>
-            </DaneIdentyfikacyjne>
-            <Adres>
-              <KodKraju>${escapeXml(countryCode)}</KodKraju>
-              <AdresL1>${escapeXml(addressLine)}</AdresL1>
-            </Adres>${jstXml}${gvXml}
-          </Podmiot2>
-          <Fa>
-            <KodWaluty>PLN</KodWaluty>
-            <P_1>${escapeXml(issueDate)}</P_1>
-            <P_1M>${escapeXml(issuePlace)}</P_1M>
-            <P_2>${escapeXml(invoiceNumber)}</P_2>
-            <P_6>${escapeXml(deliveryDate)}</P_6>
-            <P_13_1>${totalNet}</P_13_1>
-            <P_14_1>${totalVat}</P_14_1>
-            <P_15>${totalGross}</P_15>
-            <Adnotacje>
-              <P_16>${mk ? 1 : 2}</P_16>
-              <P_17>2</P_17>
-              <P_18>2</P_18>
-              <P_18A>${mpp ? 1 : 2}</P_18A>
-              <Zwolnienie>
-                <P_19N>1</P_19N>
-              </Zwolnienie>
-              <NoweSrodkiTransportu>
-                <P_22N>1</P_22N>
-              </NoweSrodkiTransportu>
-              <P_23>2</P_23>
-              <PMarzy>
-                <P_PMarzyN>1</P_PMarzyN>
-              </PMarzy>
-            </Adnotacje>
-            <RodzajFaktury>VAT</RodzajFaktury>${invoiceLines}
-            <Platnosc>
-              <TerminPlatnosci>
-                <Termin>${escapeXml(paymentDeadline)}</Termin>
-              </TerminPlatnosci>
-              <FormaPlatnosci>${escapeXml(paymentType)}</FormaPlatnosci>${bankAccountXml}
-            </Platnosc>
-          </Fa>
-        </Faktura>`;
-}
+        fa.insertBefore(invoiceRow, payment);
+    });
 
-function escapeXml(value: string): string {
-    return value
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&apos;");
-}
+    // Payment
+    payment.querySelector("Termin")!.textContent = form.querySelector<HTMLInputElement>("#paymentDeadline")?.value.trim() ?? "";
+    payment.querySelector("FormaPlatnosci")!.textContent = (form.querySelector("#paymentType") as unknown as HTMLSelectElement)?.value ?? "";
+    const bankAccount = form.querySelector<HTMLInputElement>("#bankAccount")?.value.trim() ?? "";
+    const existingBankAccount = payment.querySelector("RachunekBankowy");
+    if (bankAccount) {
+        if (existingBankAccount) {
+            existingBankAccount.querySelector("NrRB")!.textContent = bankAccount;
+        } else {
+            const bankAccountElement = xmlDocument.createElementNS(root.namespaceURI, "RachunekBankowy");
+            const nrRb = xmlDocument.createElementNS(root.namespaceURI, "NrRB");
+            nrRb.textContent = bankAccount;
+            bankAccountElement.appendChild(nrRb);
+            payment.appendChild(bankAccountElement);
+        }
+    } else {
+        existingBankAccount?.remove();
+    }
 
-function getInputValue(form: HTMLFormElement, id: string): string {
-    const element = form.querySelector(`#${id}`) as HTMLInputElement;
-    return element.value.trim();
-}
-
-function getSelectValue(form: HTMLFormElement, id: string): string {
-    const element = form.querySelector(`#${id}`) as unknown as HTMLSelectElement;
-    return element.value;
-}
-
-function getCheckedValue(form: HTMLFormElement, name: string): string {
-    const element = form.querySelector(`input[name="${name}"]:checked`) as HTMLInputElement;
-    return element?.value ?? "";
-}
-
-function isChecked(form: HTMLFormElement, id: string): boolean {
-    const element = form.querySelector(`#${id}`) as HTMLInputElement;
-    return element?.checked ?? false;
+    return new XMLSerializer().serializeToString(xmlDocument);
 }
