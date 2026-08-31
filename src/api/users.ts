@@ -1,6 +1,15 @@
 import {AppUser} from "../../worker/types/db";
 
+function preconnect() {
+    const link = document.createElement("link");
+    link.rel = "preconnect";
+    link.href = new URL(import.meta.env.VITE_WORKER_URL).origin;
+    document.head.appendChild(link);
+    console.info("Connected to worker");
+}
+
 export async function loadUserProfile(userId: string): Promise<AppUser> {
+    preconnect();
     const url = `${import.meta.env.VITE_WORKER_URL}/app/users?email=${userId}`;
     const response = await fetch(url, {
         method: "GET",
