@@ -14,6 +14,8 @@ export async function generateInvoiceXml(userProfile: AppUser, form: HTMLFormEle
     const payment = fa.querySelector("Platnosc")!;
 
     // Header
+    root.querySelector("KodFormularza")!.textContent = "FA";
+    root.querySelector("WariantFormularza")!.textContent = "3";
     root.querySelector("SystemInfo")!.textContent = "KSeF Bot";
     root.querySelector("DataWytworzeniaFa")!.textContent = new Date().toISOString();
 
@@ -32,12 +34,7 @@ export async function generateInvoiceXml(userProfile: AppUser, form: HTMLFormEle
     const customerStreet = form.querySelector<HTMLInputElement>("#contractorStreet")?.value.trim() ?? "";
     const customerBuilding = form.querySelector<HTMLInputElement>("#contractorBuilding")?.value.trim() ?? "";
     const customerApartment = form.querySelector<HTMLInputElement>("#contractorApartment")?.value.trim() ?? "";
-
-    const customerAddress = [
-        customerTown,
-        customerPostalCode,
-        [customerStreet, customerBuilding ? `${customerBuilding}${customerApartment ? `/${customerApartment}` : ""}` : ""].filter(Boolean).join(" ")
-    ].filter(Boolean).join(", ");
+    const customerAddress = `${customerTown}, ${customerPostalCode}, ${customerStreet} ${customerBuilding}${customerApartment ? `/${customerApartment}` : ""}`;
 
     buyer.querySelector("NIP")!.textContent = customerNip;
     buyer.querySelector("Nazwa")!.textContent = customerName;
@@ -45,7 +42,7 @@ export async function generateInvoiceXml(userProfile: AppUser, form: HTMLFormEle
     buyer.querySelector("KodKraju")!.textContent = "PL";
 
     // Additional entity
-    const additionalEntity = form.querySelector<HTMLInputElement>("input[name=\"additionalEntity\"]:checked")?.value ?? "";
+    const additionalEntity = form.querySelector<HTMLInputElement>('input[name="additionalEntity"]:checked')?.value ?? "";
     if (additionalEntity === "jst") {
         buyer.querySelector("JST")!.textContent = "1";
         buyer.querySelector("GV")!.textContent = "2";
@@ -58,6 +55,7 @@ export async function generateInvoiceXml(userProfile: AppUser, form: HTMLFormEle
     }
 
     // Invoice
+    fa.querySelector("KodWaluty")!.textContent = "PLN";
     fa.querySelector("P_1")!.textContent = form.querySelector<HTMLInputElement>("#issueDate")?.value.trim() ?? "";
     fa.querySelector("P_1M")!.textContent = form.querySelector<HTMLInputElement>("#issuePlace")?.value.trim() ?? "";
     fa.querySelector("P_2")!.textContent = form.querySelector<HTMLInputElement>("#invoiceNumber")?.value.trim() ?? "";
@@ -65,21 +63,38 @@ export async function generateInvoiceXml(userProfile: AppUser, form: HTMLFormEle
     fa.querySelector("P_13_1")!.textContent = String(parseFloat(form.querySelector<HTMLElement>("#totalNet")?.textContent ?? "0") || 0);
     fa.querySelector("P_14_1")!.textContent = String(parseFloat(form.querySelector<HTMLElement>("#totalVAT")?.textContent ?? "0") || 0);
     fa.querySelector("P_15")!.textContent = String(parseFloat(form.querySelector<HTMLElement>("#totalGross")?.textContent ?? "0") || 0);
+    fa.querySelector("RodzajFaktury")!.textContent = "VAT";
 
     // Optional markings
     const markingMpp = form.querySelector<HTMLInputElement>("#markingMpp")?.checked ?? false;
     const markingMk = form.querySelector<HTMLInputElement>("#markingMk")?.checked ?? false;
+    const markingFp = form.querySelector<HTMLInputElement>("#markingFp")?.checked ?? false;
+    const markingTp = form.querySelector<HTMLInputElement>("#markingTp")?.checked ?? false;
 
+    // Cash accounting
     annotations.querySelector("P_16")!.textContent = markingMk ? "1" : "2";
+    // Self-billing
+    annotations.querySelector("P_17")!.textContent = markingFp ? "1" : "2";
+    // Reverse charge
+    annotations.querySelector("P_18")!.textContent = markingTp ? "1" : "2";
+    // Mandatory split payment
     annotations.querySelector("P_18A")!.textContent = markingMpp ? "1" : "2";
 
+    // VAT exemption
+    annotations.querySelector("P_19N")!.textContent = "1";
+    // New means of transport
+    annotations.querySelector("P_22N")!.textContent = "1";
+    // Triangular transaction
+    annotations.querySelector("P_23")!.textContent = "2";
+    // Margin scheme
+    annotations.querySelector("P_PMarzyN")!.textContent = "1";
+
     // Invoice positions
-    const templateRow = fa.querySelector("FaWiersz")!;
+    const invoiceLinesPlaceholder = Array.from(fa.childNodes).find(node => node.textContent?.includes("{{INVOICE_LINES}}"))!;
     const rows = Array.from(form.querySelectorAll(".item-row")) as HTMLTableRowElement[];
-    fa.querySelectorAll("FaWiersz").forEach(row => row.remove());
     rows.forEach((row, index) => {
         const number = index + 1;
-        const invoiceRow = templateRow.cloneNode(true) as Element;
+        const invoiceRow = xmlDocument.createElementNS(root.namespaceURI, "FaWiersz");
 
         const description = row.querySelector<HTMLInputElement>(`#itemName${number}`)?.value.trim() ?? "";
         const unit = row.querySelector<HTMLInputElement>(`#itemUnit${number}`)?.value.trim() ?? "";
@@ -89,36 +104,39 @@ export async function generateInvoiceXml(userProfile: AppUser, form: HTMLFormEle
         const vat = parseFloat(row.querySelector<HTMLInputElement>(`#itemVATamount${number}`)?.value ?? "0") || 0;
         const vatRate = (row.querySelector(`#itemVAT${number}`) as unknown as HTMLSelectElement)?.value ?? "23";
 
-        invoiceRow.querySelector("NrWierszaFa")!.textContent = String(number);
-        invoiceRow.querySelector("P_7")!.textContent = description;
-        invoiceRow.querySelector("P_8A")!.textContent = unit;
-        invoiceRow.querySelector("P_8B")!.textContent = String(quantity);
-        invoiceRow.querySelector("P_9A")!.textContent = String(unitPrice);
-        invoiceRow.querySelector("P_11")!.textContent = String(net);
-        invoiceRow.querySelector("P_11Vat")!.textContent = String(vat);
-        invoiceRow.querySelector("P_12")!.textContent = vatRate === "ZW" ? "0" : vatRate;
-
-        fa.insertBefore(invoiceRow, payment);
+        Object.entries({
+            NrWierszaFa: String(number),
+            P_7: description,
+            P_8A: unit,
+            P_8B: String(quantity),
+            P_9A: String(unitPrice),
+            P_11: String(net),
+            P_11Vat: String(vat),
+            P_12: vatRate === "ZW" ? "0" : vatRate
+        }).forEach(([name, value]) => {
+            invoiceRow.appendChild(xmlDocument.createTextNode("\n            "));
+            const element = xmlDocument.createElementNS(root.namespaceURI, name);
+            element.textContent = value;
+            invoiceRow.appendChild(element);
+        });
+        fa.insertBefore(invoiceRow, invoiceLinesPlaceholder!);
     });
+    invoiceLinesPlaceholder!.remove();
 
     // Payment
     payment.querySelector("Termin")!.textContent = form.querySelector<HTMLInputElement>("#paymentDeadline")?.value.trim() ?? "";
     payment.querySelector("FormaPlatnosci")!.textContent = (form.querySelector("#paymentType") as unknown as HTMLSelectElement)?.value ?? "";
+
+    const bankAccountPlaceholder = Array.from(payment.childNodes).find(node => node.textContent?.includes("{{BANK_ACCOUNT}}"))!;
     const bankAccount = form.querySelector<HTMLInputElement>("#bankAccount")?.value.trim() ?? "";
-    const existingBankAccount = payment.querySelector("RachunekBankowy");
     if (bankAccount) {
-        if (existingBankAccount) {
-            existingBankAccount.querySelector("NrRB")!.textContent = bankAccount;
-        } else {
-            const bankAccountElement = xmlDocument.createElementNS(root.namespaceURI, "RachunekBankowy");
-            const nrRb = xmlDocument.createElementNS(root.namespaceURI, "NrRB");
-            nrRb.textContent = bankAccount;
-            bankAccountElement.appendChild(nrRb);
-            payment.appendChild(bankAccountElement);
-        }
-    } else {
-        existingBankAccount?.remove();
+        const bankAccountElement = xmlDocument.createElementNS(root.namespaceURI, "RachunekBankowy");
+        const nrRb = xmlDocument.createElementNS(root.namespaceURI, "NrRB");
+        nrRb.textContent = bankAccount;
+        bankAccountElement.appendChild(nrRb);
+        payment.insertBefore(bankAccountElement, bankAccountPlaceholder!);
     }
+    bankAccountPlaceholder!.remove();
 
     return new XMLSerializer().serializeToString(xmlDocument);
 }

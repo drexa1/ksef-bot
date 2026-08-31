@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Faktura xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-         xmlns="http://crd.gov.pl/wzor/2025/06/25/13775/">
+<Faktura xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://crd.gov.pl/wzor/2025/06/25/13775/">
     <Naglowek>
         <KodFormularza kodSystemowy="FA (3)" wersjaSchemy="1-0E">{{FORM_CODE}}</KodFormularza>
-        <WariantFormularza>{{FORM_VARIANT}}</WariantFormularza>
+        <WariantFormularza>3</WariantFormularza>
         <DataWytworzeniaFa>{{GENERATION_DATE}}</DataWytworzeniaFa>
         <SystemInfo>{{SYSTEM_INFO}}</SystemInfo>
     </Naglowek>
@@ -28,10 +26,11 @@
             <KodKraju>{{COUNTRY_CODE}}</KodKraju>
             <AdresL1>{{CUSTOMER_ADDRESS}}</AdresL1>
         </Adres>
-        {{ADDITIONAL_ENTITY}}
+        <JST>{{JST}}</JST>
+        <GV>{{GV}}</GV>
     </Podmiot2>
     <Fa>
-        <KodWaluty>{{CURRENCY_CODE}}</KodWaluty>
+        <KodWaluty>PLN</KodWaluty>
         <P_1>{{ISSUE_DATE}}</P_1>
         <P_1M>{{ISSUE_PLACE}}</P_1M>
         <P_2>{{INVOICE_NUMBER}}</P_2>
@@ -39,8 +38,23 @@
         <P_13_1>{{TOTAL_NET}}</P_13_1>
         <P_14_1>{{TOTAL_VAT}}</P_14_1>
         <P_15>{{TOTAL_GROSS}}</P_15>
-        {{ANNOTATIONS}}
-        <RodzajFaktury>{{INVOICE_TYPE}}</RodzajFaktury>
+        <Adnotacje>
+            <P_16>{{CASH_ACCOUNTING}}</P_16>
+            <P_17>{{SELF_BILLING}}</P_17>
+            <P_18>{{REVERSE_CHARGE}}</P_18>
+            <P_18A>{{MANDATORY_SPLIT_PAYMENT}}</P_18A>
+            <Zwolnienie>
+                <P_19N>{{VAT_EXEMPTION_NA}}</P_19N>
+            </Zwolnienie>
+            <NoweSrodkiTransportu>
+                <P_22N>{{NEW_MEANS_TRANSPORT_NA}}</P_22N>
+            </NoweSrodkiTransportu>
+            <P_23>{{TRIANGULAR_TRANSACTION}}</P_23>
+            <PMarzy>
+                <P_PMarzyN>{{MARGIN_SCHEME_NA}}</P_PMarzyN>
+            </PMarzy>
+        </Adnotacje>
+        <RodzajFaktury>VAT</RodzajFaktury>
         {{INVOICE_LINES}}
         <Platnosc>
             <TerminPlatnosci>
