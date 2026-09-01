@@ -49,10 +49,10 @@ export async function simulate(req: Request, env: Env): Promise<Response> {
     const now = new Date();
     const from = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1));
     const to = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + 1, 1));
-    const brutIncome = appUser.defaultHourlyRate * 8 * daysWorked;
+    const brutIncome = Number((appUser.defaultHourlyRate * 8 * daysWorked).toFixed(2));
     const taxRecord = { from: from.toISOString(), to: to.toISOString(), brutIncome } as AppTaxRecord;
     const obligations = await computeObligations(env, appUser, taxRecord, from, to);
-    const totalCleanRevenue = obligations.netBeforeObligations - obligations.incomeTax - obligations.healthContribution + obligations.purchasesDeductions;
+    const totalCleanRevenue = Number((obligations.netBeforeObligations - obligations.incomeTax - obligations.healthContribution + obligations.purchasesDeductions).toFixed(2));
     return Response.json({
         success: true,
         daysWorked: daysWorked,
@@ -87,7 +87,7 @@ export async function post(req: Request, env: Env): Promise<Response> {
         healthInsuranceRate: obligations.healthInsuranceRate,
         healthContribution: obligations.healthContribution,
         purchasesSummary: JSON.stringify(obligations.purchasesSummary),
-        totalCleanRevenue: (obligations.netBeforeObligations - obligations.incomeTax - obligations.healthContribution) + obligations.purchasesDeductions,
+        totalCleanRevenue: Number(((obligations.netBeforeObligations - obligations.incomeTax - obligations.healthContribution) + obligations.purchasesDeductions).toFixed(2)),
         ...(payload.notes && { notes: payload.notes }),
         updatedAt: new Date().toISOString()
     };
@@ -104,14 +104,14 @@ export async function post(req: Request, env: Env): Promise<Response> {
 async function computeObligations(env: Env, appUser: AppUser, taxRecord: AppTaxRecord, from: Date, to: Date): Promise<TaxRecordObligations> {
     // VAT
     const vatPercentage = taxRecord.vatPercentage ?? env.DEFAULT_VAT_PERCENTAGE;
-    const vatAmount = taxRecord.brutIncome * vatPercentage / (100 + vatPercentage);
-    const netBeforeObligations = taxRecord.brutIncome - vatAmount;
+    const vatAmount = Number((taxRecord.brutIncome * vatPercentage / (100 + vatPercentage)).toFixed(2));
+    const netBeforeObligations = Number((taxRecord.brutIncome - vatAmount).toFixed(2));
     // Obligations
     const taxRate = taxRecord.taxRate ?? env.DEFAULT_TAX_RATE;
-    const incomeTax = netBeforeObligations * taxRate / 100;
+    const incomeTax = Number((netBeforeObligations * taxRate / 100).toFixed(2));
     const healthInsuranceBase = taxRecord.healthInsuranceBase ?? env.DEFAULT_HEALTH_INSURANCE_BASE;
     const healthInsuranceRate = taxRecord.healthInsuranceRate ?? env.DEFAULT_HEALTH_INSURANCE_RATE;
-    const healthContribution = healthInsuranceBase * healthInsuranceRate / 100;
+    const healthContribution = Number((healthInsuranceBase * healthInsuranceRate / 100).toFixed(2));
     // Puchases deductions
     const purchasesInvoices = env.TEST_MODE ? [] : await fetchKsefInvoices(env, appUser, "Subject2", from, to);
     const purchasesSummary = purchasesInvoices.map((invoice) => ({
@@ -119,7 +119,7 @@ async function computeObligations(env: Env, appUser: AppUser, taxRecord: AppTaxR
         TotalGrossAmount: invoice.InvoiceBody?.TotalGrossAmount,
         TotalVatAmount: invoice.InvoiceBody?.TotalVatAmount
     }));
-    const purchasesDeductions = purchasesInvoices.reduce((sum, invoice) => sum + (invoice.InvoiceBody?.TotalVatAmount ?? 0), 0);
+    const purchasesDeductions = Number(purchasesInvoices.reduce((sum, invoice) => sum + (invoice.InvoiceBody?.TotalVatAmount ?? 0), 0).toFixed(2));
     // Total after obligations and purchases deductions
     return {
         vatPercentage,
