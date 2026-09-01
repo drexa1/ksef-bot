@@ -743,65 +743,6 @@ export const getOpenApiSpec = (env: Env) => ({
                 }
             }
         },
-        "/app/taxes": {
-            get: {
-                summary: "List taxes records - Restricted to resources owned by the authenticated user.",
-                tags: ["Taxes"],
-                security: [{ ApiKeyAuth: [] }],
-                parameters: [{ name: "id", in: "query", required: false, schema: { type: "string" } }],
-                responses: {
-                    "200": { description: "Tax records" },
-                    "401": { description: "Unauthorized" },
-                    "404": { description: "Taxes record not found" }
-                }
-            },
-            post: {
-                summary: "Create a taxes record - Restricted to resources owned by the authenticated user.",
-                tags: ["Taxes"],
-                security: [{ ApiKeyAuth: [] }],
-                requestBody: {
-                    required: true,
-                    content: {
-                        "application/json": {
-                            schema: { $ref: "#/components/schemas/TaxRecord" }
-                        }
-                    }
-                },
-                responses: {
-                    "200": { description: "Taxes record created" },
-                    "401": { description: "Unauthorized" }
-                }
-            },
-            put: {
-                summary: "Update a taxes record - Restricted to resources owned by the authenticated user.",
-                tags: ["Taxes"],
-                security: [{ ApiKeyAuth: [] }],
-                requestBody: {
-                    required: true,
-                    content: {
-                        "application/json": {
-                            schema: { $ref: "#/components/schemas/TaxRecord" }
-                        }
-                    }
-                },
-                responses: {
-                    "200": { description: "Tax record updated" },
-                    "400": { description: "Bad request" },
-                    "401": { description: "Unauthorized" }
-                }
-            },
-            delete: {
-                summary: "Delete a taxes record - Restricted to resources owned by the authenticated user.",
-                tags: ["Taxes"],
-                security: [{ ApiKeyAuth: [] }],
-                parameters: [{ name: "id", in: "query", required: true, schema: { type: "string" } }],
-                responses: {
-                    "200": { description: "Taxes record deleted" },
-                    "401": { description: "Unauthorized" },
-                    "404": { description: "Taxes record not found" }
-                }
-            }
-        },
         "/app/taxes/simulate": {
             get: {
                 summary: "Simulate tax obligations and clean revenue for the current month based on amount of days worked",
@@ -884,6 +825,65 @@ export const getOpenApiSpec = (env: Env) => ({
                     "401": {
                         description: "Unauthorized"
                     }
+                }
+            }
+        },
+        "/app/taxes": {
+            get: {
+                summary: "List taxes records - Restricted to resources owned by the authenticated user.",
+                tags: ["Taxes"],
+                security: [{ ApiKeyAuth: [] }],
+                parameters: [{ name: "id", in: "query", required: false, schema: { type: "string" } }],
+                responses: {
+                    "200": { description: "Tax records" },
+                    "401": { description: "Unauthorized" },
+                    "404": { description: "Taxes record not found" }
+                }
+            },
+            post: {
+                summary: "Create a taxes record - Restricted to resources owned by the authenticated user.",
+                tags: ["Taxes"],
+                security: [{ ApiKeyAuth: [] }],
+                requestBody: {
+                    required: true,
+                    content: {
+                        "application/json": {
+                            schema: { $ref: "#/components/schemas/TaxRecord" }
+                        }
+                    }
+                },
+                responses: {
+                    "200": { description: "Taxes record created" },
+                    "401": { description: "Unauthorized" }
+                }
+            },
+            put: {
+                summary: "Update a taxes record - Restricted to resources owned by the authenticated user.",
+                tags: ["Taxes"],
+                security: [{ ApiKeyAuth: [] }],
+                requestBody: {
+                    required: true,
+                    content: {
+                        "application/json": {
+                            schema: { $ref: "#/components/schemas/TaxRecord" }
+                        }
+                    }
+                },
+                responses: {
+                    "200": { description: "Tax record updated" },
+                    "400": { description: "Bad request" },
+                    "401": { description: "Unauthorized" }
+                }
+            },
+            delete: {
+                summary: "Delete a taxes record - Restricted to resources owned by the authenticated user.",
+                tags: ["Taxes"],
+                security: [{ ApiKeyAuth: [] }],
+                parameters: [{ name: "id", in: "query", required: true, schema: { type: "string" } }],
+                responses: {
+                    "200": { description: "Taxes record deleted" },
+                    "401": { description: "Unauthorized" },
+                    "404": { description: "Taxes record not found" }
                 }
             }
         }
