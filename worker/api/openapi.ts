@@ -259,7 +259,7 @@ export const getOpenApiSpec = (env: Env) => ({
                     purchaseSummary: {
                         type: "array",
                         items: {
-                            $ref: "#/components/purchases/PurchasesSummary"
+                            $ref: "#/components/schemas/PurchasesSummary"
                         }
                     },
                     totalCleanRevenue: {
@@ -799,6 +799,91 @@ export const getOpenApiSpec = (env: Env) => ({
                     "200": { description: "Taxes record deleted" },
                     "401": { description: "Unauthorized" },
                     "404": { description: "Taxes record not found" }
+                }
+            }
+        },
+        "/app/taxes/simulate": {
+            get: {
+                summary: "Simulate tax obligations and clean revenue for the current month based on amount of days worked",
+                tags: ["Taxes"],
+                security: [{ ApiKeyAuth: [] }],
+                parameters: [
+                    {
+                        name: "daysWorked",
+                        in: "query",
+                        required: true,
+                        description: "Number of days worked. Each day is calculated as 8 hours at the authenticated user's default hourly rate.",
+                        schema: {
+                            type: "integer",
+                            minimum: 0,
+                            example: 20
+                        }
+                    }
+                ],
+                responses: {
+                    "200": {
+                        description: "Calculated tax obligations. No tax record is persisted.",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    type: "object",
+                                    properties: {
+                                        success: { type: "boolean" },
+                                        daysWorked: { type: "integer" },
+                                        hourlyRate: {
+                                            type: "number",
+                                            description: "Authenticated user's default hourly rate."
+                                        },
+                                        brutIncome: {
+                                            type: "number",
+                                            description: "Calculated gross income: hourly rate × 8 hours × days worked.",
+                                        },
+                                        from: {
+                                            type: "string",
+                                            format: "date-time",
+                                            description: "Start of the current month."
+                                        },
+                                        to: {
+                                            type: "string",
+                                            format: "date-time",
+                                            description: "Start of the following month."
+                                        },
+                                        vatPercentage: {
+                                            type: "number",
+                                            example: 23
+                                        },
+                                        vatAmount: { type: "number" },
+                                        netBeforeObligations: { type: "number" },
+                                        taxRate: { type: "number" },
+                                        incomeTax: { type: "number" },
+                                        healthInsuranceBase: { type: "number" },
+                                        healthInsuranceRate: { type: "number" },
+                                        healthContribution: { type: "number" },
+                                        purchasesDeductions: {
+                                            type: "number",
+                                            description: "VAT deductions from purchase invoices found in KSeF for the current month.",
+                                        },
+                                        purchasesSummary: {
+                                            type: "array",
+                                            items: {
+                                                $ref: "#/components/schemas/PurchasesSummary"
+                                            }
+                                        },
+                                        totalCleanRevenue: {
+                                            type: "number",
+                                            description: "Estimated clean revenue after tax, health contribution, and purchase VAT deductions."
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        description: "Invalid daysWorked or default hourly rate is not configured."
+                    },
+                    "401": {
+                        description: "Unauthorized"
+                    }
                 }
             }
         }

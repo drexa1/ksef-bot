@@ -38,6 +38,33 @@ export async function get(req: Request, env: Env): Promise<Response> {
     return Response.json(result, { status: 200 });
 }
 
+export async function simulate(req: Request, env: Env): Promise<Response> {
+    const appUser = await getAuthUser(req, env);
+    const url = new URL(req.url);
+    const daysWorked = Number(url.searchParams.get("daysWorked"));
+    if (!Number.isInteger(daysWorked) || daysWorked < 0)
+        return Response.json({ success: false, error: "Invalid daysWorked" }, { status: 400 });
+    if (appUser.defaultHourlyRate == null)
+        return Response.json({ success: false, error: "Default hourly rate is not configured" }, { status: 400 });
+    const now = new Date();
+    const from = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1));
+    const to = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + 1, 1));
+    const brutIncome = appUser.defaultHourlyRate * 8 * daysWorked;
+    const taxRecord = { from: from.toISOString(), to: to.toISOString(), brutIncome } as AppTaxRecord;
+    const obligations = await computeObligations(env, appUser, taxRecord, from, to);
+    const totalCleanRevenue = obligations.netBeforeObligations - obligations.incomeTax - obligations.healthContribution + obligations.purchasesDeductions;
+    return Response.json({
+        success: true,
+        from: from.toISOString(),
+        to: to.toISOString(),
+        daysWorked: daysWorked,
+        hourlyRate: appUser.defaultHourlyRate,
+        brutIncome: brutIncome,
+        ...obligations,
+        totalCleanRevenue: totalCleanRevenue
+    });
+}
+
 export async function post(req: Request, env: Env): Promise<Response> {
     const appUser = await getAuthUser(req, env);
     const payload = await req.json() as AppTaxRecord;
