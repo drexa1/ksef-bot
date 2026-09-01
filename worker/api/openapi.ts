@@ -374,35 +374,6 @@ export const getOpenApiSpec = (env: Env) => ({
                 }
             }
         },
-        "/ksef/sales/status": {
-            get: {
-                summary: "Get KSeF sales invoice processing status.",
-                tags: ["KSeF"],
-                security: [{ ApiKeyAuth: [] }],
-                parameters: [
-                    {
-                        name: "sessionReferenceNumber",
-                        in: "query",
-                        required: true,
-                        description: "KSeF online session reference number.",
-                        schema: { type: "string" }
-                    },
-                    {
-                        name: "invoiceReferenceNumber",
-                        in: "query",
-                        required: true,
-                        description: "KSeF invoice submission reference number.",
-                        schema: { type: "string" }
-                    }
-                ],
-                responses: {
-                    "200": { description: "KSeF invoice submission status." },
-                    "400": { description: "Missing or invalid reference numbers." },
-                    "401": { description: "Unauthorized." },
-                    "404": { description: "Submission not found." }
-                }
-            }
-        },
         "/ksef/sales": {
             get: {
                 summary: "List sales invoices at KSeF - Restricted to resources owned by the authenticated user.",
@@ -454,6 +425,60 @@ export const getOpenApiSpec = (env: Env) => ({
                     "200": { description: "Invoice submitted" },
                     "400": { description: "Invalid invoice" },
                     "401": { description: "Unauthorized" }
+                }
+            }
+        },
+        "/ksef/sales/sessions": {
+            get: {
+                summary: "Get KSeF session status.",
+                tags: ["KSeF"],
+                security: [{ ApiKeyAuth: [] }],
+                parameters: [
+                    {
+                        name: "sessionReferenceNumber",
+                        in: "query",
+                        required: false,
+                        description: "KSeF online session reference number. If omitted, the status of the current/default session is returned.",
+                        schema: {
+                            type: "string"
+                        }
+                    }
+                ],
+                responses: {
+                    "200": { description: "KSeF session status." },
+                    "400": { description: "Invalid session reference number." },
+                    "401": { description: "Unauthorized." },
+                    "404": { description: "KSeF session not found." },
+                    "502": { description: "Failed to retrieve session status from KSeF." }
+                }
+            }
+        },
+        "/ksef/sales/status": {
+            get: {
+                summary: "Get KSeF sales invoice processing status.",
+                tags: ["KSeF"],
+                security: [{ ApiKeyAuth: [] }],
+                parameters: [
+                    {
+                        name: "sessionReferenceNumber",
+                        in: "query",
+                        required: true,
+                        description: "KSeF online session reference number.",
+                        schema: { type: "string" }
+                    },
+                    {
+                        name: "invoiceReferenceNumber",
+                        in: "query",
+                        required: true,
+                        description: "KSeF invoice submission reference number.",
+                        schema: { type: "string" }
+                    }
+                ],
+                responses: {
+                    "200": { description: "KSeF invoice submission status." },
+                    "400": { description: "Missing or invalid reference numbers." },
+                    "401": { description: "Unauthorized." },
+                    "404": { description: "Submission not found." }
                 }
             }
         },

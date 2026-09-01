@@ -29,6 +29,16 @@ export async function post(req: Request, env: Env): Promise<Response> {
     }
 }
 
+export async function sessions(req: Request, env: Env): Promise<Response> {
+    const appUser = await getAuthUser(req, env);
+    const url = new URL(req.url);
+    const sessionReferenceNumber = url.searchParams.get("sessionReferenceNumber");
+    const client = new Client(env);
+    await client.authenticate(appUser);
+    const sessionStatus = await client.getSessionStatus(sessionReferenceNumber ?? undefined);
+    return Response.json(sessionStatus);
+}
+
 export async function invoiceStatus(req: Request, env: Env): Promise<Response> {
     const appUser = await getAuthUser(req, env);
     const url = new URL(req.url);
