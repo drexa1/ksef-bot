@@ -15,7 +15,7 @@ import {get as usersGET, post as usersPOST, put as usersPUT, del as usersDELETE}
 import {get as customersGET, post as customersPOST, put as customersPUT, del as customersDELETE} from "./routes/db/customers";
 import {get as invoicesGET, post as invoicesPOST, put as invoicesPUT, del as invoicesDELETE} from "./routes/db/invoices";
 import {post as piiPOST} from "./routes/db/invoices-pii";
-import {del as taxesDELETE, get as taxesGET, post as taxesPOST, put as taxesPUT} from "./routes/db/taxes";
+import {get as taxesGET, simulate as simulateGET, post as taxesPOST, put as taxesPUT, del as taxesDELETE, } from "./routes/db/taxes";
 import {AuthError} from "./types/auth";
 
 export type Routes = Partial<Record<Method, Route>>;
@@ -56,6 +56,7 @@ export const routes: Record<string, Routes> =  {
     "/app/customers":               withErrorHandling({ GET: customersGET, POST: customersPOST, PUT: customersPUT, DELETE: customersDELETE }),
     "/app/invoices":                withErrorHandling({ GET: invoicesGET, POST: invoicesPOST, PUT: invoicesPUT, DELETE: invoicesDELETE }),
     "/app/invoices/pii":            withErrorHandling({ POST: piiPOST }),
+    "/app/taxes/simulate":          withErrorHandling({ GET: simulateGET }),
     "/app/taxes":                   withErrorHandling({ GET: taxesGET, POST: taxesPOST, PUT: taxesPUT, DELETE: taxesDELETE })
 };
 
