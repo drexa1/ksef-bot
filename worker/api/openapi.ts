@@ -820,7 +820,6 @@ export const swaggerHtml = `
 				SwaggerUIBundle({
 					url: "/openapi.json",
 					dom_id: "#swagger-ui",
-					docExpansion: "none"
 				});
 			</script>
 		</body>
