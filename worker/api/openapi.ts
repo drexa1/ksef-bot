@@ -56,56 +56,12 @@ export const getOpenApiSpec = (env: Env) => ({
                             systemInfo: { type: "string" }
                         }
                     },
-                    seller: {
-                        type: "object",
-                        properties: {
-                            identificationData: {
-                                type: "object",
-                                properties: {
-                                    NIP: { type: "string" },
-                                    name: { type: "string" }
-                                }
-                            },
-                            address: {
-                                type: "object",
-                                properties: {
-                                    countryCode: { type: "string" },
-                                    addressLine1: { type: "string" }
-                                }
-                            },
-                            contactData: {
-                                type: ["object", "null"]
-                            }
-                        }
+                    type: {
+                        type: "string",
+                        enum: ["sales", "purchase"]
                     },
-                    buyer: {
-                        type: "object",
-                        properties: {
-                            identificationData: {
-                                type: "object",
-                                properties: {
-                                    NIP: { type: "string" },
-                                    name: { type: "string" }
-                                }
-                            },
-                            address: {
-                                type: "object",
-                                properties: {
-                                    countryCode: {
-                                        type: "string"
-                                    },
-                                    addressLine1: {
-                                        type: "string"
-                                    }
-                                }
-                            },
-                            localGovernmentEntity: {
-                                type: ["integer", "null"]
-                            },
-                            governmentUnit: {
-                                type: ["integer", "null"]
-                            }
-                        }
+                    customerId: {
+                        type: ["string", "null"]
                     },
                     invoiceBody: {
                         type: "object",
