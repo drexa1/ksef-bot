@@ -15,7 +15,7 @@ export const scalarHtml = `
                     url: "/openapi.json",
                     theme: "laserwave",
                     orderSchemaPropertiesBy: "preserve",
-                    defaultOpenAllTags: true,
+                    defaultOpenAllTags: false,
                     hideSearch: true
                 });
                 document.querySelector("body").classList.add("light-mode");
