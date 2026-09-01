@@ -55,8 +55,6 @@ export async function simulate(req: Request, env: Env): Promise<Response> {
     const totalCleanRevenue = obligations.netBeforeObligations - obligations.incomeTax - obligations.healthContribution + obligations.purchasesDeductions;
     return Response.json({
         success: true,
-        from: from.toISOString(),
-        to: to.toISOString(),
         daysWorked: daysWorked,
         hourlyRate: appUser.defaultHourlyRate,
         brutIncome: brutIncome,
