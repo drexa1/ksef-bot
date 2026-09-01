@@ -20,12 +20,10 @@ export const scalarHtml = `
                 });
                 document.querySelector("body").classList.add("light-mode");
                 document.querySelector("body").classList.add("dark-mode");
+                // Collapse sections
                 const observer = new MutationObserver(() => {
-                    const expanded = document.querySelectorAll('button[aria-expanded="true"]');
-                    if (expanded.length > 0) {
-                        expanded.forEach(btn => btn.click());
-                        observer.disconnect();
-                    }
+                    document.querySelectorAll('button[aria-expanded="true"]').forEach(btn => btn.setAttribute('aria-expanded', 'false'));
+                    observer.disconnect();
                 });
                 observer.observe(document.getElementById("app"), { childList: true, subtree: true });
             </script>
