@@ -20,6 +20,14 @@ export const scalarHtml = `
                 });
                 document.querySelector("body").classList.add("light-mode");
                 document.querySelector("body").classList.add("dark-mode");
+                const observer = new MutationObserver(() => {
+                    const expanded = document.querySelectorAll('button[aria-expanded="true"]');
+                    if (expanded.length > 0) {
+                        expanded.forEach(btn => btn.click());
+                        observer.disconnect();
+                    }
+                });
+                observer.observe(document.getElementById("app"), { childList: true, subtree: true });
             </script>
         </body>
     </html>
