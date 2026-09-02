@@ -750,13 +750,13 @@ export const getOpenApiSpec = (env: Env) => ({
                 security: [{ ApiKeyAuth: [] }],
                 parameters: [
                     {
-                        name: "daysWorked",
+                        name: "hoursWorked",
                         in: "query",
                         required: true,
                         description: "Number of hours worked for the current monthly period.",
                         schema: {
                             type: "integer",
-                            minimum: 0,
+                            minimum: 1,
                             example: 160
                         }
                     }
@@ -769,25 +769,14 @@ export const getOpenApiSpec = (env: Env) => ({
                                 schema: {
                                     type: "object",
                                     properties: {
-                                        success: { type: "boolean" },
-                                        daysWorked: { type: "integer" },
+                                        hoursWorked: { type: "integer" },
                                         hourlyRate: {
                                             type: "number",
                                             description: "Authenticated user's default hourly rate."
                                         },
                                         brutIncome: {
                                             type: "number",
-                                            description: "Calculated gross income: hourly rate × 8 hours × days worked.",
-                                        },
-                                        from: {
-                                            type: "string",
-                                            format: "date-time",
-                                            description: "Start of the current month."
-                                        },
-                                        to: {
-                                            type: "string",
-                                            format: "date-time",
-                                            description: "Start of the following month."
+                                            description: "Calculated gross income: hourly rate × hours worked.",
                                         },
                                         vatPercentage: {
                                             type: "number",
