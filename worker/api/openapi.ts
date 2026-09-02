@@ -757,7 +757,7 @@ export const getOpenApiSpec = (env: Env) => ({
                         schema: {
                             type: "integer",
                             minimum: 0,
-                            example: 20
+                            example: 160
                         }
                     }
                 ],
