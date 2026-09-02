@@ -745,7 +745,7 @@ export const getOpenApiSpec = (env: Env) => ({
         },
         "/app/taxes/simulate": {
             get: {
-                summary: "Simulate tax obligations and clean revenue for the current month based on amount of days worked",
+                summary: "Simulate tax obligations and clean revenue for the current month based on amount of hours worked and user's default hourly rate.",
                 tags: ["Taxes"],
                 security: [{ ApiKeyAuth: [] }],
                 parameters: [
@@ -753,7 +753,7 @@ export const getOpenApiSpec = (env: Env) => ({
                         name: "daysWorked",
                         in: "query",
                         required: true,
-                        description: "Number of days worked. Each day is calculated as 8 hours at the authenticated user's default hourly rate.",
+                        description: "Number of hours worked for the current monthly period.",
                         schema: {
                             type: "integer",
                             minimum: 0,
