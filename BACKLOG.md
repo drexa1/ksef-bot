@@ -51,6 +51,11 @@
 - [x] Invoice generator frontend: submit action logic  
 - [x] Generate next invoice XML  
 - [x] Rest test for posting an invoice  
+- [ ] Retrieve user details programmatically
+- [ ] First time frontend workflow  
+- [ ] Admin contractors frontend  
+- [ ] SSO/Enrolment  
+- [ ] Login frontend  
 - [ ] Invoice generator frontend: wrangle up CSS  
 - [ ] Invoice generator frontend: smoke mobile
 - [ ] Invoice generator frontend: contractor additional entity  
@@ -58,7 +63,7 @@
 - [ ] Invoice generator frontend: invoice additional data  
 - [ ] Encrypt KSeF/Baking keys  
 - [ ] Invoice generator frontend: help hints  
-- [ ] Invoice generator frontend: import logic
+- [ ] Invoice generator frontend: import logic  
 - [ ] CLI: list customers
 - [ ] CLI: adapt sales/purchase invoices summary
 - [ ] CLI: create customer
@@ -70,19 +75,14 @@
 - [ ] CLI: edit user settings
 - [ ] CLI: first time flow  
 - [ ] Review security architecture  
+- [ ] WhatsApp bot  
 - [ ] Create user frontend  
-- [ ] Retrieve user details programmatically  
-- [ ] First time frontend workflow  
-- [ ] Admin contractors frontend  
-- [ ] Login frontend
-- [ ] Bank client PoC
-- [ ] WhatsApp bot
+- [ ] Bank client PoC  
 - [ ] Scheduling
-- [ ] SSO/Enrolment  
 - [ ] GIT-version on deploy  
 - [ ] Transparency disclaimer / no Ai  
 - [ ] Business plan  
 - [ ] Sales execution
 - [ ] Google Analytics  
-- [ ] Slack bot  
 - [ ] Go public  
+- [ ] Slack bot
