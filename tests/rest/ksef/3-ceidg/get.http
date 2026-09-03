@@ -1,0 +1,21 @@
+#@no-redirect
+@ceidgUrl = https://dane.biznes.gov.pl/api/ceidg/v3
+@ceidgApiKey = eyJraWQiOiJjZWlkZyIsImFsZyI6IkhTNTEyIn0.eyJnaXZlbl9uYW1lIjoiRGllZ28iLCJwZXNlbCI6IjgzMDcxNjIxNDM1IiwiaWF0IjoxNzg3MjExMTA2LCJmYW1pbHlfbmFtZSI6IlJ1aXoiLCJjbGllbnRfaWQiOiJVU0VSLTgzMDcxNjIxNDM1LURJRUdPLVJVSVoifQ.e-xEW3LjJ2JAusMW-BbtYjsToAmj0KEfqC_mG_94opF4APcS0J7KUOzLBNvqsubNJhRJUu7yGjju_3i3WbvSFQ
+@jdgNIP = 6751577878
+@JDGId = 12C97AC8-D3CF-4CF1-878D-158A7E8BDF51
+@companyNIP = 5170312965
+
+### List sole propietorship in CEIDG by NIP
+GET {{ceidgUrl}}/firmy?nip={{jdgNIP}}
+Accept: application/json
+Authorization: Bearer {{ceidgApiKey}}
+
+### List sole propietorship details in CEIDG
+GET {{ceidgUrl}}/firma/{{JDGId}}
+Accept: application/json
+Authorization: Bearer {{ceidgApiKey}}
+
+### List company in CEIDG should fail
+GET {{ceidgUrl}}/firmy?nip={{companyNIP}}
+Accept: application/json
+Authorization: Bearer {{ceidgApiKey}}

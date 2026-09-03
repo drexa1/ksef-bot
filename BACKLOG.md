@@ -51,7 +51,8 @@
 - [x] Invoice generator frontend: submit action logic  
 - [x] Generate next invoice XML  
 - [x] Rest test for posting an invoice  
-- [ ] Retrieve user details programmatically
+- [x] Retrieve user details programmatically REST tests  
+- [ ] Retrieve user details programmatically bruno tests  
 - [ ] First time frontend workflow  
 - [ ] Admin contractors frontend  
 - [ ] SSO/Enrolment  

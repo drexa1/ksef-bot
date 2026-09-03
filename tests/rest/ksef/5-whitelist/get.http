@@ -1,0 +1,19 @@
+# @no-redirect
+@whitelistUrl = https://wl-api.mf.gov.pl/api/search/nip
+@jdgNIP = 6751577878
+@companyNIP = 5170312965
+
+### List single proprietorship in WhiteList
+< {% request.variables.set("date", new Date().toISOString().substring(0, 10)); %}
+GET {{whitelistUrl}}/{{jdgNIP}}?date={{date}}
+Accept: application/json
+
+### List company in WhiteList
+< {% request.variables.set("date", new Date().toISOString().substring(0, 10)); %}
+GET {{whitelistUrl}}/{{companyNIP}}?date={{date}}
+Accept: application/json
+
+### List non-existing NIP should fail
+< {% request.variables.set("date", new Date().toISOString().substring(0, 10)); %}
+GET {{whitelistUrl}}/0000000000?date={{date}}
+Accept: application/json
