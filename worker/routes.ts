@@ -52,6 +52,9 @@ export const routes: Record<string, Routes> =  {
     "/ksef/sales/sessions":         withErrorHandling({ GET: sessionsGET }),
     "/ksef/sales/receipt":          withErrorHandling({ GET: receiptGET }),
     "/ksef/purchases":              withErrorHandling({ GET: purchaseGET }),
+
+
+
     "/app/users":                   withErrorHandling({ GET: usersGET, POST: usersPOST, PUT: usersPUT, DELETE: usersDELETE }),
     "/app/customers":               withErrorHandling({ GET: customersGET, POST: customersPOST, PUT: customersPUT, DELETE: customersDELETE }),
     "/app/invoices":                withErrorHandling({ GET: invoicesGET, POST: invoicesPOST, PUT: invoicesPUT, DELETE: invoicesDELETE }),

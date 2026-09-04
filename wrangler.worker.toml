@@ -11,11 +11,14 @@ KSEF_MIN_TIMEOUT = 100
 KSEF_MAX_TIMEOUT = 3000
 # CEIDG (Central Register on Business Activity)
 CEIDG_URL = "https://dane.biznes.gov.pl/api/ceidg/v3"
+CEIDG_LOOKUP_SCHEMA = "https://assets.local/schemas/CEIDGLookup.avsc"
 # KRS (National Court Registry)
 KRS_SEARCH_URL = "https://wyszukiwarka-krs-api.ms.gov.pl"
 KRS_API_URL = "https://api-krs.ms.gov.pl"
-# VAT Whitelist
-VAT_WL_URL = "https://wl-api.mf.gov.pl/api/search/nip"
+KRS_LOOKUP_SCHEMA = "https://assets.local/schemas/KRSLookup.avsc"
+# VAT payers whitelist
+VAT_LB_URL = "https://wl-api.mf.gov.pl/api/search/nip"
+VAT_LB_LOOKUP_SCHEMA = "https://assets.local/schemas/VATLBLookup.avsc"
 # Taxes
 DEFAULT_VAT_PERCENTAGE = 23
 DEFAULT_TAX_RATE = 12

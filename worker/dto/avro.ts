@@ -19,8 +19,12 @@ export function dtoFromAliases(value: any, schema: any): any {
         for (const field of schema.fields ?? []) {
             const inputName = field.name;
             const outputName = field.aliases?.[0] ?? inputName;
-            if (value[inputName] !== undefined)
-                result[outputName] = dtoFromAliases(value[inputName], field.type);
+            if (value[inputName] !== undefined) {
+                let fieldValue = dtoFromAliases(value[inputName], field.type);
+                if (field["x-enum"])
+                    fieldValue = field["x-enum"][fieldValue] ?? fieldValue;
+                result[outputName] = fieldValue;
+            }
         }
         return result;
     }

@@ -1,0 +1,41 @@
+#@no-redirect
+@krsSearchUrl = https://wyszukiwarka-krs-api.ms.gov.pl
+@krsApiUrl = https://api-krs.ms.gov.pl
+@apiKey = 98225274580792961608852971265027668431309573368426210348300217052215253463864305616460633739878522735139652560056667060743638954556559716034455720558677185778957031681845695397463403066793600165465805789271660029598240058628566489408101192721983552555956368693777806041735521073673368300925566336952579245456787093919455793194801341062032364621126451426302753228860764342903600908632476053243778230262509882118020730025704983424183531700997150397633988038442272729090847388982820151278545244549512024724082604685
+@companyNip = 5170312965
+@companyKrs = 0000349785
+@jdgNIP = 6751577878
+
+### Find company by NIP in KRS
+POST {{krsSearchUrl}}/api/wyszukiwarka/krs
+Accept: application/json
+Content-Type: application/json
+User-Agent: Mozilla/5.0
+Apikey: {{apiKey}}
+
+{
+    "podmiot": {
+        "nip": "{{companyNip}}"
+    },
+    "rejestr": ["P", "S"],
+    "paginacja": {}
+}
+
+### Find company by KRS number in KRS
+GET {{krsApiUrl}}/api/krs/OdpisAktualny/{{companyKrs}}
+Accept: application/json
+
+### List sole propietorship in KRS should fail
+POST https://wyszukiwarka-krs-api.ms.gov.pl/api/wyszukiwarka/krs
+Accept: application/json
+Content-Type: application/json
+User-Agent: Mozilla/5.0
+Apikey: {{apiKey}}
+
+{
+    "podmiot": {
+        "nip": "{{jdgNIP}}"
+    },
+    "rejestr": ["P", "S"],
+    "paginacja": {}
+}

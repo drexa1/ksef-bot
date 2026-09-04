@@ -1,94 +1,76 @@
 import {Env} from "../../worker";
+import {KsefContractor} from "../../types/ksef";
+import {dtoFromAliases} from "../../dto/avro";
+import {encodeToken} from "./krs-apikey";
 
-/**
- * Search by Tax Identification Number in the National Court Registry.
- */
+// noinspection JSUnusedGlobalSymbols
 export async function fromKRS(req: Request, env: Env): Promise<Response> {
     const url = new URL(req.url);
     const nip = url.searchParams.get("nip");
     if (!nip || !/^\d{10}$/.test(nip))
         return Response.json({ success: false, error: "Invalid NIP" }, { status: 400 });
     try {
-        const timestamp = new Date().toISOString().slice(0, 19);
-        const apiKey = encodeToken("0000000000", timestamp);
-        const searchResponse = await fetch(`${env.KRS_SEARCH_URL}/api/wyszukiwarka/krs`, {
-            method: "POST",
-            headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json",
-                "User-Agent": "Mozilla/5.0",
-                Apikey: apiKey
-            },
-            body: JSON.stringify({ podmiot: { nip }, rejestr: ["P", "S"], paginacja: {} })
-        });
-        const searchResult = await searchResponse.json() as { [key: string]: any };
-        if (!searchResponse.ok)
-            return Response.json({ success: false, result: searchResult }, { status: searchResponse.status });
-        const krs = searchResult?.wyniki?.[0]?.krs ?? searchResult?.results?.[0]?.krs;
-        if (!krs)
+        const result = await lookupKRS(nip, env);
+        if (!result)
             return Response.json({ success: false, error: "Firm not found in KRS" }, { status: 404 });
-        const detailsResponse = await fetch(`${env.KRS_API_URL}/api/krs/OdpisAktualny/${krs}`, {
-            headers: { Accept: "application/json" }
-        });
-        const result = await detailsResponse.json();
-        return Response.json({ success: detailsResponse.ok, result }, { status: detailsResponse.status });
+        return Response.json({ success: true, result });
     } catch (error: any) {
         return Response.json({ success: false, error: String(error) }, { status: 502 });
     }
 }
 
-// ---------------------------------------------------------------------------------------------------------------------
-// Apikey header creation
-// ---------------------------------------------------------------------------------------------------------------------
-
-const KrsPositions = [193, 8, 327, 501, 112, 74, 409, 226, 16, 306];
-const TimestampPositions = [492, 141, 364, 78, 259, 12, 430, 384, 97, 503, 67, 35, 471, 218];
-const ChecksumPositions = [24, 46, 174, 345];
-const ShiftMarkerPosition = 11;
-
-function encodeToken(krs: string, timestamp: string): string {
-    if (krs.length > 10)
-        throw new Error("KRS must be max 10 digits.");
-    krs = krs.padStart(10, "0");
-    const date = new Date(timestamp);
-    const formattedTimestamp = formatTimestamp(date);
-    const s = Array.from({ length: 512 }, () => Math.floor(10 * Math.random()).toString());
-    for (let i = 508; i < 512; i++) {
-        s[i] = "0";
-    }
-    KrsPositions.forEach((position, index) => s[position] = krs[index]);
-    TimestampPositions.forEach((position, index) => s[position] = formattedTimestamp[index]);
-    const shift = Math.floor(Math.random() * 9) + 1;
-    s[ShiftMarkerPosition] = shift.toString();
-    for (const position of ChecksumPositions) {
-        shiftRight(s, position);
-        s[position] = "0";
-    }
-    const checksum = s.reduce((sum, digit) => sum + Number(digit), 0).toString().padStart(4, "0");
-    ChecksumPositions.forEach((position, index) => s[position] = checksum[index]);
-    circularRight(s, shift);
-    return s.join("");
+/**
+ * Search by Tax Identification Number in the National Court Registry.
+ */
+export async function lookupKRS(nip: string, env: Env): Promise<KsefContractor> {
+    const timestamp = new Date().toISOString().slice(0, 19);
+    const apiKey = encodeToken("0000000000", timestamp);
+    const searchResponse = await fetch(`${env.KRS_SEARCH_URL}/api/wyszukiwarka/krs`, {
+        method: "POST",
+        headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            "User-Agent": "Mozilla/5.0",
+            Apikey: apiKey
+        },
+        body: JSON.stringify({ podmiot: { nip }, rejestr: ["P", "S"], paginacja: {} })
+    });
+    const searchResult = await searchResponse.json() as { [key: string]: any };
+    if (!searchResponse.ok)
+        throw new Error(`KRS NIP lookup failed: ${searchResponse.status}`);
+    const krsNumber = searchResult?.["listaPodmiotow"]?.[0]?.["numer"];
+    const detailsResponse = await fetch(`${env.KRS_API_URL}/api/krs/OdpisAktualny/${krsNumber}`, {
+        headers: { Accept: "application/json" }
+    });
+    if (!detailsResponse.ok)
+        throw new Error(`KRS details lookup failed: ${detailsResponse.status}`);
+    const details = await detailsResponse.json();
+    const krsSchema = await env.assets.fetch(new URL(env.KRS_LOOKUP_SCHEMA)).then(res => res.json());
+    return mapKRS(details, krsSchema);
 }
 
-function shiftRight(array: string[], position: number): void {
-    for (let i = array.length - 1; i > position; i--)
-        array[i] = array[i - 1];
-    array[position] = "0";
-}
-
-function circularRight(array: string[], amount: number): void {
-    const copy = [...array];
-    for (let i = 0; i < array.length; i++) {
-        array[(i + amount) % array.length] = copy[i];
-    }
-}
-
-function formatTimestamp(date: Date): string {
-    const pad = (value: number) => value.toString().padStart(2, "0");
-    return date.getFullYear().toString()
-        + pad(date.getMonth() + 1)
-        + pad(date.getDate())
-        + pad(date.getHours())
-        + pad(date.getMinutes())
-        + pad(date.getSeconds());
+function mapKRS(response: any, schema: any): KsefContractor {
+    const dto = dtoFromAliases(response, schema);
+    const header = dto.copy?.header;
+    const company = dto.copy?.data?.section1?.entityData;
+    const registeredOffice = dto.copy?.data?.section1?.registeredOfficeAndAddress;
+    const address = registeredOffice?.address;
+    const addressLine = [
+        address?.city,
+        address?.postalCode,
+        [address?.street, address?.buildingNumber]
+            .filter(Boolean)
+            .join(" ")
+    ].filter(Boolean).join(", ");
+    return {
+        source: "KRS",
+        nip: company.identifiers.nip,
+        regon: company.identifiers.regon?.slice(0, 9),
+        name: company.name,
+        countryCode: address?.country,
+        addressLine: addressLine,
+        registrationDate: header?.registrationDate,
+        status: header?.positionStatus === 1 ? "ACTIVE" : undefined,
+        electronicDeliveryAddress: registeredOffice?.electronicDeliveryAddress
+    };
 }

@@ -1,0 +1,220 @@
+{
+    "type": "record",
+    "name": "CEIDGLookup",
+    "namespace": "pl.ceidg",
+    "doc": "CEIDG company details response.",
+    "fields": [
+        {
+            "name": "firma",
+            "aliases": ["companies"],
+            "type": {
+                "type": "array",
+                "items": {
+                    "type": "record",
+                    "name": "CEIDGFirma",
+                    "doc": "CEIDG registered business.",
+                    "fields": [
+                        {
+                            "name": "nazwa",
+                            "aliases": ["name"],
+                            "type": "string",
+                            "doc": "Registered business name."
+                        },
+                        {
+                            "name": "adresKorespondencyjny",
+                            "aliases": ["correspondenceAddress"],
+                            "type": {
+                                "type": "record",
+                                "name": "CEIDGAddress",
+                                "doc": "Business correspondence address.",
+                                "fields": [
+                                    {
+                                        "name": "ulica",
+                                        "aliases": ["street"],
+                                        "type": ["null", "string"],
+                                        "default": null
+                                    },
+                                    {
+                                        "name": "budynek",
+                                        "aliases": ["buildingNumber"],
+                                        "type": ["null", "string"],
+                                        "default": null
+                                    },
+                                    {
+                                        "name": "lokal",
+                                        "aliases": ["apartmentNumber"],
+                                        "type": ["null", "string"],
+                                        "default": null
+                                    },
+                                    {
+                                        "name": "miasto",
+                                        "aliases": ["city"],
+                                        "type": ["null", "string"],
+                                        "default": null
+                                    },
+                                    {
+                                        "name": "wojewodztwo",
+                                        "aliases": ["voivodeship"],
+                                        "type": ["null", "string"],
+                                        "default": null
+                                    },
+                                    {
+                                        "name": "powiat",
+                                        "aliases": ["county"],
+                                        "type": ["null", "string"],
+                                        "default": null
+                                    },
+                                    {
+                                        "name": "gmina",
+                                        "aliases": ["commune"],
+                                        "type": ["null", "string"],
+                                        "default": null
+                                    },
+                                    {
+                                        "name": "kraj",
+                                        "aliases": ["country"],
+                                        "type": ["null", "string"],
+                                        "default": null,
+                                        "x-enum": {
+                                            "POLSKA": "PL"
+                                        }
+                                    },
+                                    {
+                                        "name": "kod",
+                                        "aliases": ["postalCode"],
+                                        "type": ["null", "string"],
+                                        "default": null
+                                    },
+                                    {
+                                        "name": "adresat",
+                                        "aliases": ["addressee"],
+                                        "type": ["null", "string"],
+                                        "default": null
+                                    },
+                                    {
+                                        "name": "terc",
+                                        "aliases": ["tercCode"],
+                                        "type": ["null", "string"],
+                                        "default": null
+                                    },
+                                    {
+                                        "name": "simc",
+                                        "aliases": ["simcCode"],
+                                        "type": ["null", "string"],
+                                        "default": null
+                                    },
+                                    {
+                                        "name": "ulic",
+                                        "aliases": ["streetCode"],
+                                        "type": ["null", "string"],
+                                        "default": null
+                                    }
+                                ]
+                            },
+                            "doc": "Correspondence address."
+                        },
+                        {
+                            "name": "wlasciciel",
+                            "aliases": ["owner"],
+                            "type": {
+                                "type": "record",
+                                "name": "CEIDGOwner",
+                                "doc": "Business owner identification data.",
+                                "fields": [
+                                    {
+                                        "name": "imie",
+                                        "aliases": ["firstName"],
+                                        "type": ["null", "string"],
+                                        "default": null
+                                    },
+                                    {
+                                        "name": "nazwisko",
+                                        "aliases": ["lastName"],
+                                        "type": ["null", "string"],
+                                        "default": null
+                                    },
+                                    {
+                                        "name": "nip",
+                                        "aliases": ["nip"],
+                                        "type": "string",
+                                        "doc": "Polish tax identification number."
+                                    },
+                                    {
+                                        "name": "regon",
+                                        "aliases": ["regon"],
+                                        "type": ["null", "string"],
+                                        "default": null,
+                                        "doc": "REGON business identification number."
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "name": "obywatelstwa",
+                            "aliases": ["citizenship"],
+                            "type": {
+                                "type": "array",
+                                "items": {
+                                    "type": "record",
+                                    "name": "CEIDGCitizenship",
+                                    "fields": [
+                                        {
+                                            "name": "symbol",
+                                            "aliases": ["countryCode"],
+                                            "type": "string",
+                                            "doc": "Citizenship country code."
+                                        },
+                                        {
+                                            "name": "kraj",
+                                            "aliases": ["countryName"],
+                                            "type": ["null", "string"],
+                                            "default": null,
+                                            "doc": "Citizenship country name."
+                                        }
+                                    ]
+                                }
+                            },
+                            "default": []
+                        },
+                        {
+                            "name": "rokPkd",
+                            "aliases": ["pkdYear"],
+                            "type": ["null", "string"],
+                            "default": null,
+                            "doc": "Year of the PKD classification."
+                        },
+                        {
+                            "name": "status",
+                            "aliases": ["status"],
+                            "type": ["null", "string"],
+                            "default": null,
+                            "doc": "Current business status."
+                        },
+                        {
+                            "name": "adresDoreczenElektronicznych",
+                            "aliases": ["electronicDeliveryAddress"],
+                            "type": ["null", "string"],
+                            "default": null,
+                            "doc": "Official electronic delivery address."
+                        },
+                        {
+                            "name": "dataRozpoczecia",
+                            "aliases": ["startDate"],
+                            "type": ["null", "string"],
+                            "default": null,
+                            "doc": "Date on which business activity started."
+                        },
+                        {
+                            "name": "link",
+                            "aliases": ["sourceLink"],
+                            "type": ["null", "string"],
+                            "default": null,
+                            "doc": "URL of the CEIDG source record."
+                        }
+                    ]
+                }
+            },
+            "default": []
+        }
+    ]
+}

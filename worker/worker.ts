@@ -5,19 +5,28 @@ import {auth, corsHeaders, withCors} from "./auth";
 export interface Env {
     ENVIRONMENT: "dev" | "cloudflare"
     TEST_MODE: boolean
+    // KSeF (National e-Invoicing System)
     KSEF_URL: string
     KSEF_INVOICE_SCHEMA: string
     KSEF_MIN_TIMEOUT: number
     KSEF_MAX_TIMEOUT: number
+    // CEIDG (Central Register on Business Activity)
     CEIDG_URL: string
     CEIDG_API_KEY: string
+    CEIDG_LOOKUP_SCHEMA: string
+    // KRS (National Court Registry)
     KRS_SEARCH_URL: string
     KRS_API_URL: string
-    VAT_WL_URL: string
+    KRS_LOOKUP_SCHEMA: string
+    // VAT payers whitelist
+    VAT_LB_URL: string
+    VAT_LB_LOOKUP_SCHEMA: string
+    // Taxes
     DEFAULT_VAT_PERCENTAGE: number
     DEFAULT_TAX_RATE: number
     DEFAULT_HEALTH_INSURANCE_BASE: number
     DEFAULT_HEALTH_INSURANCE_RATE: number
+    // App bindings
     API_KEY: string
     D1: D1Database
     assets: Fetcher

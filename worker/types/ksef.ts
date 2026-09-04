@@ -4,6 +4,19 @@ export type KsefIdentifiable = {
     regon?: string
 };
 
+export type KsefContractor = {
+    source: "CEIDG" | "KRS" | "VAT_LB";
+    nip: string;
+    regon?: string;
+    name: string;
+    countryCode?: string;
+    addressLine?: string;
+    citizenship?: string[];
+    registrationDate?: string;
+    status?: string;
+    electronicDeliveryAddress?: string;
+};
+
 export interface KsefContextIdentifier { type: "Nip" | "InternalId" | "NipVatUe" | "PeppolId", value: string }
 
 export type KsefAuthenticationStatus = {

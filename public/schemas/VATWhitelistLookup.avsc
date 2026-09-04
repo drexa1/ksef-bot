@@ -1,0 +1,183 @@
+{
+    "type": "record",
+    "name": "VATWhitelistLookup",
+    "namespace": "pl.vat",
+    "doc": "VAT payer whitelist lookup response.",
+    "fields": [
+        {
+            "name": "result",
+            "aliases": ["result"],
+            "type": {
+                "type": "record",
+                "name": "VATResult",
+                "fields": [
+                    {
+                        "name": "subject",
+                        "aliases": ["subject"],
+                        "type": {
+                            "type": "record",
+                            "name": "VATSubject",
+                            "fields": [
+                                {
+                                    "name": "name",
+                                    "aliases": ["name"],
+                                    "type": ["null", "string"],
+                                    "default": null
+                                },
+                                {
+                                    "name": "nip",
+                                    "aliases": ["nip"],
+                                    "type": ["null", "string"],
+                                    "default": null
+                                },
+                                {
+                                    "name": "statusVat",
+                                    "aliases": ["status"],
+                                    "type": ["null", "string"],
+                                    "default": null,
+                                    "x-enum": {
+                                        "Czynny": "ACTIVE",
+                                        "Zwolniony": "EXEMPT",
+                                        "Niezarejestrowany": "UNREGISTERED"
+                                    }
+                                },
+                                {
+                                    "name": "regon",
+                                    "aliases": ["regon"],
+                                    "type": ["null", "string"],
+                                    "default": null
+                                },
+                                {
+                                    "name": "pesel",
+                                    "aliases": ["pesel"],
+                                    "type": ["null", "string"],
+                                    "default": null
+                                },
+                                {
+                                    "name": "krs",
+                                    "aliases": ["krs"],
+                                    "type": ["null", "string"],
+                                    "default": null
+                                },
+                                {
+                                    "name": "residenceAddress",
+                                    "aliases": ["residenceAddress"],
+                                    "type": ["null", "string"],
+                                    "default": null
+                                },
+                                {
+                                    "name": "workingAddress",
+                                    "aliases": ["workingAddress"],
+                                    "type": ["null", "string"],
+                                    "default": null
+                                },
+                                {
+                                    "name": "registrationLegalDate",
+                                    "aliases": ["registrationDate"],
+                                    "type": ["null", "string"],
+                                    "default": null
+                                },
+                                {
+                                    "name": "registrationDenialBasis",
+                                    "aliases": ["registrationDenialBasis"],
+                                    "type": ["null", "string"],
+                                    "default": null
+                                },
+                                {
+                                    "name": "registrationDenialDate",
+                                    "aliases": ["registrationDenialDate"],
+                                    "type": ["null", "string"],
+                                    "default": null
+                                },
+                                {
+                                    "name": "restorationBasis",
+                                    "aliases": ["restorationBasis"],
+                                    "type": ["null", "string"],
+                                    "default": null
+                                },
+                                {
+                                    "name": "restorationDate",
+                                    "aliases": ["restorationDate"],
+                                    "type": ["null", "string"],
+                                    "default": null
+                                },
+                                {
+                                    "name": "removalBasis",
+                                    "aliases": ["removalBasis"],
+                                    "type": ["null", "string"],
+                                    "default": null
+                                },
+                                {
+                                    "name": "removalDate",
+                                    "aliases": ["removalDate"],
+                                    "type": ["null", "string"],
+                                    "default": null
+                                },
+                                {
+                                    "name": "exemptionSmeDate",
+                                    "aliases": ["exemptionSmeDate"],
+                                    "type": ["null", "string"],
+                                    "default": null
+                                },
+                                {
+                                    "name": "accountNumbers",
+                                    "aliases": ["accountNumbers"],
+                                    "type": {
+                                        "type": "array",
+                                        "items": "string"
+                                    },
+                                    "default": []
+                                },
+                                {
+                                    "name": "hasVirtualAccounts",
+                                    "aliases": ["hasVirtualAccounts"],
+                                    "type": ["null", "boolean"],
+                                    "default": null
+                                },
+                                {
+                                    "name": "representatives",
+                                    "aliases": ["representatives"],
+                                    "type": {
+                                        "type": "array",
+                                        "items": "string"
+                                    },
+                                    "default": []
+                                },
+                                {
+                                    "name": "authorizedClerks",
+                                    "aliases": ["authorizedClerks"],
+                                    "type": {
+                                        "type": "array",
+                                        "items": "string"
+                                    },
+                                    "default": []
+                                },
+                                {
+                                    "name": "partners",
+                                    "aliases": ["partners"],
+                                    "type": {
+                                        "type": "array",
+                                        "items": "string"
+                                    },
+                                    "default": []
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "name": "requestId",
+                        "aliases": ["requestId"],
+                        "type": ["null", "string"],
+                        "default": null
+                    },
+                    {
+                        "name": "requestDateTime",
+                        "aliases": ["requestDateTime"],
+                        "type": ["null", "string"],
+                        "default": null
+                    }
+                ]
+            }
+        }
+    ]
+}

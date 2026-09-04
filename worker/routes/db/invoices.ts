@@ -4,7 +4,7 @@ import {XMLParser} from "fast-xml-parser";
 import {AppCustomer, AppInvoice, AppUser} from "../../types/db";
 import {KsefIdentifiable} from "../../types/ksef";
 import {getAuthUser} from "../../auth";
-import {dtoFromAliases} from "../../avro/invoice";
+import {dtoFromAliases} from "../../dto/avro";
 import {nanoid} from "nanoid";
 
 let repo: Repository;
