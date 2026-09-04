@@ -4,6 +4,12 @@ import {lookupCEIDG} from "./ceidg";
 import {lookupVATPayersWhitelist} from "./vat-whitelist";
 import {lookupKRS} from "./krs";
 
+/**
+ * In which order to query the different gov.pl endpoints for contractor information
+ * For the current user: assume is a JDG and if not try as KRS company
+ * For a customer contractor: assume is a KRS company and if not try with JDG's
+ * If nothing works, try to find the look for the details as VAT payer.
+ */
 const lookupOrder = {
     user:     ["CEIDG", "KRS", "VAT_LB"],
     customer: ["KRS", "CEIDG", "VAT_LB"]
