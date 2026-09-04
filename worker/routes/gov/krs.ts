@@ -25,7 +25,7 @@ export async function fromKRS(req: Request, env: Env): Promise<Response> {
 export async function lookupKRS(nip: string, env: Env): Promise<KsefContractor> {
     const timestamp = new Date().toISOString().slice(0, 19);
     const apiKey = encodeToken("0".repeat(10), timestamp);
-    const searchResponse = await fetch(`${env.KRS_SEARCH_URL}/api/wyszukiwarka/krs`, {
+    const krsLookup = await fetch(`${env.KRS_SEARCH_URL}/api/wyszukiwarka/krs`, {
         method: "POST",
         headers: {
             Accept: "application/json",
@@ -35,22 +35,24 @@ export async function lookupKRS(nip: string, env: Env): Promise<KsefContractor> 
         },
         body: JSON.stringify({ podmiot: { nip }, rejestr: ["P", "S"], paginacja: {} })
     });
-    const searchResult = await searchResponse.json() as { [key: string]: any };
-    if (!searchResponse.ok)
-        throw new Error(`KRS NIP lookup failed: ${searchResponse.status}`);
-    const krsNumber = searchResult?.["listaPodmiotow"]?.[0]?.["numer"];
-    const detailsResponse = await fetch(`${env.KRS_API_URL}/api/krs/OdpisAktualny/${krsNumber}`, {
+    const lookupResult = await krsLookup.json() as { [key: string]: any };
+    if (!lookupResult.ok)
+        throw new Error(`KRS NIP lookup failed: ${lookupResult.status}`);
+    const krsNumber = !lookupResult?.["listaPodmiotow"]?.[0]?.["numer"];
+    if (!krsNumber)
+        throw new Error(`No KRS entry found for NIP ${nip}`);
+    const krsDetails = await fetch(`${env.KRS_API_URL}/api/krs/OdpisAktualny/${krsNumber}`, {
         headers: { Accept: "application/json" }
     });
-    if (!detailsResponse.ok)
-        throw new Error(`KRS details lookup failed: ${detailsResponse.status}`);
-    const details = await detailsResponse.json();
+    if (!krsDetails.ok)
+        throw new Error(`KRS details lookup failed: ${krsDetails.status}`);
+    const detailsResult = await krsDetails.json();
     const krsLookupAvroSchema = await env.assets.fetch(new URL(env.KRS_LOOKUP_SCHEMA)).then(res => res.json());
-    return mapKRS(details, krsLookupAvroSchema);
+    return mapKRS(detailsResult, krsLookupAvroSchema);
 }
 
-function mapKRS(response: any, schema: any): KsefContractor {
-    const dto = dtoFromAliases(response, schema);
+function mapKRS(result: any, schema: any): KsefContractor {
+    const dto = dtoFromAliases(result, schema);
     const header = dto.copy?.header;
     const company = dto.copy?.data?.section1?.entityData;
     const registeredOffice = dto.copy?.data?.section1?.registeredOfficeAndAddress;
@@ -64,13 +66,11 @@ function mapKRS(response: any, schema: any): KsefContractor {
     ].filter(Boolean).join(", ");
     return {
         source: "KRS",
-        nip: company.identifiers.nip,
-        regon: company.identifiers.regon?.slice(0, 9),
-        name: company.name,
+        name: company?.name ?? undefined,
+        nip: company?.identifiers?.nip,
+        regon: company?.identifiers?.regon?.slice(0, 9) ?? undefined,
         countryCode: address?.country,
         addressLine: addressLine,
-        registrationDate: header?.registrationDate,
-        status: header?.positionStatus === 1 ? "ACTIVE" : undefined,
-        electronicDeliveryAddress: registeredOffice?.electronicDeliveryAddress
+        active: header?.positionStatus === 1
     };
 }

@@ -1,7 +1,7 @@
 {
     "type": "record",
     "name": "CEIDGLookup",
-    "namespace": "pl.ceidg",
+    "namespace": "pl.gov.ceidg",
     "doc": "CEIDG company details response.",
     "fields": [
         {

@@ -1,8 +1,8 @@
 {
     "type": "record",
-    "name": "VATWhitelistLookup",
-    "namespace": "pl.vat",
+    "name": "VATLBLookup",
     "doc": "VAT payer whitelist lookup response.",
+    "namespace": "pl.gov.lb",
     "fields": [
         {
             "name": "result",

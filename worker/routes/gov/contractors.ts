@@ -1,7 +1,8 @@
 import {Env} from "../../worker";
 import {KsefContractor} from "../../types/ksef";
-import {lookupCEIDG} from "../gov/ceidg";
-import {lookupVATWhitelist} from "../gov/vat-whitelist";
+import {lookupCEIDG} from "./ceidg";
+import {lookupVATPayersWhitelist} from "./vat-whitelist";
+import {lookupKRS} from "./krs";
 
 const lookupOrder = {
     user:     ["CEIDG", "KRS", "VAT_LB"],
@@ -18,7 +19,7 @@ export async function contractor(req: Request, env: Env): Promise<Response> {
         for (const source of lookupOrder[profile]) {
             try {
                 const result = await lookupContractorSource(source, nip, env);
-                return Response.json({ success: true, result });
+                return Response.json(result);
             } catch {
                 // Off to the next lookup method
             }
@@ -34,8 +35,8 @@ async function lookupContractorSource(source: KsefContractor["source"], nip: str
         case "CEIDG":
             return lookupCEIDG(nip, env);
         case "KRS":
-            return lookupCEIDG(nip, env);
+            return lookupKRS(nip, env);
         case "VAT_LB":
-            return lookupVATWhitelist(nip, env);
+            return lookupVATPayersWhitelist(nip, env);
     }
 }

@@ -1,0 +1,45 @@
+#@no-redirect
+@workerUrl = http://localhost:3001
+@apiKey = test
+@userNip = 6751577878
+@customerNip = 5170312965
+
+### For user CEIDG should succeed
+GET {{workerUrl}}/ksef/contractors?nip={{userNip}}&profile=user
+Accept: application/json
+X-API-Key: {{apiKey}}
+
+### For user KRS should fail but CEIDG should succeed
+GET {{workerUrl}}/ksef/contractors?nip={{userNip}}&profile=customer
+Accept: application/json
+X-API-Key: {{apiKey}}
+
+### For customer KRS should succeed
+GET {{workerUrl}}/ksef/contractors?nip={{customerNip}}&profile=customer
+Accept: application/json
+X-API-Key: {{apiKey}}
+
+### For customer CEIDG should fail but KRS should succeed
+GET {{workerUrl}}/ksef/contractors?nip={{customerNip}}&profile=user
+Accept: application/json
+X-API-Key: {{apiKey}}
+
+### For invalid NIP everything should all fail
+GET {{workerUrl}}/ksef/contractors?nip=missing&profile=user
+Accept: application/json
+X-API-Key: {{apiKey}}
+
+### For invalid NIP everything should all fail
+GET {{workerUrl}}/ksef/contractors?nip=missing&profile=customer
+Accept: application/json
+X-API-Key: {{apiKey}}
+
+### For non-existing NIP everything should all fail
+GET {{workerUrl}}/ksef/contractors?nip=1234567890&profile=user
+Accept: application/json
+X-API-Key: {{apiKey}}
+
+### For non-existing NIP everything should all fail
+GET {{workerUrl}}/ksef/contractors?nip=1234567890&profile=customer
+Accept: application/json
+X-API-Key: {{apiKey}}

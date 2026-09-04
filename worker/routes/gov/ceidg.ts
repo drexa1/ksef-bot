@@ -27,33 +27,32 @@ export async function lookupCEIDG(nip: string, env: Env): Promise<KsefContractor
     }});
     if (!ceidgLookup.ok)
         throw new Error(`CEIDG NIP lookup failed: ${ceidgLookup.status}`);
-    const lookupResponse = await ceidgLookup.json() as { firmy?: { id: string }[] };
-    const firm = lookupResponse["firmy"]?.[0]!;
-    const ceidgDetails = await fetch(`${env.CEIDG_URL}/firma/${firm.id}`, { headers: {
+    const lookupResult = await ceidgLookup.json() as { firmy?: { id: string }[] };
+    const company = lookupResult["firmy"]?.[0];
+    if (!company)
+        throw new Error(`No CEIDG entry found for NIP ${nip}`);
+    const ceidgDetails = await fetch(`${env.CEIDG_URL}/firma/${company.id}`, { headers: {
         Accept: "application/json", Authorization: `Bearer ${env.CEIDG_API_KEY}`
     }});
     if (!ceidgDetails.ok)
         throw new Error(`CEIDG details lookup failed: ${ceidgDetails.status}`);
-    const details = await ceidgDetails.json();
+    const detailsResult = await ceidgDetails.json();
     const ceidgLookupAvroSchema = await env.assets.fetch(new URL(env.CEIDG_LOOKUP_SCHEMA)).then(res => res.json());
-    return mapCEIDG(details, ceidgLookupAvroSchema);
+    return mapCEIDG(detailsResult, ceidgLookupAvroSchema);
 }
 
-function mapCEIDG(response: any, schema: any): KsefContractor {
-    const dto = dtoFromAliases(response, schema);
+function mapCEIDG(result: any, schema: any): KsefContractor {
+    const dto = dtoFromAliases(result, schema);
     const company = dto.companies?.[0];
     const address = company.correspondenceAddress;
     const building = [address?.buildingNumber, address?.apartmentNumber ? `/${address.apartmentNumber}` : undefined].filter(Boolean).join("");
     return {
         source: "CEIDG",
-        name: company.name,
-        nip: company.owner.nip,
-        regon: company.owner.regon,
+        name: company?.name,
+        nip: company?.owner?.nip,
+        regon: company?.owner?.regon ?? undefined,
         countryCode: address?.countryCode,
         addressLine: [address?.city, address?.postalCode, building].filter(Boolean).join(", "),
-        citizenship: company.citizenships?.map((c: { countryCode: string }) => c.countryCode).filter(Boolean),
-        registrationDate: company.startDate,
-        status: company.status,
-        electronicDeliveryAddress: company.electronicDeliveryAddress
+        active: company?.status === "ACTIVE"
     };
 }

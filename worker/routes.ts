@@ -11,7 +11,7 @@ import {
     downloadReceipt as receiptGET
 } from "./routes/ksef/sales";
 import {get as purchaseGET} from "./routes/ksef/purchases";
-import {contractor as contractorGET} from "./routes/ksef/contractors";
+import {contractor as contractorGET} from "./routes/gov/contractors";
 import {get as usersGET, post as usersPOST, put as usersPUT, del as usersDELETE} from "./routes/db/users";
 import {get as customersGET, post as customersPOST, put as customersPUT, del as customersDELETE} from "./routes/db/customers";
 import {get as invoicesGET, post as invoicesPOST, put as invoicesPUT, del as invoicesDELETE} from "./routes/db/invoices";
