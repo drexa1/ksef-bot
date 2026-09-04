@@ -1,11 +1,12 @@
 #@no-redirect
-@krsUrl = https://api-krs.ms.gov.pl
-@companyNIP = 5170312965
-@companyKRS = 0000349785
+@krsSearchUrl = https://wyszukiwarka-krs-api.ms.gov.pl
+@krsApiUrl = https://api-krs.ms.gov.pl
+@companyNip = 5170312965
+@companyKrs = 0000349785
 @jdgNIP = 6751577878
 
 ### Find company by NIP in KRS
-POST https://wyszukiwarka-krs-api.ms.gov.pl/api/wyszukiwarka/krs
+POST {{krsSearchUrl}}/api/wyszukiwarka/krs
 Accept: application/json
 Content-Type: application/json
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36
@@ -13,14 +14,14 @@ Apikey: 757606175555500606984109643728299066654755589994673910147576061935431624
 
 {
     "podmiot": {
-        "nip": "{{companyNIP}}"
+        "nip": "{{companyNip}}"
     },
     "rejestr": ["P", "S"],
     "paginacja": {}
 }
 
 ### Find company by KRS number in KRS
-GET {{krsUrl}}/api/krs/OdpisAktualny/{{companyKRS}}
+GET {{krsApiUrl}}/api/krs/OdpisAktualny/{{companyKrs}}
 Accept: application/json
 
 ### List sole propietorship in KRS should fail

@@ -85,5 +85,6 @@
 - [ ] Business plan  
 - [ ] Sales execution
 - [ ] Google Analytics  
+- [ ] Bug report  
 - [ ] Go public  
 - [ ] Slack bot
