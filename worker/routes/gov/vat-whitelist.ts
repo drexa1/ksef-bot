@@ -22,14 +22,11 @@ export async function fromVATWhitelist(req: Request, env: Env): Promise<Response
 export async function lookupVATWhitelist(nip: string, env: Env): Promise<KsefContractor> {
     const date = new Date().toISOString().substring(0, 10);
     const response = await fetch(`${env.VAT_LB_URL}/${nip}?date=${date}`, { headers: { Accept: "application/json" }});
-    if (!response.ok) {
-        if (response.status === 404)
-            throw new Error("Contractor not found in VAT whitelist");
+    if (!response.ok)
         throw new Error(`VAT whitelist lookup failed: ${response.status}`);
-    }
     const result = await response.json();
-    const schema = await env.assets.fetch(new URL(env.VAT_LB_LOOKUP_SCHEMA)).then(res => res.json());
-    return mapVATWhitelist(result, schema);
+    const vatWhitelistLookupAvroSchema = await env.assets.fetch(new URL(env.VAT_LB_LOOKUP_SCHEMA)).then(res => res.json());
+    return mapVATWhitelist(result, vatWhitelistLookupAvroSchema);
 }
 
 function mapVATWhitelist(response: any, schema: any): KsefContractor {

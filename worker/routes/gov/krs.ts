@@ -24,7 +24,7 @@ export async function fromKRS(req: Request, env: Env): Promise<Response> {
  */
 export async function lookupKRS(nip: string, env: Env): Promise<KsefContractor> {
     const timestamp = new Date().toISOString().slice(0, 19);
-    const apiKey = encodeToken("0000000000", timestamp);
+    const apiKey = encodeToken("0".repeat(10), timestamp);
     const searchResponse = await fetch(`${env.KRS_SEARCH_URL}/api/wyszukiwarka/krs`, {
         method: "POST",
         headers: {
@@ -45,8 +45,8 @@ export async function lookupKRS(nip: string, env: Env): Promise<KsefContractor> 
     if (!detailsResponse.ok)
         throw new Error(`KRS details lookup failed: ${detailsResponse.status}`);
     const details = await detailsResponse.json();
-    const krsSchema = await env.assets.fetch(new URL(env.KRS_LOOKUP_SCHEMA)).then(res => res.json());
-    return mapKRS(details, krsSchema);
+    const krsLookupAvroSchema = await env.assets.fetch(new URL(env.KRS_LOOKUP_SCHEMA)).then(res => res.json());
+    return mapKRS(details, krsLookupAvroSchema);
 }
 
 function mapKRS(response: any, schema: any): KsefContractor {

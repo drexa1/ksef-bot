@@ -27,16 +27,16 @@ export async function lookupCEIDG(nip: string, env: Env): Promise<KsefContractor
     }});
     if (!ceidgLookup.ok)
         throw new Error(`CEIDG NIP lookup failed: ${ceidgLookup.status}`);
-    const lookupResponse = await ceidgLookup.json() as { firma?: { id: string }[] };
-    const firm = lookupResponse["firma"]?.[0]!;
+    const lookupResponse = await ceidgLookup.json() as { firmy?: { id: string }[] };
+    const firm = lookupResponse["firmy"]?.[0]!;
     const ceidgDetails = await fetch(`${env.CEIDG_URL}/firma/${firm.id}`, { headers: {
         Accept: "application/json", Authorization: `Bearer ${env.CEIDG_API_KEY}`
     }});
     if (!ceidgDetails.ok)
         throw new Error(`CEIDG details lookup failed: ${ceidgDetails.status}`);
     const details = await ceidgDetails.json();
-    const ceidgSchema = await env.assets.fetch(new URL(env.CEIDG_LOOKUP_SCHEMA)).then(res => res.json());
-    return mapCEIDG(details, ceidgSchema);
+    const ceidgLookupAvroSchema = await env.assets.fetch(new URL(env.CEIDG_LOOKUP_SCHEMA)).then(res => res.json());
+    return mapCEIDG(details, ceidgLookupAvroSchema);
 }
 
 function mapCEIDG(response: any, schema: any): KsefContractor {
