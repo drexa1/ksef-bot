@@ -8,7 +8,7 @@ const lookupOrder = {
     customer: ["KRS", "CEIDG", "VAT_LB"]
 } satisfies Record<"user" | "customer", KsefContractor["source"][]>;
 
-export async function fromContractor(req: Request, env: Env): Promise<Response> {
+export async function contractor(req: Request, env: Env): Promise<Response> {
     const url = new URL(req.url);
     const nip = url.searchParams.get("nip");
     const profile = url.searchParams.get("profile") as "user" | "customer" ;

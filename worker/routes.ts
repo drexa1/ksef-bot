@@ -11,6 +11,7 @@ import {
     downloadReceipt as receiptGET
 } from "./routes/ksef/sales";
 import {get as purchaseGET} from "./routes/ksef/purchases";
+import {contractor as contractorGET} from "./routes/ksef/contractors";
 import {get as usersGET, post as usersPOST, put as usersPUT, del as usersDELETE} from "./routes/db/users";
 import {get as customersGET, post as customersPOST, put as customersPUT, del as customersDELETE} from "./routes/db/customers";
 import {get as invoicesGET, post as invoicesPOST, put as invoicesPUT, del as invoicesDELETE} from "./routes/db/invoices";
@@ -46,21 +47,19 @@ export const routes: Record<string, Routes> =  {
     "/docs":                { GET: async () => new Response(scalarHtml, { headers: { "Content-Type": "text/html" }}) },
     "/health":              { GET: healthGET },
     // Requiring authentication
-    "/whoami":                      withErrorHandling({ GET: whoamiGET }),
-    "/ksef/sales":                  withErrorHandling({ GET: salesGET, POST: salesPOST }),
-    "/ksef/sales/status":           withErrorHandling({ GET: invoiceStatusGET }),
-    "/ksef/sales/sessions":         withErrorHandling({ GET: sessionsGET }),
-    "/ksef/sales/receipt":          withErrorHandling({ GET: receiptGET }),
-    "/ksef/purchases":              withErrorHandling({ GET: purchaseGET }),
-
-
-
-    "/app/users":                   withErrorHandling({ GET: usersGET, POST: usersPOST, PUT: usersPUT, DELETE: usersDELETE }),
-    "/app/customers":               withErrorHandling({ GET: customersGET, POST: customersPOST, PUT: customersPUT, DELETE: customersDELETE }),
-    "/app/invoices":                withErrorHandling({ GET: invoicesGET, POST: invoicesPOST, PUT: invoicesPUT, DELETE: invoicesDELETE }),
-    "/app/invoices/pii":            withErrorHandling({ POST: piiPOST }),
-    "/app/taxes/simulate":          withErrorHandling({ GET: simulateGET }),
-    "/app/taxes":                   withErrorHandling({ GET: taxesGET, POST: taxesPOST, PUT: taxesPUT, DELETE: taxesDELETE })
+    "/whoami":               withErrorHandling({ GET: whoamiGET }),
+    "/ksef/sales":           withErrorHandling({ GET: salesGET, POST: salesPOST }),
+    "/ksef/sales/status":    withErrorHandling({ GET: invoiceStatusGET }),
+    "/ksef/sales/sessions":  withErrorHandling({ GET: sessionsGET }),
+    "/ksef/sales/receipt":   withErrorHandling({ GET: receiptGET }),
+    "/ksef/purchases":       withErrorHandling({ GET: purchaseGET }),
+    "/ksef/contractors":     withErrorHandling({ GET: contractorGET }),
+    "/app/users":            withErrorHandling({ GET: usersGET, POST: usersPOST, PUT: usersPUT, DELETE: usersDELETE }),
+    "/app/customers":        withErrorHandling({ GET: customersGET, POST: customersPOST, PUT: customersPUT, DELETE: customersDELETE }),
+    "/app/invoices":         withErrorHandling({ GET: invoicesGET, POST: invoicesPOST, PUT: invoicesPUT, DELETE: invoicesDELETE }),
+    "/app/invoices/pii":     withErrorHandling({ POST: piiPOST }),
+    "/app/taxes/simulate":   withErrorHandling({ GET: simulateGET }),
+    "/app/taxes":            withErrorHandling({ GET: taxesGET, POST: taxesPOST, PUT: taxesPUT, DELETE: taxesDELETE })
 };
 
 

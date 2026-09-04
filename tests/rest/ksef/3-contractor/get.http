@@ -3,23 +3,22 @@
 @userNip = 6751577878
 @customerNip = 5170312965
 
-### User profile - CEIDG should succeed
+### For user CEIDG should succeed
 GET {{workerUrl}}/app/contractor?profile=user&nip={{userNip}}
 Accept: application/json
 
-### Customer profile - CEIDG should fail, KRS should fail, VAT_LB should succeed
-#
+### For customer CEIDG should fail, KRS should fail, VAT_LB should succeed
 GET {{workerUrl}}/app/contractor?profile=user&nip={{userNip}}
 Accept: application/json
 
-### Customer profile - KRS should succeed
+### For customer KRS should succeed
 GET {{workerUrl}}/app/contractor?profile=customer&nip={{customerNip}}
 Accept: application/json
 
-### User profile - KRS should fail, CEIDG should succeed
+### For user KRS should fail, CEIDG should succeed
 GET {{workerUrl}}/app/contractor?profile=customer&nip={{userNip}}
 Accept: application/json
 
-### Non-existing NIP - CEIDG -> KRS -> VAT_LB should all fail
+### For non-existing NIP - CEIDG -> KRS -> VAT_LB should all fail
 GET {{workerUrl}}/app/contractor?profile=customer&nip=missing
 Accept: application/json
