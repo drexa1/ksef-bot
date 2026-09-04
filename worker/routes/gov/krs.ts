@@ -78,8 +78,9 @@ function shiftRight(array: string[], position: number): void {
 
 function circularRight(array: string[], amount: number): void {
     const copy = [...array];
-    for (let i = 0; i < array.length; i++)
+    for (let i = 0; i < array.length; i++) {
         array[(i + amount) % array.length] = copy[i];
+    }
 }
 
 function formatTimestamp(date: Date): string {
