@@ -1,0 +1,13 @@
+get {
+    url: {{baseUrl}}/gov/krs?nip=7272445205
+}
+headers {
+    Accept: application/json
+    X-API-Key: {{apiKey}}
+}
+tests {
+    test("For existing test sole propietorship KRS should fail", function() {
+        expect(res.status).to.equal(404);
+        expect(res.body.error).to.contain("No KRS entry found for NIP");
+    })
+}

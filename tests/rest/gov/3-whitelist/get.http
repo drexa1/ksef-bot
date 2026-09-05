@@ -1,7 +1,9 @@
 # @no-redirect
+@baseUrl = http://localhost:3001
+@apiKey = test
 @whitelistUrl = https://wl-api.mf.gov.pl/api/search/nip
-@jdgNip = 6751577878
-@companyNip = 5170312965
+@jdgNip = 7272445205
+@companyNip = 6252447933
 
 ### List single proprietorship in WhiteList
 < {% request.variables.set("date", new Date().toISOString().substring(0, 10)); %}
@@ -17,3 +19,13 @@ Accept: application/json
 < {% request.variables.set("date", new Date().toISOString().substring(0, 10)); %}
 GET {{whitelistUrl}}/0000000000?date={{date}}
 Accept: application/json
+
+### List sole propietorship from lookup entrypoint should succeed
+GET {{baseUrl}}/gov/vat-lb?nip={{jdgNip}}
+Accept: application/json
+X-API-Key: {{apiKey}}
+
+### List company from lookup entrypoint should succeed
+GET {{baseUrl}}/gov/vat-lb?nip={{companyNip}}
+Accept: application/json
+X-API-Key: {{apiKey}}

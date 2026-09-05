@@ -5,7 +5,7 @@ export type KsefIdentifiable = {
 };
 
 export type KsefContractor = {
-    source: "CEIDG" | "KRS" | "VAT_LB";
+    source: "CEIDG" | "KRS" | "VAT-LB";
     name: string
     nip: string
     regon?: string

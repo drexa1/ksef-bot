@@ -1,7 +1,7 @@
 import {Env} from "../../worker";
 import {KsefContractor} from "../../types/ksef";
 import {lookupCEIDG} from "./ceidg";
-import {lookupVATPayersWhitelist} from "./vat-whitelist";
+import {lookupVATLB} from "./vat-lb";
 import {lookupKRS} from "./krs";
 
 /**
@@ -11,8 +11,8 @@ import {lookupKRS} from "./krs";
  * If nothing works, try to find the look for the details as VAT payer.
  */
 const lookupOrder = {
-    user:     ["CEIDG", "KRS", "VAT_LB"],
-    customer: ["KRS", "CEIDG", "VAT_LB"]
+    user:     ["CEIDG", "KRS", "VAT-LB"],
+    customer: ["KRS", "CEIDG", "VAT-LB"]
 } satisfies Record<"user" | "customer", KsefContractor["source"][]>;
 
 export async function contractor(req: Request, env: Env): Promise<Response> {
@@ -22,27 +22,35 @@ export async function contractor(req: Request, env: Env): Promise<Response> {
     if (!nip || !/^\d{10}$/.test(nip))
         return Response.json({ success: false, error: "Invalid NIP" }, { status: 400 });
     try {
-        for (const source of lookupOrder[profile]) {
+        // Profile argument is a hint to know whether to start looking at CEIDG or rather KRS,
+        const govEndpoint: KsefContractor["source"][] = profile ? lookupOrder[profile] : Math.random() < 0.5
+            // ...but in absence of any clue, pick randomly one, then the other, and the VAP payers whitelist as last resource
+            ? ["CEIDG", "KRS", "VAT-LB"] : ["KRS", "CEIDG", "VAT-LB"];
+        for (const source of govEndpoint) {
             try {
                 const result = await lookupContractorSource(source, nip, env);
-                return Response.json(result);
+                return Response.json(result, { status: 200 });
             } catch {
                 // Off to the next lookup method
             }
         }
-        return Response.json({ success: false, error: "User or contractor not found", nip: nip }, { status: 404 });
+        return Response.json({ success: false, error: "Contractor not found", nip: nip }, { status: 404 });
     } catch (error) {
-        return Response.json({ success: false, error: String(error) }, { status: 502 });
+        return Response.json({ success: false, error: String(error) }, { status: 404 });
     }
 }
 
-async function lookupContractorSource(source: KsefContractor["source"], nip: string, env: Env): Promise<KsefContractor | null> {
+async function lookupContractorSource(source: KsefContractor["source"], nip: string, env: Env): Promise<KsefContractor> {
     switch (source) {
         case "CEIDG":
             return lookupCEIDG(nip, env);
         case "KRS":
             return lookupKRS(nip, env);
-        case "VAT_LB":
-            return lookupVATPayersWhitelist(nip, env);
+        case "VAT-LB":
+            return lookupVATLB(nip, env);
     }
+}
+
+export function titleCase(value: string): string {
+    return value.trim().toLowerCase().replace(/(^|[\s-])(\p{L})/gu, (_, separator, char) => separator + char.toUpperCase());
 }

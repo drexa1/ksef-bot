@@ -1,0 +1,14 @@
+get {
+    url: {{baseUrl}}/gov/vat-lb?nip=6252447933
+}
+headers {
+    Accept: application/json
+    X-API-Key: {{apiKey}}
+}
+tests {
+    test("For existing test company VAT payers whitelist should succeed", function() {
+        console.info(res.body);
+        expect(res.body.source).to.equal("VAT-LB");
+        expect(res.body.addressLine).to.be.a("string").and.not.empty;
+    })
+}

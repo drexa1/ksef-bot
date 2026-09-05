@@ -1,0 +1,14 @@
+get {
+    url: {{baseUrl}}/gov/ceidg?nip=7272445205
+}
+headers {
+    Accept: application/json
+    X-API-Key: {{apiKey}}
+}
+tests {
+    test("For existing test sole propietorship CEIDG should succeed", function() {
+        console.info(res.body);
+        expect(res.body.source).to.equal("CEIDG");
+        expect(res.body.addressLine).to.be.a("string").and.not.empty;
+    })
+}

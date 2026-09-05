@@ -2,9 +2,10 @@ import {Env} from "../../worker";
 import {KsefContractor} from "../../types/ksef";
 import {dtoFromAliases} from "../../dto/avro";
 import {encodeToken} from "./krs-apikey";
+import {titleCase} from "./contractors";
 
 // noinspection JSUnusedGlobalSymbols
-export async function fromKRS(req: Request, env: Env): Promise<Response> {
+export async function contractor(req: Request, env: Env): Promise<Response> {
     const url = new URL(req.url);
     const nip = url.searchParams.get("nip");
     if (!nip || !/^\d{10}$/.test(nip))
@@ -13,9 +14,9 @@ export async function fromKRS(req: Request, env: Env): Promise<Response> {
         const result = await lookupKRS(nip, env);
         if (!result)
             return Response.json({ success: false, error: "Firm not found in KRS" }, { status: 404 });
-        return Response.json({ success: true, result });
+        return Response.json(result, { status: 200 });
     } catch (error: any) {
-        return Response.json({ success: false, error: String(error) }, { status: 502 });
+        return Response.json({ success: false, error: String(error) }, { status: 404 });
     }
 }
 
@@ -37,6 +38,8 @@ export async function lookupKRS(nip: string, env: Env): Promise<KsefContractor> 
     });
     if (!krsLookup.ok)
         throw new Error(`KRS NIP lookup failed: ${krsLookup.status}`);
+    if (krsLookup.status === 204)
+        throw new Error(`No KRS entry found for NIP ${nip}`);
     const lookupResult = await krsLookup.json() as { [key: string]: any };
     const krsNumber = lookupResult?.["listaPodmiotow"]?.[0]?.["numer"];
     if (!krsNumber)
@@ -66,11 +69,11 @@ function mapKRS(result: any, schema: any): KsefContractor {
     ].filter(Boolean).join(", ");
     return {
         source: "KRS",
-        name: company?.name ?? undefined,
+        name: titleCase(company?.name),
         nip: company?.identifiers?.nip,
         regon: company?.identifiers?.regon?.slice(0, 9) ?? undefined,
         countryCode: address?.country,
-        addressLine: addressLine,
+        addressLine: titleCase(addressLine),
         active: header?.positionStatus === 1
     };
 }

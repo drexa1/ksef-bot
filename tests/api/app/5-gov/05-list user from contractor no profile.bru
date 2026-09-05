@@ -1,0 +1,14 @@
+get {
+    url: {{baseUrl}}/gov/contractors?nip=7272445205
+}
+headers {
+    Accept: application/json
+    X-API-Key: {{apiKey}}
+}
+tests {
+    test("For existing test sole propietorship and no hint entrypoint lookup should prioritize CEIDG", function() {
+        console.info(res.body);
+        expect(res.body.source).to.equal("CEIDG");
+        expect(res.body.addressLine).to.be.a("string").and.not.empty;
+    })
+}

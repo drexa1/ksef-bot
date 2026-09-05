@@ -1,0 +1,13 @@
+get {
+    url: {{baseUrl}}/gov/ceidg?nip=6252447933
+}
+headers {
+    Accept: application/json
+    X-API-Key: {{apiKey}}
+}
+tests {
+    test("For existing company CEIDG should fail", function() {
+        expect(res.status).to.equal(404);
+        expect(res.body.error).to.contain("No CEIDG entry found for NIP");
+    })
+}

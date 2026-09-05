@@ -1,0 +1,14 @@
+get {
+    url: {{baseUrl}}/gov/krs?nip=6252447933
+}
+headers {
+    Accept: application/json
+    X-API-Key: {{apiKey}}
+}
+tests {
+    test("For existing company KRS should succeed", function() {
+        console.info(res.body);
+        expect(res.body.source).to.equal("KRS");
+        expect(res.body.addressLine).to.be.a("string").and.not.empty;
+    })
+}

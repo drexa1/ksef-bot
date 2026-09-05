@@ -1,0 +1,12 @@
+get {
+    url: {{baseUrl}}/gov/contractors?nip=missing
+}
+headers {
+    Accept: application/json
+    X-API-Key: {{apiKey}}
+}
+tests {
+    test("For invalid NIP entrypoint lookup should fail", function() {
+        expect(res.status).to.equal(400);
+    })
+}

@@ -75,6 +75,6 @@ function randomInt(min: number, max: number): number {
 // ---------------------------------------------------------
 // Example
 // ---------------------------------------------------------
-const timestamp = new Date().toISOString().slice(0, 19);
-const token = encodeToken("0000000000", timestamp);
-console.log(token);
+// const timestamp = new Date().toISOString().slice(0, 19);
+// const token = encodeToken("0000000000", timestamp);
+// console.log(token);
