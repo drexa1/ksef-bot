@@ -1,4 +1,4 @@
-name = "ksef-bot"
+name = "ksefbot"
 main = "worker/worker.ts"
 compatibility_date = "2026-01-01"
 
