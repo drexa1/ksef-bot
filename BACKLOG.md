@@ -55,22 +55,22 @@
 - [X] Retrieve contractor details programmatically bruno tests  
 - [x] Lowercase name and address from gov mappers  
 - [ ] First time frontend workflow  
-- [ ] CLI: list customers
-- [ ] CLI: adapt sales/purchase invoices summary
-- [ ] CLI: create customer
-- [ ] CLI: create invoice
-- [ ] CLI: Google SSO
-- [ ] CLI: Microsoft SSO
-- [ ] CLI: Facebook SSO
-- [ ] CLI: login with email
-- [ ] CLI: edit user settings
-- [ ] CLI: first time flow
+- [ ] CLI: list customers  
+- [ ] CLI: adapt sales/purchase invoices summary  
+- [ ] CLI: create customer  
+- [ ] CLI: create invoice  
+- [ ] CLI: Google SSO  
+- [ ] CLI: Microsoft SSO  
+- [ ] CLI: Facebook SSO  
+- [ ] CLI: login with email  
+- [ ] CLI: edit user settings  
+- [ ] CLI: first time flow  
 - [ ] Review security architecture  
 - [ ] Admin contractors frontend  
 - [ ] SSO/Enrolment  
 - [ ] Login frontend  
 - [ ] Invoice generator frontend: wrangle up CSS  
-- [ ] Invoice generator frontend: smoke mobile
+- [ ] Invoice generator frontend: smoke mobile  
 - [ ] Invoice generator frontend: contractor additional entity  
 - [ ] Invoice generator frontend: invoice additional column selects  
 - [ ] Invoice generator frontend: invoice additional data  
