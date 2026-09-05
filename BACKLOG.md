@@ -53,8 +53,19 @@
 - [x] Rest test for posting an invoice  
 - [x] Retrieve contractor details programmatically REST tests  
 - [X] Retrieve contractor details programmatically bruno tests  
-- [ ] Lowercase name and address from gov mappers  
+- [x] Lowercase name and address from gov mappers  
 - [ ] First time frontend workflow  
+- [ ] CLI: list customers
+- [ ] CLI: adapt sales/purchase invoices summary
+- [ ] CLI: create customer
+- [ ] CLI: create invoice
+- [ ] CLI: Google SSO
+- [ ] CLI: Microsoft SSO
+- [ ] CLI: Facebook SSO
+- [ ] CLI: login with email
+- [ ] CLI: edit user settings
+- [ ] CLI: first time flow
+- [ ] Review security architecture  
 - [ ] Admin contractors frontend  
 - [ ] SSO/Enrolment  
 - [ ] Login frontend  
@@ -65,18 +76,7 @@
 - [ ] Invoice generator frontend: invoice additional data  
 - [ ] Encrypt KSeF/Baking keys  
 - [ ] Invoice generator frontend: help hints  
-- [ ] Invoice generator frontend: import logic  
-- [ ] CLI: list customers
-- [ ] CLI: adapt sales/purchase invoices summary
-- [ ] CLI: create customer
-- [ ] CLI: create invoice
-- [ ] CLI: Google SSO
-- [ ] CLI: Microsoft SSO
-- [ ] CLI: Facebook SSO
-- [ ] CLI: login with email
-- [ ] CLI: edit user settings
-- [ ] CLI: first time flow  
-- [ ] Review security architecture  
+- [ ] Invoice generator frontend: import logic
 - [ ] WhatsApp bot  
 - [ ] Create user frontend  
 - [ ] Bank client PoC  
