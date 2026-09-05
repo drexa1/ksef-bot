@@ -35,10 +35,10 @@ export async function lookupKRS(nip: string, env: Env): Promise<KsefContractor> 
         },
         body: JSON.stringify({ podmiot: { nip }, rejestr: ["P", "S"], paginacja: {} })
     });
+    if (!krsLookup.ok)
+        throw new Error(`KRS NIP lookup failed: ${krsLookup.status}`);
     const lookupResult = await krsLookup.json() as { [key: string]: any };
-    if (!lookupResult.ok)
-        throw new Error(`KRS NIP lookup failed: ${lookupResult.status}`);
-    const krsNumber = !lookupResult?.["listaPodmiotow"]?.[0]?.["numer"];
+    const krsNumber = lookupResult?.["listaPodmiotow"]?.[0]?.["numer"];
     if (!krsNumber)
         throw new Error(`No KRS entry found for NIP ${nip}`);
     const krsDetails = await fetch(`${env.KRS_API_URL}/api/krs/OdpisAktualny/${krsNumber}`, {
