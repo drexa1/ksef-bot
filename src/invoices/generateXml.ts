@@ -1,4 +1,4 @@
-import {AppUser} from "../../worker/types/db";
+import {AppUser} from "../../worker-api/types/db";
 
 export async function generateInvoiceXml(userProfile: AppUser, form: HTMLFormElement): Promise<string> {
 

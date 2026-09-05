@@ -9,7 +9,7 @@ on:
       - 'pages/**'
       - 'public/**'
       - 'src/**'
-      - 'worker/**'
+      - '../../worker-api/**'
       - '.gitignore'
       - 'BACKLOG.md'
       - 'index.html'
@@ -18,7 +18,7 @@ on:
       - 'README.md'
       - 'tsconfig.json'
       - 'vite.config.js'
-      - 'wrangler.worker.toml'
+      - '../../wrangler.worker-api.toml'
   workflow_dispatch:
 
 env:

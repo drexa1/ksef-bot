@@ -15,8 +15,8 @@
     },
     "author": "drexa1",
     "scripts": {
-        "db:dev:teardown": "wrangler d1 execute ksef-bot --config wrangler.worker.toml --local --file=db/teardown.sql",
-        "db:dev:create": "wrangler d1 execute ksef-bot --config wrangler.worker.toml --local --file=db/schema.sql",
+        "db:dev:teardown": "wrangler d1 execute ksef-bot --config wrangler.worker-api.toml --local --file=db/teardown.sql",
+        "db:dev:create": "wrangler d1 execute ksef-bot --config wrangler.worker-api.toml --local --file=db/schema.sql",
         "db:dev:recreate": "npm run db:dev:teardown && npm run db:dev:create",
         "⚠ db:prod:teardown": "wrangler d1 execute ksef-bot --remote --file=db/teardown.sql",
         "⚠ db:prod:create": "wrangler d1 execute ksef-bot  --remote --file=db/schema.sql",
@@ -31,8 +31,8 @@
         "client:dev:test": "vitest",
         "client:prod:build": "vite build --mode production",
 
-        "worker:dev:run": "npm run client:dev:build && wrangler dev --config wrangler.worker.toml --local --port 3001 --inspector-port 9999",
-        "worker:prod:deploy": "npm run client:prod:build && wrangler deploy --config wrangler.worker.toml",
+        "worker:dev:run": "npm run client:dev:build && wrangler dev --config wrangler.worker-api.toml --local --port 3001 --inspector-port 9999",
+        "worker:prod:deploy": "npm run client:prod:build && wrangler deploy --config wrangler.worker-api.toml",
         "worker:prod:logs": "wrangler tail ksef-bot"
     },
     "dependencies": {
