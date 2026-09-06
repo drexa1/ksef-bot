@@ -124,7 +124,7 @@ async function getOrCreateCustomer(env: Env, customerParts: {
     addressL1?: string
 }): Promise<string> {
     const { idField, idValue } = getCustomerIdentifier(customerParts);
-    const existing = await getRepo(env).get<AppContractor>("customers", { [idField]: idValue });
+    const existing = await getRepo(env).get<AppContractor>("contractors", { [idField]: idValue });
     if (existing) return existing.id!;
     const customer: AppContractor = {
         id: nanoid(),

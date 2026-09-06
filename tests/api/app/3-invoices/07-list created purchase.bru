@@ -11,5 +11,5 @@ tests {
     })
 }
 script:post-response {
-     bru.setCollectionVar("purchaseInvoiceCustomerId", res.body.Seller.IdentificationData.NIP);
+     bru.setCollectionVar("purchaseInvoiceContractorId", res.body.Seller.IdentificationData.NIP);
 }

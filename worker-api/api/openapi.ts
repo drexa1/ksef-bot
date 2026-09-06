@@ -287,7 +287,7 @@ export const getOpenApiSpec = (env: Env) => ({
         { name: "KSeF" },
         { name: "Users" },
         { name: "Invoices" },
-        { name: "Customers" },
+        { name: "Contractors" },
         { name: "Taxes" },
     ],
     paths: {
@@ -693,7 +693,7 @@ export const getOpenApiSpec = (env: Env) => ({
                 responses: {
                     "200": { description: "Contractor records" },
                     "401": { description: "Unauthorized" },
-                    "404": { description: "Customer not found" }
+                    "404": { description: "Contractor not found" }
                 }
             },
             post: {
@@ -739,7 +739,7 @@ export const getOpenApiSpec = (env: Env) => ({
                 responses: {
                     "200": { description: "Contractor deleted" },
                     "401": { description: "Unauthorized" },
-                    "404": { description: "Customer not found" }
+                    "404": { description: "Contractor not found" }
                 }
             }
         },

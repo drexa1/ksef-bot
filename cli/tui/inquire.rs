@@ -1,4 +1,4 @@
-use crate::{MainMenuAction, contractors, invoices, settings};
+use crate::{MainMenuAction, customers, invoices, settings};
 use anyhow::Result;
 use crossterm::{
     cursor::MoveTo,
@@ -32,8 +32,8 @@ pub async fn main_loop() -> Result<()> {
             MainMenuAction::CreateSalesInvoice => invoices::create_sales_invoice()?,
             MainMenuAction::ListSalesInvoices => invoices::list_sales_invoices().await?,
             MainMenuAction::ListPurchaseInvoices => invoices::list_purchase_invoices().await?,
-            MainMenuAction::CreateContractor => contractors::create_customer()?,
-            MainMenuAction::ListContractors => contractors::list_customers()?,
+            MainMenuAction::CreateContractor => customers::create_customer()?,
+            MainMenuAction::ListContractors => customers::list_customers()?,
             MainMenuAction::UserSettings => settings::edit_profile()?,
             MainMenuAction::Exit => return Ok(())
         }

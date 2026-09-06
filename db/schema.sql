@@ -95,7 +95,7 @@ CREATE TABLE contractors (
     id TEXT PRIMARY KEY,
     -- Owner
     ownerId TEXT NOT NULL REFERENCES users(email),
-    -- Customer data
+    -- Contractor data
     name TEXT NOT NULL,
     nip TEXT UNIQUE,
     pesel TEXT UNIQUE,

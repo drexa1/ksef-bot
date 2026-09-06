@@ -14,7 +14,7 @@
 - [x] Post db invoice should be XML upload  
 - [x] Schema not loading as avro  
 - [x] Review REST users tests after refactor
-- [x] Review REST customers tests after refactor  
+- [x] Review REST contractors tests after refactor  
 - [x] Review REST invoices tests after refactor  
 - [x] Retrieve invoice from KSeF  
 - [x] REST tests for KSef
@@ -25,7 +25,7 @@
 - [x] Review taxes REST tests  
 - [x] Run tests suites as collection  
 - [x] Test collection for users  
-- [x] Test collection for customers  
+- [x] Test collection for contractors  
 - [x] Test collection for application invoices  
 - [x] Test collection for tax record  
 - [x] Test invoices PII  

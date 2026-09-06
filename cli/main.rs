@@ -9,7 +9,7 @@ mod tui {
 
 mod auth;
 mod invoices;
-mod contractors;
+mod customers;
 mod settings;
 mod cloudflare;
 
