@@ -10,6 +10,7 @@ env:
   ENVIRONMENT: dev
   TEST_MODE: true
   API_KEY: ${{ secrets.API_KEY }}
+  CEIDG_API_KEY: ${{ secrets.CEIDG_API_KEY }}
 
 jobs:
   deploy:
@@ -28,9 +29,10 @@ jobs:
         run: npm install
       - name: Create CI .dev.vars
         run: |
-          echo "ENVIRONMENT=dev"     > .dev.vars
-          echo "API_KEY=${API_KEY}" >> .dev.vars
-          echo "TEST_MODE=true"     >> .dev.vars
+          echo "ENVIRONMENT=dev"                >> .dev.vars
+          echo "TEST_MODE=true"                 >> .dev.vars
+          echo "API_KEY=${API_KEY}"             >> .dev.vars
+          echo "CEIDG_API_KEY=${CEIDG_API_KEY}" >> .dev.vars
       - name: Run API collections
         run: npm run api:ci:tests
       - name: Deploy worker
