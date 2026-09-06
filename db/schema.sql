@@ -1,80 +1,29 @@
 DROP TABLE IF EXISTS users;
 CREATE TABLE users (
-    email TEXT PRIMARY KEY,
+    -- Identification data
+    id TEXT PRIMARY KEY,
+    email TEXT UNIQUE,
+    googleSubject TEXT UNIQUE,
+    phone TEXT UNIQUE CHECK (phone GLOB '+[0-9]*' AND length(phone) BETWEEN 8 AND 15 AND phone NOT GLOB '*[^+0-9]*'),  -- E.164
+    companyLogo BLOB,
+    -- Contractor data
+    contractorId TEXT REFERENCES contractors(id),
     -- Application
-    apiKey TEXT UNIQUE,
     tier INTEGER NOT NULL,
+    apiKey TEXT UNIQUE,
     -- KSeF integration
     ksefApiToken TEXT UNIQUE,
     -- Invoicing defaults,
     defaultItemName TEXT,
     defaultHourlyRate INTEGER,
-    settlementType TEXT NOT NULL CHECK (settlementType IN ('monthly', 'quarterly')),
+    settlementType TEXT NOT NULL CHECK (settlementType IN ('monthly', 'quarterly')) DEFAULT 'monthly',
     -- Banking integration
     bankName TEXT,
-    bankAccountNumber TEXT CHECK (bankAccountNumber IS NULL OR (length(bankAccountNumber) = 26 AND bankAccountNumber NOT GLOB '*[^0-9]*')),
+    bankAccountNumber TEXT CHECK (length(bankAccountNumber) = 26 AND bankAccountNumber NOT GLOB '*[^0-9]*'),
     bankApiToken TEXT UNIQUE,
-    -- Identification data
-    nip TEXT NOT NULL CHECK (length(nip) = 10 AND nip NOT GLOB '*[^0-9]*'),
-    regon TEXT CHECK (regon IS NULL OR (length(regon) = 9 AND regon NOT GLOB '*[^0-9]*')),
-    bdo TEXT,  -- Number in the Waste Database. The information will appear on the invoices
-    name TEXT,
-    companyLogo BLOB,
-    -- Address details
-    country TEXT NOT NULL DEFAULT 'Poland',
-    voivodeship TEXT NOT NULL,
-    county TEXT NOT NULL,
-    commune TEXT NOT NULL,
-    town TEXT NOT NULL,
-    zipCode TEXT NOT NULL,
-    street TEXT,
-    buildingNumber TEXT NOT NULL,
-    apartmentNumber TEXT,
-    phoneNumber TEXT,  -- The information will appear on the invoices
-    displayEmailOnKsefInvoices BOOLEAN NOT NULL DEFAULT FALSE,
-    taxOffice TEXT,  -- Name and code
     -- DBA
     createdAt TEXT DEFAULT CURRENT_TIMESTAMP,
     updatedAt TEXT
-);
--- Create admin user
--- TODO: delete this and create via 1st time workflow
-INSERT INTO users VALUES (
-    'drexa1@hotmail.com',
-    -- Application
-    NULL,
-    0,
-    -- KSeF integration
-    '20260804-EC-4716384000-AD6886D9B2-BB|nip-6751577878|ca23b48587d545ad8e7fed96420e4dbe6d78e7cf72844981ac702fe2aeb8a145',
-    -- Invoicing defaults,
-    'Usługi informatyczne',
-    160,
-    'monthly',
-    -- Banking integration
-    'PKO Bank Polski',
-    '80102028920000550210154088',
-    NULL,
-     -- Identification data
-    '6751577878',
-    NULL,
-    NULL,
-    'Diego Ruiz Barbero Software Engineering & Data Science',
-    NULL,
-    'Poland',
-    'małopolskie',
-    'Kraków',
-    'Kraków',
-    'Kraków',
-    '30-638',
-    NULL,
-    '15',
-    '32',
-    NULL,
-    FALSE,
-    'URZĄD SKARBOWY KRAKÓW-PODGÓRZE (1210)',
-     -- DBA
-    CURRENT_TIMESTAMP,
-    CURRENT_TIMESTAMP
 );
 
 DROP TABLE IF EXISTS contractors;

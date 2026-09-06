@@ -5,15 +5,13 @@ import {nanoid} from "nanoid";
 import {AppContractor, AppContractorUpdate} from "../../types/contractors";
 
 let repo: Repository;
-function getRepo(env: Env): Repository {
-    return repo ??= new Repository(new D1Driver(env.D1));
-}
+const getRepo = (env: Env): Repository => repo ??= new Repository(new D1Driver(env.D1));
 
 export async function get(req: Request, env: Env): Promise<Response> {
     const appUser = await getAuthUser(req, env);
     const url = new URL(req.url);
     // Allow to fetch only owned contractors (except for superadmin)
-    const filters: Record<string, any> = appUser.tier === 0 ? {} : { ownerId: appUser.email };
+    const filters: Record<string, any> = appUser.tier === 0 ? {} : { ownerId: appUser.id };
     for (const [key, value] of url.searchParams.entries()) {
         filters[key] = value;
     }
@@ -30,7 +28,7 @@ export async function post(req: Request, env: Env): Promise<Response> {
     const payload = await req.json() as AppContractor;
     // Never allow client to control id, ownership, or creation/update timestamps
     const { id, createdAt, updatedAt, ...payloadData } = payload;
-    const record = { ...payloadData, id: nanoid(), ownerId: appUser.email, updatedAt: new Date().toISOString() };
+    const record = { ...payloadData, id: nanoid(), ownerId: appUser.id, updatedAt: new Date().toISOString() };
     try {
         await getRepo(env).save<AppContractor>("contractors", record);
         return Response.json({ success: true, id: record.id }, { status: 201 });
@@ -49,7 +47,7 @@ export async function put(req: Request, env: Env): Promise<Response> {
     const result = await getRepo(env).update<AppContractorUpdate>("contractors", {
         ...updatePayload,
         updatedAt: new Date().toISOString()
-    }, { id, ownerId: appUser.email });
+    }, { id, ownerId: appUser.id });
     if (result.changes === 0)
         return Response.json({ success: false, error: "Contractors not found", id: id }, { status: 404 });
     return Response.json({ success: true, changes: result.changes, id: id }, { status: result.success ? 200 : 400 });
@@ -63,7 +61,7 @@ export async function del(req: Request, env: Env): Promise<Response> {
     for (const [key, value] of url.searchParams.entries()) {
         filters[key] = value;
     }
-    if (appUser.tier !== 0) filters.ownerId = appUser.email;
+    if (appUser.tier !== 0) filters.ownerId = appUser.id;
     const result = await getRepo(env).delete("contractors", filters);
     if (result.changes === 0)
         return Response.json({ success: false, error: "Contractor not found", filters }, { status: 404 });

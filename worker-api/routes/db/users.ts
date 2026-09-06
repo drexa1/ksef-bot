@@ -4,9 +4,7 @@ import {corsHeaders, getAuthUser} from "../../auth";
 import {AppUser, AppUserUpdate} from "../../types/users";
 
 let repo: Repository;
-function getRepo(env: Env): Repository {
-    return repo ??= new Repository(new D1Driver(env.D1));
-}
+const getRepo = (env: Env): Repository => repo ??= new Repository(new D1Driver(env.D1));
 
 export async function get(req: Request, env: Env): Promise<Response> {
     const appUser = await getAuthUser(req, env);
@@ -26,21 +24,22 @@ export async function get(req: Request, env: Env): Promise<Response> {
     return Response.json(rows, { status: 200 });
 }
 
+/**
+ * 🐣 User creation triggered by the onboarding flow.
+ */
 export async function post(req: Request, env: Env): Promise<Response> {
-    const appUser = await getAuthUser(req, env);
-    // Allow to create users only to superadmin
-    if (appUser.tier !== 0)
-        return new Response("Unauthorized", { status: 401, headers: corsHeaders });
+    // 👀 At this point there is no user to verify yet
+    // REVIEW: is there any security check that we can do at this point, other that the auth? what can create users?
     // Never allow client to control id, ownership, or creation/update timestamps
     const payload = await req.json() as AppUser;
     const { createdAt, updatedAt, ...payloadData } = payload;
     const record = { ...payloadData, tier: 1, updatedAt: new Date().toISOString() };
     try {
         await getRepo(env).save<AppUser>("users", record);
-        return Response.json({ success: true, email: record.email }, { status: 201 });
+        return Response.json({ success: true, id: record.id }, { status: 201 });
     } catch (error) {
         if (String(error).includes("UNIQUE constraint failed"))
-            return Response.json({ success: false, error: "User already exists", email: record.email }, { status: 409 });
+            return Response.json({ success: false, error: "User already exists", id: record.id }, { status: 409 });
         throw error;
     }
 }
@@ -52,14 +51,14 @@ export async function put(req: Request, env: Env): Promise<Response> {
         return new Response("Unauthorized", { status: 401, headers: corsHeaders });
     const payload = await req.json() as AppUser;
     // Never allow client to change id, or creation/update timestamp
-    const { email, apiKey, tier, createdAt, updatedAt, ...updatePayload } = payload;
+    const { id, apiKey, tier, createdAt, updatedAt, ...updatePayload } = payload;
     const result = await getRepo(env).update<AppUserUpdate>("users", {
         ...updatePayload,
         updatedAt: new Date().toISOString()
-    }, { email: email });
+    }, { id: id });
     if (result.changes === 0)
-        return Response.json({ success: false, error: "User not found", email: email }, { status: 404 });
-    return Response.json({ success: true, changes: result.changes, email: email }, { status: result.success ? 200 : 400 });
+        return Response.json({ success: false, error: "User not found", id: id }, { status: 404 });
+    return Response.json({ success: true, changes: result.changes, id: id }, { status: result.success ? 200 : 400 });
 }
 
 export async function del(req: Request, env: Env): Promise<Response> {

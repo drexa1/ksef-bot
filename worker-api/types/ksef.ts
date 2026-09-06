@@ -37,3 +37,17 @@ export type KsefInvoiceMetadata = {
     issueDate?: string
     grossAmount?: number
 };
+
+export interface SubmissionStatus {
+    ordinalNumber: number
+    invoiceNumber: string
+    ksefNumber: string
+    referenceNumber: string
+    invoiceHash: string
+    acquisitionDate: string
+    invoicingDate: string
+    permanentStorageDate: string
+    upoDownloadUrl: string
+    upoDownloadUrlExpirationDate: string
+    invoicingMode: string
+}

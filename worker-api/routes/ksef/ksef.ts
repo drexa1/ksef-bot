@@ -6,9 +6,7 @@ import {AppUser} from "../../types/users";
 import {AppInvoice} from "../../types/invoices";
 
 let repo: Repository;
-function getRepo(env: Env): Repository {
-    return repo ??= new Repository(new D1Driver(env.D1));
-}
+const getRepo = (env: Env): Repository => repo ??= new Repository(new D1Driver(env.D1));
 
 export async function getKsefInvoices(req: Request, env: Env, subjectType: "Subject1" | "Subject2"): Promise<Response> {
     const appUser = await getAuthUser(req, env);

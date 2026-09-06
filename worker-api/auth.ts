@@ -4,9 +4,7 @@ import {AuthError} from "./types/auth";
 import {AppUser} from "./types/users";
 
 let repo: Repository;
-function getRepo(env: Env): Repository {
-    return repo ??= new Repository(new D1Driver(env.D1));
-}
+const getRepo = (env: Env): Repository => repo ??= new Repository(new D1Driver(env.D1));
 
 export const corsHeaders = {
     "Access-Control-Allow-Origin": "*",
@@ -28,14 +26,14 @@ export const withCors = ( res: Response) => {
 export async function auth(req: Request, env: Env): Promise<boolean> {
     const url = new URL(req.url);
     switch (url.pathname) {
-        // Public routes
+        //🔓 Public routes
         case "/":
         case "/openapi.json":
         case "/swagger":
         case "/docs":
         case "/health":
             return true;
-        // Protected routes
+        //🔒 Protected routes
         case "/whoami":
         case "/ksef/sales":
         case "/ksef/sales/sessions":
@@ -64,9 +62,12 @@ export async function auth(req: Request, env: Env): Promise<boolean> {
  */
 export async function getAuthUser(req: Request, env: Env): Promise<AppUser> {
     const whoamiResponse = await whoami(req, env);
-    const userId = await whoamiResponse.json();
-    const appUser = await getRepo(env).get<AppUser>("users", { email: userId });
-    // This should not happen, we have to enrol users for those who we give access to Cloudflare
+    const { userId, origin } = await whoamiResponse.json() as { userId: string, origin: "jwt" | "userId" };
+    // If it is directly connected via specific CF Zero Trust policy use email (or the policy method), otherwise find by PK
+    const appUser = origin === "jwt"
+        ? await getRepo(env).get<AppUser>("users", { email: userId })
+        : await getRepo(env).get<AppUser>("users", { id: userId });
+    //❌ This should never trigger, either have created a specific access policy in Zero Trust or either the client made it through
     if (!appUser) throw new AuthError("Authenticated user not found in app", 404, { userId });
     return appUser;
 }
@@ -75,18 +76,18 @@ export async function getAuthUser(req: Request, env: Env): Promise<AppUser> {
  * Get the Cloudflare trusted client user.
  */
 export async function whoami(req: Request, env: Env): Promise<Response> {
-    // For local development without ZeroTrust, return the admin user just to simplify testing...
+    //🐛 For local development without Zero Trust, return the admin user just to simplify testing...
     if (env.ENVIRONMENT === "dev") {
         const adminUser =  await getRepo(env).getAll<AppUser>("users", { tier: 0 });
-        return Response.json(adminUser[0].email);
+        return Response.json({ userId: adminUser[0].email, origin: "jwt" });
     }
-    // Zero trust logged user
+    //🛡️ CF Zero Trust logged user?
     const jwt = req.headers.get("Cf-Access-Jwt-Assertion");
-    // User identifier/email from client that made it through Zero Trust
+    //💻 User identifier|email from client (that made it through CF Zero Trust), or Zero Trust specific policy
     const userId = jwt ? decodeJWT(jwt).email : req.headers.get("X-User-Id");
     if (!userId) throw new AuthError("Unauthenticated user", 401);
     console.info("[Whoami] requester:", userId);
-    return Response.json(userId);
+    return Response.json({ userId: userId, origin: jwt ? "jwt" : "userId"});
 }
 
 function decodeJWT(jwt: string): { name: string, email: string } {

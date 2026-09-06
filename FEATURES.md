@@ -9,14 +9,14 @@
 - [x] Automated execution of invoicing
 - [x] Retrieve sales/purchases invoices from KSeF
 - [x] Minimal config effort and automatic retrieval of contractor details
-- [x] Cached KSeF records on Cloudflare ZeroTrust or local mode
+- [x] Cached KSeF records on Cloudflare Zero Trust or local mode
 - [ ] Interaction based on WhatsApp or terminal UI 
 - [ ] Automated compute and payment of taxes
 
 ### Features [investors]
 - [x] Modern codebase (TS/Rust)
 - [x] Cloudflare serverless backend
-- [x] Secured access behind CF ZeroTrust
+- [x] Secured access behind CF Zero Trust
 - [x] Defensive application design
 - [x] 100% coverage E2E tests
 - [ ] No Ai auditory

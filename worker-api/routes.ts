@@ -18,7 +18,6 @@ import {contractors as vatLbGET} from "./routes/gov/vat-lb";
 import {get as usersGET, post as usersPOST, put as usersPUT, del as usersDELETE} from "./routes/db/users";
 import {get as contractorsGET, post as contractorsPOST, put as contractorsPUT, del as contractorsDELETE} from "./routes/db/contractors";
 import {get as invoicesGET, post as invoicesPOST, put as invoicesPUT, del as invoicesDELETE} from "./routes/db/invoices";
-import {post as piiPOST} from "./routes/db/invoices-pii";
 import {get as taxesGET, simulate as simulateGET, post as taxesPOST, put as taxesPUT, del as taxesDELETE, } from "./routes/db/taxes";
 import {AuthError} from "./types/auth";
 
@@ -44,12 +43,12 @@ const withErrorHandling = (routes: Routes): Routes => {
 };
 
 export const routes: Record<string, Routes> =  {
-    // Don't use redirection at root, in this case we serve the static assets
-    "/openapi.json":        { GET: async (_, env) => Response.json(getOpenApiSpec(env)) },
+    //🔓 Don't use redirection for root, we serve the static assets
+    "/openapi.json":        { GET: async () => Response.json(getOpenApiSpec) },
     "/swagger":             { GET: async () => new Response(swaggerHtml, { headers: { "Content-Type": "text/html" }}) },
-    "/docs":                { GET: async () => new Response(scalarHtml, { headers: { "Content-Type": "text/html" }}) },
+    "/docs":                { GET: async () => new Response(scalarHtml,  { headers: { "Content-Type": "text/html" }}) },
     "/health":              { GET: healthGET },
-    // Requiring authentication
+    //🔒 Requiring authentication
     "/whoami":               withErrorHandling({ GET: whoamiGET }),
     "/ksef/sales":           withErrorHandling({ GET: salesGET, POST: salesPOST }),
     "/ksef/sales/status":    withErrorHandling({ GET: invoiceStatusGET }),
@@ -63,7 +62,6 @@ export const routes: Record<string, Routes> =  {
     "/app/users":            withErrorHandling({ GET: usersGET, POST: usersPOST, PUT: usersPUT, DELETE: usersDELETE }),
     "/app/contractors":      withErrorHandling({ GET: contractorsGET, POST: contractorsPOST, PUT: contractorsPUT, DELETE: contractorsDELETE }),
     "/app/invoices":         withErrorHandling({ GET: invoicesGET, POST: invoicesPOST, PUT: invoicesPUT, DELETE: invoicesDELETE }),
-    "/app/invoices/pii":     withErrorHandling({ POST: piiPOST }),
     "/app/taxes/simulate":   withErrorHandling({ GET: simulateGET }),
     "/app/taxes":            withErrorHandling({ GET: taxesGET, POST: taxesPOST, PUT: taxesPUT, DELETE: taxesDELETE }),
 };

@@ -6,9 +6,7 @@ import {AppTaxRecord, AppTaxRecordDb, TaxRecordObligations} from "../../types/ta
 import {AppUser} from "../../types/users";
 
 let repo: Repository;
-function getRepo(env: Env): Repository {
-    return repo ??= new Repository(new D1Driver(env.D1));
-}
+const getRepo = (env: Env): Repository => repo ??= new Repository(new D1Driver(env.D1));
 
 export async function get(req: Request, env: Env): Promise<Response> {
     const appUser = await getAuthUser(req, env);
@@ -22,7 +20,7 @@ export async function get(req: Request, env: Env): Promise<Response> {
     if (from && to && (isNaN(from.getTime()) || isNaN(to.getTime()) || from > to))
         return Response.json({ success: false, error: "Invalid date parameters" }, { status: 400 });
     // Allow to fetch only owned tax records (except for superadmin)
-    const filters = appUser.tier === 0 ? {} : { ownerId: appUser.email };
+    const filters = appUser.tier === 0 ? {} : { ownerId: appUser.id };
     const rows = from && to
         ? await getRepo(env).get<AppTaxRecordDb>("taxes", { from: from.toISOString(), to: to.toISOString(), ...filters })
         : await getRepo(env).getAll<AppTaxRecordDb>("taxes", filters);
@@ -72,7 +70,7 @@ export async function post(req: Request, env: Env): Promise<Response> {
         ...payloadData,
         from: from.toISOString(),
         to: to.toISOString(),
-        ownerId: appUser.email,
+        ownerId: appUser.id,
         vatPercentage: obligations.vatPercentage,
         vatAmount: obligations.vatAmount,
         netBeforeObligations: obligations.netBeforeObligations,
@@ -107,7 +105,7 @@ async function computeObligations(env: Env, appUser: AppUser, taxRecord: AppTaxR
     const healthInsuranceBase = taxRecord.healthInsuranceBase ?? env.DEFAULT_HEALTH_INSURANCE_BASE;
     const healthInsuranceRate = taxRecord.healthInsuranceRate ?? env.DEFAULT_HEALTH_INSURANCE_RATE;
     const healthContribution = Number((healthInsuranceBase * healthInsuranceRate / 100).toFixed(2));
-    // Puchases deductions
+    // Purchases deductions
     const purchasesInvoices = env.TEST_MODE ? [] : await fetchKsefInvoices(env, appUser, "Subject2", from, to);
     const purchasesSummary = purchasesInvoices.map((invoice) => ({
         InvoiceNumber: invoice.InvoiceBody?.InvoiceNumber,
@@ -144,7 +142,7 @@ export async function put(req: Request, env: Env): Promise<Response> {
         from: from.toISOString(),
         to: to.toISOString(),
         updatedAt: new Date().toISOString()
-    }, { ownerId: appUser.email });
+    }, { ownerId: appUser.id });
     if (result.changes === 0)
         return Response.json({ success: false, error: "Tax record not found", from: from, to: to }, { status: 404 });
     return Response.json({ success: true, changes: result.changes, from: from, to: to }, { status: result.success ? 200 : 400 });
@@ -160,7 +158,7 @@ export async function del(req: Request, env: Env): Promise<Response> {
     if (isNaN(from.getTime()) || isNaN(to.getTime()) || from > to)
         return Response.json({ success: false, error: "Invalid date parameters" }, { status: 400 });
     // Allow to delete only owned tax records (except for superadmin)
-    const filters = appUser.tier === 0 ? {} : { ownerId: appUser.email };
+    const filters = appUser.tier === 0 ? {} : { ownerId: appUser.id };
     const result = await getRepo(env).delete("taxes", { from: from.toISOString(), to: to.toISOString(), ...filters });
     if (result.changes === 0)
         return Response.json({ success: false, error: "Tax records not found", from: from, to: to }, { status: 404 });

@@ -1,16 +1,4 @@
-export interface SubmissionStatus {
-    ordinalNumber: number
-    invoiceNumber: string
-    ksefNumber: string
-    referenceNumber: string
-    invoiceHash: string
-    acquisitionDate: string
-    invoicingDate: string
-    permanentStorageDate: string
-    upoDownloadUrl: string
-    upoDownloadUrlExpirationDate: string
-    invoicingMode: string
-}
+import {SubmissionStatus} from "../../worker-api/types/ksef";
 
 export async function submitInvoice(xmlContent: string, notes: string): Promise<{ sessionReferenceNumber: string, invoiceReferenceNumber: string }> {
     const url = `${import.meta.env.VITE_WORKER_URL}/app/invoices`;

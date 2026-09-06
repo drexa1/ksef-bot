@@ -10,15 +10,13 @@ import {dtoFromAliases} from "../../dto/avro";
 import {nanoid} from "nanoid";
 
 let repo: Repository;
-function getRepo(env: Env): Repository {
-    return repo ??= new Repository(new D1Driver(env.D1));
-}
+const getRepo = (env: Env): Repository => repo ??= new Repository(new D1Driver(env.D1));
 
 export async function get(req: Request, env: Env): Promise<Response> {
     const appUser = await getAuthUser(req, env);
     const url = new URL(req.url);
     // Allow to fetch only owned invoices (except for superadmin)
-    const filters: Record<string, any> = appUser.tier === 0 ? {} : { ownerId: appUser.email };
+    const filters: Record<string, any> = appUser.tier === 0 ? {} : { ownerId: appUser.id };
     for (const [key, value] of url.searchParams.entries()) {
         filters[key] = value;
     }
@@ -62,7 +60,7 @@ export async function del(req: Request, env: Env): Promise<Response> {
     for (const [key, value] of url.searchParams.entries()) {
         filters[key] = value;
     }
-    if (appUser.tier !== 0) filters.ownerId = appUser.email;
+    if (appUser.tier !== 0) filters.ownerId = appUser.id;
     const result = await getRepo(env).delete("invoices", filters);
     if (result.changes === 0)
         return Response.json({ success: false, error: "Invoices not found", filters }, { status: 404 });
@@ -85,7 +83,7 @@ export const xmlParser = new XMLParser({
 export async function invoiceFromXml(
     env: Env,
     xmlContent: string,
-    authUser: AppUser,
+    appUser: AppUser,
     type: "sales" | "purchase",
     notes?: string
 ): Promise<AppInvoice & { ownerId: string }> {
@@ -95,12 +93,12 @@ export async function invoiceFromXml(
     const ksefInvoice = dtoFromAliases(invoiceXml, ksefInvoiceAvroSchema);
     return {
         id: ksefInvoice.InvoiceBody.InvoiceNumber,
-        ownerId: authUser.email,
+        ownerId: appUser.id,
         type: type,
         // Only auto create customers for sales invoices
         ...(type === "sales" && {
             customerId: await getOrCreateCustomer(env, {
-                ownerId: authUser.email,
+                ownerId: appUser.id,
                 name: ksefInvoice.Buyer.IdentificationData.Name,
                 nip: ksefInvoice.Buyer.IdentificationData.NIP,
                 countryCode: ksefInvoice.Buyer.Address.CountryCode,
@@ -141,12 +139,12 @@ async function getOrCreateCustomer(env: Env, customerParts: {
     return customer.id!;
 }
 
-function getCustomerIdentifier(customerParts: KsefIdentifiable): { idField: "nip" | "pesel" | "regon", idValue: string } {
-    if (customerParts.nip)
-        return { idField: "nip", idValue: customerParts.nip };
-    if (customerParts.pesel)
-        return { idField: "pesel", idValue: customerParts.pesel };
-    if (customerParts.regon)
-        return { idField: "regon", idValue: customerParts.regon };
-    throw new Error("Customer with no supported fiscal identifier");
+function getCustomerIdentifier(customerId: KsefIdentifiable): { idField: "nip" | "pesel" | "regon", idValue: string } {
+    if (customerId.nip)
+        return { idField: "nip", idValue: customerId.nip };
+    if (customerId.pesel)
+        return { idField: "pesel", idValue: customerId.pesel };
+    if (customerId.regon)
+        return { idField: "regon", idValue: customerId.regon };
+    throw new Error("Customer without supported identifier");
 }

@@ -1,7 +1,7 @@
 use inquire::DateSelect;
 use std::env::var;
 use strum::{Display};
-use crate::client_id;
+use crate::{client_id, client_secret};
 
 #[derive(Clone, Display)]
 pub enum InvoiceType {
@@ -51,9 +51,9 @@ async fn list_invoices(endpoint: &InvoiceType) -> anyhow::Result<Vec<serde_json:
         .get(format!("{}/ksef/{endpoint}", var("CF_WORKER_URL")?))
         .query(&[("from", from.format("%Y/%m/%d").to_string()), ("to", to.format("%Y/%m/%d").to_string())])
         .header("CF-Access-Client-Id",  client_id!())
-        .header("CF-Access-Client-Secret", var("CF_ACCESS_CLIENT_SECRET")?)
-        .header("X-API-Key", var("APP_API_KEY")?)
-        .header("X-User-Id", var("APP_USER_ID")?)
+        .header("CF-Access-Client-Secret", client_secret!())
+        .header("X-API-Key", var("APP_API_KEY")?)  // FIXME: this should be available from logged user
+        .header("X-User-Id", var("APP_USER_ID")?)  // FIXME: this should be available from logged user
         .header("Accept", "application/json")
         .send().await?.json().await?;
     if json["success"].as_bool() != Some(true) {

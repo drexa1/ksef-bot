@@ -1,6 +1,6 @@
 import {AppUser} from "../../worker-api/types/users";
 
-function preconnect() {
+export function preconnect() {
     const link = document.createElement("link");
     link.rel = "preconnect";
     link.href = new URL(import.meta.env.VITE_WORKER_URL).origin;
@@ -8,8 +8,18 @@ function preconnect() {
     console.info("Connected to worker");
 }
 
+export async function whoAmI(): Promise<{ userId: string, origin: "jwt" | "userId" }> {
+    const url = `${import.meta.env.VITE_WORKER_URL}/whoami`;
+    const response = await fetch(url, {
+        method: "GET",
+        headers: { "Content-Type": "application/json", "X-API-Key": import.meta.env.VITE_API_KEY }
+    });
+    if (!response.ok)
+        throw new Error(`Failed to fetch whoami: ${response.status}`);
+    return await response.json();
+}
+
 export async function loadUserProfile(userId: string): Promise<AppUser> {
-    preconnect();
     const url = `${import.meta.env.VITE_WORKER_URL}/app/users?email=${userId}`;
     const response = await fetch(url, {
         method: "GET",

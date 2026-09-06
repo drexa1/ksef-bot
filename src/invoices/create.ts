@@ -2,7 +2,7 @@ import {getCurrentLocation} from "../location";
 import {CustomerUI, loadCustomers} from "../api/contractors";
 import {generateInvoiceXml} from "./generateXml";
 import {clearValidationErrors, updateFormError, validateInvoiceForm} from "./validate";
-import {loadUserProfile} from "../api/users";
+import {loadUserProfile, preconnect, whoAmI} from "../api/users";
 import {submitInvoice, downloadReceipt} from "../api/ksef";
 import {AppUser} from "../../worker-api/types/users";
 
@@ -237,7 +237,8 @@ function initPositions(userProfile: AppUser): void {
                 calculatePositionLine(row);
         }
     });
-    addPosition();
+    initAddPosition();
+    document.querySelectorAll(".item-row").forEach((row) => calculatePositionLine(row));
 }
 
 /// Calculate net, VAT and gross per invoice position
@@ -295,7 +296,7 @@ function calculatePositionsTotals(): void {
 }
 
 /// Add position handler
-function addPosition() {
+function initAddPosition() {
     document.getElementById("addItem")!.addEventListener("click", () => {
         const tbody = document.getElementById("itemsBody")!;
         const firstRow = tbody.querySelector(".item-row")!;
@@ -553,11 +554,12 @@ function getInvoiceFilename() {
 // ---------------------------------------------------------------------------------------------------------------------
 
 async function initNew() {
-    const userProfile = await loadUserProfile("drexa1@hotmail.com");
+    preconnect();
+    const authUser = await whoAmI();
+    const userProfile = await loadUserProfile(authUser.userId);
     await initInvoiceData();
     await initContractorData();
     initPositions(userProfile);
-    document.querySelectorAll(".item-row").forEach((row) => calculatePositionLine(row));
     void initPayment(userProfile);
     await initActions(userProfile);
 }

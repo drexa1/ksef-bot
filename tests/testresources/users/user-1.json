@@ -1,15 +1,4 @@
 {
-    "email": "user@mail.com",
-    "tier": 1,
-    "nip": "0123456789",
-    "firstName": "Test",
-    "lastName": "User",
-    "dateOfBirth": "1900-01-01",
-    "voivodeship": "małopolskie",
-    "county": "Kraków",
-    "commune": "Kraków",
-    "town": "Kraków",
-    "zipCode": "30-638",
-    "buildingNumber": "15",
-    "settlementType": "monthly"
+    "id": "0000000000",
+    "tier": 1
 }
