@@ -25,5 +25,7 @@ jobs:
         run: npm install
       - name: Database teardown
         run: npm run "⚠ db:prod:teardown"
-      - name: Database create
+      - name: Create database
         run: npm run "⚠ db:prod:create"
+      - name: Populate database
+        run: npm run "⚠ db:prod:populate"
