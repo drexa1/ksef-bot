@@ -54,6 +54,7 @@
 - [x] Retrieve contractor details programmatically REST tests  
 - [X] Retrieve contractor details programmatically bruno tests  
 - [x] Lowercase name and address from gov mappers  
+- [ ] Insert onboard data script  
 - [ ] First time frontend workflow  
 - [ ] CLI: list customers  
 - [ ] CLI: adapt sales/purchase invoices summary  
