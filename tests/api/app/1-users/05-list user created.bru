@@ -1,5 +1,5 @@
 get {
-    url: {{baseUrl}}/app/users?email={{userEmail}}
+    url: {{baseUrl}}/app/users?id={{userId}}
 }
 headers {
     Content-Type: application/json
@@ -8,6 +8,6 @@ headers {
 tests {
     test("List the recently created user", function() {
         console.info(res.body);
-        expect(res.body.email).to.equal(bru.getCollectionVar("userEmail"));
+        expect(res.body.id).to.equal(bru.getCollectionVar("userId"));
     })
 }

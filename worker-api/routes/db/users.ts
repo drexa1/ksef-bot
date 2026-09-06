@@ -30,9 +30,9 @@ export async function get(req: Request, env: Env): Promise<Response> {
 export async function post(req: Request, env: Env): Promise<Response> {
     // 👀 At this point there is no user to verify yet
     // REVIEW: is there any security check that we can do at this point, other that the auth? what can create users?
-    // Never allow client to control id, ownership, or creation/update timestamps
+    // Never allow client to control tier, apiKey, or creation/update timestamps
     const payload = await req.json() as AppUser;
-    const { createdAt, updatedAt, ...payloadData } = payload;
+    const { tier, apiKey, createdAt, updatedAt, ...payloadData } = payload;
     const record = { ...payloadData, tier: 1, updatedAt: new Date().toISOString() };
     try {
         await getRepo(env).save<AppUser>("users", record);
@@ -50,11 +50,10 @@ export async function put(req: Request, env: Env): Promise<Response> {
     if (appUser.tier !== 0)
         return new Response("Unauthorized", { status: 401, headers: corsHeaders });
     const payload = await req.json() as AppUser;
-    // Never allow client to change id, or creation/update timestamp
-    const { id, apiKey, tier, createdAt, updatedAt, ...updatePayload } = payload;
+    // Never allow client to change id, tier, apiKey or creation/update timestamp
+    const { id, tier, apiKey, createdAt, updatedAt, ...updatePayload } = payload;
     const result = await getRepo(env).update<AppUserUpdate>("users", {
-        ...updatePayload,
-        updatedAt: new Date().toISOString()
+        ...updatePayload, tier: 1, updatedAt: new Date().toISOString()
     }, { id: id });
     if (result.changes === 0)
         return Response.json({ success: false, error: "User not found", id: id }, { status: 404 });

@@ -1,5 +1,5 @@
 delete {
-    url: {{baseUrl}}/app/users?email={{userEmail}}
+    url: {{baseUrl}}/app/users?email={{userId}}
 }
 headers {
     Content-Type: application/json
@@ -7,6 +7,6 @@ headers {
 }
 tests {
     test("Delete a recently updated user should succeed", function() {
-        expect(res.body.email).to.equal(bru.getCollectionVar("userEmail"));
+        expect(res.body.id).to.equal(bru.getCollectionVar("userId"));
     })
 }

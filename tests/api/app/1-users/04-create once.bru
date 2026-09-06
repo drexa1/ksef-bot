@@ -16,5 +16,5 @@ tests {
     })
 }
 script:post-response {
-    bru.setCollectionVar("userEmail", res.body.email);
+    bru.setCollectionVar("userId", res.body.id);
 }

@@ -6,7 +6,7 @@ headers {
     X-API-Key: {{apiKey}}
 }
 script:pre-request {
-    req.setBody(JSON.stringify({ email: "missing", firstName: "nevermind" }));
+    req.setBody(JSON.stringify({ id: "missing", bankName: "nevermind" }));
 }
 tests {
     test("Update a missing user should fail", function() {

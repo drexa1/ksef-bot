@@ -1,5 +1,5 @@
 get {
-    url: {{baseUrl}}/app/users?email={{userEmail}}
+    url: {{baseUrl}}/app/users?email={{userId}}
 }
 headers {
     Content-Type: application/json
@@ -8,6 +8,6 @@ headers {
 tests {
     test("List a recently updated user should show the edition", function() {
         console.info(res.body);
-        expect(res.body.firstName).to.equal("edited");
+        expect(res.body.bankName).to.equal("edited");
     })
 }
