@@ -62,9 +62,9 @@ export async function auth(req: Request, env: Env): Promise<boolean> {
  */
 export async function getAuthUser(req: Request, env: Env): Promise<AppUser> {
     const whoamiResponse = await whoami(req, env);
-    const { userId, origin } = await whoamiResponse.json() as { userId: string, origin: "jwt" | "userId" };
+    const { userId, origin } = await whoamiResponse.json() as { userId: string, origin?: "Cf-Access-Jwt" };
     // If it is directly connected via specific CF Zero Trust policy use email (or the policy method), otherwise find by PK
-    const appUser = origin === "jwt"
+    const appUser = origin === "Cf-Access-Jwt"
         ? await getRepo(env).get<AppUser>("users", { email: userId })
         : await getRepo(env).get<AppUser>("users", { id: userId });
     //❌ This should never trigger, either have created a specific access policy in Zero Trust or either the client made it through
@@ -79,7 +79,7 @@ export async function whoami(req: Request, env: Env): Promise<Response> {
     //🐛 For local development without Zero Trust, return the admin user just to simplify testing...
     if (env.ENVIRONMENT === "dev") {
         const adminUser =  await getRepo(env).getAll<AppUser>("users", { tier: 0 });
-        return Response.json({ userId: adminUser[0].email, origin: "jwt" });
+        return Response.json({ userId: adminUser[0].email, origin: "Cf-Access-Jwt" });
     }
     //🛡️ CF Zero Trust logged user?
     const jwt = req.headers.get("Cf-Access-Jwt-Assertion");
@@ -87,7 +87,7 @@ export async function whoami(req: Request, env: Env): Promise<Response> {
     const userId = jwt ? decodeJWT(jwt).email : req.headers.get("X-User-Id");
     if (!userId) throw new AuthError("Unauthenticated user", 401);
     console.info("[Whoami] requester:", userId);
-    return Response.json({ userId: userId, origin: jwt ? "jwt" : "userId"});
+    return Response.json({ userId, ...(jwt ? { origin: "Cf-Access-Jwt" } : {}) });
 }
 
 function decodeJWT(jwt: string): { name: string, email: string } {
