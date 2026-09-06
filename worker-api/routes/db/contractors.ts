@@ -19,7 +19,7 @@ export async function get(req: Request, env: Env): Promise<Response> {
         ? await getRepo(env).get<AppContractor>("contractors", filters)
         : await getRepo(env).getAll<AppContractor>("contractors");
     if (!rows)
-        return Response.json({ success: false, error: "Customer not found", filters }, { status: 404 });
+        return Response.json({ success: false, error: "Contractor not found", filters }, { status: 404 });
     return Response.json(rows, { status: 200 });
 }
 
@@ -49,7 +49,7 @@ export async function put(req: Request, env: Env): Promise<Response> {
         updatedAt: new Date().toISOString()
     }, { id, ownerId: appUser.id });
     if (result.changes === 0)
-        return Response.json({ success: false, error: "Contractors not found", id: id }, { status: 404 });
+        return Response.json({ success: false, error: "Contractor not found", id: id }, { status: 404 });
     return Response.json({ success: true, changes: result.changes, id: id }, { status: result.success ? 200 : 400 });
 }
 

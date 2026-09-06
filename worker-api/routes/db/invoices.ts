@@ -24,7 +24,7 @@ export async function get(req: Request, env: Env): Promise<Response> {
         ? await getRepo(env).get<AppInvoice>("invoices", filters)
         : await getRepo(env).getAll<AppInvoice>("invoices");
     if (!rows)
-        return Response.json({ success: false, error: "Invoices not found", filters }, { status: 404 });
+        return Response.json({ success: false, error: "Invoice not found", filters }, { status: 404 });
     const result = Array.isArray(rows) ? rows.map(row => JSON.parse(row.jsonData)) : JSON.parse(rows.jsonData);
     return Response.json(result, { status: 200 });
 }
@@ -63,7 +63,7 @@ export async function del(req: Request, env: Env): Promise<Response> {
     if (appUser.tier !== 0) filters.ownerId = appUser.id;
     const result = await getRepo(env).delete("invoices", filters);
     if (result.changes === 0)
-        return Response.json({ success: false, error: "Invoices not found", filters }, { status: 404 });
+        return Response.json({ success: false, error: "Invoice not found", filters }, { status: 404 });
     return Response.json({ success: result.success, changes: result.changes, ...filters }, { status: 200 });
 }
 
@@ -97,7 +97,7 @@ export async function invoiceFromXml(
         type: type,
         // Only auto create customers for sales invoices
         ...(type === "sales" && {
-            customerId: await getOrCreateCustomer(env, {
+            customerId: await getOrCreateContractor(env, {
                 ownerId: appUser.id,
                 name: ksefInvoice.Buyer.IdentificationData.Name,
                 nip: ksefInvoice.Buyer.IdentificationData.NIP,
@@ -112,7 +112,7 @@ export async function invoiceFromXml(
     };
 }
 
-async function getOrCreateCustomer(env: Env, customerParts: {
+async function getOrCreateContractor(env: Env, contractorParts: {
     ownerId: string
     name: string
     nip?: string
@@ -121,30 +121,30 @@ async function getOrCreateCustomer(env: Env, customerParts: {
     countryCode?: string
     addressL1?: string
 }): Promise<string> {
-    const { idField, idValue } = getCustomerIdentifier(customerParts);
+    const { idField, idValue } = getContractorIdentifier(contractorParts);
     const existing = await getRepo(env).get<AppContractor>("contractors", { [idField]: idValue });
     if (existing) return existing.id!;
-    const customer: AppContractor = {
+    const contractor: AppContractor = {
         id: nanoid(),
-        ...({ ownerId: customerParts.ownerId }),
-        name: customerParts.name,
-        ...(customerParts.nip   && { nip:   customerParts.nip }),
-        ...(customerParts.pesel && { pesel: customerParts.pesel }),
-        ...(customerParts.regon && { regon: customerParts.regon }),
-        countryCode: customerParts.countryCode ?? "PL",
-        addressL1: customerParts.addressL1 ?? "",
+        ...({ ownerId: contractorParts.ownerId }),
+        name: contractorParts.name,
+        ...(contractorParts.nip   && { nip:   contractorParts.nip }),
+        ...(contractorParts.pesel && { pesel: contractorParts.pesel }),
+        ...(contractorParts.regon && { regon: contractorParts.regon }),
+        countryCode: contractorParts.countryCode ?? "PL",
+        addressL1: contractorParts.addressL1 ?? "",
         createdAt: new Date().toISOString(),
     };
-    await getRepo(env).save("customers", customer);
-    return customer.id!;
+    await getRepo(env).save("contractors", contractor);
+    return contractor.id!;
 }
 
-function getCustomerIdentifier(customerId: KsefIdentifiable): { idField: "nip" | "pesel" | "regon", idValue: string } {
-    if (customerId.nip)
-        return { idField: "nip", idValue: customerId.nip };
-    if (customerId.pesel)
-        return { idField: "pesel", idValue: customerId.pesel };
-    if (customerId.regon)
-        return { idField: "regon", idValue: customerId.regon };
-    throw new Error("Customer without supported identifier");
+function getContractorIdentifier(contractorId: KsefIdentifiable): { idField: "nip" | "pesel" | "regon", idValue: string } {
+    if (contractorId.nip)
+        return { idField: "nip", idValue: contractorId.nip };
+    if (contractorId.pesel)
+        return { idField: "pesel", idValue: contractorId.pesel };
+    if (contractorId.regon)
+        return { idField: "regon", idValue: contractorId.regon };
+    throw new Error("Contractor without supported identifier");
 }

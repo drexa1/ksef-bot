@@ -6,7 +6,7 @@ headers {
     X-API-Key: {{apiKey}}
 }
 script:pre-request {
-    req.setBody(JSON.stringify({ email: bru.getCollectionVar("userId"), bankName: "edited" }));
+    req.setBody(JSON.stringify({ id: bru.getCollectionVar("userId"), bankName: "edited" }));
 }
 tests {
     test("Update a recently created user should succeed", function() {
