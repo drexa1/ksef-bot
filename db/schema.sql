@@ -87,23 +87,6 @@ INSERT INTO users VALUES (
     CURRENT_TIMESTAMP
 );
 
-DROP TABLE IF EXISTS invoices;
-CREATE TABLE invoices (
-    id TEXT PRIMARY KEY,
-    -- Owner
-    ownerId TEXT NOT NULL REFERENCES users(email),
-    -- Parties
-    type TEXT NOT NULL CHECK (type IN ('sales', 'purchase')),
-    customerId TEXT REFERENCES customers(id),  -- Nullable if 'purchase'
-    -- Raw data
-    rawXml  TEXT NOT NULL,
-    jsonData TEXT NOT NULL CHECK (json_valid(jsonData)),
-    notes TEXT,
-    -- DBA
-    createdAt TEXT DEFAULT CURRENT_TIMESTAMP,
-    updatedAt TEXT
-);
-
 DROP TABLE IF EXISTS customers;
 CREATE TABLE customers (
     id TEXT PRIMARY KEY,
@@ -122,6 +105,23 @@ CREATE TABLE customers (
     -- Customer metadata
     localGovernmentUnit INTEGER,
     vatGroup INTEGER,
+    notes TEXT,
+    -- DBA
+    createdAt TEXT DEFAULT CURRENT_TIMESTAMP,
+    updatedAt TEXT
+);
+
+DROP TABLE IF EXISTS invoices;
+CREATE TABLE invoices (
+    id TEXT PRIMARY KEY,
+    -- Owner
+    ownerId TEXT NOT NULL REFERENCES users(email),
+    -- Parties
+    type TEXT NOT NULL CHECK (type IN ('sales', 'purchase')),
+    customerId TEXT REFERENCES customers(id),  -- Nullable if 'purchase'
+    -- Raw data
+    rawXml  TEXT NOT NULL,
+    jsonData TEXT NOT NULL CHECK (json_valid(jsonData)),
     notes TEXT,
     -- DBA
     createdAt TEXT DEFAULT CURRENT_TIMESTAMP,

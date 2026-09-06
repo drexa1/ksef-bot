@@ -9,4 +9,4 @@ target
 tests/api/collection.bru
 tests/testresources/ksef
 .dev.vars
-API_KEY
+API_KEYS

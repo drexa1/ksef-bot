@@ -4,19 +4,19 @@ compatibility_date = "2026-01-01"
 
 [vars]
 ENVIRONMENT = "cloudflare"
-# KSeF (National e-Invoicing System)
+# KSeF
 KSEF_URL = "https://api.ksef.mf.gov.pl/v2"
 KSEF_INVOICE_SCHEMA = "https://assets.local/schemas/KSeFInvoice.avsc"
 KSEF_MIN_TIMEOUT = 100
 KSEF_MAX_TIMEOUT = 3000
-# CEIDG (Central Register on Business Activity)
+# CEIDG
 CEIDG_URL = "https://dane.biznes.gov.pl/api/ceidg/v3"
 CEIDG_LOOKUP_SCHEMA = "https://assets.local/schemas/CEIDGLookup.avsc"
-# KRS (National Court Registry)
+# KRS
 KRS_SEARCH_URL = "https://wyszukiwarka-krs-api.ms.gov.pl"
 KRS_API_URL = "https://api-krs.ms.gov.pl"
 KRS_LOOKUP_SCHEMA = "https://assets.local/schemas/KRSLookup.avsc"
-# VAT payers whitelist
+# VAT whitelist
 VAT_LB_URL = "https://wl-api.mf.gov.pl/api/search/nip"
 VAT_LB_LOOKUP_SCHEMA = "https://assets.local/schemas/VATLBLookup.avsc"
 # Taxes
@@ -24,15 +24,14 @@ DEFAULT_VAT_PERCENTAGE = 23
 DEFAULT_TAX_RATE = 12
 DEFAULT_HEALTH_INSURANCE_BASE = 5537.18
 DEFAULT_HEALTH_INSURANCE_RATE = 9
-# ...Rest of required env coming from Cloudflare secrets
 
 [observability.logs]
 enabled = true
 invocation_logs = true
+
 [observability.traces]
 enabled = true
 
-# Deploy some of the static assets for the /docs
 [assets]
 binding = "assets"
 directory = "./dist"
