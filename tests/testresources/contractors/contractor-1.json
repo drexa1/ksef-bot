@@ -1,6 +1,6 @@
 {
   "name": "Api Smart Spółka Z Ograniczoną Odpowiedzialnością",
-  "NIP": "6252447933",
+  "nip": "6252447933",
   "addressL1": "Kraków, 30-390, Ul. Zawiła 65l",
   "localGovernmentUnit": 2,
   "vatGroup": 2,

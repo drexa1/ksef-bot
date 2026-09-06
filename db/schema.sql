@@ -30,7 +30,7 @@ DROP TABLE IF EXISTS contractors;
 CREATE TABLE contractors (
     id TEXT PRIMARY KEY,
     -- Owner
-    ownerId TEXT NOT NULL REFERENCES users(email),
+    ownerId TEXT NOT NULL REFERENCES users(id),
     -- Contractor data
     name TEXT NOT NULL,
     nip TEXT UNIQUE CHECK (length(nip) = 10 AND nip NOT GLOB '*[^0-9]*'),
@@ -54,7 +54,7 @@ DROP TABLE IF EXISTS invoices;
 CREATE TABLE invoices (
     id TEXT PRIMARY KEY,
     -- Owner
-    ownerId TEXT NOT NULL REFERENCES users(email),
+    ownerId TEXT NOT NULL REFERENCES users(id),
     -- Parties
     type TEXT NOT NULL CHECK (type IN ('sales', 'purchase')),
     customerId TEXT REFERENCES contractors(id),  -- Nullable if 'purchase'
@@ -72,7 +72,7 @@ CREATE TABLE taxes (
     "from" DATE,
     "to" DATE,
     -- Owner
-    ownerId TEXT NOT NULL REFERENCES users(email),
+    ownerId TEXT NOT NULL REFERENCES users(id),
     -- Tax record
     brutIncome REAL NOT NULL,
     -- VAT
