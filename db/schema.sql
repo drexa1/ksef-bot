@@ -6,20 +6,19 @@ CREATE TABLE users (
     tier INTEGER NOT NULL,
     -- KSeF integration
     ksefApiToken TEXT UNIQUE,
-    -- Banking integration
-    bankName TEXT,
-    bankApiToken TEXT UNIQUE,
     -- Invoicing defaults,
     defaultItemName TEXT,
     defaultHourlyRate INTEGER,
+    settlementType TEXT NOT NULL CHECK (settlementType IN ('monthly', 'quarterly')),
+    -- Banking integration
+    bankName TEXT,
+    bankAccountNumber TEXT CHECK (bankAccountNumber IS NULL OR (length(bankAccountNumber) = 26 AND bankAccountNumber NOT GLOB '*[^0-9]*')),
+    bankApiToken TEXT UNIQUE,
     -- Identification data
     nip TEXT NOT NULL CHECK (length(nip) = 10 AND nip NOT GLOB '*[^0-9]*'),
     regon TEXT CHECK (regon IS NULL OR (length(regon) = 9 AND regon NOT GLOB '*[^0-9]*')),
     bdo TEXT,  -- Number in the Waste Database. The information will appear on the invoices
-    firstName TEXT NOT NULL,
-    lastName TEXT NOT NULL,
-    dateOfBirth DATE NOT NULL CHECK (dateOfBirth GLOB '????-??-??' AND dateOfBirth >= '1900-01-01'),
-    companyName TEXT,
+    name TEXT,
     companyLogo BLOB,
     -- Address details
     country TEXT NOT NULL DEFAULT 'Poland',
@@ -33,10 +32,6 @@ CREATE TABLE users (
     apartmentNumber TEXT,
     phoneNumber TEXT,  -- The information will appear on the invoices
     displayEmailOnKsefInvoices BOOLEAN NOT NULL DEFAULT FALSE,
-    -- Billing data
-    settlementType TEXT NOT NULL CHECK (settlementType IN ('monthly', 'quarterly')),
-    cashMethod BOOLEAN NOT NULL DEFAULT FALSE,  -- Default billing of invoices - MK
-    bankAccountNumber TEXT CHECK (bankAccountNumber IS NULL OR (length(bankAccountNumber) = 26 AND bankAccountNumber NOT GLOB '*[^0-9]*')),
     taxOffice TEXT,  -- Name and code
     -- DBA
     createdAt TEXT DEFAULT CURRENT_TIMESTAMP,
@@ -51,19 +46,18 @@ INSERT INTO users VALUES (
     0,
     -- KSeF integration
     '20260804-EC-4716384000-AD6886D9B2-BB|nip-6751577878|ca23b48587d545ad8e7fed96420e4dbe6d78e7cf72844981ac702fe2aeb8a145',
+    -- Invoicing defaults,
+    'Usługi informatyczne',
+    160,
+    'monthly',
     -- Banking integration
     'PKO Bank Polski',
+    '80102028920000550210154088',
     NULL,
-     -- Invoicing defaults,
-    'Usługi informatyczne',
-160,
      -- Identification data
     '6751577878',
     NULL,
     NULL,
-    'Diego',
-    'Ruiz Barbero',
-    DATE('1983-07-16'),
     'Diego Ruiz Barbero Software Engineering & Data Science',
     NULL,
     'Poland',
@@ -77,10 +71,6 @@ INSERT INTO users VALUES (
     '32',
     NULL,
     FALSE,
-     -- Billing data
-    'monthly',
-    FALSE,
-    '80102028920000550210154088',
     'URZĄD SKARBOWY KRAKÓW-PODGÓRZE (1210)',
      -- DBA
     CURRENT_TIMESTAMP,
@@ -101,7 +91,7 @@ CREATE TABLE contractors (
     -- Addresses
     addressL1 TEXT NOT NULL,
     addressL2 TEXT,
-    countryCode TEXT DEFAULT 'PL',
+    countryCode TEXT NOT NULL DEFAULT 'PL',
     notes TEXT,
     -- JST/VAT group
     localGovernmentUnit INTEGER,
