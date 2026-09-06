@@ -2,7 +2,7 @@ import {Env} from "../../worker";
 import {D1Driver, Repository} from "../../repository/d1";
 import {XMLParser} from "fast-xml-parser";
 import {AppUser} from "../../types/users";
-import {AppCustomer} from "../../types/contractors";
+import {AppContractor} from "../../types/contractors";
 import {AppInvoice} from "../../types/invoices";
 import {KsefIdentifiable} from "../../types/ksef";
 import {getAuthUser} from "../../auth";
@@ -124,9 +124,9 @@ async function getOrCreateCustomer(env: Env, customerParts: {
     addressL1?: string
 }): Promise<string> {
     const { idField, idValue } = getCustomerIdentifier(customerParts);
-    const existing = await getRepo(env).get<AppCustomer>("customers", { [idField]: idValue });
+    const existing = await getRepo(env).get<AppContractor>("customers", { [idField]: idValue });
     if (existing) return existing.id!;
-    const customer: AppCustomer = {
+    const customer: AppContractor = {
         id: nanoid(),
         ...({ ownerId: customerParts.ownerId }),
         name: customerParts.name,

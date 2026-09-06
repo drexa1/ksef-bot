@@ -11,12 +11,12 @@ import {
     downloadReceipt as receiptGET
 } from "./routes/ksef/sales";
 import {get as purchaseGET} from "./routes/ksef/purchases";
-import {contractor as contractorGET} from "./routes/gov/contractors";
-import {contractor as ceidgGET} from "./routes/gov/ceidg";
-import {contractor as krsGET} from "./routes/gov/krs";
-import {contractor as vatLbGET} from "./routes/gov/vat-lb";
+import {contractors as govContractorsGET} from "./routes/gov/contractors";
+import {contractors as ceidgGET} from "./routes/gov/ceidg";
+import {contractors as krsGET} from "./routes/gov/krs";
+import {contractors as vatLbGET} from "./routes/gov/vat-lb";
 import {get as usersGET, post as usersPOST, put as usersPUT, del as usersDELETE} from "./routes/db/users";
-import {get as customersGET, post as customersPOST, put as customersPUT, del as customersDELETE} from "./routes/db/customers";
+import {get as contractorsGET, post as contractorsPOST, put as contractorsPUT, del as contractorsDELETE} from "./routes/db/contractors";
 import {get as invoicesGET, post as invoicesPOST, put as invoicesPUT, del as invoicesDELETE} from "./routes/db/invoices";
 import {post as piiPOST} from "./routes/db/invoices-pii";
 import {get as taxesGET, simulate as simulateGET, post as taxesPOST, put as taxesPUT, del as taxesDELETE, } from "./routes/db/taxes";
@@ -56,12 +56,12 @@ export const routes: Record<string, Routes> =  {
     "/ksef/sales/sessions":  withErrorHandling({ GET: sessionsGET }),
     "/ksef/sales/receipt":   withErrorHandling({ GET: receiptGET }),
     "/ksef/purchases":       withErrorHandling({ GET: purchaseGET }),
-    "/gov/contractors":     withErrorHandling({ GET: contractorGET }),
+    "/gov/contractors":      withErrorHandling({ GET: govContractorsGET }),
     "/gov/ceidg":            withErrorHandling({ GET: ceidgGET }),
     "/gov/krs":              withErrorHandling({ GET: krsGET }),
     "/gov/vat-lb":           withErrorHandling({ GET: vatLbGET }),
     "/app/users":            withErrorHandling({ GET: usersGET, POST: usersPOST, PUT: usersPUT, DELETE: usersDELETE }),
-    "/app/customers":        withErrorHandling({ GET: customersGET, POST: customersPOST, PUT: customersPUT, DELETE: customersDELETE }),
+    "/app/contractors":      withErrorHandling({ GET: contractorsGET, POST: contractorsPOST, PUT: contractorsPUT, DELETE: contractorsDELETE }),
     "/app/invoices":         withErrorHandling({ GET: invoicesGET, POST: invoicesPOST, PUT: invoicesPUT, DELETE: invoicesDELETE }),
     "/app/invoices/pii":     withErrorHandling({ POST: piiPOST }),
     "/app/taxes/simulate":   withErrorHandling({ GET: simulateGET }),

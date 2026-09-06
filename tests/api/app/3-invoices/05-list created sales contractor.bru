@@ -1,0 +1,13 @@
+get {
+    url: {{baseUrl}}/app/contractors?nip={{salesInvoiceContractorId}}
+}
+headers {
+    Content-Type: application/json
+    X-API-Key: {{apiKey}}
+}
+tests {
+    test("List the recently created buyer contractor", function() {
+        console.info(res.body);
+        expect(res.body.nip).to.equal(bru.getCollectionVar("salesInvoiceContractorId"));
+    })
+}

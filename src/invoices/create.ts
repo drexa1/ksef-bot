@@ -1,5 +1,5 @@
 import {getCurrentLocation} from "../location";
-import {CustomerUI, loadCustomers} from "../api/customers";
+import {CustomerUI, loadCustomers} from "../api/contractors";
 import {generateInvoiceXml} from "./generateXml";
 import {clearValidationErrors, updateFormError, validateInvoiceForm} from "./validate";
 import {loadUserProfile} from "../api/users";

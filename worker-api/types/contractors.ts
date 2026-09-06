@@ -1,6 +1,6 @@
-export type AppCustomerUpdate = Partial<Omit<AppCustomer, "id">>;
+export type AppContractorUpdate = Partial<Omit<AppContractor, "id">>;
 
-export type AppCustomer = {
+export type AppContractor = {
     id: string
     // Customer data
     name: string

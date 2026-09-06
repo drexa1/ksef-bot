@@ -1,8 +1,8 @@
 import {Env} from "../../worker";
 import {D1Driver, Repository} from "../../repository/d1";
-import {AppCustomer, AppCustomerUpdate} from "../../types/contractors";
 import {getAuthUser} from "../../auth";
 import {nanoid} from "nanoid";
+import {AppContractor, AppContractorUpdate} from "../../types/contractors";
 
 let repo: Repository;
 function getRepo(env: Env): Repository {
@@ -18,8 +18,8 @@ export async function get(req: Request, env: Env): Promise<Response> {
         filters[key] = value;
     }
     const rows = Object.keys(filters).length
-        ? await getRepo(env).get<AppCustomer>("customers", filters)
-        : await getRepo(env).getAll<AppCustomer>("customers");
+        ? await getRepo(env).get<AppContractor>("customers", filters)
+        : await getRepo(env).getAll<AppContractor>("customers");
     if (!rows)
         return Response.json({ success: false, error: "Customer not found", filters }, { status: 404 });
     return Response.json(rows, { status: 200 });
@@ -27,12 +27,12 @@ export async function get(req: Request, env: Env): Promise<Response> {
 
 export async function post(req: Request, env: Env): Promise<Response> {
     const appUser = await getAuthUser(req, env);
-    const payload = await req.json() as AppCustomer;
+    const payload = await req.json() as AppContractor;
     // Never allow client to control id, ownership, or creation/update timestamps
     const { id, createdAt, updatedAt, ...payloadData } = payload;
     const record = { ...payloadData, id: nanoid(), ownerId: appUser.email, updatedAt: new Date().toISOString() };
     try {
-        await getRepo(env).save<AppCustomer>("customers", record);
+        await getRepo(env).save<AppContractor>("customers", record);
         return Response.json({ success: true, id: record.id }, { status: 201 });
     } catch (error) {
         if (String(error).includes("UNIQUE constraint failed"))
@@ -43,10 +43,10 @@ export async function post(req: Request, env: Env): Promise<Response> {
 
 export async function put(req: Request, env: Env): Promise<Response> {
     const appUser = await getAuthUser(req, env);
-    const payload = await req.json() as AppCustomer & { ownerId?: string };
+    const payload = await req.json() as AppContractor & { ownerId?: string };
     // Never allow client to change id, ownership, or creation/update timestamp
     const { id, ownerId, createdAt, updatedAt, ...updatePayload } = payload;
-    const result = await getRepo(env).update<AppCustomerUpdate>("customers", {
+    const result = await getRepo(env).update<AppContractorUpdate>("customers", {
         ...updatePayload,
         updatedAt: new Date().toISOString()
     }, { id, ownerId: appUser.email });

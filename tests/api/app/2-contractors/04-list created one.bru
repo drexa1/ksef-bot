@@ -1,13 +1,13 @@
 get {
-    url: {{baseUrl}}/app/customers?id={{customer1Id}}
+    url: {{baseUrl}}/app/contractors?id={{contractor1Id}}
 }
 headers {
     Content-Type: application/json
     X-API-Key: {{apiKey}}
 }
 tests {
-    test("List the recently created customer one", function() {
+    test("List the recently created contractor1", function() {
         console.info(res.body);
-        expect(res.body.id).to.equal(bru.getCollectionVar("customer1Id"));
+        expect(res.body.id).to.equal(bru.getCollectionVar("contractor1Id"));
     })
 }

@@ -1,5 +1,5 @@
 /// <reference types="vite/client"/>
-import {AppCustomer} from "../../worker-api/types/contractors";
+import {AppContractor} from "../../worker-api/types/contractors";
 
 /// UI model
 export interface CustomerUI {
@@ -21,14 +21,14 @@ export async function loadCustomers(): Promise<CustomerUI[]> {
     });
     if (!response.ok)
         throw new Error(`Failed to fetch existing contractors: ${response.status}`);
-    const customers: AppCustomer[] = await response.json();
+    const customers: AppContractor[] = await response.json();
     customers.length
         ? console.info(`${customers.length} contractor(s) found in the DB`)
         : console.warn(`No contractors found in the DB`);
-    return customers.map(customerToUI);
+    return customers.map(contractorToUI);
 }
 
-function customerToUI(customer: AppCustomer): CustomerUI {
+function contractorToUI(customer: AppContractor): CustomerUI {
     const [town = "", postalCode = "", streetAndBuilding = ""] = customer.addressL1.split(", ");
     const match = streetAndBuilding.match(/^(.+?)\s+(\S+)$/);
     return {

@@ -90,8 +90,8 @@ INSERT INTO users VALUES (
     CURRENT_TIMESTAMP
 );
 
-DROP TABLE IF EXISTS customers;
-CREATE TABLE customers (
+DROP TABLE IF EXISTS contractors;
+CREATE TABLE contractors (
     id TEXT PRIMARY KEY,
     -- Owner
     ownerId TEXT NOT NULL REFERENCES users(email),
@@ -107,8 +107,8 @@ CREATE TABLE customers (
     countryCode TEXT DEFAULT 'PL',
     notes TEXT,
     -- JST/VAT group
-    localGovernmentUnit BOOLEAN,
-    vatGroup BOOLEAN,
+    localGovernmentUnit INTEGER,
+    vatGroup INTEGER,
     -- DBA
     createdAt TEXT DEFAULT CURRENT_TIMESTAMP,
     updatedAt TEXT
@@ -121,7 +121,7 @@ CREATE TABLE invoices (
     ownerId TEXT NOT NULL REFERENCES users(email),
     -- Parties
     type TEXT NOT NULL CHECK (type IN ('sales', 'purchase')),
-    customerId TEXT REFERENCES customers(id),  -- Nullable if 'purchase'
+    customerId TEXT REFERENCES contractors(id),  -- Nullable if 'purchase'
     -- Raw data
     rawXml  TEXT NOT NULL,
     jsonData TEXT NOT NULL CHECK (json_valid(jsonData)),

@@ -1,0 +1,14 @@
+#@no-redirect
+@baseUrl = http://localhost:3001
+@apiKey = test
+@contractorId = JP4t96R8FD___z60VX84r
+
+### Delete non-existing contractors
+DELETE {{baseUrl}}/app/contractors?id=missing
+Content-Type: application/json
+X-API-Key: {{apiKey}}
+
+### Delete existing contractors
+DELETE {{baseUrl}}/app/contractors?id={{contractorId}}
+Content-Type: application/json
+X-API-Key: {{apiKey}}

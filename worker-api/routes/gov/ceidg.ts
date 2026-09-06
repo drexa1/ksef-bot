@@ -4,7 +4,7 @@ import {titleCase} from "./contractors";
 import {KsefContractor} from "../../types/gov";
 
 // noinspection JSUnusedGlobalSymbols
-export async function contractor(req: Request, env: Env): Promise<Response> {
+export async function contractors(req: Request, env: Env): Promise<Response> {
     const url = new URL(req.url);
     const nip = url.searchParams.get("nip");
     if (!nip || !/^\d{10}$/.test(nip))

@@ -157,7 +157,7 @@ export const getOpenApiSpec = (env: Env) => ({
                     }
                 }
             },
-            Customer: {
+            Contractor: {
                 type: "object",
                 additionalProperties: false,
                 required: [
@@ -185,11 +185,6 @@ export const getOpenApiSpec = (env: Env) => ({
                         type: "string",
                         description: "In case none of the other identifiers are available."
                     },
-                    countryCode: {
-                        type: "string",
-                        default: "PL",
-                        description: "Two letter country code.",
-                    },
                     addressL1: {
                         type: "string",
                         description: "Primary address.",
@@ -197,6 +192,11 @@ export const getOpenApiSpec = (env: Env) => ({
                     addressL2: {
                         type: "string",
                         description: "Optional secondary address.",
+                    },
+                    countryCode: {
+                        type: "string",
+                        default: "PL",
+                        description: "Two letter country code.",
                     },
                     localGovernmentUnit: {
                         type: "integer",

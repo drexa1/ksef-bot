@@ -1,12 +1,12 @@
 delete {
-    url: {{baseUrl}}/app/customers?id={{customer1Id}}
+    url: {{baseUrl}}/app/contractors?id={{contractor1Id}}
 }
 headers {
     Content-Type: application/json
     X-API-Key: {{apiKey}}
 }
 tests {
-    test("Delete a recently updated customer should succeed", function() {
-        expect(res.body.id).to.equal(bru.getCollectionVar("customer1Id"));
+    test("Delete a recently updated contractor should succeed", function() {
+        expect(res.body.id).to.equal(bru.getCollectionVar("contractor1Id"));
     })
 }

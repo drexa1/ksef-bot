@@ -1,8 +1,7 @@
 use inquire::{Text};
 
 pub fn list_customers() -> anyhow::Result<()> {
-    println!("Fetching customers...");
-    println!("  [API] GET /customers");
+    println!("Fetching contractors...");
     println!("  [API] Response: 3 customers found.");
     println!();
     println!("  1. ACME Sp. z o.o.");
@@ -20,12 +19,12 @@ pub fn list_customers() -> anyhow::Result<()> {
 }
 
 pub fn create_customer() -> anyhow::Result<()> {
-    let name = Text::new("Customer name").with_placeholder("ACME Sp. z o.o.").prompt()?;
+    let name = Text::new("Contractor name").with_placeholder("ACME Sp. z o.o.").prompt()?;
     let nip = Text::new("NIP").with_placeholder("1234567890").prompt()?;
     let email = Text::new("Email").with_placeholder("billing@example.com").prompt()?;
     println!();
-    println!("  API Customer created successfully.");
-    println!("  Customer ID: dummy_001");
+    println!("  [API] contractor created successfully.");
+    println!("  Contractor ID: {}", "contractor001");
     let _ = (name, nip, email);
     Ok(())
 }

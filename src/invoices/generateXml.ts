@@ -26,7 +26,7 @@ export async function generateInvoiceXml(userProfile: AppUser, form: HTMLFormEle
     seller.querySelector("AdresL1")!.textContent = sellerAddress;
     seller.querySelector("KodKraju")!.textContent = "PL";
 
-    // Contractor
+    // Customer
     const customerName = form.querySelector<HTMLInputElement>("#contractorName")?.value.trim() ?? "";
     const customerNip = form.querySelector<HTMLInputElement>("#contractorNipInput")?.value.trim() ?? "";
     const customerTown = form.querySelector<HTMLInputElement>("#contractorTown")?.value.trim() ?? "";
