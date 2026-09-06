@@ -18,13 +18,14 @@
         "db:dev:teardown": "wrangler d1 execute ksef-bot --config wrangler.worker-api.toml --local --file=db/teardown.sql",
         "db:dev:create": "wrangler d1 execute ksef-bot --config wrangler.worker-api.toml --local --file=db/schema.sql",
         "db:dev:populate": "wrangler d1 execute ksef-bot --config wrangler.worker-api.toml --local --file=db/populate.sql",
+        "db:dev:recreate": "npm run db:dev:teardown && npm run db:dev:create && npm run db:dev:populate",
         "⚠ db:prod:teardown": "wrangler d1 execute ksef-bot --remote --file=db/teardown.sql",
         "⚠ db:prod:create": "wrangler d1 execute ksef-bot  --remote --file=db/schema.sql",
         "⚠ db:prod:populate": "wrangler d1 execute ksef-bot  --remote --file=db/populate.sql",
 
         "api:tests:wait": "wait-on http://localhost:3001 && npm run api:tests:bruno",
         "api:tests:bruno": "cd tests/api && bru run -r --env dev --sandbox dev",
-        "api:dev:tests": "npm run db:dev:teardown && npm run db:dev:create && concurrently -k npm:worker:dev:run npm:api:tests:wait",
+        "api:dev:tests": "npm run db:dev:recreate && concurrently -k npm:worker:dev:run npm:api:tests:wait",
         "api:ci:tests": "bash .github/scripts/api-tests-ci.sh",
 
         "client:dev:build": "vite build --mode development",

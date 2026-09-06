@@ -12,26 +12,3 @@ INSERT INTO users (id, email, phone, companyLogo, apiKey, tier, ksefApiToken, de
     'PKO Bank Polski',
     '80102028920000550210154088'
 );
-
--- Customer contractor
-INSERT INTO contractors (id, ownerId, name, NIP, addressL1, localGovernmentUnit, vatGroup, notes) VALUES (
-    'nanoid-customer-contractor',
-    '6751577878',
-    'Virtus Lab sp. z o.o.',
-    '5170312965',
-    'Kraków, 31-153, Szlak 49',
-    2,
-    2,
-    'buyer'
-);
-
--- User contractor
-INSERT INTO contractors (id, ownerId, name, NIP, addressL1, notes) VALUES (
-    'nanoid-user-contractor',
-    '6751577878',
-    'Diego Ruiz Barbero Software Engineering & Data Science',
-    '6751577878',
-    'Kraków, 30-638, 15/32',
-    'seller'
-);
-UPDATE users SET contractorId = 'nanoid-user-contractor' WHERE id == '6751577878';
