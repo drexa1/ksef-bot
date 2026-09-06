@@ -31,7 +31,6 @@ jobs:
         run: |
           echo "ENVIRONMENT=dev"                >> .dev.vars
           echo "TEST_MODE=true"                 >> .dev.vars
-          echo "API_KEY=${API_KEY}"             >> .dev.vars
           echo "CEIDG_API_KEY=${CEIDG_API_KEY}" >> .dev.vars
       - name: Run API collections
         run: npm run api:ci:tests
