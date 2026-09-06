@@ -12,8 +12,6 @@ CREATE TABLE users (
     -- Invoicing defaults,
     defaultItemName TEXT,
     defaultHourlyRate INTEGER,
-
-
     -- Identification data
     nip TEXT NOT NULL CHECK (length(nip) = 10 AND nip NOT GLOB '*[^0-9]*'),
     regon TEXT CHECK (regon IS NULL OR (length(regon) = 9 AND regon NOT GLOB '*[^0-9]*')),
@@ -35,7 +33,6 @@ CREATE TABLE users (
     apartmentNumber TEXT,
     phoneNumber TEXT,  -- The information will appear on the invoices
     displayEmailOnKsefInvoices BOOLEAN NOT NULL DEFAULT FALSE,
-
     -- Billing data
     settlementType TEXT NOT NULL CHECK (settlementType IN ('monthly', 'quarterly')),
     cashMethod BOOLEAN NOT NULL DEFAULT FALSE,  -- Default billing of invoices - MK
@@ -97,9 +94,9 @@ CREATE TABLE contractors (
     ownerId TEXT NOT NULL REFERENCES users(email),
     -- Contractor data
     name TEXT NOT NULL,
-    nip TEXT UNIQUE,
-    pesel TEXT UNIQUE,
-    regon TEXT UNIQUE,
+    nip TEXT UNIQUE CHECK (length(nip) = 10 AND nip NOT GLOB '*[^0-9]*'),
+    pesel TEXT UNIQUE CHECK (length(pesel) = 11 AND pesel NOT GLOB '*[^0-9]*'),
+    regon TEXT UNIQUE CHECK ((length(regon) = 9 OR length(regon) = 14) AND regon NOT GLOB '*[^0-9]*'),  -- standard: 9 digits, unit/subunit: 14 digits
     internalIdentifier TEXT UNIQUE,
     -- Addresses
     addressL1 TEXT NOT NULL,
