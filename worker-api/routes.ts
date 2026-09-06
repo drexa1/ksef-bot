@@ -44,7 +44,7 @@ const withErrorHandling = (routes: Routes): Routes => {
 
 export const routes: Record<string, Routes> =  {
     //🔓 Don't use redirection for root, we serve the static assets
-    "/openapi.json":        { GET: async () => Response.json(getOpenApiSpec) },
+    "/openapi.json":        { GET: async () => Response.json(getOpenApiSpec()) },
     "/swagger":             { GET: async () => new Response(swaggerHtml, { headers: { "Content-Type": "text/html" }}) },
     "/docs":                { GET: async () => new Response(scalarHtml,  { headers: { "Content-Type": "text/html" }}) },
     "/health":              { GET: healthGET },
