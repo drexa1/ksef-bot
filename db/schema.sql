@@ -12,6 +12,8 @@ CREATE TABLE users (
     -- Invoicing defaults,
     defaultItemName TEXT,
     defaultHourlyRate INTEGER,
+
+
     -- Identification data
     nip TEXT NOT NULL CHECK (length(nip) = 10 AND nip NOT GLOB '*[^0-9]*'),
     regon TEXT CHECK (regon IS NULL OR (length(regon) = 9 AND regon NOT GLOB '*[^0-9]*')),
@@ -33,17 +35,18 @@ CREATE TABLE users (
     apartmentNumber TEXT,
     phoneNumber TEXT,  -- The information will appear on the invoices
     displayEmailOnKsefInvoices BOOLEAN NOT NULL DEFAULT FALSE,
+
     -- Billing data
     settlementType TEXT NOT NULL CHECK (settlementType IN ('monthly', 'quarterly')),
     cashMethod BOOLEAN NOT NULL DEFAULT FALSE,  -- Default billing of invoices - MK
-    bankAccountNumber TEXT CHECK (bankAccountNumber IS NULL OR (length(bankAccountNumber) = 26 AND bankAccountNumber NOT GLOB '*[^0-9]*')),  -- The information will appear on the invoices
+    bankAccountNumber TEXT CHECK (bankAccountNumber IS NULL OR (length(bankAccountNumber) = 26 AND bankAccountNumber NOT GLOB '*[^0-9]*')),
     taxOffice TEXT,  -- Name and code
     -- DBA
     createdAt TEXT DEFAULT CURRENT_TIMESTAMP,
     updatedAt TEXT
 );
 -- Create admin user
--- TODO: delete this and create via frontend workflow
+-- TODO: delete this and create via 1st time workflow
 INSERT INTO users VALUES (
     'drexa1@hotmail.com',
     -- Application
@@ -98,14 +101,14 @@ CREATE TABLE customers (
     pesel TEXT UNIQUE,
     regon TEXT UNIQUE,
     internalIdentifier TEXT UNIQUE,
-    -- Address
-    countryCode TEXT DEFAULT 'PL',
+    -- Addresses
     addressL1 TEXT NOT NULL,
     addressL2 TEXT,
-    -- Customer metadata
-    localGovernmentUnit INTEGER,
-    vatGroup INTEGER,
+    countryCode TEXT DEFAULT 'PL',
     notes TEXT,
+    -- JST/VAT group
+    localGovernmentUnit BOOLEAN,
+    vatGroup BOOLEAN,
     -- DBA
     createdAt TEXT DEFAULT CURRENT_TIMESTAMP,
     updatedAt TEXT

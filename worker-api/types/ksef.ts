@@ -4,17 +4,10 @@ export type KsefIdentifiable = {
     regon?: string
 };
 
-export type KsefContractor = {
-    source: "CEIDG" | "KRS" | "VAT-LB";
-    name: string
-    nip: string
-    regon?: string
-    countryCode: string
-    addressLine: string
-    active: boolean
-};
-
-export interface KsefContextIdentifier { type: "Nip" | "InternalId" | "NipVatUe" | "PeppolId", value: string }
+export interface KsefContextIdentifier {
+    type: "Nip" | "InternalId" | "NipVatUe" | "PeppolId"
+    value: string
+}
 
 export type KsefAuthenticationStatus = {
     status: {
@@ -22,6 +15,13 @@ export type KsefAuthenticationStatus = {
         description: string
         details?: string[]
     };
+};
+
+export type InvoiceEncryptionData = {
+    cipherKey: Uint8Array
+    cipherIv: Uint8Array
+    encryptedSymmetricKey: string
+    initializationVector: string
 };
 
 export type KsefInvoiceQueryResult = {
@@ -36,11 +36,4 @@ export type KsefInvoiceMetadata = {
     sellerNip?: string
     issueDate?: string
     grossAmount?: number
-};
-
-export type InvoiceEncryptionData = {
-    cipherKey: Uint8Array
-    cipherIv: Uint8Array
-    encryptedSymmetricKey: string
-    initializationVector: string
 };

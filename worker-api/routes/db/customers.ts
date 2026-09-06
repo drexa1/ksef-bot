@@ -1,6 +1,6 @@
 import {Env} from "../../worker";
 import {D1Driver, Repository} from "../../repository/d1";
-import {AppCustomer, AppCustomerUpdate} from "../../types/db";
+import {AppCustomer, AppCustomerUpdate} from "../../types/contractors";
 import {getAuthUser} from "../../auth";
 import {nanoid} from "nanoid";
 

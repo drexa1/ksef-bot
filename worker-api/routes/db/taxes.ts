@@ -1,13 +1,9 @@
 import {Env} from "../../worker";
 import {D1Driver, Repository} from "../../repository/d1";
-import {
-    AppTaxRecord,
-    AppTaxRecordDb,
-    AppUser,
-    TaxRecordObligations
-} from "../../types/db";
 import {getAuthUser} from "../../auth";
 import {fetchKsefInvoices} from "../ksef/ksef";
+import {AppTaxRecord, AppTaxRecordDb, TaxRecordObligations} from "../../types/taxes";
+import {AppUser} from "../../types/users";
 
 let repo: Repository;
 function getRepo(env: Env): Repository {

@@ -1,22 +1,26 @@
-# Supported use cases
--[x] Retrieve sales invoices from KSeF
--[x] Retrieve purchase/purchases invoices from KSeF
--[x] Cache accessed KSeF record on application storage layer
--[ ] Automatic retrieval of company details
--[ ] Notification to submit invoices
--[ ] Automated execution of invoicing
--[ ] Automated compute and payment of taxes
--[ ] Scheduling
+### Market discovery [all]
+- Who works B2B
+- Who pays for software or accountant
+- How much you pay
+- What would make you pay my app fee: price? features?
 
-# Features
--[x] Modern TS codebase
--[x] Cloudflare workers backend
--[x] Secured behind Cloudflare ZeroTrust
--[x] Defensive application design
--[x] 100% coverage E2E tests
--[x] Friendly cloud data-store
--[x] Live documentation
--[x] Continuous integration
--[ ] No Ai auditory
--[ ] Workflow documentation
--[ ] Versioning and release process
+### Supported use cases [investors]
+- [ ] Notification to submit invoices
+- [x] Automated execution of invoicing
+- [x] Retrieve sales/purchases invoices from KSeF
+- [x] Minimal config effort and automatic retrieval of contractor details
+- [x] Cached KSeF records on Cloudflare ZeroTrust or local mode
+- [ ] Interaction based on WhatsApp or terminal UI 
+- [ ] Automated compute and payment of taxes
+
+### Features [investors]
+- [x] Modern codebase (TS/Rust)
+- [x] Cloudflare serverless backend
+- [x] Secured access behind CF ZeroTrust
+- [x] Defensive application design
+- [x] 100% coverage E2E tests
+- [ ] No Ai auditory
+- [x] Live documentation
+- [x] Continuous integration
+- [ ] Workflows documentation
+- [ ] App versioning and release process

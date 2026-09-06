@@ -1,5 +1,5 @@
 /// <reference types="vite/client"/>
-import {AppCustomer} from "../../worker-api/types/db";
+import {AppCustomer} from "../../worker-api/types/contractors";
 
 /// UI model
 export interface CustomerUI {

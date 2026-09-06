@@ -1,8 +1,9 @@
 import {Env} from "../../worker";
 import {Client} from "./client";
-import {AppInvoice, AppUser} from "../../types/db";
 import {D1Driver, Repository} from "../../repository/d1";
 import {getAuthUser} from "../../auth";
+import {AppUser} from "../../types/users";
+import {AppInvoice} from "../../types/invoices";
 
 let repo: Repository;
 function getRepo(env: Env): Repository {

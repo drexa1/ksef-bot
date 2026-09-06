@@ -1,4 +1,4 @@
-import {AppUser} from "../../worker-api/types/db";
+import {AppUser} from "../../worker-api/types/users";
 
 function preconnect() {
     const link = document.createElement("link");

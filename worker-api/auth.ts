@@ -1,7 +1,7 @@
 import {Env} from "./worker";
 import {D1Driver, Repository} from "./repository/d1";
-import {AppUser} from "./types/db";
 import {AuthError} from "./types/auth";
+import {AppUser} from "./types/users";
 
 let repo: Repository;
 function getRepo(env: Env): Repository {

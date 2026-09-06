@@ -60,8 +60,7 @@
 - [ ] CLI: create customer  
 - [ ] CLI: create invoice  
 - [ ] CLI: Google SSO  
-- [ ] CLI: Microsoft SSO  
-- [ ] CLI: Facebook SSO  
+- [ ] CLI: Microsoft SSO
 - [ ] CLI: login with email  
 - [ ] CLI: edit user settings  
 - [ ] CLI: first time flow  

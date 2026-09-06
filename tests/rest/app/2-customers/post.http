@@ -7,18 +7,18 @@ POST {{baseUrl}}/app/customers
 Content-Type: application/json
 X-API-Key: {{apiKey}}
 
-< ../../../testresources/customers/customer-1.json
+< ../../../testresources/contractors/contractor-1.json
 
 ### Create customer #2 for the first time
 POST {{baseUrl}}/app/customers
 Content-Type: application/json
 X-API-Key: {{apiKey}}
 
-< ../../../testresources/customers/customer-2.json
+< ../../../testresources/contractors/contractor-2.json
 
 ### Second create attempt whould trigger PK violation error
 POST {{baseUrl}}/app/customer
 Content-Type: application/json
 X-API-Key: {{apiKey}}
 
-< ../../../testresources/customers/customer-2.json
+< ../../../testresources/contractors/contractor-2.json

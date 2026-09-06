@@ -3,8 +3,8 @@ import {CustomerUI, loadCustomers} from "../api/customers";
 import {generateInvoiceXml} from "./generateXml";
 import {clearValidationErrors, updateFormError, validateInvoiceForm} from "./validate";
 import {loadUserProfile} from "../api/users";
-import {AppUser} from "../../worker-api/types/db";
 import {submitInvoice, downloadReceipt} from "../api/ksef";
+import {AppUser} from "../../worker-api/types/users";
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Invoice data

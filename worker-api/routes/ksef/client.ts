@@ -9,8 +9,8 @@ import {
 } from "../../types/ksef";
 import * as asn1js from "asn1js";
 import * as pkijs from "pkijs";
-import {AppUser} from "../../types/db";
 import {invoiceFromXml} from "../db/invoices";
+import {AppUser} from "../../types/users";
 
 class KsefClientBase {
     token?: string;

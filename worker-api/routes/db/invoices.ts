@@ -1,7 +1,9 @@
 import {Env} from "../../worker";
 import {D1Driver, Repository} from "../../repository/d1";
 import {XMLParser} from "fast-xml-parser";
-import {AppCustomer, AppInvoice, AppUser} from "../../types/db";
+import {AppUser} from "../../types/users";
+import {AppCustomer} from "../../types/contractors";
+import {AppInvoice} from "../../types/invoices";
 import {KsefIdentifiable} from "../../types/ksef";
 import {getAuthUser} from "../../auth";
 import {dtoFromAliases} from "../../dto/avro";
