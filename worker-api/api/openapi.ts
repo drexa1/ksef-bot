@@ -684,60 +684,60 @@ export const getOpenApiSpec = (env: Env) => ({
                 }
             }
         } : {}),
-        "/app/customers": {
+        "/app/contractors": {
             get: {
-                summary: "List customers - Restricted to resources owned by the authenticated user.",
-                tags: ["Customers"],
+                summary: "List contractors - Restricted to resources owned by the authenticated user.",
+                tags: ["Contractors"],
                 security: [{ ApiKeyAuth: [] }],
                 parameters: [{ name: "id", in: "query", required: false, schema: { type: "string" } }],
                 responses: {
-                    "200": { description: "Customer records" },
+                    "200": { description: "Contractor records" },
                     "401": { description: "Unauthorized" },
                     "404": { description: "Customer not found" }
                 }
             },
             post: {
-                summary: "Create a customer - Restricted to resources owned by the authenticated user.",
-                tags: ["Customers"],
+                summary: "Create a contractor - Restricted to resources owned by the authenticated user.",
+                tags: ["Contractors"],
                 security: [{ ApiKeyAuth: [] }],
                 requestBody: {
                     required: true,
                     content: {
                         "application/json": {
-                            schema: { $ref: "#/components/schemas/Customer" }
+                            schema: { $ref: "#/components/schemas/Contractor" }
                         }
                     }
                 },
                 responses: {
-                    "200": { description: "Customer stored" },
+                    "200": { description: "Contractor stored" },
                     "401": { description: "Unauthorized" }
                 }
             },
             put: {
-                summary: "Update a customer - Restricted to resources owned by the authenticated user.",
-                tags: ["Customers"],
+                summary: "Update a contractor - Restricted to resources owned by the authenticated user.",
+                tags: ["Contractors"],
                 security: [{ ApiKeyAuth: [] }],
                 requestBody: {
                     required: true,
                     content: {
                         "application/json": {
-                            schema: { $ref: "#/components/schemas/Customer" }
+                            schema: { $ref: "#/components/schemas/Contractor" }
                         }
                     }
                 },
                 responses: {
-                    "200": { description: "Customer updated" },
+                    "200": { description: "Contractor updated" },
                     "400": { description: "Bad request" },
                     "401": { description: "Unauthorized" }
                 }
             },
             delete: {
-                summary: "Delete a customer - Restricted to resources owned by the authenticated user.",
-                tags: ["Customers"],
+                summary: "Delete a contractor - Restricted to resources owned by the authenticated user.",
+                tags: ["Contractors"],
                 security: [{ ApiKeyAuth: [] }],
                 parameters: [{ name: "id", in: "query", required: true, schema: { type: "string" } }],
                 responses: {
-                    "200": { description: "Customer deleted" },
+                    "200": { description: "Contractor deleted" },
                     "401": { description: "Unauthorized" },
                     "404": { description: "Customer not found" }
                 }
