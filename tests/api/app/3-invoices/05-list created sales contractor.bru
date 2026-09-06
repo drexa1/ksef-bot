@@ -1,5 +1,5 @@
 get {
-    url: {{baseUrl}}/app/contractors?nip={{salesInvoiceContractorId}}
+    url: {{baseUrl}}/app/contractors?nip={{salesInvoiceCustomerId}}
 }
 headers {
     Content-Type: application/json
@@ -8,6 +8,6 @@ headers {
 tests {
     test("List the recently created buyer contractor", function() {
         console.info(res.body);
-        expect(res.body.nip).to.equal(bru.getCollectionVar("salesInvoiceContractorId"));
+        expect(res.body.nip).to.equal(bru.getCollectionVar("salesInvoiceCustomerId"));
     })
 }

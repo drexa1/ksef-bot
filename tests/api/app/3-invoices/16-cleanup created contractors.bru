@@ -6,9 +6,9 @@ headers {
     X-API-Key: {{apiKey}}
 }
 tests {
-    test("Delete all customers", function() {
+    test("Delete all contractors", function() {
         console.info(res.body);
-        const createdContractors = JSON.parse(bru.getCollectionVar("createdContractors"));
-        expect(res.body.changes).to.equal(createdContractors.length);
+        const createdCustomers = JSON.parse(bru.getCollectionVar("createdCustomers"));
+        expect(res.body.changes).to.equal(createdCustomers.length);
     })
 }
