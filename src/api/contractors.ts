@@ -1,17 +1,16 @@
 /// <reference types="vite/client"/>
 import {AppContractor} from "../../worker-api/types/contractors";
-import {AppUser} from "../../worker-api/types/users";
 
 /// UI model
 export interface ContractorUI {
     name: string;
     nip: string;
+    email: string;
     town: string;
     postalCode: string;
     street: string;
     building: string;
     apartment: string;
-    email: string;
 }
 
 export async function loadContractors(): Promise<ContractorUI[]> {
