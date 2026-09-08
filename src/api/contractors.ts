@@ -14,7 +14,7 @@ export interface CustomerUI {
 }
 
 export async function loadCustomers(): Promise<CustomerUI[]> {
-    const url = `${import.meta.env.VITE_WORKER_URL}/app/customers`;
+    const url = `${import.meta.env.VITE_WORKER_URL}/app/contractors`;
     const response = await fetch(url, {
         method: "GET",
         headers: { "Content-Type": "application/json", "X-API-Key": import.meta.env.VITE_API_KEY }
