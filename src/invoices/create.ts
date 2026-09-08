@@ -60,14 +60,16 @@ let customers: ContractorUI[] = [];
 /// Prefilled values for the Contractor Data section
 async function initContractorData(userProfile: AppUser) {
     const contractors = await loadContractors();
+    // Contractor data for the logged user
     userContractor = contractors.find(c => c.nip === userProfile.id && c.email === userProfile.email)!;
     userContractor
-        ? console.info(`Contractor data found for the logged user`)
-        : console.warn(`No contractor data found for logged user`);
+        ? console.info(`Contractor data found for this user`)
+        : console.warn(`No contractor data found for this user`);
+    // Registered customers of the logged user
     customers = contractors.filter(c => c.nip !== userProfile.id).filter(c => c.email !== userProfile.email);
     customers.length > 0
-        ? console.info(`${customers.length} customers(s) found in the DB`)
-        : console.warn(`No customers found in the DB`);
+        ? console.info(`${customers.length} customers(s) found for this user`)
+        : console.warn(`No customers found for this user`);
     try {
         const currentLocation = await getCurrentLocation();
         contractorTown.value = currentLocation.city ?? "";
