@@ -29,8 +29,13 @@ async function initInvoiceData() {
     deliveryDate.value = lastMonthDay;
     // Place of issue
     const issuePlace = invoiceDataSection.querySelector("#issuePlace") as HTMLInputElement;
-    const currentLocation = await getCurrentLocation();
-    issuePlace.value = currentLocation.city ?? "";
+    try {
+        const currentLocation = await getCurrentLocation();
+        issuePlace.value = currentLocation.city ?? "";
+    } catch (error) {
+        console.warn("Current location unavailable:", error);
+        issuePlace.value = "";
+    }
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -54,9 +59,14 @@ let contractors: CustomerUI[] = [];
 /// Prefilled values for the Contractor Data section
 async function initContractorData() {
     contractors = await loadCustomers();
-    const currentLocation = await getCurrentLocation();
-    contractorTown.value = currentLocation.city ?? "";
-    // contractorPostalCode.value = currentLocation.postcode ?? "";
+    try {
+        const currentLocation = await getCurrentLocation();
+        contractorTown.value = currentLocation.city ?? "";
+        // contractorPostalCode.value = currentLocation.postcode ?? "";
+    } catch (error) {
+        console.warn("Current location unavailable:", error);
+        contractorTown.value = "";
+    }
 }
 
 /// Autocomplete by contractor name ------------------------------------------------------------------------------------
