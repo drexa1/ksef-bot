@@ -22,7 +22,7 @@ export async function loadCustomers(): Promise<CustomerUI[]> {
     if (!response.ok)
         throw new Error(`Failed to fetch existing contractors: ${response.status}`);
     const customers: AppContractor[] = await response.json();
-    customers.length
+    customers.length > 0
         ? console.info(`${customers.length} contractor(s) found in the DB`)
         : console.warn(`No contractors found in the DB`);
     return customers.map(contractorToUI);
