@@ -8,7 +8,7 @@ export function preconnect() {
     console.info("Connected to worker");
 }
 
-export async function whoAmI(): Promise<{ userId: string, origin: "jwt" | "userId" }> {
+export async function whoami(): Promise<{ userId: string, origin: "jwt" | "userId" }> {
     const url = `${import.meta.env.VITE_WORKER_URL}/whoami`;
     const response = await fetch(url, {
         method: "GET",

@@ -2,7 +2,7 @@ import {getCurrentLocation} from "../location";
 import {CustomerUI, loadCustomers} from "../api/contractors";
 import {generateInvoiceXml} from "./generateXml";
 import {clearValidationErrors, updateFormError, validateInvoiceForm} from "./validate";
-import {loadUserProfile, preconnect, whoAmI} from "../api/users";
+import {preconnect, whoami, loadUserProfile} from "../api/users";
 import {submitInvoice, downloadReceipt} from "../api/ksef";
 import {AppUser} from "../../worker-api/types/users";
 
@@ -555,8 +555,8 @@ function getInvoiceFilename() {
 
 async function initNew() {
     preconnect();
-    // const authUser = await whoAmI();
-    const userProfile = await loadUserProfile("drexa1@hotmail.com");  // authUser.userId
+    const authUser = await whoami();
+    const userProfile = await loadUserProfile(authUser.userId);
     await initInvoiceData();
     await initContractorData();
     initPositions(userProfile);
