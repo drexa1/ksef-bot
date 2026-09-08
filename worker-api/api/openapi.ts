@@ -14,82 +14,6 @@ export const getOpenApiSpec = () => ({
             }
         },
         schemas: {
-            User: {
-                type: "object",
-                additionalProperties: false,
-                required: [
-                    "tier"
-                ],
-                properties: {
-                    email: {
-                        type: "string",
-                        format: "email",
-                        description: "Email address provided during account creation."
-                    },
-                    googleSubject: {
-                        type: "string",
-                        description: "Google account subject from SSO login."
-                    },
-                    phone: {
-                        type: "string",
-                        description: "Phone number in E.164 format."
-                    },
-                    companyLogo: {
-                        type: "string",
-                        format: "byte",
-                        description: "Encoded company logo."
-                    },
-                    contractorId: {
-                        type: "string",
-                        description: "Related contractor data."
-                    },
-                    tier: {
-                        type: "integer",
-                        description: "Application tier."
-                    },
-                    apiKey: {
-                        type: "string",
-                        description: "API key granted to this user."
-                    },
-                    ksefApiToken: {
-                        type: "string",
-                        description: "KSeF API token for KSeF integration."
-                    },
-                    defaultItemName: {
-                        type: "string",
-                        description: "Default invoice item name."
-                    },
-                    defaultHourlyRate: {
-                        type: "integer",
-                        description: "Default hourly rate."
-                    },
-                    settlementType: {
-                        type: "string",
-                        enum: ["monthly", "quarterly"],
-                        description: "Settlement frequency."
-                    },
-                    bankName: {
-                        type: "string",
-                        description: "Bank name."
-                    },
-                    bankAccountNumber: {
-                        type: "string",
-                        description: "Bank account number."
-                    },
-                    bankApiToken: {
-                        type: "string",
-                        description: "Banking integration API token."
-                    },
-                    createdAt: {
-                        type: "string",
-                        format: "date-time"
-                    },
-                    updatedAt: {
-                        type: "string",
-                        format: "date-time"
-                    }
-                }
-            },
             KSeFInvoice: {
                 type: "object",
                 properties: {
@@ -210,6 +134,82 @@ export const getOpenApiSpec = () => ({
                     }
                 }
             },
+            User: {
+                type: "object",
+                additionalProperties: false,
+                required: [
+                    "tier"
+                ],
+                properties: {
+                    email: {
+                        type: "string",
+                        format: "email",
+                        description: "Email address provided during account creation."
+                    },
+                    googleSubject: {
+                        type: "string",
+                        description: "Google account subject from SSO login."
+                    },
+                    phone: {
+                        type: "string",
+                        description: "Phone number in E.164 format."
+                    },
+                    companyLogo: {
+                        type: "string",
+                        format: "byte",
+                        description: "Encoded company logo."
+                    },
+                    contractorId: {
+                        type: "string",
+                        description: "Related contractor data."
+                    },
+                    tier: {
+                        type: "integer",
+                        description: "Application tier."
+                    },
+                    apiKey: {
+                        type: "string",
+                        description: "API key granted to this user."
+                    },
+                    ksefApiToken: {
+                        type: "string",
+                        description: "KSeF API token for KSeF integration."
+                    },
+                    defaultItemName: {
+                        type: "string",
+                        description: "Default invoice item name."
+                    },
+                    defaultHourlyRate: {
+                        type: "integer",
+                        description: "Default hourly rate."
+                    },
+                    settlementType: {
+                        type: "string",
+                        enum: ["monthly", "quarterly"],
+                        description: "Settlement frequency."
+                    },
+                    bankName: {
+                        type: "string",
+                        description: "Bank name."
+                    },
+                    bankAccountNumber: {
+                        type: "string",
+                        description: "Bank account number."
+                    },
+                    bankApiToken: {
+                        type: "string",
+                        description: "Banking integration API token."
+                    },
+                    createdAt: {
+                        type: "string",
+                        format: "date-time"
+                    },
+                    updatedAt: {
+                        type: "string",
+                        format: "date-time"
+                    }
+                }
+            },			
             Contractor: {
                 type: "object",
                 additionalProperties: false,
