@@ -1,6 +1,6 @@
-import {AppUser} from "../../worker-api/types/users";
+import {ContractorUI} from "../api/contractors";
 
-export async function generateInvoiceXml(userProfile: AppUser, form: HTMLFormElement): Promise<string> {
+export async function generateInvoiceXml(userContractor: ContractorUI, form: HTMLFormElement): Promise<string> {
 
     const response = await fetch("/schemas/invoice-template.xml");
     const templateXml = await response.text();
@@ -20,9 +20,9 @@ export async function generateInvoiceXml(userProfile: AppUser, form: HTMLFormEle
     root.querySelector("DataWytworzeniaFa")!.textContent = new Date().toISOString();
 
     // Seller
-    const sellerAddress = `${userProfile.town}, ${userProfile.zipCode}, ${userProfile.buildingNumber}/${userProfile.apartmentNumber}`;
-    seller.querySelector("NIP")!.textContent = userProfile.nip;
-    seller.querySelector("Nazwa")!.textContent = `${userProfile.firstName} ${userProfile.lastName}`;
+    const sellerAddress = `${userContractor.town}, ${userContractor.postalCode}, ${userContractor.building}/${userContractor.apartment}`;
+    seller.querySelector("NIP")!.textContent = userContractor.nip;
+    seller.querySelector("Nazwa")!.textContent = `${userContractor.name}`;
     seller.querySelector("AdresL1")!.textContent = sellerAddress;
     seller.querySelector("KodKraju")!.textContent = "PL";
 

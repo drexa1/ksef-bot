@@ -1,8 +1,9 @@
 /// <reference types="vite/client"/>
 import {AppContractor} from "../../worker-api/types/contractors";
+import {AppUser} from "../../worker-api/types/users";
 
 /// UI model
-export interface CustomerUI {
+export interface ContractorUI {
     name: string;
     nip: string;
     town: string;
@@ -13,7 +14,7 @@ export interface CustomerUI {
     email: string;
 }
 
-export async function loadCustomers(): Promise<CustomerUI[]> {
+export async function loadContractors(): Promise<ContractorUI[]> {
     const url = `${import.meta.env.VITE_WORKER_URL}/app/contractors`;
     const response = await fetch(url, {
         method: "GET",
@@ -22,13 +23,10 @@ export async function loadCustomers(): Promise<CustomerUI[]> {
     if (!response.ok)
         throw new Error(`Failed to fetch existing contractors: ${response.status}`);
     const customers: AppContractor[] = await response.json();
-    customers.length > 0
-        ? console.info(`${customers.length} contractor(s) found in the DB`)
-        : console.warn(`No contractors found in the DB`);
     return customers.map(contractorToUI);
 }
 
-function contractorToUI(customer: AppContractor): CustomerUI {
+function contractorToUI(customer: AppContractor): ContractorUI {
     const [town = "", postalCode = "", streetAndBuilding = ""] = customer.addressL1.split(", ");
     const match = streetAndBuilding.match(/^(.+?)\s+(\S+)$/);
     return {

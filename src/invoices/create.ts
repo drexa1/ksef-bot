@@ -1,5 +1,5 @@
 import {getCurrentLocation} from "../location";
-import {CustomerUI, loadCustomers} from "../api/contractors";
+import {ContractorUI, loadContractors} from "../api/contractors";
 import {generateInvoiceXml} from "./generateXml";
 import {clearValidationErrors, updateFormError, validateInvoiceForm} from "./validate";
 import {preconnect, whoami, loadUserProfile} from "../api/users";
@@ -54,11 +54,20 @@ const contractorBuilding = document.getElementById("contractorBuilding") as HTML
 const contractorApartment = document.getElementById("contractorApartment") as HTMLInputElement;
 const contractorMail = document.getElementById("contractorMail") as HTMLInputElement;
 
-let contractors: CustomerUI[] = [];
+let userContractor: ContractorUI;
+let customers: ContractorUI[] = [];
 
 /// Prefilled values for the Contractor Data section
-async function initContractorData() {
-    contractors = await loadCustomers();
+async function initContractorData(userProfile: AppUser) {
+    const contractors = await loadContractors();
+    userContractor = contractors.find(c => c.nip === userProfile.id && c.email === userProfile.email)!;
+    userContractor
+        ? console.info(`Contractor data found for the logged user`)
+        : console.warn(`No contractor data found for logged user`);
+    customers = contractors.filter(c => c.nip !== userProfile.id).filter(c => c.email !== userProfile.email);
+    customers.length > 0
+        ? console.info(`${customers.length} customers(s) found in the DB`)
+        : console.warn(`No customers found in the DB`);
     try {
         const currentLocation = await getCurrentLocation();
         contractorTown.value = currentLocation.city ?? "";
@@ -86,7 +95,7 @@ contractorNameInput.addEventListener("input", () => {
         contractorNameSuggestions.style.display = "none";
         return;
     }
-    searchContractorsByName(contractorNameInput.value);
+    searchCustomerByName(contractorNameInput.value);
 });
 
 /// Autocomplete by contractor NIP ------------------------------------------------------------------------------------
@@ -106,7 +115,7 @@ contractorNipInput.addEventListener("input", () => {
         contractorNipSuggestions.style.display = "none";
         return;
     }
-    searchContractorsByNip(contractorNipInput.value);
+    searchCustomerByNip(contractorNipInput.value);
 });
 
 function setupAutocompleteKeyboardNavigation(
@@ -151,17 +160,17 @@ function setupAutocompleteKeyboardNavigation(
     });
 }
 
-function searchContractorsByName(name: string): void {
-    const results = contractors.filter((c) => c.name.toLowerCase().includes(name.trim().toLowerCase()));
+function searchCustomerByName(name: string): void {
+    const results = customers.filter((c) => c.name.toLowerCase().includes(name.trim().toLowerCase()));
     renderContractorSuggestions(contractorNameSuggestions, results, fillContractor);
 }
 
-function searchContractorsByNip(nip: string): void {
-    const results = contractors.filter((c) => c.nip?.startsWith(nip.trim()));
+function searchCustomerByNip(nip: string): void {
+    const results = customers.filter((c) => c.nip?.startsWith(nip.trim()));
     renderContractorSuggestions(contractorNipSuggestions, results, fillContractor);
 }
 
-function renderContractorSuggestions(container: HTMLDivElement, contractors: CustomerUI[], onSelect: (contractor: CustomerUI) => void): void {
+function renderContractorSuggestions(container: HTMLDivElement, contractors: ContractorUI[], onSelect: (contractor: ContractorUI) => void): void {
     container.innerHTML = "";
     for (const contractor of contractors) {
         const item = document.createElement("div");
@@ -183,7 +192,7 @@ function renderContractorSuggestions(container: HTMLDivElement, contractors: Cus
     container.style.display = contractors.length > 0 ? "block" : "none";
 }
 
-function fillContractor(contractor: CustomerUI): void {
+function fillContractor(contractor: ContractorUI): void {
     contractorNameInput.value = contractor.name;
     contractorNipInput.value = contractor.nip ?? "";
     contractorTown.value = contractor.town ?? "";
@@ -474,7 +483,7 @@ async function initActions(userProfile: AppUser) {
         clearValidationErrors(invoiceForm);
         if (!validateInvoiceForm(invoiceForm)) return;
         try {
-            invoiceXML = await generateInvoiceXml(userProfile, invoiceForm);
+            invoiceXML = await generateInvoiceXml(userContractor, invoiceForm);
             if (downloadXmlButton) downloadXmlButton.disabled = false;
             if (submitButton) submitButton.disabled = false;
         } catch (error) {
@@ -568,7 +577,7 @@ async function initNew() {
     const authUser = await whoami();
     const userProfile = await loadUserProfile(authUser.userId);
     await initInvoiceData();
-    await initContractorData();
+    await initContractorData(userProfile);
     initPositions(userProfile);
     void initPayment(userProfile);
     await initActions(userProfile);
