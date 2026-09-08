@@ -63,12 +63,12 @@ async function initContractorData(userProfile: AppUser) {
     // Contractor data for the logged user
     userContractor = contractors.find(c => c.nip === userProfile.id && c.email === userProfile.email)!;
     userContractor
-        ? console.info(`Contractor data found for this user`)
+        ? console.info(`Contractor data found`)
         : console.warn(`No contractor data found for this user`);
     // Registered customers of the logged user
     customers = contractors.filter(c => c.nip !== userProfile.id).filter(c => c.email !== userProfile.email);
     customers.length > 0
-        ? console.info(`${customers.length} customers(s) found for this user`)
+        ? console.info(`${customers.length} customers(s) found`)
         : console.warn(`No customers found for this user`);
     try {
         const currentLocation = await getCurrentLocation();
