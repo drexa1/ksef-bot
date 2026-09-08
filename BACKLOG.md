@@ -88,5 +88,6 @@
 - [ ] Sales execution
 - [ ] Google Analytics  
 - [ ] Bug report  
+- [ ] Sentry  
 - [ ] Go public  
 - [ ] Slack bot
