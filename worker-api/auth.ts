@@ -63,9 +63,10 @@ export async function auth(req: Request, env: Env): Promise<boolean> {
 export async function getAuthUser(req: Request, env: Env): Promise<AppUser> {
     const whoamiResponse = await whoami(req, env);
     const { userId, origin } = await whoamiResponse.json() as { userId: string, origin?: "Cf-Access-Jwt" };
-    // If it is directly connected via specific CF Zero Trust policy use email (or the policy method), otherwise find by PK
     const appUser = origin === "Cf-Access-Jwt"
+        // If it is directly connected via specific CF Zero Trust policy use email (or the policy method),
         ? await getRepo(env).get<AppUser>("users", { email: userId })
+        // ...otherwise find by PK (tax identifier)
         : await getRepo(env).get<AppUser>("users", { id: userId });
     //❌ This should never trigger, either have created a specific access policy in Zero Trust or either the client made it through
     if (!appUser) throw new AuthError("Authenticated user not found in app", 404, { userId });
