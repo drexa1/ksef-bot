@@ -1,10 +1,10 @@
 [package]
-name = "ksef-bot"
+name = "ksefbot"
 version = "0.1.0"
 edition = "2024"
 
 [[bin]]
-name = "ksef-bot"
+name = "ksefbot"
 path = "cli/main.rs"
 
 [profile.release]

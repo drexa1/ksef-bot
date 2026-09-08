@@ -11,7 +11,7 @@ use strum::IntoEnumIterator;
 
 pub fn login_loop() -> Result<()> {
     loop {
-        let method = Select::new("Welcome to KSeF-bot. How would you like to log in?", crate::auth::LoginMethod::iter().collect()).prompt()?;
+        let method = Select::new("Welcome to KSeF Bot. How would you like to log in?", crate::auth::LoginMethod::iter().collect()).prompt()?;
         let logged_in = match method {
             crate::auth::LoginMethod::Google => crate::auth::login_with_google()?,
             crate::auth::LoginMethod::Microsoft => crate::auth::login_with_microsoft()?,

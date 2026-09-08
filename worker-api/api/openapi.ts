@@ -1,7 +1,7 @@
 export const getOpenApiSpec = () => ({
     openapi: "3.0.0",
     info: {
-        title: "ksef-bot-api",
+        title: "ksefbot-api",
         version: "1.0.0"
     },
     components: {
