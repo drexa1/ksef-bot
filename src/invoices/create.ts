@@ -61,13 +61,13 @@ let customers: ContractorUI[] = [];
 async function initContractorData(userProfile: AppUser) {
     const contractors = await loadContractors();
     // Contractor data for the logged user
-    userContractor = contractors.find(c => c.nip === userProfile.id && c.email === userProfile.email)!;
+    userContractor = contractors.find(c => c.nip === userProfile.id || c.email === userProfile.email)!;
     userContractor
         ? console.info(`Contractor data found`)
         // Should never trigger. Contractor data for the user created during onboarding flow
         : console.error(`No contractor data found for this user`);
     // Registered customers of the logged user
-    customers = contractors.filter(c => c.nip !== userProfile.id).filter(c => c.email !== userProfile.email);
+    customers = contractors.filter(c => c.nip !== userProfile.id && c.email !== userProfile.email);
     customers.length > 0
         ? console.info(`${customers.length} customers(s) found`)
         : console.warn(`No customers found for this user`);  // Possible
