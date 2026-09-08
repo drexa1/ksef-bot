@@ -555,8 +555,8 @@ function getInvoiceFilename() {
 
 async function initNew() {
     preconnect();
-    const authUser = await whoAmI();
-    const userProfile = await loadUserProfile(authUser.userId);
+    // const authUser = await whoAmI();
+    const userProfile = await loadUserProfile("drexa1@hotmail.com");  // authUser.userId
     await initInvoiceData();
     await initContractorData();
     initPositions(userProfile);
