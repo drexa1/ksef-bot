@@ -3,14 +3,14 @@ import {AppContractor} from "../../worker-api/types/contractors";
 
 /// UI model
 export interface ContractorUI {
-    name: string;
-    nip: string;
-    email: string;
-    town: string;
-    postalCode: string;
-    street: string;
-    building: string;
-    apartment: string;
+    name: string
+    nip: string
+    email: string
+    town: string
+    postalCode: string
+    street: string
+    building: string
+    apartment: string
 }
 
 export async function loadContractors(): Promise<ContractorUI[]> {
