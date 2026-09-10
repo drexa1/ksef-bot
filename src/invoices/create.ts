@@ -71,14 +71,7 @@ async function initContractorData(userProfile: AppUser) {
     customers.length > 0
         ? console.info(`${customers.length} customers(s) found`)
         : console.warn(`No customers found for this user`);  // Possible
-    try {
-        const currentLocation = await getCurrentLocation();
-        contractorTown.value = currentLocation.city ?? "";
-        // contractorPostalCode.value = currentLocation.postcode ?? "";
-    } catch (error) {
-        console.warn("Current location unavailable:", error);
-        contractorTown.value = "";
-    }
+	return { userContractor, customers };
 }
 
 /// Autocomplete by contractor name ------------------------------------------------------------------------------------
@@ -165,15 +158,15 @@ function setupAutocompleteKeyboardNavigation(
 
 function searchCustomerByName(name: string): void {
     const results = customers.filter((c) => c.name.toLowerCase().includes(name.trim().toLowerCase()));
-    renderContractorSuggestions(contractorNameSuggestions, results, fillContractor);
+    renderCustomerSuggestions(contractorNameSuggestions, results, fillCustomer);
 }
 
 function searchCustomerByNip(nip: string): void {
     const results = customers.filter((c) => c.nip?.startsWith(nip.trim()));
-    renderContractorSuggestions(contractorNipSuggestions, results, fillContractor);
+    renderCustomerSuggestions(contractorNipSuggestions, results, fillCustomer);
 }
 
-function renderContractorSuggestions(container: HTMLDivElement, contractors: ContractorUI[], onSelect: (contractor: ContractorUI) => void): void {
+function renderCustomerSuggestions(container: HTMLDivElement, contractors: ContractorUI[], onSelect: (contractor: ContractorUI) => void): void {
     container.innerHTML = "";
     for (const contractor of contractors) {
         const item = document.createElement("div");
@@ -195,7 +188,7 @@ function renderContractorSuggestions(container: HTMLDivElement, contractors: Con
     container.style.display = contractors.length > 0 ? "block" : "none";
 }
 
-function fillContractor(contractor: ContractorUI): void {
+function fillCustomer(contractor: ContractorUI): void {
     contractorNameInput.value = contractor.name;
     contractorNipInput.value = contractor.nip ?? "";
     contractorTown.value = contractor.town ?? "";
@@ -204,7 +197,6 @@ function fillContractor(contractor: ContractorUI): void {
     contractorBuilding.value = contractor.building ?? "";
     contractorApartment.value = contractor.apartment ?? "";
     contractorMail.value = contractor.email ?? "";
-
     [
         contractorNameInput,
         contractorNipInput,
@@ -526,7 +518,7 @@ async function initActions(userProfile: AppUser) {
     submitButton?.addEventListener("click", async() => {
         try {
             const {month, year} = getInvoiceFilename();
-            const notes = `${userProfile.email} invoice for ${month}, ${year}`;
+            const notes = `${userProfile.id} invoice for ${month}, ${year}`;
             submittedInvoice = await submitInvoice(invoiceXML, notes);
             console.info(
                 `Invoice submitted successfully: ${submittedInvoice.invoiceReferenceNumber} ` +
@@ -543,7 +535,7 @@ async function initActions(userProfile: AppUser) {
     // Action download receipt -------------------------------------------------------------------------------------------
     downloadReceiptButton?.addEventListener("click", async () => {
         try {
-            if (!submittedInvoice.invoiceReferenceNumber || !submittedInvoice.sessionReferenceNumber)return;
+            if (!submittedInvoice.invoiceReferenceNumber || !submittedInvoice.sessionReferenceNumber) return;
             const status = await downloadReceipt(submittedInvoice.invoiceReferenceNumber, submittedInvoice.sessionReferenceNumber);
             const response = await fetch(status.upoDownloadUrl);
             const {month, year} = getInvoiceFilename();
@@ -579,8 +571,8 @@ async function initNew() {
     preconnect();
     const authUser = await whoami();
     const userProfile = await loadUserProfile(authUser.userId);
-    await initInvoiceData();
     await initContractorData(userProfile);
+    await initInvoiceData();
     initPositions(userProfile);
     void initPayment(userProfile);
     await initActions(userProfile);
